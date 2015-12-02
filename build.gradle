@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'gwt-base'
+
+project.version = "1.0.0"
+
+repositories {
+    jcenter()
+}
+
+dependencies 
+{
+	if (project(':esoco-common').getProjectDir().exists())
+	{
+		compile project(':esoco-common')
+	}
+	else
+	{
+		compile 'de.esoco:esoco-common:1.+'
+	}
+		
+    testCompile 'junit:junit:4.+'
+}
+
+
+// disabled Java 8 doclint for Javadoc
+if (JavaVersion.current().isJava8Compatible()) {
+	allprojects	{
+		tasks.withType(Javadoc) {
+        	options.addStringOption('Xdoclint:none', '-quiet')
+		}
+	}
+}
+
+gwt {
+    gwtVersion='2.7.0'
+}
+
+jar { from sourceSets.main.allSource }
+
+task binaryJar(type: Jar, dependsOn: classes) {
+    classifier = 'bin'
+    from sourceSets.main.output
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'src'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'doc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives binaryJar
+    archives sourceJar
+    archives javadocJar
+}

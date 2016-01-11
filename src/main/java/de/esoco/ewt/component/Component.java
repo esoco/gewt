@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -517,6 +517,36 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
+	 * Removes an event handler for a certain event type.
+	 *
+	 * @param rEventType The event type the listener shall be unregistered for
+	 * @param rListener  The event listener to be removed
+	 */
+	public void removeEventListener(
+		EventType		rEventType,
+		EWTEventHandler rListener)
+	{
+		if (aEventListenerMap != null)
+		{
+			EWTEventHandler rHandler = getEventListener(rEventType);
+
+			if (rHandler != null)
+			{
+				rHandler = EventMulticaster.remove(rHandler, rListener);
+
+				if (rHandler != null)
+				{
+					aEventListenerMap.put(rEventType, rHandler);
+				}
+				else
+				{
+					aEventListenerMap.remove(rEventType);
+				}
+			}
+		}
+	}
+
+	/***************************************
 	 * Removes a style name to a component. This is typically only considered by
 	 * HTML-based EWT implementations.
 	 *
@@ -755,36 +785,6 @@ public abstract class Component implements HasId<String>
 		}
 
 		return aTextPosition;
-	}
-
-	/***************************************
-	 * Removes an event handler for a certain event type.
-	 *
-	 * @param rEventType The event type the listener shall be unregistered for
-	 * @param rListener  The event listener to be removed
-	 */
-	protected void removeEventListener(
-		EventType		rEventType,
-		EWTEventHandler rListener)
-	{
-		if (aEventListenerMap != null)
-		{
-			EWTEventHandler rHandler = getEventListener(rEventType);
-
-			if (rHandler != null)
-			{
-				rHandler = EventMulticaster.remove(rHandler, rListener);
-
-				if (rHandler != null)
-				{
-					aEventListenerMap.put(rEventType, rHandler);
-				}
-				else
-				{
-					aEventListenerMap.remove(rEventType);
-				}
-			}
-		}
 	}
 
 	/***************************************

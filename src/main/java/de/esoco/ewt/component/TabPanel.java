@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
 import de.esoco.ewt.style.StyleFlag;
 
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -57,6 +58,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class TabPanel extends GroupPanel
 {
+	//~ Constructors -----------------------------------------------------------
+
 	/***************************************
 	 * Creates a new instance.
 	 */
@@ -64,6 +67,8 @@ public class TabPanel extends GroupPanel
 	{
 		super(new GwtTabPanel(2, Unit.EM));
 	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * {@inheritDoc}
@@ -95,8 +100,8 @@ public class TabPanel extends GroupPanel
 			rTabPanel.add(rTabContent, sTabTitle);
 		}
 
-//		rTabContent.getElement().getParentElement().getStyle()
-//				   .setOverflow(Overflow.AUTO);
+		rTabContent.getElement().getParentElement().getStyle()
+				   .setOverflow(Overflow.AUTO);
 
 		if (rTabPanel.getWidgetCount() == 1)
 		{
@@ -188,6 +193,8 @@ public class TabPanel extends GroupPanel
 		return (GwtTabPanel) getWidget();
 	}
 
+	//~ Inner Classes ----------------------------------------------------------
+
 	/********************************************************************
 	 * An event handler for the closing of tabs.
 	 *
@@ -195,7 +202,11 @@ public class TabPanel extends GroupPanel
 	 */
 	class TabCloseHandler implements ClickHandler
 	{
+		//~ Instance fields ----------------------------------------------------
+
 		private final Widget rTabWidget;
+
+		//~ Constructors -------------------------------------------------------
 
 		/***************************************
 		 * Creates a new instance.
@@ -206,6 +217,8 @@ public class TabPanel extends GroupPanel
 		{
 			this.rTabWidget = rTabWidget;
 		}
+
+		//~ Methods ------------------------------------------------------------
 
 		/***************************************
 		 * @see ClickHandler#onClick(ClickEvent)
@@ -235,6 +248,8 @@ public class TabPanel extends GroupPanel
 	class TabPanelEventDispatcher extends ComponentEventDispatcher
 		implements SelectionHandler<Integer>
 	{
+		//~ Methods ------------------------------------------------------------
+
 		/***************************************
 		 * @see SelectionHandler#onSelection(SelectionEvent)
 		 */

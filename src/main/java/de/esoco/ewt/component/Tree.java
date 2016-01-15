@@ -22,6 +22,7 @@ import de.esoco.lib.model.DataModel;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
@@ -115,9 +116,10 @@ public class Tree extends Control
 	 */
 	private TreeItem createTreeItem(Object rElement)
 	{
-		TreeItem aTreeItem =
-			new TreeItem(SimpleHtmlSanitizer.getInstance()
-						 .sanitize(rElement.toString()));
+		SafeHtml aHtml =
+			SimpleHtmlSanitizer.getInstance().sanitize(rElement.toString());
+
+		TreeItem aTreeItem = new TreeItem(aHtml);
 
 		aTreeItem.setUserObject(rElement);
 

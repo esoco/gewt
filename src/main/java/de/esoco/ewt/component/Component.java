@@ -267,13 +267,13 @@ public abstract class Component implements HasId<String>
 		String sAdditionalStyles =
 			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
 
-		if (sDefaultStyleName == null)
+		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
 		{
-			sDefaultStyleName = rWidget.getStyleName();
+			sDefaultStyleName = rWidget.getStylePrimaryName();
 		}
 		else
 		{
-			rWidget.setStyleName(sDefaultStyleName);
+			rWidget.setStylePrimaryName(sDefaultStyleName);
 		}
 
 		if (sStyle != null)

@@ -20,7 +20,6 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
 import de.esoco.ewt.style.StyleFlag;
 
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -100,8 +99,8 @@ public class TabPanel extends GroupPanel
 			rTabPanel.add(rTabContent, sTabTitle);
 		}
 
-		rTabContent.getElement().getParentElement().getStyle()
-				   .setOverflow(Overflow.AUTO);
+//		rTabContent.getElement().getParentElement().getStyle()
+//				   .setOverflow(Overflow.AUTO);
 
 		if (rTabPanel.getWidgetCount() == 1)
 		{

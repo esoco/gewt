@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ public class StyleData extends AbstractStringProperties
 	{
 		String sCurrentValue = getProperty(rName, "");
 
-		if (sCurrentValue.length() > 0)
+		if (sCurrentValue.length() > 0 && sCurrentValue.indexOf(sValue) == -1)
 		{
 			sValue = sCurrentValue + sSeparator + sValue;
 		}

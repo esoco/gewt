@@ -269,11 +269,11 @@ public abstract class Component implements HasId<String>
 
 		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
 		{
-			sDefaultStyleName = rWidget.getStylePrimaryName();
+			sDefaultStyleName = rWidget.getStyleName();
 		}
 		else
 		{
-			rWidget.setStylePrimaryName(sDefaultStyleName);
+			rWidget.setStyleName(sDefaultStyleName);
 		}
 
 		if (sStyle != null)

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,6 +39,14 @@ public class FillLayout extends GenericLayout
 	private final int     nGap;
 
 	//~ Constructors -----------------------------------------------------------
+
+	/***************************************
+	 * Creates a new instance with horizontal orientation and no gap.
+	 */
+	public FillLayout()
+	{
+		this(true, 0);
+	}
 
 	/***************************************
 	 * Creates a new FillLayout with either horizontal or vertical layout of
@@ -102,6 +110,8 @@ public class FillLayout extends GenericLayout
 	public HasWidgets createLayoutContainer()
 	{
 		LayoutPanel aPanel = new LayoutPanel();
+
+		aPanel.addStyleName("ewt-FillLayout");
 
 		return aPanel;
 	}

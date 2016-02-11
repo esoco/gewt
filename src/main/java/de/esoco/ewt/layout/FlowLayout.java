@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package de.esoco.ewt.layout;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 
@@ -31,30 +32,57 @@ public class FlowLayout extends GenericLayout
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private final boolean bHorizontal;
+	private final Boolean bHorizontal;
 
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a new instance.
+	 * Creates a new instance that is based on a GWT {@link FlowPanel}.
+	 */
+	public FlowLayout()
+	{
+		bHorizontal = null;
+	}
+
+	/***************************************
+	 * Creates a new instance that is based on a GWT {@link HorizontalPanel} or
+	 * a {@link VerticalPanel}.
 	 *
 	 * @param bHorizontal TRUE for horizontal, FALSE for vertical orientation
 	 */
 	public FlowLayout(boolean bHorizontal)
 	{
-		this.bHorizontal = bHorizontal;
+		this.bHorizontal = Boolean.valueOf(bHorizontal);
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns a new instance of {@link FlowPanel}.
+	 * Returns a new instance of either {@link FlowPanel}, {@link
+	 * HorizontalPanel}, or {@link VerticalPanel}.
 	 *
 	 * @see GenericLayout#createLayoutContainer()
 	 */
 	@Override
 	public HasWidgets createLayoutContainer()
 	{
-		return bHorizontal ? new HorizontalPanel() : new VerticalPanel();
+		Panel aPanel;
+
+		if (bHorizontal == null)
+		{
+			aPanel = new FlowPanel();
+		}
+		else if (bHorizontal == Boolean.TRUE)
+		{
+			aPanel = new HorizontalPanel();
+		}
+		else
+		{
+			aPanel = new VerticalPanel();
+		}
+
+		aPanel.addStyleName("ewt-FlowLayout");
+
+		return aPanel;
 	}
 }

@@ -30,12 +30,15 @@ import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.HasId;
 import de.esoco.lib.property.TextAttribute;
+import de.esoco.lib.property.UserInterfaceProperties;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -260,67 +263,9 @@ public abstract class Component implements HasId<String>
 	 */
 	public void applyStyle(StyleData rStyle)
 	{
-		String sStyle			 =
-			rStyle.getProperty(StyleData.WEB_STYLE, null);
-		String sDependentStyle   =
-			rStyle.getProperty(StyleData.WEB_DEPENDENT_STYLE, null);
-		String sAdditionalStyles =
-			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
-
-		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
-		{
-			sDefaultStyleName = rWidget.getStylePrimaryName();
-		}
-		else
-		{
-			rWidget.setStylePrimaryName(sDefaultStyleName);
-		}
-
-		if (sStyle != null)
-		{
-			rWidget.setStylePrimaryName(sStyle);
-		}
-
-		if (sAdditionalStyles != null)
-		{
-			rWidget.addStyleName(sAdditionalStyles);
-		}
-
-		if (sDependentStyle != null)
-		{
-			rWidget.addStyleDependentName(sDependentStyle);
-		}
-
-		if (rWidget instanceof HasHorizontalAlignment)
-		{
-			HorizontalAlignmentConstant rAlignment =
-				rStyle.mapHorizontalAlignment();
-
-			if (rAlignment != null)
-			{
-				((HasHorizontalAlignment) rWidget).setHorizontalAlignment(rAlignment);
-			}
-		}
-		else if (rWidget instanceof TextBoxBase)
-		{
-			TextAlignment rAlignment = rStyle.mapTextAlignment();
-
-			if (rAlignment != null)
-			{
-				((TextBoxBase) rWidget).setAlignment(rAlignment);
-			}
-		}
-
-		if (rWidget instanceof HasVerticalAlignment)
-		{
-			VerticalAlignmentConstant rAlignment =
-				rStyle.mapVerticalAlignment();
-
-			if (rAlignment != null)
-			{
-				((HasVerticalAlignment) rWidget).setVerticalAlignment(rAlignment);
-			}
-		}
+		applyStyleNames(rStyle);
+		applyAlignments(rStyle);
+		applyCssStyles(rStyle);
 	}
 
 	/***************************************
@@ -971,6 +916,108 @@ public abstract class Component implements HasId<String>
 		this.rWidget = rWidget;
 
 		createEventDispatcher().initEventDispatching(rWidget);
+	}
+
+	/***************************************
+	 * Applies any alignments that are set in the given {@link StyleData} to the
+	 * underlying GWT widget.
+	 *
+	 * @param rStyle The style data
+	 */
+	private void applyAlignments(StyleData rStyle)
+	{
+		if (rWidget instanceof HasHorizontalAlignment)
+		{
+			HorizontalAlignmentConstant rAlignment =
+				rStyle.mapHorizontalAlignment();
+
+			if (rAlignment != null)
+			{
+				((HasHorizontalAlignment) rWidget).setHorizontalAlignment(rAlignment);
+			}
+		}
+		else if (rWidget instanceof TextBoxBase)
+		{
+			TextAlignment rAlignment = rStyle.mapTextAlignment();
+
+			if (rAlignment != null)
+			{
+				((TextBoxBase) rWidget).setAlignment(rAlignment);
+			}
+		}
+
+		if (rWidget instanceof HasVerticalAlignment)
+		{
+			VerticalAlignmentConstant rAlignment =
+				rStyle.mapVerticalAlignment();
+
+			if (rAlignment != null)
+			{
+				((HasVerticalAlignment) rWidget).setVerticalAlignment(rAlignment);
+			}
+		}
+	}
+
+	/***************************************
+	 * Applies any CSS styles that are set in the given {@link StyleData} to the
+	 * DOM element of the underlying GWT widget.
+	 *
+	 * @param rStyle The style data
+	 */
+	private void applyCssStyles(StyleData rStyle)
+	{
+		Map<String, String> rCssStyles =
+			rStyle.getProperty(UserInterfaceProperties.CSS_STYLES, null);
+
+		if (rCssStyles != null)
+		{
+			Style rElementStyle = getWidget().getElement().getStyle();
+
+			for (Entry<String, String> rCss : rCssStyles.entrySet())
+			{
+				rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+			}
+		}
+	}
+
+	/***************************************
+	 * Applies any style names that are set in the given {@link StyleData} to
+	 * the underlying GWT widget.
+	 *
+	 * @param rStyle The style data
+	 */
+	private void applyStyleNames(StyleData rStyle)
+	{
+		String sStyle			 =
+			rStyle.getProperty(StyleData.WEB_STYLE, null);
+		String sDependentStyle   =
+			rStyle.getProperty(StyleData.WEB_DEPENDENT_STYLE, null);
+		String sAdditionalStyles =
+			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
+
+		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
+		{
+			sDefaultStyleName = rWidget.getStyleName();
+		}
+		else
+		{
+			rWidget.setStyleName(sDefaultStyleName);
+		}
+
+		if (sStyle != null)
+		{
+			rWidget.setStylePrimaryName(sStyle);
+		}
+
+		if (sAdditionalStyles != null)
+		{
+			rWidget.addStyleName(sAdditionalStyles);
+		}
+
+		if (sDependentStyle != null)
+		{
+			rWidget.addStyleDependentName(sDependentStyle);
+		}
 	}
 
 	//~ Inner Classes ----------------------------------------------------------

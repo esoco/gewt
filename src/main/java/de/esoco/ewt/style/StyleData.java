@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package de.esoco.ewt.style;
 
 import de.esoco.lib.property.AbstractStringProperties;
+import de.esoco.lib.property.HasProperties;
 import de.esoco.lib.property.PropertyName;
 
 import java.util.Arrays;
@@ -159,7 +160,7 @@ public class StyleData extends AbstractStringProperties
 	{
 		String sCurrentValue = getProperty(rName, "");
 
-		if (sCurrentValue.length() > 0)
+		if (sCurrentValue.length() > 0 && sCurrentValue.indexOf(sValue) == -1)
 		{
 			sValue = sCurrentValue + sSeparator + sValue;
 		}
@@ -515,6 +516,44 @@ public class StyleData extends AbstractStringProperties
 	public final StyleData wh(double w, double h)
 	{
 		return xywh(x, y, w, h);
+	}
+
+	/***************************************
+	 * Returns a copy of this style data object with the give properties copied
+	 * from an instance {@link HasProperties}.
+	 *
+	 * @param  rSource        The properties object to copy the properties from
+	 * @param  rPropertyNames The names of the properties to copy
+	 *
+	 * @return A copy of this instance that contains the given properties (if
+	 *         they are available in the source properties)
+	 */
+	@SuppressWarnings("unchecked")
+	public StyleData withProperties(
+		HasProperties	   rSource,
+		PropertyName<?>... rPropertyNames)
+	{
+		StyleData aCopy = new StyleData(this);
+
+		Map<PropertyName<?>, String> rPropertyMap = getPropertyMap();
+
+		if (rPropertyMap != null)
+		{
+			aCopy.setPropertyMap(new HashMap<PropertyName<?>, String>(rPropertyMap));
+		}
+
+		for (PropertyName<?> rPropertyName : rPropertyNames)
+		{
+			Object rProperty = rSource.getProperty(rPropertyName, null);
+
+			if (rProperty != null)
+			{
+				aCopy.setProperty((PropertyName<Object>) rPropertyName,
+								  rProperty);
+			}
+		}
+
+		return aCopy;
 	}
 
 	/***************************************

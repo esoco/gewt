@@ -101,11 +101,13 @@ public abstract class Component implements HasId<String>
 
 	private Widget    rWidget;
 	private Container rParent;
-	private String    sDefaultStyleName = null;
+	private StyleData rStyle;
 
 	private String sId = null;
 
 	private Map<EventType, EWTEventHandler> aEventListenerMap;
+
+	private String[] rAdditionalStyles;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -259,13 +261,15 @@ public abstract class Component implements HasId<String>
 	 * <p>This method should be overridden by subclasses that need to apply
 	 * subcomponent-specific styles.</p>
 	 *
-	 * @param rStyle The style to apply to this instance
+	 * @param rNewStyle The style to apply to this instance
 	 */
-	public void applyStyle(StyleData rStyle)
+	public void applyStyle(StyleData rNewStyle)
 	{
-		applyStyleNames(rStyle);
-		applyAlignments(rStyle);
-		applyCssStyles(rStyle);
+		applyStyleNames(rNewStyle);
+		applyAlignments(rNewStyle);
+		applyCssStyles(rNewStyle);
+
+		rStyle = rNewStyle;
 	}
 
 	/***************************************
@@ -367,6 +371,16 @@ public abstract class Component implements HasId<String>
 	public Container getParent()
 	{
 		return rParent;
+	}
+
+	/***************************************
+	 * Returns the current style data of this instance.
+	 *
+	 * @return The style data
+	 */
+	public final StyleData getStyle()
+	{
+		return rStyle;
 	}
 
 	/***************************************
@@ -830,7 +844,6 @@ public abstract class Component implements HasId<String>
 	 */
 	void setDefaultStyleName(String sDefaultStyleName)
 	{
-		this.sDefaultStyleName = sDefaultStyleName;
 		getWidget().setStylePrimaryName(sDefaultStyleName);
 	}
 
@@ -988,35 +1001,50 @@ public abstract class Component implements HasId<String>
 	 */
 	private void applyStyleNames(StyleData rStyle)
 	{
-		String sStyle			 =
+		String sWebStyle		    =
 			rStyle.getProperty(StyleData.WEB_STYLE, null);
-		String sDependentStyle   =
+		String sWebDependentStyle   =
 			rStyle.getProperty(StyleData.WEB_DEPENDENT_STYLE, null);
-		String sAdditionalStyles =
+		String sWebAdditionalStyles =
 			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
 
-		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
+//		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
+//		{
+//			sDefaultStyleName = rWidget.getStyleName();
+//		}
+//		else
+//		{
+//			rWidget.setStyleName(sDefaultStyleName);
+//		}
+
+		if (sWebStyle != null)
 		{
-			sDefaultStyleName = rWidget.getStyleName();
-		}
-		else
-		{
-			rWidget.setStyleName(sDefaultStyleName);
+			rWidget.setStylePrimaryName(sWebStyle);
 		}
 
-		if (sStyle != null)
+		if (rAdditionalStyles != null)
 		{
-			rWidget.setStylePrimaryName(sStyle);
+			for (String sStyle : rAdditionalStyles)
+			{
+				rWidget.removeStyleName(sStyle);
+			}
+
+			rAdditionalStyles = null;
 		}
 
-		if (sAdditionalStyles != null)
+		if (sWebAdditionalStyles != null)
 		{
-			rWidget.addStyleName(sAdditionalStyles);
+			rAdditionalStyles = sWebAdditionalStyles.split(" ");
+
+			for (String sStyle : rAdditionalStyles)
+			{
+				rWidget.addStyleName(sStyle);
+			}
 		}
 
-		if (sDependentStyle != null)
+		if (sWebDependentStyle != null)
 		{
-			rWidget.addStyleDependentName(sDependentStyle);
+			rWidget.addStyleDependentName(sWebDependentStyle);
 		}
 	}
 

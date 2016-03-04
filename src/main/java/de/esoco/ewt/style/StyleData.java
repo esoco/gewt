@@ -145,7 +145,9 @@ public class StyleData extends AbstractStringProperties
 
 	/***************************************
 	 * Appends (or sets) a value to a certain string property in a copy of this
-	 * style data object.
+	 * style data object. If the value to append contains the given separator
+	 * character it's distinct parts will be appended separately and only if
+	 * they do not already occur in the current value.
 	 *
 	 * @param  rName      The name of the string property to append to
 	 * @param  sValue     The string to append
@@ -160,12 +162,24 @@ public class StyleData extends AbstractStringProperties
 	{
 		String sCurrentValue = getProperty(rName, "");
 
-		if (sCurrentValue.length() > 0 && sCurrentValue.indexOf(sValue) == -1)
+		sValue = sValue.trim();
+
+		if (sCurrentValue.length() > 0)
 		{
-			sValue = sCurrentValue + sSeparator + sValue;
+			String[] rNewValues = sValue.split(sSeparator);
+
+			sValue = sCurrentValue;
+
+			for (String sNewValue : rNewValues)
+			{
+				if (sValue.indexOf(sNewValue) == -1)
+				{
+					sValue += sSeparator + sNewValue;
+				}
+			}
 		}
 
-		return set(rName, sValue.trim());
+		return set(rName, sValue);
 	}
 
 	/***************************************

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,12 @@ import de.esoco.ewt.style.StyleData;
 public abstract class ContainerManager<C extends Container>
 	extends ContainerBuilder<C>
 {
+	//~ Instance fields --------------------------------------------------------
+
+	private StyleData rBaseStyle;
+
+	//~ Constructors -----------------------------------------------------------
+
 	/***************************************
 	 * Creates a new instance that manages a certain container type.
 	 */
@@ -38,6 +44,8 @@ public abstract class ContainerManager<C extends Container>
 	{
 		super(null);
 	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Builds a child container manager in the container of this instance by
@@ -70,6 +78,8 @@ public abstract class ContainerManager<C extends Container>
 		ContainerBuilder<?> rParentBuilder,
 		StyleData			rStyleData)
 	{
+		rBaseStyle = rStyleData;
+
 		ContainerBuilder<C> aBuilder =
 			createContainer(rParentBuilder, rStyleData);
 
@@ -77,6 +87,16 @@ public abstract class ContainerManager<C extends Container>
 		setParent(aBuilder.getParent());
 
 		addComponents();
+	}
+
+	/***************************************
+	 * Returns the style data with which this this instance has been created.
+	 *
+	 * @return The base style data
+	 */
+	public final StyleData getBaseStyle()
+	{
+		return rBaseStyle;
 	}
 
 	/***************************************

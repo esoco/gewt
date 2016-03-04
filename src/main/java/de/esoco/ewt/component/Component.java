@@ -1008,15 +1008,6 @@ public abstract class Component implements HasId<String>
 		String sWebAdditionalStyles =
 			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
 
-//		if (sDefaultStyleName == null || sDefaultStyleName.length() == 0)
-//		{
-//			sDefaultStyleName = rWidget.getStyleName();
-//		}
-//		else
-//		{
-//			rWidget.setStyleName(sDefaultStyleName);
-//		}
-
 		if (sWebStyle != null)
 		{
 			rWidget.setStylePrimaryName(sWebStyle);

@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
@@ -1017,7 +1018,7 @@ public abstract class Component implements HasId<String>
 		{
 			for (String sStyle : rAdditionalStyles)
 			{
-				rWidget.removeStyleName(sStyle);
+				rWidget.removeStyleName(EWT.mapCssClass(sStyle));
 			}
 
 			rAdditionalStyles = null;
@@ -1029,7 +1030,7 @@ public abstract class Component implements HasId<String>
 
 			for (String sStyle : rAdditionalStyles)
 			{
-				rWidget.addStyleName(sStyle);
+				rWidget.addStyleName(EWT.mapCssClass(sStyle));
 			}
 		}
 

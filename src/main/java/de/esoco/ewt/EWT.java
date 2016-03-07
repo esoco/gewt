@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@ import de.esoco.ewt.app.Resource;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -55,6 +59,8 @@ public class EWT
 
 	private static final int DOUBLE_CLICK_INTERVAL = 500;
 
+	private static Map<String, String> aCssClassMap = null;
+
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
@@ -65,6 +71,41 @@ public class EWT
 	}
 
 	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * Adds a mapping for a CSS class name. Applications can then use their own
+	 * CSS class which will then automatically be translated into the respective
+	 * target CSS class.
+	 *
+	 * @param sApplicationCssClass The CSS class used by the application
+	 * @param sTargetCssClass      The CSS class to map the application class to
+	 */
+	public static void addCssClassMapping(
+		String sApplicationCssClass,
+		String sTargetCssClass)
+	{
+		if (aCssClassMap == null)
+		{
+			aCssClassMap = new HashMap<>();
+		}
+
+		aCssClassMap.put(sApplicationCssClass, sTargetCssClass);
+	}
+
+	/***************************************
+	 * Adds several CSS class mappings.
+	 *
+	 * @param rMappings The mappings to add
+	 *
+	 * @see   #addCssClassMapping(String, String)
+	 */
+	public static void addCssClassMappings(Map<String, String> rMappings)
+	{
+		for (Entry<String, String> rMapping : rMappings.entrySet())
+		{
+			addCssClassMapping(rMapping.getKey(), rMapping.getValue());
+		}
+	}
 
 	/***************************************
 	 * Creates a new user interface context.
@@ -105,6 +146,30 @@ public class EWT
 	public static int getDoubleClickInterval()
 	{
 		return DOUBLE_CLICK_INTERVAL;
+	}
+
+	/***************************************
+	 * Maps a certain CSS class name if a corresponding mapping has been
+	 * registered through {@link #addCssClassMapping(String, String)}. If no
+	 * mapping exists the input name will be returned unchanged.
+	 *
+	 * @param  sCssClass The CSS class name to map
+	 *
+	 * @return The mapped CSS class name or the input name if no mapping exists
+	 */
+	public static String mapCssClass(String sCssClass)
+	{
+		if (aCssClassMap != null)
+		{
+			String sMappedCssClass = aCssClassMap.get(sCssClass);
+
+			if (sMappedCssClass != null)
+			{
+				sCssClass = sMappedCssClass;
+			}
+		}
+
+		return sCssClass;
 	}
 
 	/***************************************

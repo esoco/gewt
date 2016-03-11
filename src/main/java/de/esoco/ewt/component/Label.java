@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.TextAttribute;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -76,7 +76,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 		else
 		{
-			aWidget = new HTML("", rStyleData.hasFlag(StyleFlag.WRAP));
+			aWidget = new InlineHTML("");
 		}
 
 		return aWidget;

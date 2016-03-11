@@ -17,7 +17,6 @@
 package de.esoco.ewt.layout;
 
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 
@@ -26,7 +25,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
  *
  * @author eso
  */
-public class GroupLayout extends GenericLayout
+public class GroupLayout extends TwoLayerLayout
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -40,12 +39,10 @@ public class GroupLayout extends GenericLayout
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns a new instance of{@link FormPanel}.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	protected HasWidgets createLayoutPanel()
 	{
 		return new CaptionPanel();
 	}

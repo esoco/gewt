@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.layout.GenericLayout;
-
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 
 
@@ -30,7 +28,7 @@ import com.google.gwt.user.client.ui.DeckLayoutPanel;
  *
  * @author eso
  */
-public class DeckPanel extends Panel
+public class DeckPanel extends GroupPanel
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -45,33 +43,68 @@ public class DeckPanel extends Panel
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns the index of the currently visible component.
-	 *
-	 * @return The index of the currently visible component
-	 */
-	public int getCurrentComponent()
-	{
-		return ((DeckLayoutPanel) getWidget()).getVisibleWidgetIndex();
-	}
-
-	/***************************************
-	 * Overridden to do nothing because the layout is defined by the panel
-	 * implementation.
-	 *
-	 * @see Container#setLayout(GenericLayout)
+	 * {@inheritDoc}
 	 */
 	@Override
-	public void setLayout(GenericLayout rLayout)
+	public void addGroup(Component rGroupComponent,
+						 String    sGroupTitle,
+						 boolean   bCloseable)
 	{
+		getDeckPanel().add(rGroupComponent.getWidget());
 	}
 
 	/***************************************
-	 * Makes a certain component of this panel visible.
-	 *
-	 * @param nIndex The index of the component to show
+	 * {@inheritDoc}
 	 */
-	public void showComponent(int nIndex)
+	@Override
+	public int getGroupCount()
 	{
-		((DeckLayoutPanel) getWidget()).showWidget(nIndex);
+		return getDeckPanel().getWidgetCount();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getGroupIndex(Component rGroupComponent)
+	{
+		return getDeckPanel().getWidgetIndex(rGroupComponent.getWidget());
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getSelectionIndex()
+	{
+		return getDeckPanel().getVisibleWidgetIndex();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setGroupTitle(int nIndex, String sTitle)
+	{
+		// ignored because now title is displayed
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSelection(int nIndex)
+	{
+		getDeckPanel().showWidget(nIndex);
+	}
+
+	/***************************************
+	 * Returns the {@link DeckLayoutPanel} widget of this instance.
+	 *
+	 * @return The deck panel
+	 */
+	private DeckLayoutPanel getDeckPanel()
+	{
+		return (DeckLayoutPanel) getWidget();
 	}
 }

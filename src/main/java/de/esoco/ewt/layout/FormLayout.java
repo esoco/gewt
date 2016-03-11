@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
  *
  * @author eso
  */
-public class FormLayout extends GenericLayout
+public class FormLayout extends TwoLayerLayout
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -39,12 +39,10 @@ public class FormLayout extends GenericLayout
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns a new instance of{@link FormPanel}.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	protected HasWidgets createLayoutPanel()
 	{
 		return new FormPanel();
 	}

@@ -25,10 +25,10 @@ import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.TextAttribute;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -76,7 +76,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 		else
 		{
-			aWidget = new InlineHTML("");
+			aWidget = new HTML("", rStyleData.hasFlag(StyleFlag.WRAP));
 		}
 
 		return aWidget;

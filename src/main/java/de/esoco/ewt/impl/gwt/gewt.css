@@ -1,451 +1,55 @@
-@external .gwt-Label, .gwt-HTML, .gwt-Image, .gwt-Button, .gwt-DatePicker;
-@external .gwt-TabLayoutPanelContent;
-@external .gwt-PushButton, .gwt-ToggleButton, .gwt-ToggleButton-down;
-@external .gwt-ToggleButton-down-hovering;
-@external .ewt-MainView, .ewt-EdgeLayout, .ewt-Tooltip, .ewt-Default;
-@external .ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon, .ewt-ImageLabel;
-@external .gwt-viz-container, .ewt-Chart, .ewt-NoChartDataLabel;
-@external .ewt-Table, .ewt-DataTable, .ewt-Table-disabled, .ewt-TableFilterPopup;
-@external .ewt-TableFilterValue, .ewt-TableFilterValue-disabled;
-@external .ewt-TableFilterButton, .ewt-TableFilterButton-active;
-@external .ewt-Header, .ewt-Toolbar, .ewt-NavButtons, .ewt-Filter, .ewt-TreeNode;
-@external .ewt-Resizer, .ewt-SortIndicator, .ewt-Icon;
+@external .datePickerMonthSelector, datePickerMonth;
+
+.datePickerMonthSelector, .datePickerMonth
+{}
+
 @external .row, .empty, .odd, .selected, .main, .limited;
-@external .ewt-Spinner, .ewt-SpinnerInput, .ewt-SpinnerButtons, .ewt-SpinnerButton;
-@external .ewt-SpinnerButton-up, .ewt-SpinnerButton-up-hovering;
-@external .ewt-SpinnerButton-up-disabled, .ewt-SpinnerButton-down;
-@external .ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled;
-@external .ewt-TimePicker, .datePickerMonthSelector, .datePickerMonth;
-@external .datePickerDay, .datePickerWeekdayLabel, .datePickerWeekendLabel;
+
+.row, .empty, .odd, .selected, .main, .limited 
+{}
+
+@external .ewt-MainView, .ewt-EdgeLayout;
+@external .ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon;
+@external .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker; 
+@external .ewt-Chart, .ewt-NoChartDataLabel  .ewt-TreeNode;
+@external .ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer; 
+@external .ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect;
+
+.ewt-MainView, .ewt-EdgeLayout, 
+.ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon,
+.ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker, 
+.ewt-Chart, .ewt-NoChartDataLabel, .ewt-TreeNode,
+.ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer, 
+.ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect 
+{}
+
+@external .ewt-Table, .ewt-Table-disabled, .ewt-DataTable;  
+@external .ewt-TableFilterPopup, .ewt-TableFilterButton;
+@external .ewt-TableFilterButton-active;
+@external .ewt-TableFilterValue, .ewt-TableFilterValue-disabled;
+
+.ewt-Table, .ewt-Table-disabled, .ewt-DataTable,  
+.ewt-TableFilterPopup, .ewt-TableFilterButton,
+.ewt-TableFilterButton-active,
+.ewt-TableFilterValue, .ewt-TableFilterValue-disabled
+{}
+
 @external .ewt-TagField, .ewt-TagField-disabled, .ewt-TagInput;
 @external .ewt-TagDisplay, .ewt-TagDisplay-selected;
-.ewt-MainView {
-	
-}
 
-.ewt-MessageBox {
-	
-}
-
-.ewt-ImageLabel .gwt-HTML {
-	margin-left: 2px;
-}
-
-.ewt-MessageLabel {
-	padding: 1em;
-}
-
-.ewt-MessageLabel.main {
-	font-weight: bold;
-	color: #333;
-}
-
-.ewt-MessageIcon {
-	
-}
-
-.ewt-EdgeLayout {
-	
-}
-
-.ewt-Tooltip .gwt-HTML {
-	border: 1px solid black;
-	padding: 2px 3px 3px 3px;
-	font-size: smaller;
-	background-color: #ffffcc; /*Pale Weak Yellow*/
-}
-
-.gwt-TabLayoutPanelContent {
-	width: 100%;
-	height: 100%;
-}
-
-.gwt-PushButton {
-	text-align: center;
-}
-
-.gwt-Button.ewt-Default, .gwt-PushButton.ewt-Default {
-	border-width: 2px;
-}
-
-.ewt-Chart {
-	
-}
-
-.gwt-viz-container {
-	height: 100%;
-	width: 100%;
-}
-
-.ewt-NoChartDataLabel {
-	text-align: center;
-	position: relative;
-	top: 50%;
-}
-
-.ewt-Table {
-	border: 1px solid #8BAEDB;
-	background: #F0F8F8;
-}
-
-/* hide focus rectangle */
-.ewt-Table :focus {
-	outline: none;
-}
-
-.ewt-Table :focus tr.selected {
-	outline: 1px dotted;
-}
-
-.ewt-Table table {
-	border-collapse: collapse;
-	cursor: auto;
-}
-
-.ewt-DataTable {
-	table-layout: fixed;
-}
-
-.ewt-NoSelect {
-	-ms-user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-}
-
-.ewt-Table .ewt-Header {
-	table-layout: fixed;
-	-ms-user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-}
-
-.ewt-Table .gwt-PushButton, .ewt-Table .gwt-ToggleButton, .ewt-TableFilterPopup .gwt-PushButton
-	{
-	background: none;
-	border: none;
-}
-
-.ewt-Table .gwt-ToggleButton-down, .ewt-Table .gwt-ToggleButton-down-hovering {
-	padding: 3px 5px;
-}
-
-.ewt-Table td {
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-.ewt-Table-disabled td {
-	color: #888;
-}
-
-.ewt-Table .ewt-Header>td, .ewt-Table .ewt-Toolbar td {
-	background: rgb(248, 248, 248); /* Old browsers */
-	background: -moz-linear-gradient(top, rgba(248, 248, 248, 1) 0%,
-		rgba(230, 239, 250, 1) 4%, rgba(206, 224, 244, 1) 8%, rgba(203, 222, 243, 1)
-		12%, rgba(203, 222, 243, 1) 92%, rgba(178, 208, 238, 1) 96%,
-		rgba(124, 177, 226, 1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(248, 248,
-		248, 1)), color-stop(4%, rgba(230, 239, 250, 1)),
-		color-stop(8%, rgba(206, 224, 244, 1)), color-stop(12%, rgba(203, 222, 243, 1)),
-		color-stop(92%, rgba(203, 222, 243, 1)),
-		color-stop(96%, rgba(178, 208, 238, 1)),
-		color-stop(100%, rgba(124, 177, 226, 1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(248, 248, 248, 1) 0%,
-		rgba(230, 239, 250, 1) 4%, rgba(206, 224, 244, 1) 8%, rgba(203, 222, 243, 1)
-		12%, rgba(203, 222, 243, 1) 92%, rgba(178, 208, 238, 1) 96%,
-		rgba(124, 177, 226, 1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, rgba(248, 248, 248, 1) 0%,
-		rgba(230, 239, 250, 1) 4%, rgba(206, 224, 244, 1) 8%, rgba(203, 222, 243, 1)
-		12%, rgba(203, 222, 243, 1) 92%, rgba(178, 208, 238, 1) 96%,
-		rgba(124, 177, 226, 1) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, rgba(248, 248, 248, 1) 0%,
-		rgba(230, 239, 250, 1) 4%, rgba(206, 224, 244, 1) 8%, rgba(203, 222, 243, 1)
-		12%, rgba(203, 222, 243, 1) 92%, rgba(178, 208, 238, 1) 96%,
-		rgba(124, 177, 226, 1) 100%); /* IE10+ */
-	background: linear-gradient(to bottom, rgba(248, 248, 248, 1) 0%,
-		rgba(230, 239, 250, 1) 4%, rgba(206, 224, 244, 1) 8%, rgba(203, 222, 243, 1)
-		12%, rgba(203, 222, 243, 1) 92%, rgba(178, 208, 238, 1) 96%,
-		rgba(124, 177, 226, 1) 100%); /* W3C */
-}
-
-.ewt-Table .ewt-Header>td {
-	border-color: #79B;
-	border-style: solid;
-	border-width: 1px 0 1px 1px;
-	font-weight: bold;
-	text-align: center;
-	vertical-align: middle;
-	padding: 4px 0px;
-}
-
-.ewt-Table .ewt-Header>td:first-of-type {
-	border-width: 1px 0 1px 0;
-}
-
-.ewt-Table .ewt-Header .limited {
-	color: #235;
-	font-style: italic;
-}
-
-.ewt-Table .ewt-Header .ewt-SortIndicator {
-	float: right;
-	position: relative;
-	right: 5px;
-	top: 6px;
-}
-
-.ewt-Table .ewt-Resizer {
-	border: none;
-	margin: 0;
-	padding: 0;
-	float: left;
-	position: relative;
-	width: 0px;
-	left: 0px;
-	height: 100%;
-	cursor: col-resize;
-}
-
-.ewt-Table table.ewt-Toolbar {
-	width: 100%;
-}
-
-.ewt-TableFilterValue {
-	
-}
-
-.ewt-TableFilterValue-disabled {
-	background: #CDE;
-}
-
-.ewt-TableFilterButton {
-	padding: 3px 5px;
-}
-
-.ewt-TableFilterButton-active {
-	background: lightgreen;
-}
-
-.ewt-Table .ewt-Toolbar table {
-	font-weight: bold;
-	text-align: center;
-	vertical-align: middle;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.ewt-Table .ewt-Toolbar td {
-	font-weight: bold;
-	vertical-align: middle;
-	text-align: left;
-	padding: 0px;
-}
-
-.ewt-Table .ewt-Toolbar .ewt-NavButtons td {
-	padding-left: 3px;
-	padding-right: 3px;
-}
-
-.ewt-Table .ewt-Toolbar .gwt-Image {
-	vertical-align: middle;
-}
-
-.ewt-Table .ewt-Filter td {
-	text-align: center;
-	vertical-align: middle;
-}
-
-.ewt-Table .row td {
-	background: #F0F8FF;
-	border-bottom: 1px solid #9BD;
-	border-right: 1px solid #9BD;
-	height: 1.5em;
-	padding: 0px 3px;
-}
-
-.ewt-Table .row td:last-child {
-	border-right: none;
-}
-
-.ewt-Table .row.odd td {
-	background: #F8FFF0;
-}
-
-.ewt-Table .row.empty td, .ewt-Table .row.odd.empty td {
-	background: #F8FDFF;
-	border-bottom: 1px solid #EEE;
-	border-right: 1px solid #EEE;
-}
-
-.ewt-Table .row.empty td:last-child, .ewt-Table .row.odd.empty td:last-child {
-	border-right: none;
-}
-
-.ewt-Table .row.selected td, .ewt-Table .row.odd.selected td {
-	background: #EA7;
-	border: 1px solid #975;
-}
-
-.ewt-Table .ewt-TreeNode {
-	float: left;
-}
-
-.ewt-Table .ewt-TreeNode .gwt-Image {
-	position: relative;
-	top: 0.3em;
-}
-
-.ewt-Spinner {
-	
-}
-
-.ewt-SpinnerInput {
-	width: 100%;
-}
-
-.ewt-SpinnerButtons {
-	padding-left: 6px;
-}
-
-.ewt-SpinnerButton {
-	height: 8px;
-	padding: 1px;
-}
-
-.ewt-SpinnerButton img {
-	position: relative;
-	top: -4px;
-}
-
-.ewt-SpinnerButton-up, .ewt-SpinnerButton-up-hovering,
-	.ewt-SpinnerButton-up-disabled, .ewt-SpinnerButton-down,
-	.ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled {
-	
-}
-
-.ewt-SpinnerButton-up, .ewt-SpinnerButton-up-hovering,
-	.ewt-SpinnerButton-up-disabled {
-	
-}
-
-.ewt-SpinnerButton-up {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.ewt-SpinnerButton-up-hovering {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.ewt-SpinnerButton-up-disabled {
-	cursor: default;
-}
-
-.ewt-SpinnerButton-down, .ewt-SpinnerButton-down-hovering,
-	.ewt-SpinnerButton-down-disabled {
-	
-}
-
-.ewt-SpinnerButton-down {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.ewt-SpinnerButton-down-hovering {
-	cursor: pointer;
-	cursor: hand;
-}
-
-.ewt-SpinnerButton-down-disabled {
-	cursor: default;
-}
-
-td.ewt-TimePicker {
-	background: none repeat scroll 0 0 #DDEEFF;
-	padding-bottom: 3px;
-	padding-top: 2px;
-}
-
-.gwt-DatePicker {
-	width: auto;
-	background: #BBCCEE;
-}
-
-.ewt-TimePicker {
-	width: 100%;
-}
-
-.gwt-DatePicker table {
-	border-collapse: collapse;
-}
-
-.ewt-TimePicker .ewt-Icon {
-	vertical-align: middle;
-	padding-right: 3px;
-}
-
-.ewt-TimePicker .gwt-Label {
-	font-weight: bold;
-	padding-left: 3px;
-	padding-right: 3px;
-}
-
-table.datePickerMonthSelector>tbody>tr>td {
-	vertical-align: middle;
-}
-
-td.datePickerMonth {
-	font-size: 100%;
-	cursor: pointer;
-}
-
-.datePickerDay, .datePickerWeekdayLabel, .datePickerWeekendLabel {
-	font-size: 90%;
-}
-
-.ewt-TagField {
-	background: #F0F8FF;
-	padding: 4px;
-	border: 1px solid #8888AA;
-	border-radius: 5px;
-}
-
-.ewt-TagField-disabled {
-	background: #F0F0F0;
-	border-color: #AAA;
-}
-
-.ewt-TagInput {
-	background: #F0F8FF;
-	border: 0px;
-	outline: none;
-	padding: 4px 0px;
-	cursor: text;
-	width: 100%;
-}
-
-.ewt-TagField-disabled .ewt-TagInput {
-	background: #F0F0F0;
-}
-
-.ewt-TagDisplay {
-	background: #446688;
-	color: #f1f1f1;
-	border-radius: 5px;
-	padding: 0xp 2px;
-	margin-right: 3px;
-	cursor: pointer;
-}
-
-.ewt-TagDisplay-selected {
-	background: none repeat scroll 0 0 #d02020;
-}
-
-.ewt-TagDisplay .gwt-Label {
-	width: 6px;
-}
-
-.ewt-TagDisplay td {
-	white-space: nowrap;
-}
+.ewt-TagField, .ewt-TagField-disabled, .ewt-TagInput,
+.ewt-TagDisplay, .ewt-TagDisplay-selected
+{}
+
+@external .ewt-Spinner, .ewt-SpinnerInput, .ewt-SpinnerButtons;
+@external .ewt-SpinnerButton, .ewt-SpinnerButton-up;
+@external .ewt-SpinnerButton-up-hovering, .ewt-SpinnerButton-up-disabled; 
+@external .ewt-SpinnerButton-down;
+@external .ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled;
+ 
+.ewt-Spinner, .ewt-SpinnerInput, .ewt-SpinnerButtons, .ewt-SpinnerButton,
+.ewt-SpinnerButton-up,
+.ewt-SpinnerButton-up-hovering, .ewt-SpinnerButton-up-disabled, 
+.ewt-SpinnerButton-down, 
+.ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled 
+{}

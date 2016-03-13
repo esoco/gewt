@@ -16,7 +16,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.style.StyleData;
+
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -96,6 +100,20 @@ public class DeckPanel extends GroupPanel
 	public void setSelection(int nIndex)
 	{
 		getDeckPanel().showWidget(nIndex);
+	}
+
+	/***************************************
+	 * Overridden to reset the base class version to the original implementation
+	 * to support simple addition of components to deck panels which ignore the
+	 * additional parameters of {@link #addGroup(Component, String, boolean)}
+	 * anyway.
+	 *
+	 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
+	 */
+	@Override
+	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
+	{
+		getLayout().addWidget(getDeckPanel(), rWidget, rStyleData, -1);
 	}
 
 	/***************************************

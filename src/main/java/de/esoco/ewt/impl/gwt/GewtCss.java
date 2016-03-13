@@ -5,26 +5,19 @@ package de.esoco.ewt.impl.gwt;
 import com.google.gwt.resources.client.CssResource;
 public interface GewtCss extends CssResource {
   
-  String datePickerDay();
   
-  String datePickerMonth();
-  
-  String datePickerMonthSelector();
-  
-  String datePickerWeekdayLabel();
-  
-  String datePickerWeekendLabel();
-  
+  String row();
+  String odd();
+  String main();
   String empty();
+  String limited();
+  String selected();
   
   @ClassName("ewt-Chart")
   String ewtChart();
   
   @ClassName("ewt-DataTable")
   String ewtDataTable();
-  
-  @ClassName("ewt-Default")
-  String ewtDefault();
   
   @ClassName("ewt-EdgeLayout")
   String ewtEdgeLayout();
@@ -145,48 +138,10 @@ public interface GewtCss extends CssResource {
   
   @ClassName("ewt-TreeNode")
   String ewtTreeNode();
-  
-  @ClassName("gwt-Button")
-  String gwtButton();
-  
-  @ClassName("gwt-DatePicker")
-  String gwtDatePicker();
-  
-  @ClassName("gwt-HTML")
-  String gwtHTML();
-  
-  @ClassName("gwt-Image")
-  String gwtImage();
-  
-  @ClassName("gwt-Label")
-  String gwtLabel();
-  
-  @ClassName("gwt-PushButton")
-  String gwtPushButton();
-  
-  @ClassName("gwt-TabLayoutPanelContent")
-  String gwtTabLayoutPanelContent();
-  
-  @ClassName("gwt-ToggleButton")
-  String gwtToggleButton();
-  
-  @ClassName("gwt-ToggleButton-down")
-  String gwtToggleButtonDown();
-  
-  @ClassName("gwt-ToggleButton-down-hovering")
-  String gwtToggleButtonDownHovering();
-  
-  @ClassName("gwt-viz-container")
-  String gwtVizContainer();
-  
-  String limited();
-  
-  String main();
-  
-  String odd();
-  
-  String row();
-  
-  String selected();
+
+  // GWT DatePicker styles for reference from extended classes
+  String datePickerMonth();
+  String datePickerMonthSelector();
 }
+
 

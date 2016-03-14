@@ -24,11 +24,17 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.TextAttribute;
+import de.esoco.lib.property.UserInterfaceProperties;
+import de.esoco.lib.property.UserInterfaceProperties.LabelStyle;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.LegendElement;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -68,7 +74,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	 */
 	private static Widget createWidget(StyleData rStyleData)
 	{
-		Widget aWidget;
+		Widget aWidget = null;
 
 		if (rStyleData.hasFlag(StyleFlag.HYPERLINK))
 		{
@@ -76,7 +82,21 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 		else
 		{
-			aWidget = new HTML("", rStyleData.hasFlag(StyleFlag.WRAP));
+			switch (rStyleData.getProperty(UserInterfaceProperties.LABEL_STYLE,
+										   LabelStyle.DEFAULT))
+			{
+				case DEFAULT:
+					aWidget = new HTML("", rStyleData.hasFlag(StyleFlag.WRAP));
+					break;
+
+				case INLINE:
+					aWidget = new InlineHTML();
+					break;
+
+				case TITLE:
+					aWidget = new Legend();
+					break;
+			}
 		}
 
 		return aWidget;
@@ -154,6 +174,69 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		else
 		{
 			rHtml.setHTML(sText != null ? sText : "");
+		}
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * A GWT widget implementation that wraps a legend DOM element.
+	 *
+	 * @author eso
+	 */
+	public static class Legend extends Widget implements HasText, HasHTML
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private final LegendElement aElement;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates an empty legend.
+		 */
+		public Legend()
+		{
+			aElement = Document.get().createLegendElement();
+			setElement(aElement);
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getHTML()
+		{
+			return aElement.getInnerHTML();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getText()
+		{
+			return aElement.getInnerText();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setHTML(String sHtml)
+		{
+			aElement.setInnerHTML(sHtml);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setText(String sText)
+		{
+			aElement.setInnerText(sText);
 		}
 	}
 }

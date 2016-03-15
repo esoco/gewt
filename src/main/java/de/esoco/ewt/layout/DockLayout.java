@@ -65,7 +65,7 @@ public class DockLayout extends GenericLayout
 	 * @param    rDockPanel  The target dock layout panel
 	 * @param    rStyleData  The style data of the widget
 	 * @param    bScrollable TRUE if the element widgets should be marked as
-	 *                       scrollabe with overflow set to auto
+	 *                       scrollable with overflow set to auto
 	 *
 	 * @return   TRUE if the added widget was the center widget (and therefore
 	 *           the last widget to be added)

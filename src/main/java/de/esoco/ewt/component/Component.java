@@ -155,66 +155,59 @@ public abstract class Component implements HasId<String>
 		HorizontalAlignmentConstant eHorizontalAlignment,
 		String						sWidth)
 	{
-		com.google.gwt.user.client.ui.Image rGwtImage = rImage.getGwtImage();
-
-		HTML aHtml = (sText != null ? new HTML(sText) : null);
+		com.google.gwt.user.client.ui.Image rGwtImage    = rImage.getGwtImage();
+		Widget							    rLabelWidget = rGwtImage;
 
 		boolean bHorizontal =
 			rTextPosition.getVerticalAlignment() == Alignment.CENTER;
 
-		Alignment rAlign;
-		CellPanel aPanel;
+		if (sText != null && sText.length() > 0)
+		{
+			HTML	  aHtml  = new HTML(sText);
+			Alignment rAlign;
+			CellPanel aPanel;
 
-		if (bHorizontal)
-		{
-			rAlign = rTextPosition.getHorizontalAlignment();
-			aPanel = new HorizontalPanel();
-		}
-		else
-		{
-			rAlign = rTextPosition.getVerticalAlignment();
-			aPanel = new VerticalPanel();
-		}
-
-		if (rAlign == Alignment.BEGIN)
-		{
-			if (aHtml != null)
+			if (bHorizontal)
 			{
+				rAlign = rTextPosition.getHorizontalAlignment();
+				aPanel = new HorizontalPanel();
+			}
+			else
+			{
+				rAlign = rTextPosition.getVerticalAlignment();
+				aPanel = new VerticalPanel();
+			}
+
+			if (rAlign == Alignment.BEGIN)
+			{
+				aPanel.add(aHtml);
+				aPanel.add(rGwtImage);
+			}
+			else
+			{
+				aPanel.add(rGwtImage);
 				aPanel.add(aHtml);
 			}
 
-			aPanel.add(rGwtImage);
-		}
-		else
-		{
-			aPanel.add(rGwtImage);
-
-			if (aHtml != null)
-			{
-				aPanel.add(aHtml);
-			}
-		}
-
-		if (sWidth != null)
-		{
-			aPanel.setWidth(sWidth);
-		}
-
-		aPanel.setHeight("100%");
-
-		aPanel.setCellHorizontalAlignment(rGwtImage, eHorizontalAlignment);
-		aPanel.setCellVerticalAlignment(rGwtImage,
-										HasVerticalAlignment.ALIGN_MIDDLE);
-
-		if (aHtml != null)
-		{
+			aPanel.setCellHorizontalAlignment(rGwtImage, eHorizontalAlignment);
+			aPanel.setCellVerticalAlignment(rGwtImage,
+											HasVerticalAlignment.ALIGN_MIDDLE);
 			aHtml.setWidth("100%");
 			aPanel.setCellHorizontalAlignment(aHtml, eHorizontalAlignment);
 			aPanel.setCellVerticalAlignment(aHtml,
 											HasVerticalAlignment.ALIGN_MIDDLE);
+
+			if (sWidth != null)
+			{
+				aPanel.setWidth(sWidth);
+			}
+
+			aPanel.setHeight("100%");
+
+			rLabelWidget = aPanel;
 		}
 
-		return aPanel.getElement().getString();
+		return rLabelWidget.getElement().getString();
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -899,7 +892,8 @@ public abstract class Component implements HasId<String>
 
 				if (cPrefix == '%')
 				{
-					sToolTip = sb.replace(nPos, nPos + 2, "tt").toString();
+					sToolTip  = sb.replace(nPos, nPos + 2, "tt").toString();
+					sProperty = null;
 				}
 			}
 		}

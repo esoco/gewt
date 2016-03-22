@@ -139,6 +139,9 @@ public interface GewtCss extends CssResource {
   @ClassName("ewt-TreeNode")
   String ewtTreeNode();
 
+  @ClassName("ewt-ContentPanel")
+  String ewtContentPanel();
+
   // GWT DatePicker styles for reference from extended classes
   String datePickerMonth();
   String datePickerMonthSelector();

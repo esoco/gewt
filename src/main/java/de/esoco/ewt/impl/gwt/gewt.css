@@ -8,14 +8,14 @@
 .row, .empty, .odd, .selected, .main, .limited 
 {}
 
-@external .ewt-MainView, .ewt-EdgeLayout;
+@external .ewt-MainView, .ewt-EdgeLayout, .ewt-ContentPanel;
 @external .ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon;
 @external .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker; 
 @external .ewt-Chart, .ewt-NoChartDataLabel  .ewt-TreeNode;
 @external .ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer; 
 @external .ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect;
 
-.ewt-MainView, .ewt-EdgeLayout, 
+.ewt-MainView, .ewt-EdgeLayout, .ewt-ContentPanel,
 .ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon,
 .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker, 
 .ewt-Chart, .ewt-NoChartDataLabel, .ewt-TreeNode,

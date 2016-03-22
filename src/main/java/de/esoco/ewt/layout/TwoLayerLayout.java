@@ -16,10 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -37,7 +39,7 @@ public abstract class TwoLayerLayout extends GenericLayout
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private HasWidgets aContentPanel;
+	private Panel aContentPanel;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -83,6 +85,8 @@ public abstract class TwoLayerLayout extends GenericLayout
 		HasWidgets rLayoutPanel = createLayoutPanel();
 
 		aContentPanel = createContentPanel(rLayoutPanel);
+		aContentPanel.setStyleName(EWT.CSS.ewtContentPanel());
+		rLayoutPanel.add(aContentPanel);
 
 		return rLayoutPanel;
 	}
@@ -113,12 +117,8 @@ public abstract class TwoLayerLayout extends GenericLayout
 	 *
 	 * @return The inner content panel
 	 */
-	protected HasWidgets createContentPanel(HasWidgets rLayoutPanel)
+	protected Panel createContentPanel(HasWidgets rLayoutPanel)
 	{
-		FlowPanel aContentPanel = new FlowPanel();
-
-		rLayoutPanel.add(aContentPanel);
-
-		return aContentPanel;
+		return new FlowPanel();
 	}
 }

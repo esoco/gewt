@@ -28,7 +28,7 @@ import de.esoco.lib.property.UserInterfaceProperties;
 import de.esoco.lib.property.UserInterfaceProperties.LabelStyle;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LegendElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -94,7 +94,8 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 					break;
 
 				case TITLE:
-					aWidget = new Legend();
+					aWidget =
+						new LabelWidget(Document.get().createLegendElement());
 					break;
 			}
 		}
@@ -180,25 +181,28 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * A GWT widget implementation that wraps a legend DOM element.
+	 * A GWT widget implementation that wraps a a specific DOM text element like
+	 * label or legend.
 	 *
 	 * @author eso
 	 */
-	public static class Legend extends Widget implements HasText, HasHTML
+	static class LabelWidget extends Widget implements HasText, HasHTML
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private final LegendElement aElement;
+		private final Element rElement;
 
 		//~ Constructors -------------------------------------------------------
 
 		/***************************************
-		 * Creates an empty legend.
+		 * Creates a new instance.
+		 *
+		 * @param rElement The element for this label widget
 		 */
-		public Legend()
+		LabelWidget(Element rElement)
 		{
-			aElement = Document.get().createLegendElement();
-			setElement(aElement);
+			this.rElement = rElement;
+			setElement(rElement);
 		}
 
 		//~ Methods ------------------------------------------------------------
@@ -209,7 +213,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public String getHTML()
 		{
-			return aElement.getInnerHTML();
+			return rElement.getInnerHTML();
 		}
 
 		/***************************************
@@ -218,7 +222,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public String getText()
 		{
-			return aElement.getInnerText();
+			return rElement.getInnerText();
 		}
 
 		/***************************************
@@ -227,7 +231,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public void setHTML(String sHtml)
 		{
-			aElement.setInnerHTML(sHtml);
+			rElement.setInnerHTML(sHtml);
 		}
 
 		/***************************************
@@ -236,7 +240,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public void setText(String sText)
 		{
-			aElement.setInnerText(sText);
+			rElement.setInnerText(sText);
 		}
 	}
 }

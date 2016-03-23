@@ -29,6 +29,9 @@ import de.esoco.lib.property.UserInterfaceProperties.LabelStyle;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.dom.client.LegendElement;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -93,9 +96,16 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 					aWidget = new InlineHTML();
 					break;
 
+				case FORM:
+					aWidget = new GwtFormLabel();
+					break;
+
 				case TITLE:
-					aWidget =
-						new LabelWidget(Document.get().createLegendElement());
+					aWidget = new GwtLegendLabel();
+					break;
+
+				case ICON:
+					aWidget = new GwtIconLabel();
 					break;
 			}
 		}
@@ -132,6 +142,33 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	public String getText()
 	{
 		return sText;
+	}
+
+	/***************************************
+	 * Checks whether this instance has the style {@link LabelStyle#FORM}.
+	 *
+	 * @return TRUE if this instance is a form label
+	 */
+	public final boolean isFormLabel()
+	{
+		return getWidget() instanceof GwtFormLabel;
+	}
+
+	/***************************************
+	 * Indicates that this label refers to another component in a form-like
+	 * panel. This is only supported for labels with the {@link LabelStyle#FORM}
+	 * style.
+	 *
+	 * @param rComponent rWidget The target widget for this label
+	 */
+	public void setAsLabelFor(Component rComponent)
+	{
+		Widget rLabelWidget = getWidget();
+
+		if (rLabelWidget instanceof GwtFormLabel)
+		{
+			((GwtFormLabel) rLabelWidget).setAsLabelFor(rComponent.getWidget());
+		}
 	}
 
 	/***************************************
@@ -181,16 +218,16 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * A GWT widget implementation that wraps a a specific DOM text element like
-	 * label or legend.
+	 * A GWT widget implementation that wraps a certain DOM text element.
 	 *
 	 * @author eso
 	 */
-	static class LabelWidget extends Widget implements HasText, HasHTML
+	static abstract class LabelWidget<E extends Element> extends Widget
+		implements HasText, HasHTML
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private final Element rElement;
+		private final E rElement;
 
 		//~ Constructors -------------------------------------------------------
 
@@ -199,7 +236,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		 *
 		 * @param rElement The element for this label widget
 		 */
-		LabelWidget(Element rElement)
+		LabelWidget(E rElement)
 		{
 			this.rElement = rElement;
 			setElement(rElement);
@@ -214,6 +251,16 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		public String getHTML()
 		{
 			return rElement.getInnerHTML();
+		}
+
+		/***************************************
+		 * Returns the label element wrapped by this instance.
+		 *
+		 * @return The label element
+		 */
+		public final E getLabelElement()
+		{
+			return rElement;
 		}
 
 		/***************************************
@@ -240,7 +287,103 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public void setText(String sText)
 		{
-			rElement.setInnerText(sText);
+			setStyleName(sText);
+		}
+	}
+
+	/********************************************************************
+	 * A GWT widget implementation that wraps a label DOM element.
+	 *
+	 * @author eso
+	 */
+	static class GwtFormLabel extends LabelWidget<LabelElement>
+	{
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		GwtFormLabel()
+		{
+			super(Document.get().createLabelElement());
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Associates this label with another widget by referencing it's ID in
+		 * the HTML 'for' attribute.
+		 *
+		 * @param rWidget The target widget for this label
+		 */
+		public void setAsLabelFor(Widget rWidget)
+		{
+			String sId = rWidget.getElement().getId();
+
+			if (sId == null || sId.isEmpty())
+			{
+				sId = DOM.createUniqueId();
+				rWidget.getElement().setId(sId);
+			}
+
+			getLabelElement().setHtmlFor(sId);
+		}
+	}
+
+	/********************************************************************
+	 * A GWT widget implementation that wraps a label DOM element.
+	 *
+	 * @author eso
+	 */
+	static class GwtIconLabel extends LabelWidget<Element>
+	{
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		GwtIconLabel()
+		{
+			super(Document.get().createElement("i"));
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Overridden to set the style name instead.
+		 *
+		 * @see LabelWidget#setText(String)
+		 */
+		@Override
+		public void setHTML(String sText)
+		{
+			String[]	  aBaseStyles = sText.split(" ");
+			StringBuilder aStyle	  = new StringBuilder("fa");
+
+			for (String sBaseStyle : aBaseStyles)
+			{
+				aStyle.append(" fa-").append(sBaseStyle);
+			}
+
+			setStyleName(aStyle.toString());
+		}
+	}
+
+	/********************************************************************
+	 * A GWT widget implementation that wraps a label DOM element.
+	 *
+	 * @author eso
+	 */
+	static class GwtLegendLabel extends LabelWidget<LegendElement>
+	{
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		GwtLegendLabel()
+		{
+			super(Document.get().createLegendElement());
 		}
 	}
 }

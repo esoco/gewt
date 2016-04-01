@@ -94,7 +94,7 @@ public abstract class Component implements HasId<String>
 {
 	//~ Static fields/initializers ---------------------------------------------
 
-	private static final String PROPERTY_PREFIX_CHARS = "~#+%";
+	private static final String PROPERTY_PREFIX_CHARS = "~#+%@";
 
 	private static int nNextId = 1;
 
@@ -601,7 +601,9 @@ public abstract class Component implements HasId<String>
 	 *     prefixed with '$') that will be used to look up the component text
 	 *     and, with the automatically added prefix 'im', the component image.
 	 *   </li>
-	 *   <li>%&lt;$key&gt;: a resource key for image (im) and tool tip (tt)</li>
+	 *   <li>@&lt;$key&gt;: a resource key for image (im) and tool tip (tt)</li>
+	 *   <li>%&lt;$key&gt;: a resource key for text, image (im), and tool tip
+	 *     (tt)</li>
 	 *   <li>~&lt;string&gt;: This is an escape that allows to prevent strings
 	 *     that start with prefixed characters from being transformed. The '~'
 	 *     character will be stripped from the string and the remaining string
@@ -879,7 +881,7 @@ public abstract class Component implements HasId<String>
 				sImage    = sProperty;
 				sProperty = null;
 			}
-			else if (cPrefix == '+' || cPrefix == '%')
+			else if (cPrefix == '+' || cPrefix == '%' || cPrefix == '@')
 			{
 				StringBuffer sb   = new StringBuffer(sProperty);
 				int			 nPos = sProperty.lastIndexOf('.') + 1;
@@ -890,10 +892,14 @@ public abstract class Component implements HasId<String>
 
 				sImage = sb.insert(nPos, "im").toString();
 
-				if (cPrefix == '%')
+				if (cPrefix == '%' || cPrefix == '@')
 				{
-					sToolTip  = sb.replace(nPos, nPos + 2, "tt").toString();
-					sProperty = null;
+					sToolTip = sb.replace(nPos, nPos + 2, "tt").toString();
+
+					if (cPrefix == '@')
+					{
+						sProperty = null;
+					}
 				}
 			}
 		}

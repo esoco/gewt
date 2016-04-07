@@ -94,7 +94,14 @@ public abstract class Component implements HasId<String>
 {
 	//~ Static fields/initializers ---------------------------------------------
 
-	private static final String PROPERTY_PREFIX_CHARS = "~#+%@";
+	/**
+	 * The prefix chars for properties that define a compound of multiple
+	 * derived properties.
+	 */
+	public static final String COMPOUND_PROPERTY_CHARS = "+%@";
+
+	private static final String PROPERTY_PREFIX_CHARS =
+		"~#" + COMPOUND_PROPERTY_CHARS;
 
 	private static int nNextId = 1;
 
@@ -887,7 +894,7 @@ public abstract class Component implements HasId<String>
 				int			 nPos = sProperty.lastIndexOf('.') + 1;
 
 				// if no '.' separators exist insert image prefix after '$'
-				// prefix which must always exist for the + and % prefixes
+				// prefix which must always exist for the prefixes +,%,@
 				nPos = nPos > 0 ? nPos : 1;
 
 				sImage = sb.insert(nPos, "im").toString();

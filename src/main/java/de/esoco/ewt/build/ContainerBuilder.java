@@ -106,7 +106,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public Button addButton(StyleData rStyle, String sText, Object rImage)
 	{
-		Button aComponent = new Button();
+		Button aComponent = new Button(rStyle);
 
 		addComponent(aComponent, rStyle, sText, rImage);
 

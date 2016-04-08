@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,15 +16,20 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
+import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.TextAttribute;
 
-import com.google.gwt.user.client.ui.ButtonBase;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PushButton;
 
 
@@ -41,17 +46,23 @@ import com.google.gwt.user.client.ui.PushButton;
  */
 public class Button extends Control implements TextAttribute, ImageAttribute
 {
+	//~ Instance fields --------------------------------------------------------
+
 	private String sText;
 	private Image  rImage;
 
 	private AlignedPosition rTextPosition = AlignedPosition.RIGHT;
 
+	//~ Constructors -----------------------------------------------------------
+
 	/***************************************
 	 * Creates a new instance.
+	 *
+	 * @param rStyleData
 	 */
-	public Button()
+	public Button(StyleData rStyleData)
 	{
-		this(new PushButton());
+		this(createWidget(rStyleData));
 	}
 
 	/***************************************
@@ -59,10 +70,38 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	 *
 	 * @param rButtonWidget The widget for this button
 	 */
-	Button(ButtonBase rButtonWidget)
+	Button(FocusWidget rButtonWidget)
 	{
 		super(rButtonWidget);
 	}
+
+	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * Creates the widget for a new button instance based on the style
+	 * properties.
+	 *
+	 * @param  rStyleData The style of the button new instance
+	 *
+	 * @return The button widget
+	 */
+	private static FocusWidget createWidget(StyleData rStyleData)
+	{
+		FocusWidget aWidget = null;
+
+		if (rStyleData.hasFlag(StyleFlag.HYPERLINK))
+		{
+			aWidget = new Anchor();
+		}
+		else
+		{
+			aWidget = new PushButton();
+		}
+
+		return aWidget;
+	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * @see Control#applyStyle(StyleData)
@@ -103,18 +142,18 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		ButtonBase rButton = (ButtonBase) getWidget();
-		String     sText   = getText();
+		HasHTML rWidget = getButtonWidget();
+		String  sText   = getText();
 
 		if (rImage != null)
 		{
-			if (rButton instanceof PushButton &&
+			if (rWidget instanceof PushButton &&
 				(sText == null || sText.length() == 0))
 			{
 				com.google.gwt.user.client.ui.Image rGwtImage =
 					rImage.getGwtImage();
 
-				PushButton rPushButton = (PushButton) rButton;
+				PushButton rPushButton = (PushButton) rWidget;
 
 				rPushButton.getUpFace().setImage(rGwtImage);
 				rPushButton.getUpDisabledFace().setImage(rGwtImage);
@@ -132,9 +171,9 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 									 HasHorizontalAlignment.ALIGN_CENTER,
 									 "100%");
 
-				if (rButton instanceof PushButton)
+				if (rWidget instanceof PushButton)
 				{
-					PushButton rPushButton = (PushButton) rButton;
+					PushButton rPushButton = (PushButton) rWidget;
 
 					rPushButton.getUpFace().setHTML(sImageLabel);
 					rPushButton.getUpDisabledFace().setHTML(sImageLabel);
@@ -145,13 +184,13 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 				}
 				else
 				{
-					rButton.setHTML(sImageLabel);
+					rWidget.setHTML(sImageLabel);
 				}
 			}
 		}
 		else
 		{
-			rButton.setText(sText);
+			rWidget.setText(sText);
 		}
 	}
 
@@ -166,14 +205,14 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		sText	   = getContext().expandResource(sText);
 		this.sText = sText;
 
-		ButtonBase rButtonBase = (ButtonBase) getWidget();
+		HasText rWidget = getButtonWidget();
 
-		rButtonBase.setText(sText);
+		rWidget.setText(sText);
 
-		if (rButtonBase instanceof PushButton)
+		if (rWidget instanceof PushButton)
 		{
 			// GWT bug: text of other states will not be set sometimes
-			PushButton rPushButton = (PushButton) rButtonBase;
+			PushButton rPushButton = (PushButton) rWidget;
 
 			rPushButton.getUpFace().setText(sText);
 			rPushButton.getDownFace().setText(sText);
@@ -182,5 +221,15 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 			rPushButton.getUpDisabledFace().setText(sText);
 			rPushButton.getDownDisabledFace().setText(sText);
 		}
+	}
+
+	/***************************************
+	 * Returns the GWT widget for this button.
+	 *
+	 * @return The widget
+	 */
+	HasHTML getButtonWidget()
+	{
+		return (HasHTML) getWidget();
 	}
 }

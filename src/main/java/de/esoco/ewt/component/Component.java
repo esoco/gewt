@@ -72,6 +72,8 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -266,11 +268,11 @@ public abstract class Component implements HasId<String>
 	 */
 	public void applyStyle(StyleData rNewStyle)
 	{
-		applyStyleNames(rNewStyle);
-		applyAlignments(rNewStyle);
-		applyCssStyles(rNewStyle);
-
 		rStyle = rNewStyle;
+
+		applyStyleNames(rStyle);
+		applyAlignments(rStyle);
+		applyCssStyles(rStyle);
 	}
 
 	/***************************************
@@ -714,6 +716,21 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
+	 * TODO: DOCUMENT ME!
+	 *
+	 * @param rCssStyles TODO: DOCUMENT ME!
+	 */
+	protected void applyCssStyles(Map<String, String> rCssStyles)
+	{
+		Style rElementStyle = rWidget.getElement().getStyle();
+
+		for (Entry<String, String> rCss : rCssStyles.entrySet())
+		{
+			rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+		}
+	}
+
+	/***************************************
 	 * Determines the aligned position for text from the text alignment stored
 	 * in a style data object. If no text alignment is set the returned value
 	 * will be {@link AlignedPosition#RIGHT}.
@@ -987,16 +1004,25 @@ public abstract class Component implements HasId<String>
 	 */
 	private void applyCssStyles(StyleData rStyle)
 	{
-		Map<String, String> rCssStyles =
+		final Map<String, String> rCssStyles =
 			rStyle.getProperty(UserInterfaceProperties.CSS_STYLES, null);
 
 		if (rCssStyles != null)
 		{
-			Style rElementStyle = getWidget().getElement().getStyle();
-
-			for (Entry<String, String> rCss : rCssStyles.entrySet())
+			if (rWidget.isAttached())
 			{
-				rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+				applyCssStyles(rCssStyles);
+			}
+			else
+			{
+				rWidget.addAttachHandler(new Handler()
+					{
+						@Override
+						public void onAttachOrDetach(AttachEvent rEvent)
+						{
+							applyCssStyles(rCssStyles);
+						}
+					});
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-@external .row, .empty, .odd, .selected, .main, .limited;
+@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited;
 @external .gwt-Label, .gwt-HTML, .gwt-Image, .gwt-Button, .gwt-DatePicker;
 @external .gwt-TabLayoutPanelContent;
 @external .gwt-PushButton, .gwt-ToggleButton, .gwt-ToggleButton-down;
@@ -28,7 +28,7 @@
 	padding: 1em;
 }
 
-.ewt-MessageLabel.main {
+.ewt-MessageLabel.ewt-Main {
 	font-weight: bold;
 	color: #333;
 }
@@ -74,7 +74,7 @@
 	outline: none;
 }
 
-.ewt-Table :focus tr.selected {
+.ewt-Table :focus tr.ewt-Selected {
 	outline: 1px dotted;
 }
 
@@ -163,7 +163,7 @@
 	border-width: 1px 0 1px 0;
 }
 
-.ewt-Table .ewt-Header .limited {
+.ewt-Table .ewt-Header .ewt-Limited {
 	color: #235;
 	font-style: italic;
 }
@@ -232,7 +232,7 @@
 	vertical-align: middle;
 }
 
-.ewt-Table .row td {
+.ewt-Table .ewt-TableRow td {
 	background: #F0F8FF;
 	border-bottom: 1px solid #9BD;
 	border-right: 1px solid #9BD;
@@ -240,25 +240,25 @@
 	padding: 0px 3px;
 }
 
-.ewt-Table .row td:last-child {
+.ewt-Table .ewt-TableRow td:last-child {
 	border-right: none;
 }
 
-.ewt-Table .row.odd td {
+.ewt-Table .ewt-TableRow.ewt-Odd td {
 	background: #F8FFF0;
 }
 
-.ewt-Table .row.empty td, .ewt-Table .row.odd.empty td {
+.ewt-Table .ewt-TableRow.ewt-Empty td, .ewt-Table .ewt-TableRow.ewt-Odd.ewt-Empty td {
 	background: #F8FDFF;
 	border-bottom: 1px solid #EEE;
 	border-right: 1px solid #EEE;
 }
 
-.ewt-Table .row.empty td:last-child, .ewt-Table .row.odd.empty td:last-child {
+.ewt-Table .ewt-TableRow.ewt-Empty td:last-child, .ewt-Table .ewt-TableRow.ewt-Odd.ewt-Empty td:last-child {
 	border-right: none;
 }
 
-.ewt-Table .row.selected td, .ewt-Table .row.odd.selected td {
+.ewt-Table .ewt-TableRow.ewt-Selected td, .ewt-Table .ewt-TableRow.ewt-Odd.ewt-Selected td {
 	background: #EA7;
 	border: 1px solid #975;
 }

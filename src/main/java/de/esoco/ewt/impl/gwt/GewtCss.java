@@ -5,13 +5,18 @@ package de.esoco.ewt.impl.gwt;
 import com.google.gwt.resources.client.CssResource;
 public interface GewtCss extends CssResource {
   
-  
-  String row();
-  String odd();
-  String main();
-  String empty();
-  String limited();
-  String selected();
+  @ClassName("ewt-TableRow")
+  String ewtTableRow();
+  @ClassName("ewt-Odd")
+  String ewtOdd();
+  @ClassName("ewt-Main")
+  String ewtMain();
+  @ClassName("ewt-Empty")
+  String ewtEmpty();
+  @ClassName("ewt-Limited")
+  String ewtLimited();
+  @ClassName("ewt-Selected")
+  String ewtSelected();
   
   @ClassName("ewt-Chart")
   String ewtChart();

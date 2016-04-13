@@ -3,9 +3,9 @@
 .datePickerMonthSelector, .datePickerMonth
 {}
 
-@external .row, .empty, .odd, .selected, .main, .limited;
+@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited;
 
-.row, .empty, .odd, .selected, .main, .limited 
+.ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited
 {}
 
 @external .ewt-MainView, .ewt-EdgeLayout, .ewt-ContentPanel;

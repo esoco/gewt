@@ -1,8 +1,42 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// GEWT source file
-// Copyright (c) 2015 by Elmar Sonnenschein / esoco GmbH
+// This file is a part of the 'gewt' project.
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
+
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Table;
+import de.esoco.ewt.component.TableControl;
+import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.GewtCss;
+import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
+import de.esoco.ewt.impl.gwt.GewtResources;
+import de.esoco.ewt.impl.gwt.ValueFormat;
+
+import de.esoco.lib.model.Callback;
+import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.DataModel;
+import de.esoco.lib.model.Downloadable;
+import de.esoco.lib.model.HierarchicalDataModel;
+import de.esoco.lib.model.RemoteDataModel;
+import de.esoco.lib.model.SearchableDataModel;
+import de.esoco.lib.property.Flags;
+import de.esoco.lib.property.SingleSelection;
+
+import java.util.Collection;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -44,50 +78,32 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.component.Table;
-import de.esoco.ewt.component.TableControl;
-import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.impl.gwt.GewtCss;
-import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
-import de.esoco.ewt.impl.gwt.GewtResources;
-import de.esoco.ewt.impl.gwt.ValueFormat;
-
-import de.esoco.lib.model.Callback;
-import de.esoco.lib.model.ColumnDefinition;
-import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.Downloadable;
-import de.esoco.lib.model.HierarchicalDataModel;
-import de.esoco.lib.model.RemoteDataModel;
-import de.esoco.lib.model.SearchableDataModel;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_OR_PREFIX;
-import de.esoco.lib.property.Flags;
-import de.esoco.lib.property.SingleSelection;
 import static de.esoco.lib.property.UserInterfaceProperties.HAS_IMAGES;
-
-import java.util.Collection;
 
 
 /********************************************************************
  * A GWT-implementation of a composite that can display tabular data. It also
  * supports the display of hierarchical data.
  */
-public
-class GwtTable extends Composite
-    implements SingleSelection, Focusable, HasAllFocusHandlers,
-               HasAllKeyHandlers, HasClickHandlers, HasDoubleClickHandlers,
-               ClickHandler, KeyDownHandler, RequiresResize,
-               Callback<RemoteDataModel<DataModel<?>>>
+public class GwtTable extends Composite
+	implements SingleSelection, Focusable, HasAllFocusHandlers,
+			   HasAllKeyHandlers, HasClickHandlers, HasDoubleClickHandlers,
+			   ClickHandler, KeyDownHandler, RequiresResize,
+			   Callback<RemoteDataModel<DataModel<?>>>
 {
+	//~ Static fields/initializers ---------------------------------------------
+
 	static final GewtResources RES = GewtResources.INSTANCE;
-	static final GewtCss       CSS = RES.css();
+	static final GewtCss	   CSS = RES.css();
 
-	static private final int HEADER_ROW  = 0;
-	static private final int DATA_ROW    = 1;
-	static private final int TOOLBAR_ROW = 2;
+	private static final int HEADER_ROW  = 0;
+	private static final int DATA_ROW    = 1;
+	private static final int TOOLBAR_ROW = 2;
 
-	static private final int INFO_TIMER_MILLISECONDS = 500;
+	private static final int INFO_TIMER_MILLISECONDS = 500;
+
+	//~ Instance fields --------------------------------------------------------
 
 	private boolean bEnabled;
 	private boolean bHierarchical;
@@ -95,10 +111,10 @@ class GwtTable extends Composite
 	private UserInterfaceContext rContext;
 	private GewtEventDispatcher  rEventDispatcher;
 
-	private Grid        aMainPanel   = new Grid(3, 1);
+	private Grid	    aMainPanel   = new Grid(3, 1);
 	private ScrollPanel aScrollPanel = new CustomScrollPanel();
 	private FocusPanel  aFocusPanel  = new FocusPanel();
-	private TableHeader aHeader      = new TableHeader(this);
+	private TableHeader aHeader		 = new TableHeader(this);
 	private FlexTable   aDataTable   = new FlexTable();
 
 	private TableToolBar aToolBar = null;
@@ -106,13 +122,13 @@ class GwtTable extends Composite
 	private DataModel<? extends DataModel<?>> rData;
 
 	private DecoratedPopupPanel aInfoPopupPanel   = null;
-	private Timer               aInfoTimer;
-	private Timer               aDoubleClickTimer;
+	private Timer			    aInfoTimer;
+	private Timer			    aDoubleClickTimer;
 
 	private int nBusyIndicatorCount = 0;
-	private int nFirstRow           = 0;
+	private int nFirstRow		    = 0;
 	private int nVisibleDataRows    = 0;
-	private int nTableRows          = -1;
+	private int nTableRows		    = -1;
 
 	private boolean bUpdateInProgress = false;
 	private boolean bColumnsChanged   = false;
@@ -121,14 +137,16 @@ class GwtTable extends Composite
 	private int nDataHeight = 0;
 
 	private DataModel<?> rCurrentSelection;
-	private int          nSelectedRow  = -1;
-	private int          nNewSelection = -1;
+	private int			 nSelectedRow  = -1;
+	private int			 nNewSelection = -1;
+
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param bHierarchical If TRUE the table will display instances of
-	 *                      {@link HierarchicalDataModel} as a tree
+	 * @param bHierarchical If TRUE the table will display instances of {@link
+	 *                      HierarchicalDataModel} as a tree
 	 */
 	public GwtTable(boolean bHierarchical)
 	{
@@ -164,6 +182,8 @@ class GwtTable extends Composite
 		setStylePrimaryName(CSS.ewtTable());
 	}
 
+	//~ Methods ----------------------------------------------------------------
+
 	/***************************************
 	 * @see HasAllFocusHandlers#addBlurHandler(BlurHandler)
 	 */
@@ -186,7 +206,8 @@ class GwtTable extends Composite
 	 * @see HasDoubleClickHandlers#addDoubleClickHandler(DoubleClickHandler)
 	 */
 	@Override
-	public HandlerRegistration addDoubleClickHandler(DoubleClickHandler rHandler)
+	public HandlerRegistration addDoubleClickHandler(
+		DoubleClickHandler rHandler)
 	{
 		return aDataTable.addDoubleClickHandler(rHandler);
 	}
@@ -264,7 +285,7 @@ class GwtTable extends Composite
 		{
 			if (bHierarchical)
 			{
-				int      nRow  = nSelectedRow;
+				int		 nRow  = nSelectedRow;
 				TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, 0);
 
 				rSelection = rNode.getRowModel();
@@ -354,19 +375,21 @@ class GwtTable extends Composite
 				aDoubleClickTimer.cancel();
 				aDoubleClickTimer = null;
 				setSelection(rCell, false);
-				rEventDispatcher.dispatchEvent(EventType.ACTION, rEvent.getNativeEvent());
+				rEventDispatcher.dispatchEvent(EventType.ACTION,
+											   rEvent.getNativeEvent());
 			}
 			else
 			{
-				aDoubleClickTimer = new Timer()
-				{
-					@Override
-					public void run()
+				aDoubleClickTimer =
+					new Timer()
 					{
-						aDoubleClickTimer = null;
-						setSelection(rCell, true);
-					}
-				};
+						@Override
+						public void run()
+						{
+							aDoubleClickTimer = null;
+							setSelection(rCell, true);
+						}
+					};
 				aDoubleClickTimer.schedule(EWT.getDoubleClickInterval());
 			}
 		}
@@ -382,8 +405,9 @@ class GwtTable extends Composite
 	{
 		hideBusyIndicator();
 
-		String sMessage = rContext.expandResource("$msgTableModelError") +
-		                  ": " + rContext.expandResource(e.getMessage());
+		String sMessage =
+			rContext.expandResource("$msgTableModelError") +
+			": " + rContext.expandResource(e.getMessage());
 
 		showInfo(new Label(sMessage), true);
 		bUpdateInProgress = false;
@@ -484,7 +508,10 @@ class GwtTable extends Composite
 			// after the model is available
 			aToolBar = new TableToolBar(this);
 			aMainPanel.setWidget(TOOLBAR_ROW, 0, aToolBar);
-			aMainPanel.getCellFormatter().setVerticalAlignment(TOOLBAR_ROW, 0, HasVerticalAlignment.ALIGN_BOTTOM);
+			aMainPanel.getCellFormatter()
+					  .setVerticalAlignment(TOOLBAR_ROW,
+											0,
+											HasVerticalAlignment.ALIGN_BOTTOM);
 		}
 
 		update();
@@ -557,7 +584,9 @@ class GwtTable extends Composite
 	 */
 	public void setSelection(int nRow, boolean bFireEvents)
 	{
-		if (nRow == -1 && nSelectedRow != -1 || nRow != -1 && nSelectedRow == -1 || nRow != nFirstRow + nSelectedRow)
+		if (nRow == -1 && nSelectedRow != -1 ||
+			nRow != -1 && nSelectedRow == -1 ||
+			nRow != nFirstRow + nSelectedRow)
 		{
 			setRowUnselected(nSelectedRow);
 			rCurrentSelection = null;
@@ -568,7 +597,8 @@ class GwtTable extends Composite
 				{
 					int nNewSelectedRow = nRow - nFirstRow;
 
-					if (nNewSelectedRow >= 0 && nNewSelectedRow < nVisibleDataRows)
+					if (nNewSelectedRow >= 0 &&
+						nNewSelectedRow < nVisibleDataRows)
 					{
 						setRowSelected(nNewSelectedRow, bFireEvents);
 						rCurrentSelection = getSelection();
@@ -614,7 +644,7 @@ class GwtTable extends Composite
 	{
 		collapseAllNodes();
 
-		int nRows       = aDataTable.getRowCount();
+		int nRows	    = aDataTable.getRowCount();
 		int nLastRow    = Math.min(nTableRows, nRows) - 1;
 		int nNewLastRow = nCount - 1;
 
@@ -650,7 +680,8 @@ class GwtTable extends Composite
 			collapseAllNodes();
 
 			// invoke update later to wait for the table to resize
-			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			Scheduler.get()
+					 .scheduleDeferred(new ScheduledCommand()
 				{
 					@Override
 					public void execute()
@@ -667,13 +698,14 @@ class GwtTable extends Composite
 	 * @param rParentNode  The parent node to add the child nodes to
 	 * @param rChildModels The data model containing the child data models
 	 */
-	void addChildRows(TreeNode rParentNode,
-	                  DataModel<? extends DataModel<?>> rChildModels)
+	void addChildRows(
+		TreeNode						  rParentNode,
+		DataModel<? extends DataModel<?>> rChildModels)
 	{
 		TreeNode rPrevNode  = null;
-		int      nNodeIndex = rParentNode.getAbsoluteIndex();
-		int      nRow       = nNodeIndex + 1;
-		int      nLastRow   = nTableRows - 1;
+		int		 nNodeIndex = rParentNode.getAbsoluteIndex();
+		int		 nRow	    = nNodeIndex + 1;
+		int		 nLastRow   = nTableRows - 1;
 
 		for (DataModel<?> rChild : rChildModels)
 		{
@@ -693,7 +725,8 @@ class GwtTable extends Composite
 
 		if (nSelectedRow > nNodeIndex)
 		{
-			setRowSelected(nSelectedRow + rParentNode.getDirectChildren(), true);
+			setRowSelected(nSelectedRow + rParentNode.getDirectChildren(),
+						   true);
 		}
 	}
 
@@ -737,7 +770,7 @@ class GwtTable extends Composite
 		if (rNode.isExpanded())
 		{
 			int nNodeIndex = rNode.getAbsoluteIndex();
-			int nRow       = nNodeIndex + 1;
+			int nRow	   = nNodeIndex + 1;
 			int nLastRow   = nTableRows - 1;
 			int nChildren  = rNode.getVisibleChildren();
 
@@ -793,13 +826,13 @@ class GwtTable extends Composite
 					if (rData instanceof RemoteDataModel)
 					{
 						@SuppressWarnings("unchecked")
-						RemoteDataModel<DataModel<?>> rRemoteModel = (RemoteDataModel<DataModel<?>>)
-						                                             rData;
+						RemoteDataModel<DataModel<?>> rRemoteModel =
+							(RemoteDataModel<DataModel<?>>) rData;
 
 						getRemoteData(rRemoteModel,
-						              nFirstRow,
-						              nTableRows,
-						              this);
+									  nFirstRow,
+									  nTableRows,
+									  this);
 						bWaitForRemoteData = true;
 					}
 					else
@@ -846,15 +879,17 @@ class GwtTable extends Composite
 				setRowUnselected(nSelectedRow);
 			}
 
-			final DataModel<? extends DataModel<?>> rChildModels = ((HierarchicalDataModel<?>) rNode.getRowModel()).getChildModels();
+			final DataModel<? extends DataModel<?>> rChildModels =
+				((HierarchicalDataModel<?>) rNode.getRowModel())
+				.getChildModels();
 
 			if (rChildModels != null)
 			{
 				if (rChildModels instanceof RemoteDataModel)
 				{
 					@SuppressWarnings("unchecked")
-					RemoteDataModel<DataModel<?>> rRemoteChildModel = (RemoteDataModel<DataModel<?>>)
-					                                                  rChildModels;
+					RemoteDataModel<DataModel<?>> rRemoteChildModel =
+						(RemoteDataModel<DataModel<?>>) rChildModels;
 
 					int nChildren = rRemoteChildModel.getElementCount();
 
@@ -969,27 +1004,30 @@ class GwtTable extends Composite
 		{
 			final Downloadable rRemoteModel = (Downloadable) rData;
 
-			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			Scheduler.get()
+					 .scheduleDeferred(new ScheduledCommand()
 				{
 					@Override
 					public void execute()
 					{
 						showBusyIndicator();
-						rRemoteModel.prepareDownload("tabledata.xls", rData.getElementCount(), new Callback<String>()
-						                             {
-						                                 @Override
-						                                 public void onError(Throwable eError)
-						                                 {
-						                                     GwtTable.this.onError(eError);
-						                                 }
+						rRemoteModel.prepareDownload("tabledata.xls",
+													 rData.getElementCount(),
+							new Callback<String>()
+							{
+								@Override
+								public void onError(Throwable eError)
+								{
+									GwtTable.this.onError(eError);
+								}
 
-						                                 @Override
-						                                 public void onSuccess(String sDownloadUrl)
-						                                 {
-						                                     hideBusyIndicator();
-						                                     EWT.openHiddenUrl(sDownloadUrl);
-						                                 }
-						                             });
+								@Override
+								public void onSuccess(String sDownloadUrl)
+								{
+									hideBusyIndicator();
+									EWT.openHiddenUrl(sDownloadUrl);
+								}
+							});
 					}
 				});
 		}
@@ -1031,7 +1069,7 @@ class GwtTable extends Composite
 			{
 				RowFormatter rRowFormatter = aDataTable.getRowFormatter();
 
-				rRowFormatter.addStyleName(nRow, CSS.selected());
+				rRowFormatter.addStyleName(nRow, CSS.ewtSelected());
 			}
 
 			if (nSelectedRow != nRow)
@@ -1057,7 +1095,7 @@ class GwtTable extends Composite
 		{
 			RowFormatter rRowFormatter = aDataTable.getRowFormatter();
 
-			rRowFormatter.removeStyleName(nRow, CSS.selected());
+			rRowFormatter.removeStyleName(nRow, CSS.ewtSelected());
 		}
 	}
 
@@ -1081,17 +1119,18 @@ class GwtTable extends Composite
 
 		if (aInfoTimer == null && getOffsetWidth() > 0)
 		{
-			aInfoTimer = new Timer()
-			{
-				@Override
-				public void run()
+			aInfoTimer =
+				new Timer()
 				{
-					if (nBusyIndicatorCount > 0)
+					@Override
+					public void run()
 					{
-						showInfo(new Image(RES.imBusy()), false);
+						if (nBusyIndicatorCount > 0)
+						{
+							showInfo(new Image(RES.imBusy()), false);
+						}
 					}
-				}
-			};
+				};
 			aInfoTimer.schedule(INFO_TIMER_MILLISECONDS);
 		}
 	}
@@ -1107,7 +1146,11 @@ class GwtTable extends Composite
 
 			if (nHeight == 0)
 			{
-				nHeight = getParent().getAbsoluteTop() + getParent().getOffsetHeight() - aMainPanel.getAbsoluteTop() - aHeader.getOffsetHeight() - aToolBar.getOffsetHeight() * 2;
+				nHeight =
+					getParent().getAbsoluteTop() +
+					getParent().getOffsetHeight() -
+					aMainPanel.getAbsoluteTop() - aHeader.getOffsetHeight() -
+					aToolBar.getOffsetHeight() * 2;
 			}
 
 			if (nHeight > 0)
@@ -1119,7 +1162,9 @@ class GwtTable extends Composite
 		int nWidth  = aScrollPanel.getElement().getClientWidth();
 		int nHeight = getDataTableHeight();
 
-		if (nWidth > 0 && nHeight > 0 && (nDataWidth != nWidth || nDataHeight != nHeight))
+		if (nWidth > 0 &&
+			nHeight > 0 &&
+			(nDataWidth != nWidth || nDataHeight != nHeight))
 		{
 			nDataHeight = nHeight;
 			nDataWidth  = nWidth;
@@ -1129,14 +1174,14 @@ class GwtTable extends Composite
 
 			initDataRow(null, null, 0);
 
-			int nRowHeight = aDataTable.getRowFormatter().getElement(0)
-			                           .getOffsetHeight();
+			int nRowHeight =
+				aDataTable.getRowFormatter().getElement(0).getOffsetHeight();
 
 			aDataTable.removeRow(0);
 
 			if (nRowHeight > 0)
 			{
-				nTableRows       = nDataHeight / nRowHeight;
+				nTableRows		 = nDataHeight / nRowHeight;
 				nVisibleDataRows = nTableRows;
 			}
 		}
@@ -1151,7 +1196,7 @@ class GwtTable extends Composite
 	{
 		if (bHierarchical && nSelectedRow >= 0)
 		{
-			int      nRow  = nSelectedRow;
+			int		 nRow  = nSelectedRow;
 			TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, 0);
 
 			if (bCollapse)
@@ -1176,7 +1221,7 @@ class GwtTable extends Composite
 	 */
 	private void checkBounds()
 	{
-		int nRows      = rData.getElementCount();
+		int nRows	   = rData.getElementCount();
 		int nPrevFirst = nFirstRow;
 
 		if (nRows > 0)
@@ -1217,12 +1262,14 @@ class GwtTable extends Composite
 	private void clearRow(int nRow)
 	{
 		CellFormatter rCellFormatter = aDataTable.getCellFormatter();
-		int           nColumns       = aHeader.getColumnCount();
+		int			  nColumns		 = aHeader.getColumnCount();
 
 		for (int nColumn = 0; nColumn < nColumns; nColumn++)
 		{
 			aDataTable.setHTML(nRow, nColumn, "&nbsp;");
-			rCellFormatter.removeStyleName(nRow, nColumn, aHeader.getColumnStyle(nColumn));
+			rCellFormatter.removeStyleName(nRow,
+										   nColumn,
+										   aHeader.getColumnStyle(nColumn));
 		}
 
 		setEmptyRowStyle(nRow);
@@ -1236,7 +1283,7 @@ class GwtTable extends Composite
 	private void copyRowText()
 	{
 		StringBuilder aRowText = new StringBuilder();
-		int           nLastCol = aHeader.getColumnCount() - 1;
+		int			  nLastCol = aHeader.getColumnCount() - 1;
 
 		for (int nCol = 0; nCol <= nLastCol; nCol++)
 		{
@@ -1261,7 +1308,7 @@ class GwtTable extends Composite
 	{
 		RowFormatter  rRowFormatter  = aDataTable.getRowFormatter();
 		CellFormatter rCellFormatter = aDataTable.getCellFormatter();
-		int           nColumns       = aHeader.getColumnCount();
+		int			  nColumns		 = aHeader.getColumnCount();
 
 		for (int nCol = 0; nCol < nColumns; nCol++)
 		{
@@ -1277,14 +1324,14 @@ class GwtTable extends Composite
 			else
 			{
 				ColumnDefinition rColumn    = aHeader.getColumnDefinition(nCol);
-				String           sCellStyle = aHeader.getColumnStyle(nCol);
+				String			 sCellStyle = aHeader.getColumnStyle(nCol);
 
 				if (rColumn.hasFlag(HAS_IMAGES))
 				{
 					setCellImage(nRow, nCol, rRow.getElement(nCol));
 					rCellFormatter.setHorizontalAlignment(nRow,
-					                                      nCol,
-					                                      HasHorizontalAlignment.ALIGN_CENTER);
+														  nCol,
+														  HasHorizontalAlignment.ALIGN_CENTER);
 				}
 				else
 				{
@@ -1295,11 +1342,11 @@ class GwtTable extends Composite
 			}
 		}
 
-		rRowFormatter.setStyleName(nRow, CSS.row());
+		rRowFormatter.setStyleName(nRow, CSS.ewtTableRow());
 
 		if ((nRow & 0x1) != 0)
 		{
-			rRowFormatter.addStyleName(nRow, CSS.odd());
+			rRowFormatter.addStyleName(nRow, CSS.ewtOdd());
 		}
 
 		if (rRow instanceof Flags<?>)
@@ -1356,8 +1403,8 @@ class GwtTable extends Composite
 		if (rCellValue != null)
 		{
 			ValueFormat rFormat  = aHeader.getColumnFormat(nColumn);
-			String      sValue   = rFormat.format(rCellValue).trim();
-			int         nLineEnd = sValue.indexOf('\n');
+			String	    sValue   = rFormat.format(rCellValue).trim();
+			int		    nLineEnd = sValue.indexOf('\n');
 
 			if (nLineEnd >= 0)
 			{
@@ -1382,7 +1429,8 @@ class GwtTable extends Composite
 	 */
 	private int getDataTableHeight()
 	{
-		return aMainPanel.getOffsetHeight() - aHeader.getOffsetHeight() - aToolBar.getOffsetHeight();
+		return aMainPanel.getOffsetHeight() - aHeader.getOffsetHeight() -
+			   aToolBar.getOffsetHeight();
 	}
 
 	/***************************************
@@ -1393,13 +1441,16 @@ class GwtTable extends Composite
 	 * @param nRows        nStartRow The number of rows to request
 	 * @param rCallback    The callback to invoke after completion
 	 */
-	private void getRemoteData(final RemoteDataModel<DataModel<?>> rRemoteModel,
-	                           final int nStartRow, final int nRows,
-	                           final Callback<RemoteDataModel<DataModel<?>>> rCallback)
+	private void getRemoteData(
+		final RemoteDataModel<DataModel<?>>			  rRemoteModel,
+		final int									  nStartRow,
+		final int									  nRows,
+		final Callback<RemoteDataModel<DataModel<?>>> rCallback)
 	{
 		showBusyIndicator();
 
-		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		Scheduler.get()
+				 .scheduleDeferred(new ScheduledCommand()
 			{
 				@Override
 				public void execute()
@@ -1475,7 +1526,8 @@ class GwtTable extends Composite
 		{
 			nNewSelection = nFirstRow;
 		}
-		else if (nSelectedRow < nVisibleDataRows - 1 || nFirstRow + nTableRows < rData.getElementCount())
+		else if (nSelectedRow < nVisibleDataRows - 1 ||
+				 nFirstRow + nTableRows < rData.getElementCount())
 		{
 			nNewSelection = nFirstRow + nSelectedRow + 1;
 		}
@@ -1555,9 +1607,9 @@ class GwtTable extends Composite
 	private boolean handleNavigationKey(KeyDownEvent rEvent)
 	{
 		int     nNewSelection  = nFirstRow + nSelectedRow;
-		int     nKeyCode       = rEvent.getNativeKeyCode();
-		boolean bCollapse      = rEvent.isLeftArrow();
-		boolean bExpand        = rEvent.isRightArrow();
+		int     nKeyCode	   = rEvent.getNativeKeyCode();
+		boolean bCollapse	   = rEvent.isLeftArrow();
+		boolean bExpand		   = rEvent.isRightArrow();
 		boolean bNavigationKey = true;
 
 		if (bCollapse || bExpand)
@@ -1638,7 +1690,7 @@ class GwtTable extends Composite
 	 */
 	private TreeNode initDataRow(TreeNode rParent, TreeNode rPrevious, int nRow)
 	{
-		int      nColumns  = aHeader.getColumnCount();
+		int		 nColumns  = aHeader.getColumnCount();
 		TreeNode aTreeCell = null;
 
 		for (int nCol = 0; nCol < nColumns; nCol++)
@@ -1665,7 +1717,7 @@ class GwtTable extends Composite
 	private void initDataRows()
 	{
 		TreeNode rPrevNode = null;
-		int      nMax      = nTableRows - 1;
+		int		 nMax	   = nTableRows - 1;
 
 		for (int nRow = 0; nRow <= nMax; nRow++)
 		{
@@ -1682,7 +1734,7 @@ class GwtTable extends Composite
 	{
 		while (nPrevVisibleRows < nVisibleDataRows)
 		{
-			int      nInitRow = nPrevVisibleRows;
+			int		 nInitRow = nPrevVisibleRows;
 			TreeNode rNode    = null;
 
 			if (nPrevVisibleRows > 0)
@@ -1701,7 +1753,7 @@ class GwtTable extends Composite
 	private void resetColumns()
 	{
 		TableFilterPanel rFilterPanel  = aToolBar.getFilterPanel();
-		String           sCommonFilter = searchCommonFilterCriterion();
+		String			 sCommonFilter = searchCommonFilterCriterion();
 
 		nDataWidth = nDataHeight = 0;
 
@@ -1737,8 +1789,8 @@ class GwtTable extends Composite
 
 		if (rData instanceof SearchableDataModel)
 		{
-			SearchableDataModel<?> rSearchableModel = (SearchableDataModel<?>)
-			                                          rData;
+			SearchableDataModel<?> rSearchableModel =
+				(SearchableDataModel<?>) rData;
 
 			for (String sCriterion : rSearchableModel.getConstraints().values())
 			{
@@ -1758,7 +1810,8 @@ class GwtTable extends Composite
 			{
 				// a common filter criterion must always begin with the OR
 				// prefix and the comparison character
-				if (sFilter.length() >= 2 && sFilter.charAt(0) == CONSTRAINT_OR_PREFIX)
+				if (sFilter.length() >= 2 &&
+					sFilter.charAt(0) == CONSTRAINT_OR_PREFIX)
 				{
 					sFilter = sFilter.substring(2);
 
@@ -1788,14 +1841,15 @@ class GwtTable extends Composite
 	{
 		if (rCellValue != null)
 		{
-			String        sCellValue = rCellValue.toString();
+			String		  sCellValue = rCellValue.toString();
 			StringBuilder aImageName = new StringBuilder(sCellValue);
 
 			aImageName.insert(1, "im");
 
 			String sImage = aImageName.toString();
 
-			de.esoco.ewt.graphics.Image aCellImage = rContext.createImage(sImage);
+			de.esoco.ewt.graphics.Image aCellImage =
+				rContext.createImage(sImage);
 
 			if (aCellImage != null)
 			{
@@ -1820,8 +1874,8 @@ class GwtTable extends Composite
 	{
 		RowFormatter rRowFormatter = aDataTable.getRowFormatter();
 
-		rRowFormatter.setStyleName(nRow, CSS.row());
-		rRowFormatter.addStyleName(nRow, CSS.empty());
+		rRowFormatter.setStyleName(nRow, CSS.ewtTableRow());
+		rRowFormatter.addStyleName(nRow, CSS.ewtEmpty());
 	}
 
 	/***************************************
@@ -1874,8 +1928,12 @@ class GwtTable extends Composite
 					@Override
 					public void setPosition(int nPopupWidth, int nPopupHeight)
 					{
-						int x = getAbsoluteLeft() + (getOffsetWidth() - nPopupWidth) / 2;
-						int y = getAbsoluteTop() + (getOffsetHeight() - nPopupHeight) / 2;
+						int x =
+							getAbsoluteLeft() +
+							(getOffsetWidth() - nPopupWidth) / 2;
+						int y =
+							getAbsoluteTop() +
+							(getOffsetHeight() - nPopupHeight) / 2;
 
 						aInfoPopupPanel.setPopupPosition(x, y);
 					}
@@ -1892,9 +1950,9 @@ class GwtTable extends Composite
 		{
 			checkBounds();
 
-			int nPrevRows       = nVisibleDataRows;
-			int nCount          = rData.getElementCount();
-			int nRows           = Math.min(nCount - nFirstRow, nTableRows);
+			int nPrevRows	    = nVisibleDataRows;
+			int nCount		    = rData.getElementCount();
+			int nRows		    = Math.min(nCount - nFirstRow, nTableRows);
 			int nDataTableRows  = aDataTable.getRowCount();
 			int nNewSelectedRow = nSelectedRow;
 
@@ -1930,7 +1988,8 @@ class GwtTable extends Composite
 
 			if (nNewSelection >= 0)
 			{
-				Scheduler.get().scheduleDeferred(new ScheduledCommand()
+				Scheduler.get()
+						 .scheduleDeferred(new ScheduledCommand()
 					{
 						@Override
 						public void execute()
@@ -1952,18 +2011,18 @@ class GwtTable extends Composite
 	private void updateRowStyles(int nRow)
 	{
 		RowFormatter rRowFormatter = aDataTable.getRowFormatter();
-		int          nMax          = nVisibleDataRows;
-		boolean      bOdd          = (nRow % 2) == 1;
+		int			 nMax		   = nVisibleDataRows;
+		boolean		 bOdd		   = (nRow % 2) == 1;
 
 		while (nRow < nMax)
 		{
 			if (bOdd)
 			{
-				rRowFormatter.addStyleName(nRow, CSS.odd());
+				rRowFormatter.addStyleName(nRow, CSS.ewtOdd());
 			}
 			else
 			{
-				rRowFormatter.removeStyleName(nRow, CSS.odd());
+				rRowFormatter.removeStyleName(nRow, CSS.ewtOdd());
 			}
 
 			bOdd = !bOdd;

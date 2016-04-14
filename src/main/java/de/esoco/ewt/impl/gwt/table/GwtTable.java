@@ -514,6 +514,9 @@ public class GwtTable extends Composite
 											HasVerticalAlignment.ALIGN_BOTTOM);
 		}
 
+		nFirstRow		 = 0;
+		nVisibleDataRows = 0;
+
 		update();
 	}
 

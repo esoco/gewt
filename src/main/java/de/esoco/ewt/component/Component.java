@@ -24,6 +24,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.Alignment;
@@ -118,29 +119,6 @@ public abstract class Component implements HasId<String>
 	private Map<EventType, EWTEventHandler> aEventListenerMap;
 
 	private String[] rAdditionalStyles;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance without a widget. A subclass must set it later by
-	 * invoking the method {@link #setWidget(Widget)} before this component's
-	 * widget is added to it's parent container. This can be done in one of the
-	 * methods {@link #applyStyle(StyleData)} or {@link #setParent(Container)}
-	 * which are invoked before the widget is added to the parent widget.
-	 */
-	Component()
-	{
-	}
-
-	/***************************************
-	 * Creates a new instance that wraps a certain widget.
-	 *
-	 * @param rWidget The wrapped widget
-	 */
-	Component(Widget rWidget)
-	{
-		setWidget(rWidget);
-	}
 
 	//~ Static methods ---------------------------------------------------------
 
@@ -458,6 +436,27 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
+	 * Internal method to create and initialize the GWT widget of this instance
+	 * with the widget factory from {@link EWT#getWidgetFactory(Component)}.
+	 *
+	 * @param    rContext The context the component has been created in
+	 * @param    rStyle   The style data of this instance
+	 *
+	 * @throws   IllegalStateException If no widget factory has been registered
+	 *                                 for the class of this component instance
+	 *
+	 * @category GEWT
+	 * @category Internal
+	 */
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		this.rStyle = rStyle;
+
+		setWidget(createWidget(rContext, rStyle));
+		createEventDispatcher().initEventDispatching(rWidget);
+	}
+
+	/***************************************
 	 * Returns the enabled state of this component.
 	 *
 	 * @return TRUE if the element is enabled, FALSE if disabled
@@ -716,9 +715,10 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * TODO: DOCUMENT ME!
+	 * Applies the CSS styles from the given map to the DOM element of this
+	 * component.
 	 *
-	 * @param rCssStyles TODO: DOCUMENT ME!
+	 * @param rCssStyles A mapping from CSS style names to style values
 	 */
 	protected void applyCssStyles(Map<String, String> rCssStyles)
 	{
@@ -727,6 +727,32 @@ public abstract class Component implements HasId<String>
 		for (Entry<String, String> rCss : rCssStyles.entrySet())
 		{
 			rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+		}
+	}
+
+	/***************************************
+	 * Creates the GWT widget for this instance by performing a lookup of the
+	 * widget factory through {@link EWT#getWidgetFactory(Component)}.
+	 *
+	 * @param  rContext The context of this component
+	 * @param  rStyle   The component style
+	 *
+	 * @return The new widget
+	 */
+	protected Widget createWidget(
+		UserInterfaceContext rContext,
+		StyleData			 rStyle)
+	{
+		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(this);
+
+		if (rWidgetFactory != null)
+		{
+			return rWidgetFactory.createWidget(rContext, rStyle);
+		}
+		else
+		{
+			throw new IllegalStateException("No widget factory for " +
+											getClass());
 		}
 	}
 
@@ -945,15 +971,13 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Internal method to set the GWT widget of this component.
+	 * Internal method to set the widget of this component.
 	 *
-	 * @param rWidget The new widget
+	 * @param rWidget The component widget
 	 */
 	void setWidget(Widget rWidget)
 	{
 		this.rWidget = rWidget;
-
-		createEventDispatcher().initEventDispatching(rWidget);
 	}
 
 	/***************************************

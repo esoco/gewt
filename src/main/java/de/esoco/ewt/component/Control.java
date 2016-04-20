@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,35 +21,25 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * Controls are non-container components that generate events from user
- * interaction.
+ * Controls are components that can have the input focus and generate events
+ * from user interaction.
  *
  * @author eso
  */
 public abstract class Control extends Component
 {
-	/***************************************
-	 * @see Component#Component()
-	 */
-	protected Control()
-	{
-	}
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * @see Component#Component(Widget)
-	 */
-	protected Control(Focusable rWidget)
-	{
-		super((Widget) rWidget);
-	}
-
-	/***************************************
-	 * Requests that the component gets the input focus. It is not guaranteed
-	 * that the component will actually have or get the focus after invoking
-	 * this method.
+	 * Requests that the component gets the input focus.
 	 */
 	public void requestFocus()
 	{
-		((Focusable) getWidget()).setFocus(true);
+		Widget rWidget = getWidget();
+
+		if (rWidget instanceof Focusable)
+		{
+			((Focusable) rWidget).setFocus(true);
+		}
 	}
 }

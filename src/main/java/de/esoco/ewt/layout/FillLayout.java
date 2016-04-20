@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.dom.client.Style.Overflow;
@@ -102,12 +103,12 @@ public class FillLayout extends GenericLayout
 	}
 
 	/***************************************
-	 * Returns a {@link LayoutPanel} instance.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	public HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
 	{
 		LayoutPanel aPanel = new LayoutPanel();
 

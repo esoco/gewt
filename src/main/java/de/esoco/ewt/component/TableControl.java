@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.impl.gwt.table.GwtTable;
 import de.esoco.ewt.style.StyleData;
 
@@ -26,6 +28,7 @@ import de.esoco.lib.property.SingleSelection;
 import de.esoco.lib.property.UserInterfaceProperties;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -38,21 +41,6 @@ public abstract class TableControl extends Control implements SingleSelection
 	//~ Instance fields --------------------------------------------------------
 
 	private GwtTable aGwtTable;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param bHierarchical TRUE for a hierarchical (tree) table
-	 */
-	protected TableControl(boolean bHierarchical)
-	{
-		super(new GwtTable(bHierarchical));
-
-		aGwtTable = (GwtTable) getWidget();
-		aGwtTable.setEventDispatcher(new GewtEventDispatcherImpl());
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -115,6 +103,18 @@ public abstract class TableControl extends Control implements SingleSelection
 	public int getSelectionIndex()
 	{
 		return ((SingleSelection) getWidget()).getSelectionIndex();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		super.initWidget(rContext, rStyle);
+
+		aGwtTable = (GwtTable) getWidget();
+		aGwtTable.setEventDispatcher(new GewtEventDispatcherImpl());
 	}
 
 	/***************************************
@@ -212,6 +212,44 @@ public abstract class TableControl extends Control implements SingleSelection
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for subclasses.
+	 *
+	 * @author eso
+	 */
+	public static class TableControlWidgetFactory
+		implements WidgetFactory<Widget>
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private boolean bHierarchical;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param bHierarchical TRUE for a tree-table
+		 */
+		public TableControlWidgetFactory(boolean bHierarchical)
+		{
+			this.bHierarchical = bHierarchical;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new GwtTable(bHierarchical);
+		}
+	}
 
 	/********************************************************************
 	 * A table-specific event dispatcher.

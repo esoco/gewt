@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.model.DataModel;
 
@@ -35,14 +39,13 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Tree extends Control
 {
-	//~ Constructors -----------------------------------------------------------
+	//~ Static fields/initializers ---------------------------------------------
 
-	/***************************************
-	 * Creates a new instance.
-	 */
-	public Tree()
+	static
 	{
-		super(new com.google.gwt.user.client.ui.Tree());
+		EWT.registerComponentWidgetFactory(Tree.class,
+										   new TreeWidgetFactory(),
+										   false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -137,6 +140,27 @@ public class Tree extends Control
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class TreeWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new com.google.gwt.user.client.ui.Tree();
+		}
+	}
 
 	/********************************************************************
 	 * Dispatcher for tree-specific events.

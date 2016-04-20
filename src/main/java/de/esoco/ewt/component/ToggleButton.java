@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,14 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.style.StyleData;
+
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasHTML;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -26,50 +33,57 @@ import de.esoco.ewt.graphics.Image;
  */
 public class ToggleButton extends SelectableButton
 {
-	/***************************************
-	 * @see
-	 */
-	public ToggleButton()
+	//~ Static fields/initializers ---------------------------------------------
+
+	static
 	{
-		super(new com.google.gwt.user.client.ui.ToggleButton());
+		EWT.registerComponentWidgetFactory(ToggleButton.class,
+										   new ToggleButtonWidgetFactory<>(),
+										   false);
 	}
 
+	//~ Methods ----------------------------------------------------------------
+
 	/***************************************
-	 * @see SelectableButton#isSelected()
+	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings({ "unchecked", "boxing" })
 	public boolean isSelected()
 	{
-		return ((com.google.gwt.user.client.ui.ToggleButton) getWidget())
-			   .isDown();
+		return ((HasValue<Boolean>) getWidget()).getValue();
 	}
 
 	/***************************************
-	 * Sets the image for the down/selected state of this button.
-	 *
-	 * @param rImage The image or NULL for none
-	 */
-	public void setDownImage(Image rImage)
-	{
-		com.google.gwt.user.client.ui.ToggleButton rButton =
-			(com.google.gwt.user.client.ui.ToggleButton) getWidget();
-
-		if (rImage != null)
-		{
-			rButton.getDownFace().setImage(rImage.getGwtImage());
-		}
-		else
-		{
-			rButton.getDownFace().setText("");
-		}
-	}
-
-	/***************************************
-	 * @see SelectableButton#setSelected(boolean)
+	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings({ "unchecked", "boxing" })
 	public void setSelected(boolean bSelected)
 	{
-		((com.google.gwt.user.client.ui.ToggleButton) getWidget()).setDown(bSelected);
+		((HasValue<Boolean>) getWidget()).setValue(bSelected);
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class ToggleButtonWidgetFactory<W extends Widget & Focusable & HasHTML & HasValue<Boolean>>
+		extends ButtonWidgetFactory<W>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(UserInterfaceContext rContext, StyleData rStyle)
+		{
+			return (W) new com.google.gwt.user.client.ui.ToggleButton();
+		}
 	}
 }

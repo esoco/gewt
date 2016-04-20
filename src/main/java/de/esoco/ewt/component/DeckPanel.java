@@ -16,6 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
@@ -34,6 +37,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DeckPanel extends GroupPanel
 {
+	//~ Static fields/initializers ---------------------------------------------
+
+	static
+	{
+		EWT.registerComponentWidgetFactory(DeckPanel.class,
+										   new DeckPanelWidgetFactory(),
+										   false);
+	}
+
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
@@ -41,7 +53,6 @@ public class DeckPanel extends GroupPanel
 	 */
 	public DeckPanel()
 	{
-		super(new DeckLayoutPanel());
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -124,5 +135,28 @@ public class DeckPanel extends GroupPanel
 	private DeckLayoutPanel getDeckPanel()
 	{
 		return (DeckLayoutPanel) getWidget();
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class DeckPanelWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new DeckLayoutPanel();
+		}
 	}
 }

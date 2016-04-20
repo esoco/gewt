@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -34,16 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class GenericLayout
 {
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * Creates a new GWT container that represents this layout. This method is
-	 * only intended to be used internally by the GEWT framework.
-	 *
-	 * @return   A new widget container
-	 *
-	 * @category GEWT
-	 */
-	public abstract HasWidgets createLayoutContainer();
 
 	/***************************************
 	 * Adds a certain widget to a widget container according to this layout and
@@ -85,6 +78,46 @@ public abstract class GenericLayout
 	public void clear(HasWidgets rContainer)
 	{
 		rContainer.clear();
+	}
+
+	/***************************************
+	 * Creates a new GWT container widget that represents this layout. This
+	 * method is only intended to be used internally by the GEWT framework.
+	 *
+	 * @param    rContext        The user interface context
+	 * @param    rContainerStyle The style of the container
+	 *
+	 * @return   A new widget container
+	 *
+	 * @category GEWT
+	 * @category Internal
+	 */
+	public HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
+	{
+		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(this);
+
+		if (rWidgetFactory != null)
+		{
+			Widget rContainerWidget =
+				rWidgetFactory.createWidget(rContext, rContainerStyle);
+
+			if (rContainerWidget instanceof HasWidgets)
+			{
+				return (HasWidgets) rContainerWidget;
+			}
+			else
+			{
+				throw new IllegalStateException("Layout container must implement  " +
+												HasWidgets.class.getName());
+			}
+		}
+		else
+		{
+			throw new IllegalStateException("No widget factory for " +
+											getClass());
+		}
 	}
 
 	/***************************************

@@ -16,8 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -57,14 +61,13 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class TabPanel extends GroupPanel
 {
-	//~ Constructors -----------------------------------------------------------
+	//~ Static fields/initializers ---------------------------------------------
 
-	/***************************************
-	 * Creates a new instance.
-	 */
-	public TabPanel()
+	static
 	{
-		super(new GwtTabPanel(2, Unit.EM));
+		EWT.registerComponentWidgetFactory(TabPanel.class,
+										   new TabPanelWidgetFactory(),
+										   false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -193,6 +196,27 @@ public class TabPanel extends GroupPanel
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class TabPanelWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new GwtTabPanel(2, Unit.EM);
+		}
+	}
 
 	/********************************************************************
 	 * An event handler for the closing of tabs.

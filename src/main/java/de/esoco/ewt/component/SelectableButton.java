@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package de.esoco.ewt.component;
 
 import de.esoco.lib.property.Selectable;
 
-import com.google.gwt.user.client.ui.ButtonBase;
-
 
 /********************************************************************
  * The base class for buttons that can be selected like radio buttons,
@@ -29,13 +27,4 @@ import com.google.gwt.user.client.ui.ButtonBase;
  */
 public abstract class SelectableButton extends Button implements Selectable
 {
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * @see
-	 */
-	protected SelectableButton(ButtonBase rButtonWidget)
-	{
-		super(rButtonWidget);
-	}
 }

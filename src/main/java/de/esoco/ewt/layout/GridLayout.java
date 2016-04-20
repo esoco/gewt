@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ProvidesResize;
@@ -204,12 +204,12 @@ public class GridLayout extends GenericLayout
 	}
 
 	/***************************************
-	 * Returns a new instance of the GWT {@link Grid} widget.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	public HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
 	{
 		FlexTable aContainer = new GridLayoutTable();
 

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtSpinner;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -31,25 +35,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Spinner extends Control
 {
+	//~ Static fields/initializers ---------------------------------------------
+
+	static
+	{
+		EWT.registerComponentWidgetFactory(Spinner.class,
+										   new SpinnerWidgetFactory(),
+										   false);
+	}
+
 	//~ Instance fields --------------------------------------------------------
 
 	private GwtSpinner aGwtSpinner;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param nMinimum   The minimum input value
-	 * @param nMaximum   The maximum input value
-	 * @param nIncrement The increment or decrement for value modifications
-	 */
-	public Spinner(int nMinimum, int nMaximum, int nIncrement)
-	{
-		super(new GwtSpinner(nMinimum, nMaximum, nIncrement));
-
-		aGwtSpinner = (GwtSpinner) getWidget();
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -91,6 +88,17 @@ public class Spinner extends Control
 	public final int getValue()
 	{
 		return aGwtSpinner.getValue();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		super.initWidget(rContext, rStyle);
+
+		aGwtSpinner = (GwtSpinner) getWidget();
 	}
 
 	/***************************************
@@ -143,6 +151,27 @@ public class Spinner extends Control
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class SpinnerWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new GwtSpinner(0, 100, 1);
+		}
+	}
 
 	/********************************************************************
 	 * Dispatcher for list-specific events.

@@ -16,6 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.style.StyleData;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -58,13 +61,12 @@ public class FlowLayout extends GenericLayout
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns a new instance of either {@link FlowPanel}, {@link
-	 * HorizontalPanel}, or {@link VerticalPanel}.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	public HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
 	{
 		Panel aPanel;
 

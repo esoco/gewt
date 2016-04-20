@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,15 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
+
 import de.esoco.lib.property.TextAttribute;
 
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -30,16 +36,13 @@ import com.google.gwt.user.client.ui.Frame;
  */
 public class Website extends Component implements TextAttribute
 {
-	//~ Constructors -----------------------------------------------------------
+	//~ Static fields/initializers ---------------------------------------------
 
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param sUrl The URL of the website to display
-	 */
-	public Website(String sUrl)
+	static
 	{
-		super(new Frame(sUrl));
+		EWT.registerComponentWidgetFactory(Website.class,
+										   new WebsiteWidgetFactory(),
+										   false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -64,5 +67,28 @@ public class Website extends Component implements TextAttribute
 	public void setText(String sUrl)
 	{
 		((Frame) getWidget()).setUrl(sUrl);
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class WebsiteWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			return new Frame();
+		}
 	}
 }

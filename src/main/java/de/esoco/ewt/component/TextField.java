@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import com.google.gwt.core.client.Scheduler;
@@ -41,37 +45,13 @@ import com.google.gwt.user.client.ui.TextBoxBase;
  */
 public class TextField extends TextComponent
 {
-	//~ Constructors -----------------------------------------------------------
+	//~ Static fields/initializers ---------------------------------------------
 
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param bPassword TRUE for a text field for hidden password input
-	 */
-	public TextField(boolean bPassword)
+	static
 	{
-		super(createTextBox(bPassword));
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Helper method to create the correct GWT text component.
-	 *
-	 * @param  bPassword TRUE for a text field for hidden password input
-	 *
-	 * @return A new GWT text box instance
-	 */
-	private static TextBoxBase createTextBox(boolean bPassword)
-	{
-		if (bPassword)
-		{
-			return new PasswordTextBox();
-		}
-		else
-		{
-			return new GwtTextField();
-		}
+		EWT.registerComponentWidgetFactory(TextField.class,
+										   new TextFieldWidgetFactory(),
+										   false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -112,6 +92,39 @@ public class TextField extends TextComponent
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class TextFieldWidgetFactory
+		implements WidgetFactory<TextBoxBase>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public TextBoxBase createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			TextBoxBase aTextBox;
+
+			if (rStyle.hasFlag(StyleFlag.PASSWORD))
+			{
+				aTextBox = new PasswordTextBox();
+			}
+			else
+			{
+				aTextBox = new GwtTextField();
+			}
+
+			return aTextBox;
+		}
+	}
 
 	/********************************************************************
 	 * A text area subclass that propagates the on paste event.

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.impl.gwt.code.GwtCodeMirror;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
@@ -28,8 +31,8 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
 
@@ -41,24 +44,16 @@ import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
  */
 public class TextArea extends TextComponent
 {
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rStyle The component style
-	 */
-	public TextArea(StyleData rStyle)
-	{
-		super(createWidget(rStyle.getProperty(MIME_TYPE, null)));
+	//~ Static fields/initializers ---------------------------------------------
 
-		if (rStyle.hasFlag(StyleFlag.WRAP))
-		{
-			setLineWrapping(true);
-		}
-		else if (rStyle.hasFlag(StyleFlag.NO_WRAP))
-		{
-			setLineWrapping(false);
-		}
+	static
+	{
+		EWT.registerComponentWidgetFactory(TextArea.class,
+										   new TextAreaWidgetFactory(),
+										   false);
 	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Returns the position of the input caret.
@@ -80,6 +75,24 @@ public class TextArea extends TextComponent
 	public String getText()
 	{
 		return getTextArea().getText();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		super.initWidget(rContext, rStyle);
+
+		if (rStyle.hasFlag(StyleFlag.WRAP))
+		{
+			setLineWrapping(true);
+		}
+		else if (rStyle.hasFlag(StyleFlag.NO_WRAP))
+		{
+			setLineWrapping(false);
+		}
 	}
 
 	/***************************************
@@ -209,45 +222,7 @@ public class TextArea extends TextComponent
 		return (IsTextArea) getWidget();
 	}
 
-	/***************************************
-	 * Creates the widget for a new {@link TextArea} instance based on the given
-	 * MIME type.
-	 *
-	 * @param  sMimeType The MIME type or NULL for none
-	 *
-	 * @return A new widget for the editing of the given MIME type
-	 */
-	private static Focusable createWidget(String sMimeType)
-	{
-		Focusable aWidget = null;
-
-		if (sMimeType != null && !sMimeType.equalsIgnoreCase("text/plain"))
-		{
-			String sMode  = null;
-			int    nIndex = sMimeType.indexOf("x-");
-
-			if (nIndex >= 0)
-			{
-				sMode = sMimeType.substring(nIndex + 2);
-			}
-			else if (sMimeType.toLowerCase().startsWith("text/"))
-			{
-				sMode = sMimeType.substring(5);
-			}
-
-			if (sMode != null)
-			{
-				aWidget = new GwtCodeMirror(sMode);
-			}
-		}
-
-		if (aWidget == null)
-		{
-			aWidget = new GwtTextArea();
-		}
-
-		return aWidget;
-	}
+	//~ Inner Interfaces -------------------------------------------------------
 
 	/********************************************************************
 	 * An interface that describes the properties of text areas.
@@ -256,6 +231,8 @@ public class TextArea extends TextComponent
 	 */
 	public static interface IsTextArea
 	{
+		//~ Methods ------------------------------------------------------------
+
 		/***************************************
 		 * Returns the position of the input caret.
 		 *
@@ -311,6 +288,57 @@ public class TextArea extends TextComponent
 		public void setVisibleLines(int nRows);
 	}
 
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class TextAreaWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			String sMimeType = rStyle.getProperty(MIME_TYPE, null);
+			Widget aWidget   = null;
+
+			if (sMimeType != null && !sMimeType.equalsIgnoreCase("text/plain"))
+			{
+				String sMode  = null;
+				int    nIndex = sMimeType.indexOf("x-");
+
+				if (nIndex >= 0)
+				{
+					sMode = sMimeType.substring(nIndex + 2);
+				}
+				else if (sMimeType.toLowerCase().startsWith("text/"))
+				{
+					sMode = sMimeType.substring(5);
+				}
+
+				if (sMode != null)
+				{
+					aWidget = new GwtCodeMirror(sMode);
+				}
+			}
+
+			if (aWidget == null)
+			{
+				aWidget = new GwtTextArea();
+			}
+
+			return aWidget;
+		}
+	}
+
 	/********************************************************************
 	 * A text area subclass that propagates the on paste event.
 	 *
@@ -319,6 +347,8 @@ public class TextArea extends TextComponent
 	static class GwtTextArea extends com.google.gwt.user.client.ui.TextArea
 		implements IsTextArea
 	{
+		//~ Constructors -------------------------------------------------------
+
 		/***************************************
 		 * Creates a new instance.
 		 */
@@ -326,6 +356,8 @@ public class TextArea extends TextComponent
 		{
 			sinkEvents(Event.ONPASTE);
 		}
+
+		//~ Methods ------------------------------------------------------------
 
 		/***************************************
 		 * Overridden to fire a value change event if text is pasted in to this
@@ -365,6 +397,8 @@ public class TextArea extends TextComponent
 	 */
 	class TextAreaEventDispatcher extends TextEventDispatcher
 	{
+		//~ Methods ------------------------------------------------------------
+
 		/***************************************
 		 * @see TextEventDispatcher#handleKeyUp(KeyUpEvent)
 		 */

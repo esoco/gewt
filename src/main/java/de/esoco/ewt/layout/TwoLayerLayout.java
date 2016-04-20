@@ -17,6 +17,7 @@
 package de.esoco.ewt.layout;
 
 import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -74,13 +75,12 @@ public abstract class TwoLayerLayout extends GenericLayout
 	}
 
 	/***************************************
-	 * Overridden to create both the out layout panel and the inner content
-	 * panel.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	public HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
 	{
 		HasWidgets rLayoutPanel = createLayoutPanel();
 

@@ -202,6 +202,10 @@ public abstract class Container extends Component
 	}
 
 	/***************************************
+	 * Overridden to first check if the layout creates a container widget. A
+	 * final check for a correct container type of the widget will be performed
+	 * be the overridden method {@link #setWidget(Widget)}.
+	 *
 	 * @see Component#createWidget(StyleData)
 	 */
 	@Override
@@ -209,24 +213,15 @@ public abstract class Container extends Component
 		UserInterfaceContext rContext,
 		StyleData			 rStyle)
 	{
-		rContainer = rLayout.createLayoutContainer(rContext, rStyle);
+		Widget rContainerWidget =
+			(Widget) rLayout.createLayoutContainer(rContext, rStyle);
 
-		if (rContainer == null)
+		if (rContainerWidget == null)
 		{
-			Widget rContainerWidget = super.createWidget(rContext, rStyle);
-
-			if (rContainerWidget instanceof HasWidgets)
-			{
-				rContainer = (HasWidgets) rContainerWidget;
-			}
-			else
-			{
-				throw new IllegalStateException("Container widget must implement " +
-												HasWidgets.class.getName());
-			}
+			rContainerWidget = super.createWidget(rContext, rStyle);
 		}
 
-		return (Widget) rContainer;
+		return rContainerWidget;
 	}
 
 	/***************************************
@@ -249,6 +244,21 @@ public abstract class Container extends Component
 						  rWidget,
 						  rStyleData,
 						  nNewComponentPosition);
+	}
+
+	/***************************************
+	 * Overridden to also set the container of this instance.
+	 *
+	 * @see Component#setWidget(Widget)
+	 */
+	@Override
+	void setWidget(Widget rWidget)
+	{
+		assert rWidget instanceof HasWidgets : "Container widget must implement HasWidgets";
+
+		super.setWidget(rWidget);
+
+		rContainer = (HasWidgets) rWidget;
 	}
 
 	//~ Inner Classes ----------------------------------------------------------

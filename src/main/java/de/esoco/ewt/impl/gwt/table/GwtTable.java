@@ -2006,7 +2006,7 @@ public class GwtTable extends Composite
 				nNewSelectedRow = nVisibleDataRows - 1;
 			}
 
-			setRowSelected(nNewSelectedRow, true);
+			setRowSelected(nNewSelectedRow, false);
 			aToolBar.updateNavigationButtons();
 
 			if (nSelectedRow >= 0)

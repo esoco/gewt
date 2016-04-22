@@ -448,8 +448,15 @@ public class GwtTable extends Composite
 	public void onSuccess(RemoteDataModel<DataModel<?>> rRemoteModel)
 	{
 		hideBusyIndicator();
-		updateDisplay();
+
+		boolean bSuccessfulUpdate = updateDisplay();
+
 		bUpdateInProgress = false;
+
+		if (!bSuccessfulUpdate)
+		{
+			update();
+		}
 	}
 
 	/***************************************
@@ -1943,8 +1950,11 @@ public class GwtTable extends Composite
 
 	/***************************************
 	 * Internal method to update the display of the table data.
+	 *
+	 * @return TRUE if the update was successful, false if it is necessary to be
+	 *         re-executed with updated parameters (only for remote data models)
 	 */
-	private void updateDisplay()
+	private boolean updateDisplay()
 	{
 		if (nDataHeight > 0)
 		{
@@ -1957,6 +1967,24 @@ public class GwtTable extends Composite
 			int nNewSelectedRow = nSelectedRow;
 
 			nVisibleDataRows = Math.min(nTableRows, nCount - nFirstRow);
+
+			if (rData instanceof RemoteDataModel)
+			{
+				RemoteDataModel<?> rRemoteModel		  =
+					(RemoteDataModel<?>) rData;
+				int				   nAvailableElements =
+					rRemoteModel.getAvailableElementCount();
+
+				nVisibleDataRows =
+					Math.min(nVisibleDataRows, nAvailableElements);
+
+				if (nAvailableElements == 0 &&
+					rRemoteModel.getWindowStart() > 0)
+				{
+					return false;
+				}
+			}
+
 			aToolBar.updatePosition(nCount, nRows, nFirstRow + 1);
 			initNewVisibleRows(nPrevRows);
 			aHeader.setAllColumnWidths();
@@ -2000,6 +2028,8 @@ public class GwtTable extends Composite
 					});
 			}
 		}
+
+		return true;
 	}
 
 	/***************************************

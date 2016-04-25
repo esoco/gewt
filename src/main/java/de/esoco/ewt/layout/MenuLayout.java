@@ -21,9 +21,9 @@ import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel.ForIsWidget;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -49,7 +49,7 @@ public class MenuLayout extends GenericLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(
+	public Panel createLayoutContainer(
 		UserInterfaceContext rContext,
 		StyleData			 rContainerStyle)
 	{

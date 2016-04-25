@@ -20,7 +20,6 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -64,7 +63,7 @@ public class FlowLayout extends GenericLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(
+	public Panel createLayoutContainer(
 		UserInterfaceContext rContext,
 		StyleData			 rContainerStyle)
 	{

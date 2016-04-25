@@ -77,7 +77,7 @@ public class MainView extends View
 		}
 
 		super.setLayout(rLayout);
-		setWidget(createWidget(rContext, StyleData.DEFAULT));
+		setWidgetWrapper(createWidget(rContext, StyleData.DEFAULT));
 
 		rWidget = getWidget();
 		setDefaultStyleName(GewtResources.INSTANCE.css().ewtMainView());

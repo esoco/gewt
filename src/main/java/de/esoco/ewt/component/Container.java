@@ -18,6 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.build.ContainerBuilder;
+import de.esoco.ewt.impl.gwt.WidgetWrapper;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
@@ -27,6 +28,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -38,8 +41,8 @@ public abstract class Container extends Component
 {
 	//~ Instance fields --------------------------------------------------------
 
+	private GenericLayout rLayout    = new ImplicitLayout();
 	private HasWidgets    rContainer;
-	private GenericLayout rLayout = new ImplicitLayout();
 
 	private int nNewComponentPosition = -1;
 
@@ -209,19 +212,13 @@ public abstract class Container extends Component
 	 * @see Component#createWidget(StyleData)
 	 */
 	@Override
-	protected Widget createWidget(
+	protected WidgetWrapper createWidget(
 		UserInterfaceContext rContext,
 		StyleData			 rStyle)
 	{
-		Widget rContainerWidget =
-			(Widget) rLayout.createLayoutContainer(rContext, rStyle);
+		rContainer = rLayout.createLayoutContainer(rContext, rStyle);
 
-		if (rContainerWidget == null)
-		{
-			rContainerWidget = super.createWidget(rContext, rStyle);
-		}
-
-		return rContainerWidget;
+		return wrapIsWidget((IsWidget) rContainer);
 	}
 
 	/***************************************
@@ -249,16 +246,18 @@ public abstract class Container extends Component
 	/***************************************
 	 * Overridden to also set the container of this instance.
 	 *
-	 * @see Component#setWidget(Widget)
+	 * @see Component#setWidgetWrapper(Widget)
 	 */
 	@Override
-	void setWidget(Widget rWidget)
+	void setWidgetWrapper(WidgetWrapper rWidgetWrapper)
 	{
+		Widget rWidget = rWidgetWrapper.asWidget();
+
 		assert rWidget instanceof HasWidgets : "Container widget must implement HasWidgets";
 
-		super.setWidget(rWidget);
+		super.setWidgetWrapper(rWidgetWrapper);
 
-		rContainer = (HasWidgets) rWidget;
+		rContainer = (Panel) rWidget;
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -277,11 +276,12 @@ public abstract class Container extends Component
 		 * {@inheritDoc}
 		 */
 		@Override
+		@SuppressWarnings("unchecked")
 		public HasWidgets createLayoutContainer(
 			UserInterfaceContext rContext,
 			StyleData			 rContainerStyle)
 		{
-			return null;
+			return rContainer;
 		}
 	}
 }

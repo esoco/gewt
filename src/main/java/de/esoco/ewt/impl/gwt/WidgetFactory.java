@@ -19,15 +19,23 @@ package de.esoco.ewt.impl.gwt;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * A factory that produces widget instances for a certain component type.
+ * The interface for factories that produce widget instances for a certain GEWT
+ * component type. Implementations of the interface method can either return
+ * subclasses of {@link Widget} or some kind of widget wrapper that implements
+ * the interface {@link IsWidget}. The latter can be used to implement
+ * additional interfaces that are not directly available in the wrapped widget.
+ * The needed interfaces are documented in the GWT widget factories of the
+ * original GEWT components which should typically be subclassed by new
+ * factories.
  *
  * @author eso
  */
-public interface WidgetFactory<W extends Widget>
+public interface WidgetFactory<W extends IsWidget>
 {
 	//~ Methods ----------------------------------------------------------------
 

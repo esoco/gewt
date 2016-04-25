@@ -17,7 +17,7 @@
 package de.esoco.ewt.layout;
 
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Panel;
 
 
 /********************************************************************
@@ -42,8 +42,8 @@ public class GroupLayout extends TwoLayerLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected HasWidgets createLayoutPanel()
+	protected Panel createLayoutPanel()
 	{
-		return new CaptionPanel();
+		return null; //new CaptionPanel();
 	}
 }

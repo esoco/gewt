@@ -78,11 +78,11 @@ public abstract class TwoLayerLayout extends GenericLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(
+	public Panel createLayoutContainer(
 		UserInterfaceContext rContext,
 		StyleData			 rContainerStyle)
 	{
-		HasWidgets rLayoutPanel = createLayoutPanel();
+		Panel rLayoutPanel = createLayoutPanel();
 
 		aContentPanel = createContentPanel(rLayoutPanel);
 		aContentPanel.setStyleName(EWT.CSS.ewtContentPanel());
@@ -105,7 +105,7 @@ public abstract class TwoLayerLayout extends GenericLayout
 	 *
 	 * @return The outer layout panel
 	 */
-	protected abstract HasWidgets createLayoutPanel();
+	protected abstract Panel createLayoutPanel();
 
 	/***************************************
 	 * Creates the inner panel that will contain the content widgets. The

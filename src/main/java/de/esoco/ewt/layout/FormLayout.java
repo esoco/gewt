@@ -17,7 +17,7 @@
 package de.esoco.ewt.layout;
 
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Panel;
 
 
 /********************************************************************
@@ -42,7 +42,7 @@ public class FormLayout extends TwoLayerLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected HasWidgets createLayoutPanel()
+	protected Panel createLayoutPanel()
 	{
 		return new FormPanel();
 	}

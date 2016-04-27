@@ -16,8 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.impl.gwt.WidgetWrapper;
-
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -38,7 +36,7 @@ public abstract class View extends Container
 	 */
 	public View(Panel rPanel)
 	{
-		setWidgetWrapper(new WidgetWrapper(rPanel));
+		setWidget(rPanel);
 	}
 
 	/***************************************

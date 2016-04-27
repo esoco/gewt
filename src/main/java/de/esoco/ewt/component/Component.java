@@ -25,7 +25,6 @@ import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.impl.gwt.WidgetWrapper;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.Alignment;
@@ -112,9 +111,9 @@ public abstract class Component implements HasId<String>
 
 	//~ Instance fields --------------------------------------------------------
 
-	private WidgetWrapper rWidgetWrapper;
-	private Container     rParent;
-	private StyleData     rStyle;
+	private IsWidget  rIsWidget;
+	private Container rParent;
+	private StyleData rStyle;
 
 	private String sId = null;
 
@@ -404,7 +403,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public final Widget getWidget()
 	{
-		return rWidgetWrapper.asWidget();
+		return rIsWidget != null ? rIsWidget.asWidget() : null;
 	}
 
 	/***************************************
@@ -454,7 +453,7 @@ public abstract class Component implements HasId<String>
 	{
 		this.rStyle = rStyle;
 
-		setWidgetWrapper(createWidget(rContext, rStyle));
+		setWidget(createWidget(rContext, rStyle));
 		createEventDispatcher().initEventDispatching(getWidget());
 	}
 
@@ -745,7 +744,7 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @return The new widget
 	 */
-	protected WidgetWrapper createWidget(
+	protected IsWidget createWidget(
 		UserInterfaceContext rContext,
 		StyleData			 rStyle)
 	{
@@ -753,7 +752,7 @@ public abstract class Component implements HasId<String>
 
 		if (rWidgetFactory != null)
 		{
-			return wrapIsWidget(rWidgetFactory.createWidget(rContext, rStyle));
+			return rWidgetFactory.createWidget(rContext, rStyle);
 		}
 		else
 		{
@@ -979,35 +978,11 @@ public abstract class Component implements HasId<String>
 	/***************************************
 	 * Internal method to set the widget of this component.
 	 *
-	 * @param rWidgetWrapper The wrapper for the component widget
+	 * @param rIsWidget The component widget
 	 */
-	void setWidgetWrapper(WidgetWrapper rWidgetWrapper)
+	void setWidget(IsWidget rIsWidget)
 	{
-		this.rWidgetWrapper = rWidgetWrapper;
-	}
-
-	/***************************************
-	 * Wraps an instance of {@link IsWidget} inside a WidgetWrapper if it is not
-	 * such already.
-	 *
-	 * @param  aIsWidget The IsWidget instance to check for wrapping
-	 *
-	 * @return A {@link WidgetWrapper} instance
-	 */
-	WidgetWrapper wrapIsWidget(IsWidget aIsWidget)
-	{
-		WidgetWrapper aWrapper;
-
-		if (aIsWidget instanceof WidgetWrapper)
-		{
-			aWrapper = (WidgetWrapper) aIsWidget;
-		}
-		else
-		{
-			aWrapper = new WidgetWrapper(aIsWidget);
-		}
-
-		return aWrapper;
+		this.rIsWidget = rIsWidget;
 	}
 
 	/***************************************

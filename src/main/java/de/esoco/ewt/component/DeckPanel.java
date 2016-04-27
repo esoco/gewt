@@ -16,9 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
@@ -37,15 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DeckPanel extends GroupPanel
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerComponentWidgetFactory(DeckPanel.class,
-										   new DeckPanelWidgetFactory(),
-										   false);
-	}
-
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
@@ -53,65 +42,10 @@ public class DeckPanel extends GroupPanel
 	 */
 	public DeckPanel()
 	{
+		super(new DeckPanelLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addGroup(Component rGroupComponent,
-						 String    sGroupTitle,
-						 boolean   bCloseable)
-	{
-		getDeckPanel().add(rGroupComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupCount()
-	{
-		return getDeckPanel().getWidgetCount();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupIndex(Component rGroupComponent)
-	{
-		return getDeckPanel().getWidgetIndex(rGroupComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getSelectionIndex()
-	{
-		return getDeckPanel().getVisibleWidgetIndex();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setGroupTitle(int nIndex, String sTitle)
-	{
-		// ignored because now title is displayed
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelection(int nIndex)
-	{
-		getDeckPanel().showWidget(nIndex);
-	}
 
 	/***************************************
 	 * Overridden to reset the base class version to the original implementation
@@ -124,39 +58,91 @@ public class DeckPanel extends GroupPanel
 	@Override
 	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
 	{
-		getLayout().addWidget(getDeckPanel(), rWidget, rStyleData, -1);
-	}
-
-	/***************************************
-	 * Returns the {@link DeckLayoutPanel} widget of this instance.
-	 *
-	 * @return The deck panel
-	 */
-	private DeckLayoutPanel getDeckPanel()
-	{
-		return (DeckLayoutPanel) getWidget();
+		getLayout().addWidget(getContainer(), rWidget, rStyleData, -1);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Widget factory for this component.
+	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	public static class DeckPanelWidgetFactory implements WidgetFactory<Widget>
+	public static class DeckPanelLayout extends GroupPanelLayout
 	{
+		//~ Instance fields ----------------------------------------------------
+
+		private DeckLayoutPanel aDeckLayoutPanel;
+
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
+		public void addGroup(Component rGroupComponent,
+							 String    sGroupTitle,
+							 boolean   bCloseable)
+		{
+			aDeckLayoutPanel.add(rGroupComponent.getWidget());
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public HasWidgets createLayoutContainer(
 			UserInterfaceContext rContext,
 			StyleData			 rStyle)
 		{
-			return new DeckLayoutPanel();
+			aDeckLayoutPanel = new DeckLayoutPanel();
+
+			return aDeckLayoutPanel;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupCount()
+		{
+			return aDeckLayoutPanel.getWidgetCount();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupIndex(Component rGroupComponent)
+		{
+			return aDeckLayoutPanel.getWidgetIndex(rGroupComponent.getWidget());
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return aDeckLayoutPanel.getVisibleWidgetIndex();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setGroupTitle(int nIndex, String sTitle)
+		{
+			// ignored
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setSelection(int nIndex)
+		{
+			aDeckLayoutPanel.showWidget(nIndex);
 		}
 	}
 }

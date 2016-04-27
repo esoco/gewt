@@ -16,12 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.GewtResources;
-import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 
@@ -32,6 +30,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,81 +56,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class StackPanel extends GroupPanel
 {
-	//~ Static fields/initializers ---------------------------------------------
+	//~ Constructors -----------------------------------------------------------
 
-	static
+	/***************************************
+	 * Creates a new instance.
+	 */
+	public StackPanel()
 	{
-		EWT.registerComponentWidgetFactory(StackPanel.class,
-										   new StackPanelWidgetFactory(),
-										   false);
+		super(new StackPanelLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addGroup(Component rComponent,
-						 String    sStackTitle,
-						 boolean   bCloseable)
-	{
-		GwtStackPanel rStackPanel = getGwtStackPanel();
-		Widget		  rWidget     = rComponent.getWidget();
-		String		  rHeader     = createStackHeader(sStackTitle);
-
-		rStackPanel.add(rWidget, rHeader);
-
-		if (rStackPanel.getWidgetCount() == 1)
-		{
-			rStackPanel.showWidget(0);
-		}
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupCount()
-	{
-		return getGwtStackPanel().getWidgetCount();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupIndex(Component rStackComponent)
-	{
-		return getGwtStackPanel().getWidgetIndex(rStackComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getSelectionIndex()
-	{
-		return getGwtStackPanel().getVisibleIndex();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setGroupTitle(int nIndex, String sTitle)
-	{
-		getGwtStackPanel().setHeaderHTML(nIndex, createStackHeader(sTitle));
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelection(int nIndex)
-	{
-		getGwtStackPanel().showWidget(nIndex);
-	}
 
 	/***************************************
 	 * {@inheritDoc}
@@ -142,90 +77,122 @@ public class StackPanel extends GroupPanel
 		return new StackPanelEventDispatcher();
 	}
 
-	/***************************************
-	 * Creates the HTML for a stack title string.
-	 *
-	 * @param  sStackTitle The stack title
-	 *
-	 * @return The HTML string for the stack title
-	 */
-	private String createStackHeader(String sStackTitle)
-	{
-		String sTitle = getContext().expandResource(sStackTitle);
-		Image  rImage =
-			getContext().createImage(GewtResources.INSTANCE.imRight());
-
-		String sTitleHtml =
-			createImageLabel(sTitle,
-							 rImage,
-							 AlignedPosition.RIGHT,
-							 HasHorizontalAlignment.ALIGN_LEFT,
-							 null);
-
-		return sTitleHtml;
-	}
-
-	/***************************************
-	 * Returns the GWT stack panel of this instance.
-	 *
-	 * @return The stack panel widget
-	 */
-	private GwtStackPanel getGwtStackPanel()
-	{
-		return (GwtStackPanel) getWidget();
-	}
-
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Widget factory for this component.
+	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	public static class StackPanelWidgetFactory implements WidgetFactory<Widget>
+	public static class StackPanelLayout extends GroupPanelLayout
 	{
+		//~ Instance fields ----------------------------------------------------
+
+		private StackLayoutPanel     aStackLayoutPanel;
+		private UserInterfaceContext rContext;
+
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
+		public void addGroup(Component rGroupComponent,
+							 String    sGroupTitle,
+							 boolean   bCloseable)
+		{
+			Widget rWidget = rGroupComponent.getWidget();
+			String rHeader = createStackHeader(sGroupTitle);
+
+			aStackLayoutPanel.add(rWidget, rHeader, true, 2);
+
+			if (aStackLayoutPanel.getWidgetCount() == 1)
+			{
+				aStackLayoutPanel.showWidget(0);
+			}
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public HasWidgets createLayoutContainer(
 			UserInterfaceContext rContext,
 			StyleData			 rStyle)
 		{
-			return new GwtStackPanel();
-		}
-	}
+			this.rContext     = rContext;
+			aStackLayoutPanel = new StackLayoutPanel(Unit.EM);
 
-	/********************************************************************
-	 * A GWT stack panel subclass that adds selection event handling.
-	 *
-	 * @author eso
-	 */
-	static class GwtStackPanel extends StackLayoutPanel
-	{
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
-		 * Creates a new instance.
-		 */
-		public GwtStackPanel()
-		{
-			super(Unit.EM);
+			return aStackLayoutPanel;
 		}
 
-		//~ Methods ------------------------------------------------------------
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupCount()
+		{
+			return aStackLayoutPanel.getWidgetCount();
+		}
 
 		/***************************************
-		 * @see StackLayoutPanel#add(Widget, String, boolean, double)
+		 * {@inheritDoc}
 		 */
-		public void add(Widget rWidget, String rHeader)
+		@Override
+		public int getGroupIndex(Component rGroupComponent)
 		{
-			add(rWidget, rHeader, true, 2);
+			return aStackLayoutPanel.getWidgetIndex(rGroupComponent
+													.getWidget());
+		}
 
-//			rWidget.getElement().getParentElement().getStyle()
-//				   .setOverflow(Overflow.AUTO);
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return aStackLayoutPanel.getVisibleIndex();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setGroupTitle(int nIndex, String sTitle)
+		{
+			aStackLayoutPanel.setHeaderHTML(nIndex, createStackHeader(sTitle));
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setSelection(int nIndex)
+		{
+			aStackLayoutPanel.showWidget(nIndex);
+		}
+
+		/***************************************
+		 * Creates the HTML for a stack title string.
+		 *
+		 * @param  sStackTitle The stack title
+		 *
+		 * @return The HTML string for the stack title
+		 */
+		protected String createStackHeader(String sStackTitle)
+		{
+			String sTitle = rContext.expandResource(sStackTitle);
+			Image  rImage =
+				rContext.createImage(GewtResources.INSTANCE.imRight());
+
+			String sTitleHtml =
+				createImageLabel(sTitle,
+								 rImage,
+								 AlignedPosition.RIGHT,
+								 HasHorizontalAlignment.ALIGN_LEFT,
+								 null);
+
+			return sTitleHtml;
 		}
 	}
 
@@ -251,38 +218,45 @@ public class StackPanel extends GroupPanel
 					@Override
 					public void run()
 					{
-						int nSelection = getSelectionIndex();
-
-						if (nSelection >= 0)
-						{
-							Component rComponent =
-								getComponents().get(nSelection);
-
-							final Widget rWidget = rComponent.getWidget();
-
-							if (rWidget instanceof RequiresResize)
-							{
-								Scheduler.get()
-										 .scheduleDeferred(new ScheduledCommand()
-									{
-										@Override
-										public void execute()
-										{
-											((RequiresResize) rWidget)
-											.onResize();
-										}
-									});
-							}
-						}
-
-						notifyEventHandler(EventType.SELECTION);
+						handleSelection();
 					}
 				};
 
 			// event needs to be postponed until the stack open animation
 			// has finished to prevent update problems in child widgets
-			aAnimationWaitTimer.schedule(getGwtStackPanel()
+			aAnimationWaitTimer.schedule(((StackLayoutPanel) getWidget())
 										 .getAnimationDuration() + 250);
+		}
+
+		/***************************************
+		 * Performs the deferred handling of selection events. Invoked by the
+		 * {@link #onSelection(SelectionEvent)} method.
+		 */
+		void handleSelection()
+		{
+			int nSelection = getSelectionIndex();
+
+			if (nSelection >= 0)
+			{
+				Component rComponent = getComponents().get(nSelection);
+
+				final Widget rWidget = rComponent.getWidget();
+
+				if (rWidget instanceof RequiresResize)
+				{
+					Scheduler.get()
+							 .scheduleDeferred(new ScheduledCommand()
+						{
+							@Override
+							public void execute()
+							{
+								((RequiresResize) rWidget).onResize();
+							}
+						});
+				}
+			}
+
+			notifyEventHandler(EventType.SELECTION);
 		}
 
 		/***************************************
@@ -293,7 +267,7 @@ public class StackPanel extends GroupPanel
 		{
 			super.initEventDispatching(rWidget);
 
-			((GwtStackPanel) rWidget).addSelectionHandler(this);
+			((StackLayoutPanel) rWidget).addSelectionHandler(this);
 		}
 	}
 }

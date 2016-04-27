@@ -16,9 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.layout.DockLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.Alignment;
@@ -38,31 +36,19 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class SplitPanel extends Panel
+public class SplitPanel extends FixedLayoutPanel
 {
-	//~ Static fields/initializers ---------------------------------------------
+	//~ Constructors -----------------------------------------------------------
 
-	static
+	/***************************************
+	 * Creates a new instance.
+	 */
+	public SplitPanel()
 	{
-		EWT.registerComponentWidgetFactory(SplitPanel.class,
-										   new SplitPanelWidgetFactory(),
-										   false);
+		super(new SplitPanelLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * Overridden to throw an exception.
-	 *
-	 * @see Panel#setLayout(GenericLayout)
-	 */
-	@Override
-	public void setLayout(GenericLayout rLayout)
-	{
-		throw new UnsupportedOperationException("Layout of " +
-												getClass().getSimpleName() +
-												" cannot be changed");
-	}
 
 	/***************************************
 	 * {@inheritDoc}
@@ -70,45 +56,59 @@ public class SplitPanel extends Panel
 	@Override
 	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
 	{
-		SplitLayoutPanel rSplitLayoutPanel = (SplitLayoutPanel) rContainer;
-
-		Alignment eVerticalAlign = rStyleData.getVerticalAlignment();
-
-		if (eVerticalAlign == Alignment.BEGIN ||
-			eVerticalAlign == Alignment.END)
-		{
-			rWidget.setHeight("100%");
-		}
-		else
-		{
-			rWidget.setWidth("100%");
-		}
-
-		if (!DockLayout.addDockLayoutPanelWidget(rWidget,
-												 rSplitLayoutPanel,
-												 rStyleData,
-												 true))
-		{
-			rSplitLayoutPanel.setWidgetToggleDisplayAllowed(rWidget, true);
-		}
+		((SplitPanelLayout) getLayout()).addWidget(rContainer,
+												   rWidget,
+												   rStyleData);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Widget factory for this component.
+	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	public static class SplitPanelWidgetFactory implements WidgetFactory<Widget>
+	public static class SplitPanelLayout extends GenericLayout
 	{
 		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Implements the adding of widgets to the layout container widget.
+		 *
+		 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
+		 */
+		public void addWidget(HasWidgets rContainer,
+							  Widget	 rWidget,
+							  StyleData  rStyleData)
+		{
+			SplitLayoutPanel rSplitLayoutPanel = (SplitLayoutPanel) rContainer;
+
+			Alignment eVerticalAlign = rStyleData.getVerticalAlignment();
+
+			if (eVerticalAlign == Alignment.BEGIN ||
+				eVerticalAlign == Alignment.END)
+			{
+				rWidget.setHeight("100%");
+			}
+			else
+			{
+				rWidget.setWidth("100%");
+			}
+
+			if (!DockLayout.addDockLayoutPanelWidget(rWidget,
+													 rSplitLayoutPanel,
+													 rStyleData,
+													 true))
+			{
+				rSplitLayoutPanel.setWidgetToggleDisplayAllowed(rWidget, true);
+			}
+		}
 
 		/***************************************
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
+		public HasWidgets createLayoutContainer(
 			UserInterfaceContext rContext,
 			StyleData			 rStyle)
 		{

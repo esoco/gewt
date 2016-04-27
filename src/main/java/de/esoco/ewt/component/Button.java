@@ -107,7 +107,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		HasHTML rWidget = (HasHTML) getWidget();
+		HasText rWidget = (HasText) getWidget();
 		String  sText   = getText();
 
 		if (rImage != null)
@@ -147,9 +147,9 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
 					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
 				}
-				else
+				else if (rWidget instanceof HasHTML)
 				{
-					rWidget.setHTML(sImageLabel);
+					((HasHTML) rWidget).setHTML(sImageLabel);
 				}
 			}
 		}
@@ -195,17 +195,13 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	 *
 	 * @author eso
 	 */
-	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasHTML>
+	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasText>
 		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * Creates the widget for a new button instance based on the style
-		 * properties.
-		 * @param  rStyle The style of the button new instance
-		 *
-		 * @return The button widget
+		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")

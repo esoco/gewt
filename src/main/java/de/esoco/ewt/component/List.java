@@ -51,7 +51,7 @@ public class List extends ListControl
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(List.class,
+		EWT.registerWidgetFactory(List.class,
 										   new ListControlWidgetFactory(),
 										   false);
 	}

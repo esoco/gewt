@@ -48,7 +48,7 @@ public class FileChooser extends Control implements TextAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(FileChooser.class,
+		EWT.registerWidgetFactory(FileChooser.class,
 										   new FileChooserWidgetFactory(),
 										   false);
 	}

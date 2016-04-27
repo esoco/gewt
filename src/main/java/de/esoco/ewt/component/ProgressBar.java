@@ -53,7 +53,7 @@ public class ProgressBar extends Component
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(ProgressBar.class,
+		EWT.registerWidgetFactory(ProgressBar.class,
 										   new ProgressBarWidgetFactory(),
 										   false);
 	}

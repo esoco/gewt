@@ -39,7 +39,7 @@ public class Spinner extends Control
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Spinner.class,
+		EWT.registerWidgetFactory(Spinner.class,
 										   new SpinnerWidgetFactory(),
 										   false);
 	}

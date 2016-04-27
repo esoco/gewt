@@ -37,7 +37,7 @@ public class ToggleButton extends SelectableButton
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(ToggleButton.class,
+		EWT.registerWidgetFactory(ToggleButton.class,
 										   new ToggleButtonWidgetFactory<>(),
 										   false);
 	}

@@ -57,7 +57,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(ComboBox.class,
+		EWT.registerWidgetFactory(ComboBox.class,
 										   new ComboBoxWidgetFactory(),
 										   false);
 	}

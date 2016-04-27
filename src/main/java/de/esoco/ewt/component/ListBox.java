@@ -52,7 +52,7 @@ public class ListBox extends ListControl
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(ListBox.class,
+		EWT.registerWidgetFactory(ListBox.class,
 										   new ListControlWidgetFactory(),
 										   false);
 	}

@@ -40,7 +40,7 @@ public class Website extends Component implements TextAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Website.class,
+		EWT.registerWidgetFactory(Website.class,
 										   new WebsiteWidgetFactory(),
 										   false);
 	}

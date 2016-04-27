@@ -48,7 +48,7 @@ public class TextArea extends TextComponent
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(TextArea.class,
+		EWT.registerWidgetFactory(TextArea.class,
 										   new TextAreaWidgetFactory(),
 										   false);
 	}

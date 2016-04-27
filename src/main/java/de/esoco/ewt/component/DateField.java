@@ -45,7 +45,7 @@ public class DateField extends TextComponent implements DateAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(DateField.class,
+		EWT.registerWidgetFactory(DateField.class,
 										   new DateFieldWidgetFactory(),
 										   false);
 	}

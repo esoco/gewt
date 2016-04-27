@@ -44,7 +44,7 @@ public class Calendar extends Component implements DateAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Calendar.class,
+		EWT.registerWidgetFactory(Calendar.class,
 										   new CalendarWidgetFactory(),
 										   false);
 	}

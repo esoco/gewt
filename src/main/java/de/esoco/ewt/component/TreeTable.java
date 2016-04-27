@@ -31,7 +31,7 @@ public class TreeTable extends TableControl
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(TreeTable.class,
+		EWT.registerWidgetFactory(TreeTable.class,
 										   new TableControlWidgetFactory(true),
 										   false);
 	}

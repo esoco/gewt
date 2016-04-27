@@ -54,7 +54,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Label.class,
+		EWT.registerWidgetFactory(Label.class,
 										   new LabelWidgetFactory(),
 										   false);
 	}

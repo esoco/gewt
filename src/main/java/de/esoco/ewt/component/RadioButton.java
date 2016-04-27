@@ -33,7 +33,7 @@ public class RadioButton extends CheckBox
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(RadioButton.class,
+		EWT.registerWidgetFactory(RadioButton.class,
 										   new RadioButtonWidgetFactory<>(),
 										   false);
 	}

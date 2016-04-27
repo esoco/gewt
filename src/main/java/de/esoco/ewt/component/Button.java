@@ -54,7 +54,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Button.class,
+		EWT.registerWidgetFactory(Button.class,
 										   new ButtonWidgetFactory<>(),
 										   false);
 	}

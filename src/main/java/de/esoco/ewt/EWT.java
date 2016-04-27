@@ -21,7 +21,6 @@ import de.esoco.ewt.component.Component;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.layout.GenericLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class EWT
 
 	private static Map<String, String> aCssClassMap = null;
 
-	private static Map<Class<?>, WidgetFactory<?>> aWidgetFactories =
+	private static Map<Class<? extends Component>, WidgetFactory<?>> aWidgetFactories =
 		new HashMap<>();
 
 	//~ Constructors -----------------------------------------------------------
@@ -156,15 +155,15 @@ public class EWT
 	/***************************************
 	 * Returns the widget factory for a certain component or layout instance.
 	 *
-	 * @param  rComponentOrLayout The object for which to return the factory for
+	 * @param  rComponent The object for which to return the factory for
 	 *
 	 * @return The widget factory or NULL if no factory has been registered
 	 *
 	 * @see    #registerWidgetFactory(Class, WidgetFactory)
 	 */
-	public static WidgetFactory<?> getWidgetFactory(Object rComponentOrLayout)
+	public static WidgetFactory<?> getWidgetFactory(Component rComponent)
 	{
-		return aWidgetFactories.get(rComponentOrLayout.getClass());
+		return aWidgetFactories.get(rComponent.getClass());
 	}
 
 	/***************************************
@@ -246,50 +245,14 @@ public class EWT
 	 *
 	 * @see   #getWidgetFactory(Component)
 	 */
-	public static void registerComponentWidgetFactory(
+	public static void registerWidgetFactory(
 		Class<? extends Component> rComponentClass,
 		WidgetFactory<?>		   rFactory,
 		boolean					   bReplaceExisting)
 	{
-		internalRegisterWidgetFactory(rComponentClass,
-									  rFactory,
-									  bReplaceExisting);
-	}
-
-	/***************************************
-	 * Registers a widget factory for a certain layout type.
-	 *
-	 * @param rLayoutClass     The type of layout to register the factory for
-	 * @param rFactory         The widget factory
-	 * @param bReplaceExisting TRUE to replace an existing mapping with the
-	 *                         given factory, FALSE to keep the current factory
-	 *
-	 * @see   #getWidgetFactory(Component)
-	 */
-	public static void registerLayoutWidgetFactory(
-		Class<? extends GenericLayout> rLayoutClass,
-		WidgetFactory<?>			   rFactory,
-		boolean						   bReplaceExisting)
-	{
-		internalRegisterWidgetFactory(rLayoutClass, rFactory, bReplaceExisting);
-	}
-
-	/***************************************
-	 * Internal method to register a widget factory that is used by the
-	 * type-safe variants of this method.
-	 *
-	 * @param rClass
-	 * @param rFactory
-	 * @param bReplaceExisting
-	 */
-	private static void internalRegisterWidgetFactory(
-		Class<?>		 rClass,
-		WidgetFactory<?> rFactory,
-		boolean			 bReplaceExisting)
-	{
-		if (bReplaceExisting || !aWidgetFactories.containsKey(rClass))
+		if (bReplaceExisting || !aWidgetFactories.containsKey(rComponentClass))
 		{
-			aWidgetFactories.put(rClass, rFactory);
+			aWidgetFactories.put(rComponentClass, rFactory);
 		}
 	}
 }

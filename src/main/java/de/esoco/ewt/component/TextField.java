@@ -49,7 +49,7 @@ public class TextField extends TextComponent
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(TextField.class,
+		EWT.registerWidgetFactory(TextField.class,
 										   new TextFieldWidgetFactory(),
 										   false);
 	}

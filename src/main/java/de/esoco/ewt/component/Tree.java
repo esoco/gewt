@@ -43,7 +43,7 @@ public class Tree extends Control
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Tree.class,
+		EWT.registerWidgetFactory(Tree.class,
 										   new TreeWidgetFactory(),
 										   false);
 	}

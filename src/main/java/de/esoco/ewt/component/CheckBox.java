@@ -42,7 +42,7 @@ public class CheckBox extends SelectableButton
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(CheckBox.class,
+		EWT.registerWidgetFactory(CheckBox.class,
 										   new CheckBoxWidgetFactory<>(),
 										   false);
 	}

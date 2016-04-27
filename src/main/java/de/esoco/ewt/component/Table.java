@@ -30,7 +30,7 @@ public class Table extends TableControl
 
 	static
 	{
-		EWT.registerComponentWidgetFactory(Table.class,
+		EWT.registerWidgetFactory(Table.class,
 										   new TableControlWidgetFactory(false),
 										   false);
 	}

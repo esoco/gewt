@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Component;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -40,12 +40,13 @@ public interface WidgetFactory<W extends IsWidget>
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Creates a new widget instance based on the given style.
+	 * Creates a new widget instance for a certain component based on the given
+	 * style.
 	 *
-	 * @param  rContext The user interface context to create the widget in
-	 * @param  rStyle   The style of the new widget
+	 * @param  rComponent The component to create the widget for
+	 * @param  rStyle     The style of the new widget
 	 *
 	 * @return The new widget instance
 	 */
-	W createWidget(UserInterfaceContext rContext, StyleData rStyle);
+	W createWidget(Component rComponent, StyleData rStyle);
 }

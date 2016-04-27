@@ -147,7 +147,7 @@ public class FileChooser extends Control implements TextAttribute
 		 */
 		@Override
 		public GwtFileChooser createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new GwtFileChooser();

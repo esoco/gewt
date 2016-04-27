@@ -46,8 +46,8 @@ public class DateField extends TextComponent implements DateAttribute
 	static
 	{
 		EWT.registerWidgetFactory(DateField.class,
-										   new DateFieldWidgetFactory(),
-										   false);
+								  new DateFieldWidgetFactory(),
+								  false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -198,11 +198,9 @@ public class DateField extends TextComponent implements DateAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		public DateBox createWidget(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+		public DateBox createWidget(Component rComponent, StyleData rStyle)
 		{
-			return new DateFieldWidget(rContext,
+			return new DateFieldWidget(rComponent.getContext(),
 									   rStyle.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}

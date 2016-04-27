@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 
@@ -73,7 +72,7 @@ public class RadioButton extends CheckBox
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(UserInterfaceContext rContext, StyleData rStyle)
+		public W createWidget(Component rComponent, StyleData rStyle)
 		{
 			return (W) new com.google.gwt.user.client.ui.RadioButton("");
 		}

@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
@@ -247,7 +246,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new ListBox();

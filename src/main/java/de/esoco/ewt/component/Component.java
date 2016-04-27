@@ -111,9 +111,10 @@ public abstract class Component implements HasId<String>
 
 	//~ Instance fields --------------------------------------------------------
 
-	private IsWidget  rIsWidget;
-	private Container rParent;
-	private StyleData rStyle;
+	private UserInterfaceContext rContext;
+	private Container			 rParent;
+	private IsWidget			 rIsWidget;
+	private StyleData			 rStyle;
 
 	private String sId = null;
 
@@ -292,7 +293,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public UserInterfaceContext getContext()
 	{
-		return rParent.getContext();
+		return rContext;
 	}
 
 	/***************************************
@@ -451,7 +452,8 @@ public abstract class Component implements HasId<String>
 	 */
 	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
 	{
-		this.rStyle = rStyle;
+		this.rContext = rContext;
+		this.rStyle   = rStyle;
 
 		setWidget(createWidget(rContext, rStyle));
 		createEventDispatcher().initEventDispatching(getWidget());
@@ -752,7 +754,7 @@ public abstract class Component implements HasId<String>
 
 		if (rWidgetFactory != null)
 		{
-			return rWidgetFactory.createWidget(rContext, rStyle);
+			return rWidgetFactory.createWidget(this, rStyle);
 		}
 		else
 		{

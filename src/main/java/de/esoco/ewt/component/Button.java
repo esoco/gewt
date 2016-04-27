@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -33,8 +32,8 @@ import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -55,8 +54,8 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	static
 	{
 		EWT.registerWidgetFactory(Button.class,
-										   new ButtonWidgetFactory<>(),
-										   false);
+								  new ButtonWidgetFactory<>(),
+								  false);
 	}
 
 	//~ Instance fields --------------------------------------------------------
@@ -195,7 +194,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	 *
 	 * @author eso
 	 */
-	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasText>
+	public static class ButtonWidgetFactory<W extends IsWidget & Focusable & HasText>
 		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
@@ -205,20 +204,20 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(UserInterfaceContext rContext, StyleData rStyle)
+		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			W aWidget;
+			IsWidget aWidget;
 
 			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
 			{
-				aWidget = (W) new Anchor();
+				aWidget = new Anchor();
 			}
 			else
 			{
-				aWidget = (W) new PushButton();
+				aWidget = new PushButton();
 			}
 
-			return aWidget;
+			return (W) aWidget;
 		}
 	}
 }

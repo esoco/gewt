@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
@@ -85,7 +84,7 @@ public class Website extends Component implements TextAttribute
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new Frame();

@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
@@ -183,7 +182,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			Widget aWidget = null;

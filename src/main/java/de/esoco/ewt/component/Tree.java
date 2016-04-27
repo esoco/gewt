@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
@@ -155,7 +154,7 @@ public class Tree extends Control
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new com.google.gwt.user.client.ui.Tree();

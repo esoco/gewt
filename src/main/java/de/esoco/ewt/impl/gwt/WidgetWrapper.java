@@ -29,34 +29,42 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class WidgetWrapper implements IsWidget
+public class WidgetWrapper<W extends Widget> implements IsWidget
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private IsWidget rIsWidget;
+	private W rWidget;
 
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param rIsWidget The widget to be wrapped by this instance
+	 * @param rWidget The widget to be wrapped by this instance
 	 */
-	public WidgetWrapper(IsWidget rIsWidget)
+	public WidgetWrapper(W rWidget)
 	{
-		this.rIsWidget = rIsWidget;
+		this.rWidget = rWidget;
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns the widget.
-	 *
-	 * @return The widget
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Widget asWidget()
 	{
-		return rIsWidget.asWidget();
+		return rWidget;
+	}
+
+	/***************************************
+	 * Returns the wrapped GWT widget.
+	 *
+	 * @return The wrapped widget
+	 */
+	protected final W getWidget()
+	{
+		return rWidget;
 	}
 }

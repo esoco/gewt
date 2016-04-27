@@ -166,7 +166,7 @@ public class Spinner extends Control
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new GwtSpinner(0, 100, 1);

@@ -244,7 +244,7 @@ public abstract class TableControl extends Control implements SingleSelection
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new GwtTable(bHierarchical);

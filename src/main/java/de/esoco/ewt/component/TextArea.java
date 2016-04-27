@@ -304,7 +304,7 @@ public class TextArea extends TextComponent
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			String sMimeType = rStyle.getProperty(MIME_TYPE, null);

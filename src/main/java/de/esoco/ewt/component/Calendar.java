@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -45,8 +44,8 @@ public class Calendar extends Component implements DateAttribute
 	static
 	{
 		EWT.registerWidgetFactory(Calendar.class,
-										   new CalendarWidgetFactory(),
-										   false);
+								  new CalendarWidgetFactory(),
+								  false);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -155,10 +154,10 @@ public class Calendar extends Component implements DateAttribute
 		 */
 		@Override
 		public GwtDatePicker createWidget(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+			Component rComponent,
+			StyleData rStyle)
 		{
-			return new GwtDatePicker(rContext,
+			return new GwtDatePicker(rComponent.getContext(),
 									 rStyle.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}

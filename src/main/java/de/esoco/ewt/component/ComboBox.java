@@ -310,7 +310,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			Widget rWidget;

@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtProgressBar;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -145,7 +144,7 @@ public class ProgressBar extends Component
 		 */
 		@Override
 		public Widget createWidget(
-			UserInterfaceContext rContext,
+			Component rComponent,
 			StyleData			 rStyle)
 		{
 			return new GwtProgressBar();

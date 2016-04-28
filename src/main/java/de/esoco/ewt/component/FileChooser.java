@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtFileChooser;
@@ -44,15 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FileChooser extends Control implements TextAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(FileChooser.class,
-										   new FileChooserWidgetFactory(),
-										   false);
-	}
-
 	//~ Instance fields --------------------------------------------------------
 
 	private String sAction;
@@ -148,7 +138,7 @@ public class FileChooser extends Control implements TextAttribute
 		@Override
 		public GwtFileChooser createWidget(
 			Component rComponent,
-			StyleData			 rStyle)
+			StyleData rStyle)
 		{
 			return new GwtFileChooser();
 		}

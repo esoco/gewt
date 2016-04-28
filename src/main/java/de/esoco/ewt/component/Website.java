@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
@@ -35,15 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Website extends Component implements TextAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Website.class,
-										   new WebsiteWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -83,9 +73,7 @@ public class Website extends Component implements TextAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new Frame();
 		}

@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.style.StyleData;
 
 
@@ -28,15 +27,6 @@ import de.esoco.ewt.style.StyleData;
  */
 public class RadioButton extends CheckBox
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(RadioButton.class,
-										   new RadioButtonWidgetFactory<>(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

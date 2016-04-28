@@ -16,9 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
-
-
 /********************************************************************
  * A hierarchical table that allows it's rows to be expanded and collapsed like
  * in a {@link Tree}.
@@ -27,12 +24,4 @@ import de.esoco.ewt.EWT;
  */
 public class TreeTable extends TableControl
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(TreeTable.class,
-										   new TableControlWidgetFactory(true),
-										   false);
-	}
 }

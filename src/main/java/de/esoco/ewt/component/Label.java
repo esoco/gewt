@@ -49,15 +49,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Label extends Component implements TextAttribute, ImageAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Label.class,
-										   new LabelWidgetFactory(),
-										   false);
-	}
-
 	//~ Instance fields --------------------------------------------------------
 
 	private String		    sText;
@@ -130,7 +121,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		setLabelHtml();
+		setLabelContent();
 	}
 
 	/***************************************
@@ -141,28 +132,37 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		this.sText = sText != null ? getContext().expandResource(sText) : null;
 
-		setLabelHtml();
+		setLabelContent();
 	}
 
 	/***************************************
 	 * Sets the label html.
 	 */
-	private void setLabelHtml()
+	private void setLabelContent()
 	{
-		HasHTML rHtml = (HasHTML) getWidget();
+		Widget rWidget = getWidget();
 
-		if (rImage != null)
+		if (rWidget instanceof HasHTML)
 		{
-			getWidget().addStyleName(EWT.CSS.ewtImageLabel());
-			rHtml.setHTML(createImageLabel(sText,
-										   rImage,
-										   rTextPosition,
-										   HasHorizontalAlignment.ALIGN_CENTER,
-										   "100%"));
+			HasHTML rHtml = (HasHTML) rWidget;
+
+			if (rImage != null)
+			{
+				rWidget.addStyleName(EWT.CSS.ewtImageLabel());
+				rHtml.setHTML(createImageLabel(sText,
+											   rImage,
+											   rTextPosition,
+											   HasHorizontalAlignment.ALIGN_CENTER,
+											   "100%"));
+			}
+			else
+			{
+				rHtml.setHTML(sText != null ? sText : "");
+			}
 		}
 		else
 		{
-			rHtml.setHTML(sText != null ? sText : "");
+			((HasText) rWidget).setText(sText);
 		}
 	}
 
@@ -173,7 +173,8 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	 *
 	 * @author eso
 	 */
-	public static class LabelWidgetFactory implements WidgetFactory<Widget>
+	public static class LabelWidgetFactory<W extends Widget & HasText>
+		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -181,9 +182,8 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
 		{
 			Widget aWidget = null;
 
@@ -218,7 +218,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 				}
 			}
 
-			return aWidget;
+			return (W) aWidget;
 		}
 	}
 

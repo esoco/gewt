@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -41,15 +40,6 @@ import com.google.gwt.user.datepicker.client.DateBox;
  */
 public class DateField extends TextComponent implements DateAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(DateField.class,
-								  new DateFieldWidgetFactory(),
-								  false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

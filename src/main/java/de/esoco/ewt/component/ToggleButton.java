@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.Focusable;
@@ -32,15 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ToggleButton extends SelectableButton
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(ToggleButton.class,
-										   new ToggleButtonWidgetFactory<>(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

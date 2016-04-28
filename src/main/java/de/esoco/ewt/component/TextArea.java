@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -44,15 +43,6 @@ import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
  */
 public class TextArea extends TextComponent
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(TextArea.class,
-										   new TextAreaWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -303,9 +293,7 @@ public class TextArea extends TextComponent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			String sMimeType = rStyle.getProperty(MIME_TYPE, null);
 			Widget aWidget   = null;

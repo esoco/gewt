@@ -16,9 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
-
-
 /********************************************************************
  * A table component.
  *
@@ -26,12 +23,4 @@ import de.esoco.ewt.EWT;
  */
 public class Table extends TableControl
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Table.class,
-										   new TableControlWidgetFactory(false),
-										   false);
-	}
 }

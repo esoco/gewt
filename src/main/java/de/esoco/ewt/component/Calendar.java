@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -39,15 +38,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Calendar extends Component implements DateAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Calendar.class,
-								  new CalendarWidgetFactory(),
-								  false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

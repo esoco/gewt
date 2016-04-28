@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
@@ -47,15 +46,6 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class List extends ListControl
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(List.class,
-										   new ListControlWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

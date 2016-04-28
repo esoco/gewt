@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
@@ -44,15 +43,6 @@ import com.google.gwt.user.client.ui.TextBoxBase;
  */
 public class TextField extends TextComponent
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(TextField.class,
-										   new TextFieldWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -106,9 +96,7 @@ public class TextField extends TextComponent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public TextBoxBase createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public TextBoxBase createWidget(Component rComponent, StyleData rStyle)
 		{
 			TextBoxBase aTextBox;
 

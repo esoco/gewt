@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.layout.GenericLayout;
@@ -183,7 +184,7 @@ public abstract class Container extends Component
 	 */
 	public void setLayout(GenericLayout rLayout)
 	{
-		this.rLayout = rLayout;
+		this.rLayout = EWT.getLayoutMapper().mapLayout(this, rLayout);
 	}
 
 	/***************************************

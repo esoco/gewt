@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
@@ -38,15 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Tree extends Control
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Tree.class,
-										   new TreeWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -153,9 +143,7 @@ public class Tree extends Control
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new com.google.gwt.user.client.ui.Tree();
 		}

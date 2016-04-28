@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtProgressBar;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -48,15 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ProgressBar extends Component
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(ProgressBar.class,
-										   new ProgressBarWidgetFactory(),
-										   false);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -143,9 +133,7 @@ public class ProgressBar extends Component
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new GwtProgressBar();
 		}

@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -34,6 +33,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -49,15 +49,6 @@ import com.google.gwt.user.client.ui.PushButton;
  */
 public class Button extends Control implements TextAttribute, ImageAttribute
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Button.class,
-								  new ButtonWidgetFactory<>(),
-								  false);
-	}
-
 	//~ Instance fields --------------------------------------------------------
 
 	private String sText;
@@ -194,7 +185,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	 *
 	 * @author eso
 	 */
-	public static class ButtonWidgetFactory<W extends IsWidget & Focusable & HasText>
+	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasText>
 		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------

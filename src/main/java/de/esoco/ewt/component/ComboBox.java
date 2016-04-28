@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtTagField;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -53,15 +52,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class ComboBox extends TextComponent implements KeyDownHandler,
 													   DoubleClickHandler
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(ComboBox.class,
-										   new ComboBoxWidgetFactory(),
-										   false);
-	}
-
 	//~ Instance fields --------------------------------------------------------
 
 	private Set<String> aDefaultSuggestions = new LinkedHashSet<String>();
@@ -309,9 +299,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			Widget rWidget;
 

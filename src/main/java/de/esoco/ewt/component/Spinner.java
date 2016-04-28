@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtSpinner;
@@ -35,15 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Spinner extends Control
 {
-	//~ Static fields/initializers ---------------------------------------------
-
-	static
-	{
-		EWT.registerWidgetFactory(Spinner.class,
-										   new SpinnerWidgetFactory(),
-										   false);
-	}
-
 	//~ Instance fields --------------------------------------------------------
 
 	private GwtSpinner aGwtSpinner;
@@ -165,9 +155,7 @@ public class Spinner extends Control
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new GwtSpinner(0, 100, 1);
 		}

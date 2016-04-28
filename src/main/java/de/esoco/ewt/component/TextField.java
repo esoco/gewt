@@ -25,9 +25,11 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -87,8 +89,8 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static class TextFieldWidgetFactory
-		implements WidgetFactory<TextBoxBase>
+	public static class TextFieldWidgetFactory<W extends Widget & HasText & Focusable>
+		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -96,9 +98,10 @@ public class TextField extends TextComponent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public TextBoxBase createWidget(Component rComponent, StyleData rStyle)
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			TextBoxBase aTextBox;
+			Widget aTextBox;
 
 			if (rStyle.hasFlag(StyleFlag.PASSWORD))
 			{
@@ -109,7 +112,7 @@ public class TextField extends TextComponent
 				aTextBox = new GwtTextField();
 			}
 
-			return aTextBox;
+			return (W) aTextBox;
 		}
 	}
 

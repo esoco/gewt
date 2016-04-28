@@ -292,7 +292,6 @@ public abstract class Container extends Component
 		 * {@inheritDoc}
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
 		public HasWidgets createLayoutContainer(
 			UserInterfaceContext rContext,
 			StyleData			 rContainerStyle)

@@ -30,8 +30,10 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.TextBoxBase;
-import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
 
@@ -219,7 +221,7 @@ public class TextArea extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static interface IsTextArea
+	public static interface IsTextArea extends IsWidget, HasText, Focusable
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -235,6 +237,7 @@ public class TextArea extends TextComponent
 		 *
 		 * @return The text
 		 */
+		@Override
 		public String getText();
 
 		/***************************************
@@ -268,6 +271,7 @@ public class TextArea extends TextComponent
 		 *
 		 * @param sText The new text
 		 */
+		@Override
 		public void setText(String sText);
 
 		/***************************************
@@ -285,7 +289,8 @@ public class TextArea extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static class TextAreaWidgetFactory implements WidgetFactory<Widget>
+	public static class TextAreaWidgetFactory<W extends IsTextArea>
+		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -293,10 +298,11 @@ public class TextArea extends TextComponent
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			String sMimeType = rStyle.getProperty(MIME_TYPE, null);
-			Widget aWidget   = null;
+			String     sMimeType = rStyle.getProperty(MIME_TYPE, null);
+			IsTextArea aWidget   = null;
 
 			if (sMimeType != null && !sMimeType.equalsIgnoreCase("text/plain"))
 			{
@@ -323,7 +329,7 @@ public class TextArea extends TextComponent
 				aWidget = new GwtTextArea();
 			}
 
-			return aWidget;
+			return (W) aWidget;
 		}
 	}
 

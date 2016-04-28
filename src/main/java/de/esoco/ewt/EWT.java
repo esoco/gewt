@@ -338,10 +338,10 @@ public class EWT
 							  new TableControlWidgetFactory(false),
 							  bReplaceExisting);
 		registerWidgetFactory(TextArea.class,
-							  new TextAreaWidgetFactory(),
+							  new TextAreaWidgetFactory<>(),
 							  bReplaceExisting);
 		registerWidgetFactory(TextField.class,
-							  new TextFieldWidgetFactory(),
+							  new TextFieldWidgetFactory<>(),
 							  bReplaceExisting);
 		registerWidgetFactory(ToggleButton.class,
 							  new ToggleButtonWidgetFactory<>(),

@@ -18,6 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
+import de.esoco.ewt.impl.gwt.ValueBoxWrapper;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
@@ -29,7 +30,6 @@ import java.util.Date;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 
@@ -158,9 +158,9 @@ public class DateField extends TextComponent implements DateAttribute
 	 * @see TextComponent#getTextBox()
 	 */
 	@Override
-	protected TextBoxBase getTextBox()
+	protected IsTextBox getTextBox()
 	{
-		return getDateWidget().getTextBox();
+		return new ValueBoxWrapper(getDateWidget().getTextBox());
 	}
 
 	/***************************************

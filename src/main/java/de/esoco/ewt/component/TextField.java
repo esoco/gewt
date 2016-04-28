@@ -25,11 +25,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -64,7 +61,7 @@ public class TextField extends TextComponent
 	@Override
 	public void setColumns(int nColumns)
 	{
-		((TextBox) getWidget()).setVisibleLength(nColumns);
+		getTextBox().setVisibleLength(nColumns);
 	}
 
 	/***************************************
@@ -89,7 +86,7 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static class TextFieldWidgetFactory<W extends Widget & HasText & Focusable>
+	public static class TextFieldWidgetFactory<W extends IsTextBox>
 		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
@@ -101,11 +98,11 @@ public class TextField extends TextComponent
 		@SuppressWarnings("unchecked")
 		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			Widget aTextBox;
+			IsTextBox aTextBox;
 
 			if (rStyle.hasFlag(StyleFlag.PASSWORD))
 			{
-				aTextBox = new PasswordTextBox();
+				aTextBox = new GwtPasswordBox();
 			}
 			else
 			{
@@ -121,7 +118,54 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	static class GwtTextField extends TextBox
+	static class GwtPasswordBox extends PasswordTextBox implements IsTextBox
+	{
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		GwtPasswordBox()
+		{
+			sinkEvents(Event.ONPASTE);
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void onBrowserEvent(Event rEvent)
+		{
+			super.onBrowserEvent(rEvent);
+
+			switch (DOM.eventGetType(rEvent))
+			{
+				case Event.ONPASTE:
+					Scheduler.get()
+							 .scheduleDeferred(new ScheduledCommand()
+						{
+							@Override
+							public void execute()
+							{
+								ValueChangeEvent.fire(GwtPasswordBox.this,
+													  getText());
+							}
+						});
+
+
+					break;
+			}
+		}
+	}
+
+	/********************************************************************
+	 * A text area subclass that propagates the on paste event.
+	 *
+	 * @author eso
+	 */
+	static class GwtTextField extends TextBox implements IsTextBox
 	{
 		//~ Constructors -------------------------------------------------------
 
@@ -136,7 +180,7 @@ public class TextField extends TextComponent
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see com.google.gwt.user.client.ui.TextArea#onBrowserEvent(Event)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onBrowserEvent(Event rEvent)

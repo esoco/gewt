@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,12 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -90,6 +96,34 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
+	public HandlerRegistration addDoubleClickHandler(
+		DoubleClickHandler rHandler)
+	{
+		return addHandler(rHandler, DoubleClickEvent.getType());
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler rHandler)
+	{
+		return addHandler(rHandler, KeyDownEvent.getType());
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler rHandler)
+	{
+		return addHandler(rHandler, KeyPressEvent.getType());
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
 	public HandlerRegistration addValueChangeHandler(
 		ValueChangeHandler<String> rHandler)
 	{
@@ -152,6 +186,15 @@ public class GwtCodeMirror extends Composite
 	}
 
 	/***************************************
+	 * @see de.esoco.ewt.component.TextComponent$IsTextBox#getSelectedText()
+	 */
+	@Override
+	public String getSelectedText()
+	{
+		return "";
+	}
+
+	/***************************************
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -179,6 +222,15 @@ public class GwtCodeMirror extends Composite
 		{
 			indentAllLines(aCodeMirror);
 		}
+	}
+
+	/***************************************
+	 * @see com.google.gwt.user.client.ui.HasEnabled#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled()
+	{
+		return true;
 	}
 
 	/***************************************
@@ -236,6 +288,15 @@ public class GwtCodeMirror extends Composite
 		{
 			setEditorPosition(aCodeMirror, rPosition);
 		}
+	}
+
+	/***************************************
+	 * @see com.google.gwt.user.client.ui.HasEnabled#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean bEnabled)
+	{
+		// TODO: Implement
 	}
 
 	/***************************************
@@ -315,6 +376,15 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setSelectionRange(int nStart, int nLength)
+	{
+		// TODO Add method code here
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setTabIndex(int nIndex)
 	{
 		aFocusImpl.setTabIndex(getElement(), nIndex);
@@ -343,6 +413,15 @@ public class GwtCodeMirror extends Composite
 				bSettingValue = false;
 			}
 		}
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setVisibleLength(int nColumns)
+	{
+		// TODO Add method code here
 	}
 
 	/***************************************
@@ -694,14 +773,14 @@ public class GwtCodeMirror extends Composite
 				viewportMargin: Infinity,
 				extraKeys: {
 					"Ctrl-Space": "autocomplete"
-	//					  function (editor) {
-	//						 $wnd.CodeMirror.showHint(editor, function (editor, callback) {
-	//							 var result = [];
-	//							 var cursor = editor.doc.getCursor();
-	//							 var index = editor.indexFromPos(cursor);
-	//							 $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
-	//						 }, {async: true});
-	//					 }
+	//						   function (editor) {
+	//							  $wnd.CodeMirror.showHint(editor, function (editor, callback) {
+	//								  var result = [];
+	//								  var cursor = editor.doc.getCursor();
+	//								  var index = editor.indexFromPos(cursor);
+	//								  $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
+	//							  }, {async: true});
+	//						  }
 				}
 			}
 		);

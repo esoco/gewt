@@ -18,6 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtTagField;
+import de.esoco.ewt.impl.gwt.ValueBoxWrapper;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestBox.DefaultSuggestionDisplay;
 import com.google.gwt.user.client.ui.SuggestBox.SuggestionDisplay;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -185,7 +185,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 
 		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
 
-		TextBox rTextBox = getTextBox();
+		IsTextBox rTextBox = getTextBox();
 
 		rTextBox.addKeyDownHandler(this);
 		rTextBox.addDoubleClickHandler(this);
@@ -255,9 +255,9 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	 * @see TextComponent#getTextBox()
 	 */
 	@Override
-	protected TextBox getTextBox()
+	protected IsTextBox getTextBox()
 	{
-		return ((TextBox) getSuggestBox().getValueBox());
+		return new ValueBoxWrapper(getSuggestBox().getValueBox());
 	}
 
 	/***************************************

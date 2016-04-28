@@ -30,10 +30,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.TextBoxBase;
 
 import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
 
@@ -166,24 +162,6 @@ public class TextArea extends TextComponent
 	}
 
 	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected TextBoxBase getTextBox()
-	{
-		if (getWidget() instanceof TextBoxBase)
-		{
-			return super.getTextBox();
-		}
-		else
-		{
-			throw new UnsupportedOperationException("TextArea not implemented " +
-													"as TextBox but with" +
-													getWidget().getClass());
-		}
-	}
-
-	/***************************************
 	 * Implements setting the widget text and will be invoked from {@link
 	 * #setText(String)}.
 	 *
@@ -221,16 +199,9 @@ public class TextArea extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static interface IsTextArea extends IsWidget, HasText, Focusable
+	public static interface IsTextArea extends IsTextBox
 	{
 		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * Returns the position of the input caret.
-		 *
-		 * @return The caret position
-		 */
-		public int getCursorPos();
 
 		/***************************************
 		 * Returns the text of this component.
@@ -241,30 +212,9 @@ public class TextArea extends TextComponent
 		public String getText();
 
 		/***************************************
-		 * Returns the editable state of this component.
-		 *
-		 * @return TRUE if the component is readonly
-		 */
-		public boolean isReadOnly();
-
-		/***************************************
 		 * @see TextComponent#setColumns(int)
 		 */
 		public void setCharacterWidth(int nColumns);
-
-		/***************************************
-		 * Sets the position of the input caret.
-		 *
-		 * @param nPosition The new caret position
-		 */
-		public void setCursorPos(int nPosition);
-
-		/***************************************
-		 * Sets the editable state of this component.
-		 *
-		 * @param bReadOnly TRUE if the object shall be readonly
-		 */
-		public void setReadOnly(boolean bReadOnly);
 
 		/***************************************
 		 * Sets the text of this component.
@@ -381,6 +331,15 @@ public class TextArea extends TextComponent
 
 					break;
 			}
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setVisibleLength(int nColumns)
+		{
+			// ignored for TextArea
 		}
 	}
 

@@ -26,6 +26,7 @@ import de.esoco.ewt.style.StyleData;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
@@ -34,6 +35,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandlers;
 
 
 /********************************************************************
@@ -202,7 +205,7 @@ public class StackPanel extends GroupPanel
 	 * @author eso
 	 */
 	class StackPanelEventDispatcher extends ComponentEventDispatcher
-		implements SelectionHandler<Integer>
+		implements SelectionHandler<Integer>, SelectionChangeEvent.Handler
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -226,6 +229,15 @@ public class StackPanel extends GroupPanel
 			// has finished to prevent update problems in child widgets
 			aAnimationWaitTimer.schedule(((StackLayoutPanel) getWidget())
 										 .getAnimationDuration() + 250);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void onSelectionChange(SelectionChangeEvent rEvent)
+		{
+			handleSelection();
 		}
 
 		/***************************************
@@ -263,11 +275,20 @@ public class StackPanel extends GroupPanel
 		 * @see ControlEventDispatcher#initEventDispatching(Widget)
 		 */
 		@Override
+		@SuppressWarnings("unchecked")
 		void initEventDispatching(Widget rWidget)
 		{
 			super.initEventDispatching(rWidget);
 
-			((StackLayoutPanel) rWidget).addSelectionHandler(this);
+			if (rWidget instanceof HasSelectionHandlers)
+			{
+				((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(this);
+			}
+			else if (rWidget instanceof HasSelectionChangedHandlers)
+			{
+				((HasSelectionChangedHandlers) rWidget)
+				.addSelectionChangeHandler(this);
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import com.google.gwt.core.client.Scheduler;
@@ -25,7 +27,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.TextBoxBase;
 
 
 /********************************************************************
@@ -41,39 +42,6 @@ import com.google.gwt.user.client.ui.TextBoxBase;
  */
 public class TextField extends TextComponent
 {
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param bPassword TRUE for a text field for hidden password input
-	 */
-	public TextField(boolean bPassword)
-	{
-		super(createTextBox(bPassword));
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Helper method to create the correct GWT text component.
-	 *
-	 * @param  bPassword TRUE for a text field for hidden password input
-	 *
-	 * @return A new GWT text box instance
-	 */
-	private static TextBoxBase createTextBox(boolean bPassword)
-	{
-		if (bPassword)
-		{
-			return new PasswordTextBox();
-		}
-		else
-		{
-			return new GwtTextField();
-		}
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -93,7 +61,7 @@ public class TextField extends TextComponent
 	@Override
 	public void setColumns(int nColumns)
 	{
-		((TextBox) getWidget()).setVisibleLength(nColumns);
+		getTextBox().setVisibleLength(nColumns);
 	}
 
 	/***************************************
@@ -114,11 +82,90 @@ public class TextField extends TextComponent
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class TextFieldWidgetFactory<W extends IsTextBox>
+		implements WidgetFactory<W>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
+		{
+			IsTextBox aTextBox;
+
+			if (rStyle.hasFlag(StyleFlag.PASSWORD))
+			{
+				aTextBox = new GwtPasswordBox();
+			}
+			else
+			{
+				aTextBox = new GwtTextField();
+			}
+
+			return (W) aTextBox;
+		}
+	}
+
+	/********************************************************************
 	 * A text area subclass that propagates the on paste event.
 	 *
 	 * @author eso
 	 */
-	static class GwtTextField extends TextBox
+	static class GwtPasswordBox extends PasswordTextBox implements IsTextBox
+	{
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		GwtPasswordBox()
+		{
+			sinkEvents(Event.ONPASTE);
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void onBrowserEvent(Event rEvent)
+		{
+			super.onBrowserEvent(rEvent);
+
+			switch (DOM.eventGetType(rEvent))
+			{
+				case Event.ONPASTE:
+					Scheduler.get()
+							 .scheduleDeferred(new ScheduledCommand()
+						{
+							@Override
+							public void execute()
+							{
+								ValueChangeEvent.fire(GwtPasswordBox.this,
+													  getText());
+							}
+						});
+
+
+					break;
+			}
+		}
+	}
+
+	/********************************************************************
+	 * A text area subclass that propagates the on paste event.
+	 *
+	 * @author eso
+	 */
+	static class GwtTextField extends TextBox implements IsTextBox
 	{
 		//~ Constructors -------------------------------------------------------
 
@@ -133,7 +180,7 @@ public class TextField extends TextComponent
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see com.google.gwt.user.client.ui.TextArea#onBrowserEvent(Event)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onBrowserEvent(Event rEvent)

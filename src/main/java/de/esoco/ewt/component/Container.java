@@ -16,6 +16,8 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
@@ -26,20 +28,20 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * EWT container class that wraps a GWT panel.
- *
- * <p>This interface cannot be instantiated directly.</p>
+ * The base class for GEWT containers. It wraps an implementation of the GWT
+ * interface {@link HasWidgets}.
  */
 public abstract class Container extends Component
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private HasWidgets    rContainer;
 	private GenericLayout rLayout;
+	private HasWidgets    rContainer;
 
 	private int nNewComponentPosition = -1;
 
@@ -47,38 +49,6 @@ public abstract class Container extends Component
 
 	private List<Component> aComponentList =
 		Collections.unmodifiableList(aComponents);
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * @see Component#Component()
-	 */
-	Container()
-	{
-	}
-
-	/***************************************
-	 * Creates a new instance that wraps a certain widget container.
-	 *
-	 * @param rWidgetContainer The wrapped widget container
-	 */
-	Container(HasWidgets rWidgetContainer)
-	{
-		super((Widget) rWidgetContainer);
-
-		rContainer = rWidgetContainer;
-		rLayout    = new ImplicitLayout();
-	}
-
-	/***************************************
-	 * Creates a new instance that is based on a certain layout.
-	 *
-	 * @param rLayout The layout
-	 */
-	Container(GenericLayout rLayout)
-	{
-		setLayout(rLayout);
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -135,7 +105,7 @@ public abstract class Container extends Component
 	 *
 	 * @return The layout of the container
 	 */
-	public final GenericLayout getLayout()
+	public GenericLayout getLayout()
 	{
 		return rLayout;
 	}
@@ -214,10 +184,7 @@ public abstract class Container extends Component
 	 */
 	public void setLayout(GenericLayout rLayout)
 	{
-		rContainer   = rLayout.createLayoutContainer();
-		this.rLayout = rLayout;
-
-		setWidget((Widget) rContainer);
+		this.rLayout = EWT.getLayoutMapper().mapLayout(this, rLayout);
 	}
 
 	/***************************************
@@ -234,6 +201,35 @@ public abstract class Container extends Component
 	public void setNewComponentPosition(int nPosition)
 	{
 		nNewComponentPosition = nPosition;
+	}
+
+	/***************************************
+	 * Overridden to first check if the layout creates a container widget. A
+	 * final check for a correct container type of the widget will be performed
+	 * be the overridden method {@link #setWidget(Widget)}.
+	 *
+	 * @see Component#createWidget(UserInterfaceContext, StyleData)
+	 */
+	@Override
+	protected IsWidget createWidget(
+		UserInterfaceContext rContext,
+		StyleData			 rStyle)
+	{
+		rContainer = rLayout.createLayoutContainer(rContext, rStyle);
+
+		return (IsWidget) rContainer;
+	}
+
+	/***************************************
+	 * Returns the container widget of this instance.
+	 *
+	 * @return   The container widget
+	 *
+	 * @category GEWT
+	 */
+	protected final HasWidgets getContainer()
+	{
+		return rContainer;
 	}
 
 	/***************************************
@@ -258,11 +254,33 @@ public abstract class Container extends Component
 						  nNewComponentPosition);
 	}
 
+	/***************************************
+	 * Overridden to also set the container of this instance.
+	 *
+	 * @see Component#setWidget(IsWidget)
+	 */
+	@Override
+	void setWidget(IsWidget rIsWidget)
+	{
+		Widget rContainerWidget = rIsWidget.asWidget();
+
+		assert rContainerWidget instanceof HasWidgets : "Container widget must implement HasWidgets";
+
+		super.setWidget(rIsWidget);
+
+		rContainer = (HasWidgets) rContainerWidget;
+
+		if (rLayout == null)
+		{
+			rLayout = new ImplicitLayout();
+		}
+	}
+
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
 	 * A simple layout implementation that will be used if no explicit layout
-	 * has been set. It forwards all calls to the container widget.
+	 * has been set.
 	 *
 	 * @author eso
 	 */
@@ -274,7 +292,9 @@ public abstract class Container extends Component
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer()
+		public HasWidgets createLayoutContainer(
+			UserInterfaceContext rContext,
+			StyleData			 rContainerStyle)
 		{
 			return rContainer;
 		}

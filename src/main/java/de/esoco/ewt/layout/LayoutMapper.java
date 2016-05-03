@@ -14,58 +14,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.component;
+package de.esoco.ewt.layout;
 
-import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.TextAttribute;
-
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.component.Container;
 
 
 /********************************************************************
- * A component that displays a website with a certain URL. The URL of the
- * component can be queried in text format through the implemented methods of
- * the {@link TextAttribute} interface.
+ * An interface for the mapping of EWT layouts to other layout instances. EWT
+ * extensions can use this to replace default layouts with their own instances.
  *
  * @author eso
  */
-public class Website extends Component implements TextAttribute
+public interface LayoutMapper
 {
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Returns the URL that is display by this component.
+	 * Checks whether the given layout for a particular target container should
+	 * be mapped to a different layout instance and returns that if applicable.
 	 *
-	 * @return The URL
-	 */
-	@Override
-	public String getText()
-	{
-		return ((Frame) getWidget()).getUrl();
-	}
-
-	/***************************************
-	 * Sets the URL that is display by this component.
+	 * @param  rContainer The target container for the layout
+	 * @param  rLayout    The original layout for the container
 	 *
-	 * @param sUrl The URL
+	 * @return Either a new (mapped) layout instance or the original layout if
+	 *         no mapping is necessary
 	 */
-	@Override
-	public void setText(String sUrl)
-	{
-		((Frame) getWidget()).setUrl(sUrl);
-	}
+	public GenericLayout mapLayout(
+		Container	  rContainer,
+		GenericLayout rLayout);
 
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Widget factory for this component.
+	 * A default layout mapper implementation that always returns the original
+	 * layout.
 	 *
 	 * @author eso
 	 */
-	public static class WebsiteWidgetFactory implements WidgetFactory<Widget>
+	public static class IdentityLayoutMapper implements LayoutMapper
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -73,9 +59,11 @@ public class Website extends Component implements TextAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
+		public GenericLayout mapLayout(
+			Container	  rContainer,
+			GenericLayout rLayout)
 		{
-			return new Frame();
+			return rLayout;
 		}
 	}
 }

@@ -14,47 +14,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.layout;
+package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.style.StyleData;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * A flow layout implementation.
+ * A wrapper for widget instances that can be extended to implement additional
+ * interface methods that provide functionality that is not available directly
+ * in the original widget. The Wrapper only wraps implementations of the
+ * interface {@link IsWidget} but the method {@link #getWidget()} gives access
+ * to the actual widget implementation.
  *
  * @author eso
  */
-public class FlowLayout extends GenericLayout
+public class WidgetWrapper<W extends Widget> implements IsWidget
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private final Boolean bHorizontal;
+	private W rWidget;
 
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a new instance that is based on a GWT {@link FlowPanel}.
-	 */
-	public FlowLayout()
-	{
-		bHorizontal = null;
-	}
-
-	/***************************************
-	 * Creates a new instance that is based on a GWT {@link HorizontalPanel} or
-	 * a {@link VerticalPanel}.
+	 * Creates a new instance.
 	 *
-	 * @param bHorizontal TRUE for horizontal, FALSE for vertical orientation
+	 * @param rWidget The widget to be wrapped by this instance
 	 */
-	public FlowLayout(boolean bHorizontal)
+	public WidgetWrapper(W rWidget)
 	{
-		this.bHorizontal = Boolean.valueOf(bHorizontal);
+		this.rWidget = rWidget;
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -63,27 +53,18 @@ public class FlowLayout extends GenericLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(
-		UserInterfaceContext rContext,
-		StyleData			 rContainerStyle)
+	public Widget asWidget()
 	{
-		Panel aPanel;
+		return rWidget;
+	}
 
-		if (bHorizontal == null)
-		{
-			aPanel = new FlowPanel();
-		}
-		else if (bHorizontal == Boolean.TRUE)
-		{
-			aPanel = new HorizontalPanel();
-		}
-		else
-		{
-			aPanel = new VerticalPanel();
-		}
-
-		aPanel.addStyleName("ewt-FlowLayout");
-
-		return aPanel;
+	/***************************************
+	 * Returns the wrapped GWT widget.
+	 *
+	 * @return The wrapped widget
+	 */
+	protected final W getWidget()
+	{
+		return rWidget;
 	}
 }

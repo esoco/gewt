@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ import de.esoco.lib.property.TextAttribute;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -33,7 +36,9 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -65,18 +70,6 @@ public abstract class TextComponent extends Control implements TextAttribute
 	private HandlerRegistration rConstraintHandler = null;
 	private boolean			    bResourceValue     = false;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rTextWidget The text widget to wrap
-	 */
-	public TextComponent(Focusable rTextWidget)
-	{
-		super(rTextWidget);
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -88,7 +81,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 	public abstract void setColumns(int nColumns);
 
 	/***************************************
-	 * @see Control#applyStyle(StyleData)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void applyStyle(StyleData rStyle)
@@ -201,13 +194,13 @@ public abstract class TextComponent extends Control implements TextAttribute
 	}
 
 	/***************************************
-	 * Returns the {@link TextBoxBase} widget of the subclass.
+	 * Returns the {@link IsTextBox} implementation of this instance.
 	 *
 	 * @return The text box
 	 */
-	protected TextBoxBase getTextBox()
+	protected IsTextBox getTextBox()
 	{
-		return (TextBoxBase) getWidget();
+		return (IsTextBox) getWidget();
 	}
 
 	/***************************************
@@ -222,7 +215,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 	}
 
 	/***************************************
-	 * @see Component#createEventDispatcher()
+	 * {@inheritDoc}
 	 */
 	@Override
 	ComponentEventDispatcher createEventDispatcher()
@@ -231,7 +224,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 	}
 
 	/***************************************
-	 * @see Control#setProperty(String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	void setProperty(String sProperty)
@@ -244,6 +237,76 @@ public abstract class TextComponent extends Control implements TextAttribute
 		{
 			setText(sProperty);
 		}
+	}
+
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * The interface that needs to be provided by all text box implementations.
+	 *
+	 * @author eso
+	 */
+	public static interface IsTextBox extends IsWidget, HasText, Focusable,
+											  HasEnabled, HasKeyPressHandlers,
+											  HasKeyDownHandlers,
+											  HasDoubleClickHandlers
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Returns the position of the input caret.
+		 *
+		 * @return The caret position
+		 */
+		public int getCursorPos();
+
+		/***************************************
+		 * Returns the currently selected text. The returned string will be
+		 * empty if no selection exists.
+		 *
+		 * @return The selected text
+		 */
+		public String getSelectedText();
+
+		/***************************************
+		 * Returns the editable state of this component.
+		 *
+		 * @return TRUE if the component is readonly
+		 */
+		public boolean isReadOnly();
+
+		/***************************************
+		 * Sets the position of the input caret.
+		 *
+		 * @param nPosition The new caret position
+		 */
+		public void setCursorPos(int nPosition);
+
+		/***************************************
+		 * Sets the editable state of this component.
+		 *
+		 * @param bReadOnly TRUE if the object shall be readonly
+		 */
+		public void setReadOnly(boolean bReadOnly);
+
+		/***************************************
+		 * Sets the selection of the text. A length of zero will remove the
+		 * selection.
+		 *
+		 * @param  nStart  The start index of the selection
+		 * @param  nLength The length of the selection
+		 *
+		 * @throws IndexOutOfBoundsException If the given selection doesn't fit
+		 *                                   the current text
+		 */
+		public void setSelectionRange(int nStart, int nLength);
+
+		/***************************************
+		 * Sets the number of text columns to be displayed by this instance.
+		 *
+		 * @param nColumns The column count
+		 */
+		public void setVisibleLength(int nColumns);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -281,7 +344,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 		}
 
 		/***************************************
-		 * @see ComponentEventDispatcher#onKeyUp(KeyUpEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onKeyUp(KeyUpEvent rEvent)
@@ -292,7 +355,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 		}
 
 		/***************************************
-		 * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onValueChange(ValueChangeEvent<Object> rEvent)
@@ -314,7 +377,7 @@ public abstract class TextComponent extends Control implements TextAttribute
 		}
 
 		/***************************************
-		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
+		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")

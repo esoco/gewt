@@ -1,6 +1,18 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// GEWT source file
-// Copyright (c) 2014 by Elmar Sonnenschein / esoco GmbH
+// This file is a part of the 'gewt' project.
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
@@ -29,33 +41,31 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  *
  * @author eso
  */
-public
-class GwtFileChooser extends Composite
-    implements Focusable, HasText, HasHTML, HasValueChangeHandlers<String>,
-               ClickHandler, ChangeHandler
+public class GwtFileChooser extends Composite
+	implements Focusable, HasText, HasHTML, HasValueChangeHandlers<String>,
+			   ClickHandler, ChangeHandler
 {
+	//~ Instance fields --------------------------------------------------------
+
 	private FormPanel aFormPanel = new FormPanel();
 
 	private FileUpload aFileUpload   = new FileUpload();
 	private Button     aSubmitButton = new Button();
 
+	//~ Constructors -----------------------------------------------------------
+
 	/***************************************
 	 * Creates a new instance. The action argument must be a module-relative URL
 	 * for the submit target of the executed POST request. It will be appended
 	 * to the result of {@link GWT#getModuleBaseURL()}.
-	 *
-	 * @param sAction The submit action to be performed when the user confirm
-	 *                the file selection
 	 */
-	public GwtFileChooser(String sAction)
+	public GwtFileChooser()
 	{
 		HorizontalPanel aPanel = new HorizontalPanel();
 
 		aFormPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		aFormPanel.setMethod(FormPanel.METHOD_POST);
-		aFormPanel.setAction(GWT.getModuleBaseURL() + sAction);
 
-		aFileUpload.setName(sAction);
 		aFileUpload.addChangeHandler(this);
 
 		aSubmitButton.setEnabled(false);
@@ -69,11 +79,14 @@ class GwtFileChooser extends Composite
 		initWidget(aFormPanel);
 	}
 
+	//~ Methods ----------------------------------------------------------------
+
 	/***************************************
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> rHandler)
+	public HandlerRegistration addValueChangeHandler(
+		ValueChangeHandler<String> rHandler)
 	{
 		return addHandler(rHandler, ValueChangeEvent.getType());
 	}
@@ -154,6 +167,17 @@ class GwtFileChooser extends Composite
 	public void setAccessKey(char cKey)
 	{
 		aSubmitButton.setAccessKey(cKey);
+	}
+
+	/***************************************
+	 * Sets the action name for this instance.
+	 *
+	 * @param sAction The action name
+	 */
+	public void setAction(String sAction)
+	{
+		aFormPanel.setAction(GWT.getModuleBaseURL() + sAction);
+		aFileUpload.setName(sAction);
 	}
 
 	/***************************************

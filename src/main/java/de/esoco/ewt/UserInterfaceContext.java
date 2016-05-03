@@ -230,7 +230,9 @@ public class UserInterfaceContext
 	 */
 	public ChildView createChildView(View rParent, ViewStyle rViewStyle)
 	{
-		return new ChildView(this, rViewStyle);
+		ChildView aChildView = new ChildView(this, rViewStyle);
+
+		return aChildView;
 	}
 
 	/***************************************

@@ -16,11 +16,13 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -102,12 +104,12 @@ public class FillLayout extends GenericLayout
 	}
 
 	/***************************************
-	 * Returns a {@link LayoutPanel} instance.
-	 *
-	 * @see GenericLayout#createLayoutContainer()
+	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer()
+	public Panel createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rContainerStyle)
 	{
 		LayoutPanel aPanel = new LayoutPanel();
 

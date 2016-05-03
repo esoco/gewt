@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
@@ -41,66 +42,10 @@ public class DeckPanel extends GroupPanel
 	 */
 	public DeckPanel()
 	{
-		super(new DeckLayoutPanel());
+		super(new DeckPanelLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addGroup(Component rGroupComponent,
-						 String    sGroupTitle,
-						 boolean   bCloseable)
-	{
-		getDeckPanel().add(rGroupComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupCount()
-	{
-		return getDeckPanel().getWidgetCount();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupIndex(Component rGroupComponent)
-	{
-		return getDeckPanel().getWidgetIndex(rGroupComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getSelectionIndex()
-	{
-		return getDeckPanel().getVisibleWidgetIndex();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setGroupTitle(int nIndex, String sTitle)
-	{
-		// ignored because now title is displayed
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelection(int nIndex)
-	{
-		getDeckPanel().showWidget(nIndex);
-	}
 
 	/***************************************
 	 * Overridden to reset the base class version to the original implementation
@@ -113,16 +58,91 @@ public class DeckPanel extends GroupPanel
 	@Override
 	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
 	{
-		getLayout().addWidget(getDeckPanel(), rWidget, rStyleData, -1);
+		getLayout().addWidget(getContainer(), rWidget, rStyleData, -1);
 	}
 
-	/***************************************
-	 * Returns the {@link DeckLayoutPanel} widget of this instance.
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * The default layout for this panel.
 	 *
-	 * @return The deck panel
+	 * @author eso
 	 */
-	private DeckLayoutPanel getDeckPanel()
+	public static class DeckPanelLayout extends GroupPanelLayout
 	{
-		return (DeckLayoutPanel) getWidget();
+		//~ Instance fields ----------------------------------------------------
+
+		private DeckLayoutPanel aDeckLayoutPanel;
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void addGroup(Component rGroupComponent,
+							 String    sGroupTitle,
+							 boolean   bCloseable)
+		{
+			aDeckLayoutPanel.add(rGroupComponent.getWidget());
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public HasWidgets createLayoutContainer(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			aDeckLayoutPanel = new DeckLayoutPanel();
+
+			return aDeckLayoutPanel;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupCount()
+		{
+			return aDeckLayoutPanel.getWidgetCount();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupIndex(Component rGroupComponent)
+		{
+			return aDeckLayoutPanel.getWidgetIndex(rGroupComponent.getWidget());
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return aDeckLayoutPanel.getVisibleWidgetIndex();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setGroupTitle(int nIndex, String sTitle)
+		{
+			// ignored
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setSelection(int nIndex)
+		{
+			aDeckLayoutPanel.showWidget(nIndex);
+		}
 	}
 }

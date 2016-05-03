@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.DateAttribute;
 
@@ -36,19 +38,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Calendar extends Component implements DateAttribute
 {
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rContext  The user interface context
-	 * @param bDateTime TRUE to query both date and time, FALSE for date only
-	 */
-	public Calendar(UserInterfaceContext rContext, boolean bDateTime)
-	{
-		super(new GwtDatePicker(rContext, bDateTime));
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -139,6 +128,29 @@ public class Calendar extends Component implements DateAttribute
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class CalendarWidgetFactory
+		implements WidgetFactory<GwtDatePicker>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public GwtDatePicker createWidget(
+			Component rComponent,
+			StyleData rStyle)
+		{
+			return new GwtDatePicker(rComponent.getContext(),
+									 rStyle.hasFlag(StyleFlag.DATE_TIME));
+		}
+	}
 
 	/********************************************************************
 	 * Dispatcher for calendar-specific events.

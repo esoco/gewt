@@ -14,36 +14,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.layout;
+package de.esoco.ewt.component;
 
-import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.Panel;
+import de.esoco.ewt.layout.GenericLayout;
 
 
 /********************************************************************
- * A layout that groups components with an optional title/caption.
+ * A base class for panels that have a fixed layout that cannot be changed after
+ * creation. The layout of this instance must be set as a constructor argument.
+ * The method {@link #setLayout(GenericLayout)} is overridden to thrown an
+ * exception.
  *
  * @author eso
  */
-public class GroupLayout extends TwoLayerLayout
+public abstract class FixedLayoutPanel extends Panel
 {
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a new instance that is based on a GWT {@link CaptionPanel}.
+	 * Creates a new instance.
+	 *
+	 * @param rLayout The fixed layout for this instance
 	 */
-	public GroupLayout()
+	public FixedLayoutPanel(GenericLayout rLayout)
 	{
+		super.setLayout(rLayout);
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * {@inheritDoc}
+	 * Overridden to throw an exception as the fixed layout is defined by the
+	 * constructor.
+	 *
+	 * @see Panel#setLayout(GenericLayout)
 	 */
 	@Override
-	protected Panel createLayoutPanel()
+	public void setLayout(GenericLayout rLayout)
 	{
-		return null; //new CaptionPanel();
+		throw new UnsupportedOperationException("Layout must be set through constructor");
 	}
 }

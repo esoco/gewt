@@ -18,6 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
@@ -26,11 +27,13 @@ import de.esoco.ewt.style.StyleFlag;
 import de.esoco.lib.property.TextAttribute;
 
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -52,54 +55,6 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	private Image  rImage;
 
 	private AlignedPosition rTextPosition = AlignedPosition.RIGHT;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rStyleData
-	 */
-	public Button(StyleData rStyleData)
-	{
-		this(createWidget(rStyleData));
-	}
-
-	/***************************************
-	 * Subclass constructor that uses a particular GWT widget.
-	 *
-	 * @param rButtonWidget The widget for this button
-	 */
-	Button(FocusWidget rButtonWidget)
-	{
-		super(rButtonWidget);
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Creates the widget for a new button instance based on the style
-	 * properties.
-	 *
-	 * @param  rStyleData The style of the button new instance
-	 *
-	 * @return The button widget
-	 */
-	private static FocusWidget createWidget(StyleData rStyleData)
-	{
-		FocusWidget aWidget = null;
-
-		if (rStyleData.hasFlag(StyleFlag.HYPERLINK))
-		{
-			aWidget = new Anchor();
-		}
-		else
-		{
-			aWidget = new PushButton();
-		}
-
-		return aWidget;
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -142,7 +97,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		HasHTML rWidget = getButtonWidget();
+		HasText rWidget = (HasText) getWidget();
 		String  sText   = getText();
 
 		if (rImage != null)
@@ -182,9 +137,9 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
 					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
 				}
-				else
+				else if (rWidget instanceof HasHTML)
 				{
-					rWidget.setHTML(sImageLabel);
+					((HasHTML) rWidget).setHTML(sImageLabel);
 				}
 			}
 		}
@@ -205,7 +160,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		sText	   = getContext().expandResource(sText);
 		this.sText = sText;
 
-		HasText rWidget = getButtonWidget();
+		HasText rWidget = (HasText) getWidget();
 
 		rWidget.setText(sText);
 
@@ -223,13 +178,37 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		}
 	}
 
-	/***************************************
-	 * Returns the GWT widget for this button.
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * The {@link WidgetFactory} for button widgets.
 	 *
-	 * @return The widget
+	 * @author eso
 	 */
-	HasHTML getButtonWidget()
+	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasText>
+		implements WidgetFactory<W>
 	{
-		return (HasHTML) getWidget();
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
+		{
+			IsWidget aWidget;
+
+			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
+			{
+				aWidget = new Anchor();
+			}
+			else
+			{
+				aWidget = new PushButton();
+			}
+
+			return (W) aWidget;
+		}
 	}
 }

@@ -47,7 +47,6 @@ import de.esoco.ewt.component.Website;
 import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
-import de.esoco.ewt.style.StyleFlag;
 
 import java.util.Date;
 
@@ -106,7 +105,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public Button addButton(StyleData rStyle, String sText, Object rImage)
 	{
-		Button aComponent = new Button(rStyle);
+		Button aComponent = new Button();
 
 		addComponent(aComponent, rStyle, sText, rImage);
 
@@ -123,12 +122,10 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public Calendar addCalendar(StyleData rStyle, Date rDate)
 	{
-		Calendar aComponent =
-			new Calendar(rContainer.getContext(),
-						 rStyle.hasFlag(StyleFlag.DATE_TIME));
+		Calendar aComponent = new Calendar();
 
-		aComponent.setDate(rDate);
 		addComponent(aComponent, rStyle, null, null);
+		aComponent.setDate(rDate);
 
 		return aComponent;
 	}
@@ -161,7 +158,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ComboBox addComboBox(StyleData rStyle, String sText)
 	{
-		ComboBox aComponent = new ComboBox(rStyle);
+		ComboBox aComponent = new ComboBox();
 
 		addComponent(aComponent, rStyle, sText, null);
 
@@ -178,11 +175,10 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public DateField addDateField(StyleData rStyle, Date rDate)
 	{
-		DateField aComponent =
-			new DateField(getContext(), rStyle.hasFlag(StyleFlag.DATE_TIME));
+		DateField aComponent = new DateField();
 
-		aComponent.setDate(rDate);
 		addComponent(aComponent, rStyle, null, null);
+		aComponent.setDate(rDate);
 
 		return aComponent;
 	}
@@ -234,7 +230,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public Label addLabel(StyleData rStyle, String sText, Object rImage)
 	{
-		Label aLabel = new Label(rStyle);
+		Label aLabel = new Label();
 
 		addComponent(aLabel, rStyle, sText, rImage);
 
@@ -255,7 +251,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public List addList(StyleData rStyle)
 	{
-		List aComponent = new List(rStyle);
+		List aComponent = new List();
 
 		addComponent(aComponent, rStyle, null, null);
 
@@ -271,7 +267,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ListBox addListBox(StyleData rStyle)
 	{
-		ListBox aComponent = new ListBox(rStyle);
+		ListBox aComponent = new ListBox();
 
 		addComponent(aComponent, rStyle, null, null);
 
@@ -305,11 +301,13 @@ public class ContainerBuilder<C extends Container>
 		StyleData	  rStyle,
 		GenericLayout rLayout)
 	{
-		Panel aComponent = new Panel(rLayout);
+		Panel aPanel = new Panel();
 
-		addComponent(aComponent, rStyle, null, null);
+		aPanel.setLayout(rLayout);
 
-		return new ContainerBuilder<Panel>(aComponent, this);
+		addComponent(aPanel, rStyle, null, null);
+
+		return new ContainerBuilder<Panel>(aPanel, this);
 	}
 
 	/***************************************
@@ -384,11 +382,15 @@ public class ContainerBuilder<C extends Container>
 							  int		nMaximum,
 							  int		nIncrement)
 	{
-		Spinner aComponent = new Spinner(nMinimum, nMaximum, nIncrement);
+		Spinner aSpinner = new Spinner();
 
-		addComponent(aComponent, rStyle, null, null);
+		addComponent(aSpinner, rStyle, null, null);
 
-		return aComponent;
+		aSpinner.setMinimum(nMinimum);
+		aSpinner.setMaximum(nMaximum);
+		aSpinner.setIncrement(nIncrement);
+
+		return aSpinner;
 	}
 
 	/***************************************
@@ -465,7 +467,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public TextArea addTextArea(StyleData rStyle, String sText)
 	{
-		TextArea aComponent = new TextArea(rStyle);
+		TextArea aComponent = new TextArea();
 
 		addComponent(aComponent, rStyle, sText, null);
 
@@ -482,8 +484,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public TextField addTextField(StyleData rStyle, String sText)
 	{
-		TextField aComponent =
-			new TextField(rStyle.hasFlag(StyleFlag.PASSWORD));
+		TextField aComponent = new TextField();
 
 		addComponent(aComponent, rStyle, sText, null);
 
@@ -552,9 +553,10 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public Website addWebsite(StyleData rStyle, String sUrl)
 	{
-		Website aComponent = new Website(sUrl);
+		Website aComponent = new Website();
 
 		addComponent(aComponent, rStyle, null, null);
+		aComponent.setText(sUrl);
 
 		return aComponent;
 	}
@@ -635,6 +637,7 @@ public class ContainerBuilder<C extends Container>
 					  String    sText,
 					  Object    rImage)
 	{
+		rComponent.initWidget(getContext(), rStyle);
 		rContainer.internalAddComponent(rComponent, rStyle);
 
 		if (sText != null)

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtTagField;
+import de.esoco.ewt.impl.gwt.ValueBoxWrapper;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
@@ -29,12 +32,10 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestBox.DefaultSuggestionDisplay;
 import com.google.gwt.user.client.ui.SuggestBox.SuggestionDisplay;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -56,50 +57,6 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	private Set<String> aDefaultSuggestions = new LinkedHashSet<String>();
 
 	private boolean bMultiselect;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance with a certain style.
-	 *
-	 * @param rStyleData The style data
-	 */
-	public ComboBox(StyleData rStyleData)
-	{
-		super(createWidget(rStyleData));
-
-		bMultiselect = rStyleData.hasFlag(StyleFlag.MULTISELECT);
-
-		TextBox rTextBox = getTextBox();
-
-		rTextBox.addKeyDownHandler(this);
-		rTextBox.addDoubleClickHandler(this);
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Creates the widget for a new instance based on the given style data.
-	 *
-	 * @param  rStyleData The style data
-	 *
-	 * @return The new widget
-	 */
-	private static Focusable createWidget(StyleData rStyleData)
-	{
-		Focusable rWidget;
-
-		if (rStyleData.hasFlag(StyleFlag.MULTISELECT))
-		{
-			rWidget = new GwtTagField();
-		}
-		else
-		{
-			rWidget = new SuggestBox(new MultiWordSuggestOracle());
-		}
-
-		return rWidget;
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -219,6 +176,22 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	}
 
 	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		super.initWidget(rContext, rStyle);
+
+		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
+
+		IsTextBox rTextBox = getTextBox();
+
+		rTextBox.addKeyDownHandler(this);
+		rTextBox.addDoubleClickHandler(this);
+	}
+
+	/***************************************
 	 * @see DoubleClickHandler#onDoubleClick(DoubleClickEvent)
 	 */
 	@Override
@@ -282,9 +255,9 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	 * @see TextComponent#getTextBox()
 	 */
 	@Override
-	protected TextBox getTextBox()
+	protected IsTextBox getTextBox()
 	{
-		return ((TextBox) getSuggestBox().getValueBox());
+		return new ValueBoxWrapper(getSuggestBox().getValueBox());
 	}
 
 	/***************************************
@@ -309,5 +282,37 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	private MultiWordSuggestOracle getSuggestOracle()
 	{
 		return (MultiWordSuggestOracle) getSuggestBox().getSuggestOracle();
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class ComboBoxWidgetFactory implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(Component rComponent, StyleData rStyle)
+		{
+			Widget rWidget;
+
+			if (rStyle.hasFlag(StyleFlag.MULTISELECT))
+			{
+				rWidget = new GwtTagField();
+			}
+			else
+			{
+				rWidget = new SuggestBox(new MultiWordSuggestOracle());
+			}
+
+			return rWidget;
+		}
 	}
 }

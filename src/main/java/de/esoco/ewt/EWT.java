@@ -17,9 +17,48 @@
 package de.esoco.ewt;
 
 import de.esoco.ewt.app.Resource;
+import de.esoco.ewt.component.Button;
+import de.esoco.ewt.component.Button.ButtonWidgetFactory;
+import de.esoco.ewt.component.Calendar;
+import de.esoco.ewt.component.Calendar.CalendarWidgetFactory;
+import de.esoco.ewt.component.CheckBox;
+import de.esoco.ewt.component.CheckBox.CheckBoxWidgetFactory;
+import de.esoco.ewt.component.ComboBox;
+import de.esoco.ewt.component.ComboBox.ComboBoxWidgetFactory;
 import de.esoco.ewt.component.Component;
+import de.esoco.ewt.component.DateField;
+import de.esoco.ewt.component.DateField.DateFieldWidgetFactory;
+import de.esoco.ewt.component.FileChooser;
+import de.esoco.ewt.component.FileChooser.FileChooserWidgetFactory;
+import de.esoco.ewt.component.Label;
+import de.esoco.ewt.component.Label.LabelWidgetFactory;
+import de.esoco.ewt.component.List;
+import de.esoco.ewt.component.ListBox;
+import de.esoco.ewt.component.ListControl.ListControlWidgetFactory;
+import de.esoco.ewt.component.ProgressBar;
+import de.esoco.ewt.component.ProgressBar.ProgressBarWidgetFactory;
+import de.esoco.ewt.component.RadioButton;
+import de.esoco.ewt.component.RadioButton.RadioButtonWidgetFactory;
+import de.esoco.ewt.component.Spinner;
+import de.esoco.ewt.component.Spinner.SpinnerWidgetFactory;
+import de.esoco.ewt.component.Table;
+import de.esoco.ewt.component.TableControl.TableControlWidgetFactory;
+import de.esoco.ewt.component.TextArea;
+import de.esoco.ewt.component.TextArea.TextAreaWidgetFactory;
+import de.esoco.ewt.component.TextField;
+import de.esoco.ewt.component.TextField.TextFieldWidgetFactory;
+import de.esoco.ewt.component.ToggleButton;
+import de.esoco.ewt.component.ToggleButton.ToggleButtonWidgetFactory;
+import de.esoco.ewt.component.Tree;
+import de.esoco.ewt.component.Tree.TreeWidgetFactory;
+import de.esoco.ewt.component.TreeTable;
+import de.esoco.ewt.component.Website;
+import de.esoco.ewt.component.Website.WebsiteWidgetFactory;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.layout.LayoutMapper;
+import de.esoco.ewt.layout.LayoutMapper.IdentityLayoutMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +99,11 @@ public class EWT
 	private static final int DOUBLE_CLICK_INTERVAL = 500;
 
 	private static Map<String, String> aCssClassMap = null;
+
+	private static LayoutMapper rLayoutMapper = new IdentityLayoutMapper();
+
+	private static Map<Class<? extends Component>, WidgetFactory<?>> aWidgetFactories =
+		new HashMap<>();
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -149,6 +193,35 @@ public class EWT
 	}
 
 	/***************************************
+	 * Returns the current layout mapper.
+	 *
+	 * @return The layout mapper
+	 */
+	public static final LayoutMapper getLayoutMapper()
+	{
+		return rLayoutMapper;
+	}
+
+	/***************************************
+	 * Returns the widget factory for a certain component or layout instance.
+	 *
+	 * @param  rComponent The object for which to return the factory for
+	 *
+	 * @return The widget factory or NULL if no factory has been registered
+	 *
+	 * @see    #registerWidgetFactory(Class, WidgetFactory, boolean)
+	 */
+	public static WidgetFactory<?> getWidgetFactory(Component rComponent)
+	{
+		if (aWidgetFactories.isEmpty())
+		{
+			registerDefaultWidgetFactories(true);
+		}
+
+		return aWidgetFactories.get(rComponent.getClass());
+	}
+
+	/***************************************
 	 * Maps a certain CSS class name if a corresponding mapping has been
 	 * registered through {@link #addCssClassMapping(String, String)}. If no
 	 * mapping exists the input name will be returned unchanged.
@@ -215,5 +288,111 @@ public class EWT
 		Window.open(sUrl,
 					sName != null ? sName : "",
 					sFeatures != null ? sFeatures : "");
+	}
+
+	/***************************************
+	 * Registers all default GEWT widget factories.
+	 *
+	 * @param bReplaceExisting TRUE to replace existing mappings with the
+	 *                         default factory, FALSE to keep current factories
+	 */
+	public static void registerDefaultWidgetFactories(boolean bReplaceExisting)
+	{
+		registerWidgetFactory(Button.class,
+							  new ButtonWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(Calendar.class,
+							  new CalendarWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(CheckBox.class,
+							  new CheckBoxWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(ComboBox.class,
+							  new ComboBoxWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(DateField.class,
+							  new DateFieldWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(FileChooser.class,
+							  new FileChooserWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(Label.class,
+							  new LabelWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(List.class,
+							  new ListControlWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(ListBox.class,
+							  new ListControlWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(ProgressBar.class,
+							  new ProgressBarWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(RadioButton.class,
+							  new RadioButtonWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(Spinner.class,
+							  new SpinnerWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(Table.class,
+							  new TableControlWidgetFactory(false),
+							  bReplaceExisting);
+		registerWidgetFactory(TextArea.class,
+							  new TextAreaWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(TextField.class,
+							  new TextFieldWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(ToggleButton.class,
+							  new ToggleButtonWidgetFactory<>(),
+							  bReplaceExisting);
+		registerWidgetFactory(Tree.class,
+							  new TreeWidgetFactory(),
+							  bReplaceExisting);
+		registerWidgetFactory(TreeTable.class,
+							  new TableControlWidgetFactory(true),
+							  bReplaceExisting);
+		registerWidgetFactory(Website.class,
+							  new WebsiteWidgetFactory(),
+							  bReplaceExisting);
+	}
+
+	/***************************************
+	 * Registers a widget factory for a certain component type.
+	 *
+	 * @param rComponentClass  The type of component to register the factory for
+	 * @param rFactory         The widget factory
+	 * @param bReplaceExisting TRUE to replace an existing mapping with the
+	 *                         given factory, FALSE to keep the current factory
+	 *
+	 * @see   #getWidgetFactory(Component)
+	 */
+	public static void registerWidgetFactory(
+		Class<? extends Component> rComponentClass,
+		WidgetFactory<?>		   rFactory,
+		boolean					   bReplaceExisting)
+	{
+		if (bReplaceExisting || !aWidgetFactories.containsKey(rComponentClass))
+		{
+			aWidgetFactories.put(rComponentClass, rFactory);
+		}
+	}
+
+	/***************************************
+	 * Sets a new layout mapper. EWT extensions can use such a mapper to replace
+	 * default layouts with their own instances.
+	 *
+	 * @param rMapper The new layout mapper or NULL to reset to the default
+	 */
+	public static void setLayoutMapper(LayoutMapper rMapper)
+	{
+		if (rMapper != null)
+		{
+			rLayoutMapper = rMapper;
+		}
+		else
+		{
+			rLayoutMapper = new IdentityLayoutMapper();
+		}
 	}
 }

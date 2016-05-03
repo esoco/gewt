@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * Base class for EWT layouts.
+ * Base class for all EWT layouts.
  *
  * @author eso
  */
@@ -39,11 +40,16 @@ public abstract class GenericLayout
 	 * Creates a new GWT container that represents this layout. This method is
 	 * only intended to be used internally by the GEWT framework.
 	 *
+	 * @param    rContext The context to create the container in
+	 * @param    rStyle   The style of the container widget
+	 *
 	 * @return   A new widget container
 	 *
 	 * @category GEWT
 	 */
-	public abstract HasWidgets createLayoutContainer();
+	public abstract HasWidgets createLayoutContainer(
+		UserInterfaceContext rContext,
+		StyleData			 rStyle);
 
 	/***************************************
 	 * Adds a certain widget to a widget container according to this layout and

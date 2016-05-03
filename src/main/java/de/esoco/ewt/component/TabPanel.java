@@ -16,17 +16,25 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
+import de.esoco.ewt.style.AlignedPosition;
+import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -64,114 +72,10 @@ public class TabPanel extends GroupPanel
 	 */
 	public TabPanel()
 	{
-		super(new GwtTabPanel(2, Unit.EM));
+		super(new TabPanelLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addGroup(Component rComponent,
-						 String    sTabTitle,
-						 boolean   bCloseable)
-	{
-		Widget rTabContent = rComponent.getWidget();
-
-		GwtTabPanel rTabPanel = getGwtTabPanel();
-
-		sTabTitle = getContext().expandResource(sTabTitle);
-
-		if (bCloseable)
-		{
-			Grid   aTabWidgets  = new Grid(1, 2);
-			Button aCloseButton = new Button("x");
-
-			aTabWidgets.setWidget(0, 0, new Label(sTabTitle));
-			aTabWidgets.setWidget(0, 1, aCloseButton);
-			aCloseButton.addClickHandler(new TabCloseHandler(rTabContent));
-
-			rTabPanel.add(rTabContent, aTabWidgets);
-		}
-		else
-		{
-			rTabPanel.add(rTabContent, sTabTitle);
-		}
-
-//		rTabContent.getElement().getParentElement().getStyle()
-//				   .setOverflow(Overflow.AUTO);
-
-		if (rTabPanel.getWidgetCount() == 1)
-		{
-			rTabPanel.selectTab(0);
-		}
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupCount()
-	{
-		return getGwtTabPanel().getWidgetCount();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getGroupIndex(Component rTabComponent)
-	{
-		return getGwtTabPanel().getWidgetIndex(rTabComponent.getWidget());
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getSelectionIndex()
-	{
-		return getGwtTabPanel().getSelectedIndex();
-	}
-
-	/***************************************
-	 * Queries the tab bar visibility.
-	 *
-	 * @return TRUE if the tab bar is currently visible
-	 */
-	public boolean isTabBarVisible()
-	{
-		return getGwtTabPanel().isTabBarVisible();
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setGroupTitle(int nIndex, String sTitle)
-	{
-		getGwtTabPanel().setTabText(nIndex, sTitle);
-	}
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelection(int nIndex)
-	{
-		getGwtTabPanel().selectTab(nIndex);
-	}
-
-	/***************************************
-	 * Sets the tab bar visibility.
-	 *
-	 * @param bVisible TRUE to make the tab bar visible
-	 */
-	public void setTabBarVisible(boolean bVisible)
-	{
-		getGwtTabPanel().setTabBarVisible(bVisible);
-	}
 
 	/***************************************
 	 * {@inheritDoc}
@@ -182,59 +86,182 @@ public class TabPanel extends GroupPanel
 		return new TabPanelEventDispatcher();
 	}
 
-	/***************************************
-	 * Returns the GWT tab panel of this instance.
-	 *
-	 * @return The GWT tab panel
-	 */
-	private GwtTabPanel getGwtTabPanel()
-	{
-		return (GwtTabPanel) getWidget();
-	}
-
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * An event handler for the closing of tabs.
+	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	class TabCloseHandler implements ClickHandler
+	public static class TabPanelLayout extends GroupPanelLayout
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private final Widget rTabWidget;
-
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
-		 * Creates a new instance.
-		 *
-		 * @param rTabWidget The widget of the tab to close
-		 */
-		public TabCloseHandler(Widget rTabWidget)
-		{
-			this.rTabWidget = rTabWidget;
-		}
+		private GwtTabPanel			 aTabPanel;
+		private UserInterfaceContext rContext;
 
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see ClickHandler#onClick(ClickEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent)
+		public void addGroup(Component rGroupComponent,
+							 String    sGroupTitle,
+							 boolean   bCloseable)
 		{
-			GwtTabPanel rTabPanel = (GwtTabPanel) getWidget();
+			Widget rTabContent = rGroupComponent.getWidget();
 
-			int nWidgetIndex = rTabPanel.getWidgetIndex(rTabWidget);
-			int nSelectedTab = rTabPanel.getSelectedIndex();
+			sGroupTitle = rContext.expandResource(sGroupTitle);
 
-			rTabPanel.remove(rTabWidget);
-
-			if (nWidgetIndex == nSelectedTab && rTabPanel.getWidgetCount() > 0)
+			if (bCloseable)
 			{
-				rTabPanel.selectTab(nSelectedTab > 0 ? nSelectedTab - 1 : 0);
+				Grid   aTabWidgets  = new Grid(1, 2);
+				Button aCloseButton = new Button("x");
+
+				aTabWidgets.setWidget(0, 0, new Label(sGroupTitle));
+				aTabWidgets.setWidget(0, 1, aCloseButton);
+				aCloseButton.addClickHandler(new TabCloseHandler(rTabContent));
+
+				aTabPanel.add(rTabContent, aTabWidgets);
+			}
+			else
+			{
+				aTabPanel.add(rTabContent, sGroupTitle);
+			}
+
+			if (aTabPanel.getWidgetCount() == 1)
+			{
+				aTabPanel.selectTab(0);
+			}
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public HasWidgets createLayoutContainer(
+			UserInterfaceContext rContext,
+			StyleData			 rStyle)
+		{
+			this.rContext = rContext;
+			aTabPanel     = new GwtTabPanel(2, Unit.EM);
+
+			return aTabPanel;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupCount()
+		{
+			return aTabPanel.getWidgetCount();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getGroupIndex(Component rGroupComponent)
+		{
+			return aTabPanel.getWidgetIndex(rGroupComponent.getWidget());
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return aTabPanel.getSelectedIndex();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setGroupTitle(int nIndex, String sTitle)
+		{
+			aTabPanel.setTabText(nIndex, sTitle);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setSelection(int nIndex)
+		{
+			aTabPanel.selectTab(nIndex);
+		}
+
+		/***************************************
+		 * Creates the HTML for a stack title string.
+		 *
+		 * @param  sStackTitle The stack title
+		 *
+		 * @return The HTML string for the stack title
+		 */
+		protected String createStackHeader(String sStackTitle)
+		{
+			String sTitle = rContext.expandResource(sStackTitle);
+			Image  rImage =
+				rContext.createImage(GewtResources.INSTANCE.imRight());
+
+			String sTitleHtml =
+				createImageLabel(sTitle,
+								 rImage,
+								 AlignedPosition.RIGHT,
+								 HasHorizontalAlignment.ALIGN_LEFT,
+								 null);
+
+			return sTitleHtml;
+		}
+
+		//~ Inner Classes ------------------------------------------------------
+
+		/********************************************************************
+		 * An event handler for the closing of tabs.
+		 *
+		 * @author eso
+		 */
+		class TabCloseHandler implements ClickHandler
+		{
+			//~ Instance fields ------------------------------------------------
+
+			private final Widget rTabWidget;
+
+			//~ Constructors ---------------------------------------------------
+
+			/***************************************
+			 * Creates a new instance.
+			 *
+			 * @param rTabWidget The widget of the tab to close
+			 */
+			public TabCloseHandler(Widget rTabWidget)
+			{
+				this.rTabWidget = rTabWidget;
+			}
+
+			//~ Methods --------------------------------------------------------
+
+			/***************************************
+			 * @see ClickHandler#onClick(ClickEvent)
+			 */
+			@Override
+			public void onClick(ClickEvent rEvent)
+			{
+				int nWidgetIndex = aTabPanel.getWidgetIndex(rTabWidget);
+				int nSelectedTab = aTabPanel.getSelectedIndex();
+
+				aTabPanel.remove(rTabWidget);
+
+				if (nWidgetIndex == nSelectedTab &&
+					aTabPanel.getWidgetCount() > 0)
+				{
+					aTabPanel.selectTab(nSelectedTab > 0 ? nSelectedTab - 1
+														 : 0);
+				}
 			}
 		}
 	}
@@ -262,11 +289,15 @@ public class TabPanel extends GroupPanel
 		 * @see ControlEventDispatcher#initEventDispatching(Widget)
 		 */
 		@Override
+		@SuppressWarnings("unchecked")
 		void initEventDispatching(Widget rWidget)
 		{
 			super.initEventDispatching(rWidget);
 
-			((GwtTabPanel) rWidget).addSelectionHandler(this);
+			if (rWidget instanceof HasSelectionHandlers)
+			{
+				((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(this);
+			}
 		}
 	}
 }

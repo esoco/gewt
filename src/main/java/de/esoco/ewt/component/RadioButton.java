@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.style.StyleData;
+
+
 /********************************************************************
  * A radio button component that allows only one button in the same container to
  * be selected at the same time.
@@ -24,13 +27,7 @@ package de.esoco.ewt.component;
  */
 public class RadioButton extends CheckBox
 {
-	/***************************************
-	 * Creates a new instance.
-	 */
-	public RadioButton()
-	{
-		super(new com.google.gwt.user.client.ui.RadioButton(""));
-	}
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Overridden to set the radio button group to the parent.
@@ -45,5 +42,29 @@ public class RadioButton extends CheckBox
 		String sId = rParent.getId();
 
 		((com.google.gwt.user.client.ui.RadioButton) getWidget()).setName(sId);
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class RadioButtonWidgetFactory<W extends com.google.gwt.user
+												 .client.ui.RadioButton>
+		extends CheckBoxWidgetFactory<W>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
+		{
+			return (W) new com.google.gwt.user.client.ui.RadioButton("");
+		}
 	}
 }

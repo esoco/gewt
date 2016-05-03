@@ -24,6 +24,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.Alignment;
@@ -83,6 +84,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -109,38 +111,16 @@ public abstract class Component implements HasId<String>
 
 	//~ Instance fields --------------------------------------------------------
 
-	private Widget    rWidget;
-	private Container rParent;
-	private StyleData rStyle;
+	private UserInterfaceContext rContext;
+	private Container			 rParent;
+	private IsWidget			 rIsWidget;
+	private StyleData			 rStyle;
 
 	private String sId = null;
 
 	private Map<EventType, EWTEventHandler> aEventListenerMap;
 
 	private String[] rAdditionalStyles;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance without a widget. A subclass must set it later by
-	 * invoking the method {@link #setWidget(Widget)} before this component's
-	 * widget is added to it's parent container. This can be done in one of the
-	 * methods {@link #applyStyle(StyleData)} or {@link #setParent(Container)}
-	 * which are invoked before the widget is added to the parent widget.
-	 */
-	Component()
-	{
-	}
-
-	/***************************************
-	 * Creates a new instance that wraps a certain widget.
-	 *
-	 * @param rWidget The wrapped widget
-	 */
-	Component(Widget rWidget)
-	{
-		setWidget(rWidget);
-	}
 
 	//~ Static methods ---------------------------------------------------------
 
@@ -313,7 +293,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public UserInterfaceContext getContext()
 	{
-		return rParent.getContext();
+		return rContext;
 	}
 
 	/***************************************
@@ -326,7 +306,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public Element getElement()
 	{
-		return rWidget.getElement();
+		return getWidget().getElement();
 	}
 
 	/***************************************
@@ -336,7 +316,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public int getHeight()
 	{
-		return rWidget.getOffsetHeight();
+		return getWidget().getOffsetHeight();
 	}
 
 	/***************************************
@@ -362,7 +342,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public Object getImplementation()
 	{
-		return rWidget;
+		return getWidget();
 	}
 
 	/***************************************
@@ -422,9 +402,9 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @category GEWT
 	 */
-	public Widget getWidget()
+	public final Widget getWidget()
 	{
-		return rWidget;
+		return rIsWidget != null ? rIsWidget.asWidget() : null;
 	}
 
 	/***************************************
@@ -434,7 +414,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public int getWidth()
 	{
-		return rWidget.getOffsetWidth();
+		return getWidget().getOffsetWidth();
 	}
 
 	/***************************************
@@ -444,7 +424,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public int getX()
 	{
-		return rWidget.getAbsoluteLeft();
+		return getWidget().getAbsoluteLeft();
 	}
 
 	/***************************************
@@ -454,7 +434,29 @@ public abstract class Component implements HasId<String>
 	 */
 	public int getY()
 	{
-		return rWidget.getAbsoluteTop();
+		return getWidget().getAbsoluteTop();
+	}
+
+	/***************************************
+	 * Internal method to create and initialize the GWT widget of this instance
+	 * with the widget factory from {@link EWT#getWidgetFactory(Component)}.
+	 *
+	 * @param    rContext The context the component has been created in
+	 * @param    rStyle   The style data of this instance
+	 *
+	 * @throws   IllegalStateException If no widget factory has been registered
+	 *                                 for the class of this component instance
+	 *
+	 * @category GEWT
+	 * @category Internal
+	 */
+	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	{
+		this.rContext = rContext;
+		this.rStyle   = rStyle;
+
+		setWidget(createWidget(rContext, rStyle));
+		createEventDispatcher().initEventDispatching(getWidget());
 	}
 
 	/***************************************
@@ -464,6 +466,8 @@ public abstract class Component implements HasId<String>
 	 */
 	public boolean isEnabled()
 	{
+		Widget rWidget = getWidget();
+
 		return (rWidget instanceof HasEnabled) &&
 			   ((HasEnabled) rWidget).isEnabled();
 	}
@@ -475,7 +479,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public boolean isVisible()
 	{
-		return rWidget.isVisible();
+		return getWidget().isVisible();
 	}
 
 	/***************************************
@@ -546,6 +550,8 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setEnabled(boolean bEnabled)
 	{
+		Widget rWidget = getWidget();
+
 		if (rWidget instanceof HasEnabled)
 		{
 			((HasEnabled) rWidget).setEnabled(bEnabled);
@@ -662,7 +668,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setSize(int w, int h)
 	{
-		rWidget.setPixelSize(w, h);
+		getWidget().setPixelSize(w, h);
 	}
 
 	/***************************************
@@ -682,7 +688,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setVisible(boolean bVisible)
 	{
-		rWidget.setVisible(bVisible);
+		getWidget().setVisible(bVisible);
 	}
 
 	/***************************************
@@ -716,17 +722,44 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * TODO: DOCUMENT ME!
+	 * Applies the CSS styles from the given map to the DOM element of this
+	 * component.
 	 *
-	 * @param rCssStyles TODO: DOCUMENT ME!
+	 * @param rCssStyles A mapping from CSS style names to style values
 	 */
 	protected void applyCssStyles(Map<String, String> rCssStyles)
 	{
-		Style rElementStyle = rWidget.getElement().getStyle();
+		Style rElementStyle = getElement().getStyle();
 
 		for (Entry<String, String> rCss : rCssStyles.entrySet())
 		{
 			rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+		}
+	}
+
+	/***************************************
+	 * Creates the GWT widget for this instance by performing a lookup of the
+	 * widget factory through {@link EWT#getWidgetFactory(Component)}.
+	 *
+	 * @param  rContext The context of this component
+	 * @param  rStyle   The component style
+	 *
+	 * @return The new widget
+	 */
+	protected IsWidget createWidget(
+		UserInterfaceContext rContext,
+		StyleData			 rStyle)
+	{
+		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(this);
+
+		if (rWidgetFactory != null)
+		{
+			return rWidgetFactory.createWidget(this, rStyle);
+		}
+		else
+		{
+			throw new IllegalStateException("No widget factory for " +
+											getClass());
 		}
 	}
 
@@ -945,15 +978,13 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Internal method to set the GWT widget of this component.
+	 * Internal method to set the widget of this component.
 	 *
-	 * @param rWidget The new widget
+	 * @param rIsWidget The component widget
 	 */
-	void setWidget(Widget rWidget)
+	void setWidget(IsWidget rIsWidget)
 	{
-		this.rWidget = rWidget;
-
-		createEventDispatcher().initEventDispatching(rWidget);
+		this.rIsWidget = rIsWidget;
 	}
 
 	/***************************************
@@ -964,6 +995,8 @@ public abstract class Component implements HasId<String>
 	 */
 	private void applyAlignments(StyleData rStyle)
 	{
+		Widget rWidget = getWidget();
+
 		if (rWidget instanceof HasHorizontalAlignment)
 		{
 			HorizontalAlignmentConstant rAlignment =
@@ -1009,13 +1042,13 @@ public abstract class Component implements HasId<String>
 
 		if (rCssStyles != null)
 		{
-			if (rWidget.isAttached())
+			if (getWidget().isAttached())
 			{
 				applyCssStyles(rCssStyles);
 			}
 			else
 			{
-				rWidget.addAttachHandler(new Handler()
+				getWidget().addAttachHandler(new Handler()
 					{
 						@Override
 						public void onAttachOrDetach(AttachEvent rEvent)
@@ -1035,6 +1068,7 @@ public abstract class Component implements HasId<String>
 	 */
 	private void applyStyleNames(StyleData rStyle)
 	{
+		Widget rWidget			    = getWidget();
 		String sWebStyle		    =
 			rStyle.getProperty(StyleData.WEB_STYLE, null);
 		String sWebDependentStyle   =

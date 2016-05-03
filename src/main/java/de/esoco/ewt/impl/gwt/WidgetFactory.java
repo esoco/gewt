@@ -14,32 +14,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.component;
+package de.esoco.ewt.impl.gwt;
 
-import com.google.gwt.user.client.ui.Focusable;
+import de.esoco.ewt.component.Component;
+import de.esoco.ewt.style.StyleData;
+
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * Controls are components that can have the input focus and generate events
- * from user interaction.
+ * The interface for factories that produce widget instances for a certain GEWT
+ * component type. Implementations of the interface method can either return
+ * subclasses of {@link Widget} or some kind of widget wrapper that implements
+ * the interface {@link IsWidget}. The latter can be used to implement
+ * additional interfaces that are not directly available in the wrapped widget.
+ * The needed interfaces are documented in the GWT widget factories of the
+ * original GEWT components which should typically be subclassed by new
+ * factories.
  *
  * @author eso
  */
-public abstract class Control extends Component
+public interface WidgetFactory<W extends IsWidget>
 {
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Requests that the component gets the input focus.
+	 * Creates a new widget instance for a certain component based on the given
+	 * style.
+	 *
+	 * @param  rComponent The component to create the widget for
+	 * @param  rStyle     The style of the new widget
+	 *
+	 * @return The new widget instance
 	 */
-	public void requestFocus()
-	{
-		Widget rWidget = getWidget();
-
-		if (rWidget instanceof Focusable)
-		{
-			((Focusable) rWidget).setFocus(true);
-		}
-	}
+	W createWidget(Component rComponent, StyleData rStyle);
 }

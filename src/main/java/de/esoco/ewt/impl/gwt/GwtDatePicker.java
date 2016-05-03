@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package de.esoco.ewt.impl.gwt;
 
 import de.esoco.ewt.UserInterfaceContext;
+
+import de.esoco.lib.property.DateAttribute;
 
 import java.util.Date;
 
@@ -44,13 +46,19 @@ import com.google.gwt.user.datepicker.client.MonthSelector;
  *
  * @author e.sonnenschein
  */
-public class GwtDatePicker extends DatePicker
+public class GwtDatePicker extends DatePicker implements DateAttribute
 {
+	//~ Static fields/initializers ---------------------------------------------
+
 	private static final GewtResources RES = GewtResources.INSTANCE;
 	private static final GewtCss	   CSS = RES.css();
 
+	//~ Instance fields --------------------------------------------------------
+
 	private MonthAndTimeSelector aMonthAndTimeSelector;
 	private DateBox				 rDateBox;
+
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
@@ -85,12 +93,15 @@ public class GwtDatePicker extends DatePicker
 		setYearArrowsVisible(true);
 	}
 
+	//~ Methods ----------------------------------------------------------------
+
 	/***************************************
 	 * Returns the current date of this instance. If it has been created in date
 	 * and time mode the result will also contain the selected time.
 	 *
 	 * @return The date
 	 */
+	@Override
 	@SuppressWarnings("deprecation")
 	public Date getDate()
 	{
@@ -112,6 +123,7 @@ public class GwtDatePicker extends DatePicker
 	 *
 	 * @param rDate The new date
 	 */
+	@Override
 	public void setDate(Date rDate)
 	{
 		if (rDate != null)
@@ -152,6 +164,8 @@ public class GwtDatePicker extends DatePicker
 		}
 	}
 
+	//~ Inner Classes ----------------------------------------------------------
+
 	/********************************************************************
 	 * A {@link MonthSelector} subclass with extended functionality like year
 	 * selection and (optional) time input.
@@ -159,11 +173,15 @@ public class GwtDatePicker extends DatePicker
 
 	static class MonthAndTimeSelector extends MonthSelector
 	{
+		//~ Static fields/initializers -----------------------------------------
+
 		private static final int COL_PREV_YEAR  = 0;
 		private static final int COL_PREV_MONTH = 1;
 		private static final int COL_MONTH	    = 2;
 		private static final int COL_NEXT_MONTH = 3;
 		private static final int COL_NEXT_YEAR  = 4;
+
+		//~ Instance fields ----------------------------------------------------
 
 		private GwtDatePicker rDatePicker;
 		private GwtTimePicker aTimePicker;
@@ -173,6 +191,8 @@ public class GwtDatePicker extends DatePicker
 		private PushButton aNextMonthButton = new PushButton();
 		private PushButton aPrevYearButton  = new PushButton();
 		private PushButton aNextYearButton  = new PushButton();
+
+		//~ Constructors -------------------------------------------------------
 
 		/***************************************
 		 * Creates a new instance.
@@ -189,6 +209,8 @@ public class GwtDatePicker extends DatePicker
 				aTimePicker = new GwtTimePicker(rContext);
 			}
 		}
+
+		//~ Methods ------------------------------------------------------------
 
 		/***************************************
 		 * @see MonthSelector#getModel()
@@ -363,6 +385,8 @@ public class GwtDatePicker extends DatePicker
 			rDatePicker.setValue(aToday, true);
 		}
 
+		//~ Inner Classes ------------------------------------------------------
+
 		/********************************************************************
 		 * Standard click handler for the month change buttons.
 		 *
@@ -370,7 +394,11 @@ public class GwtDatePicker extends DatePicker
 		 */
 		public class MonthChangeClickHandler implements ClickHandler
 		{
+			//~ Instance fields ------------------------------------------------
+
 			private int nMonthAdd;
+
+			//~ Constructors ---------------------------------------------------
 
 			/***************************************
 			 * Creates a new instance.
@@ -381,6 +409,8 @@ public class GwtDatePicker extends DatePicker
 			{
 				this.nMonthAdd = nMonthAdd;
 			}
+
+			//~ Methods --------------------------------------------------------
 
 			/***************************************
 			 * @see ClickHandler#onClick(ClickEvent)

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.layout.DockLayout;
 import de.esoco.ewt.layout.GenericLayout;
+import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -76,6 +77,7 @@ public class MainView extends View
 		}
 
 		super.setLayout(rLayout);
+		setWidget(createWidget(rContext, StyleData.DEFAULT));
 
 		rWidget = getWidget();
 		setDefaultStyleName(GewtResources.INSTANCE.css().ewtMainView());

@@ -18,6 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
@@ -53,65 +54,6 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	private String		    sText;
 	private Image		    rImage;
 	private AlignedPosition rTextPosition;
-
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rStyleData The label style
-	 */
-	public Label(StyleData rStyleData)
-	{
-		super(createWidget(rStyleData));
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Creates the widget for a new label.
-	 *
-	 * @param  rStyleData The label's style data
-	 *
-	 * @return The new widget
-	 */
-	private static Widget createWidget(StyleData rStyleData)
-	{
-		Widget aWidget = null;
-
-		if (rStyleData.hasFlag(StyleFlag.HYPERLINK))
-		{
-			aWidget = new Hyperlink();
-		}
-		else
-		{
-			switch (rStyleData.getProperty(UserInterfaceProperties.LABEL_STYLE,
-										   LabelStyle.DEFAULT))
-			{
-				case DEFAULT:
-					aWidget = new HTML("", rStyleData.hasFlag(StyleFlag.WRAP));
-					break;
-
-				case INLINE:
-					aWidget = new InlineHTML();
-					break;
-
-				case FORM:
-					aWidget = new GwtFormLabel();
-					break;
-
-				case TITLE:
-					aWidget = new GwtLegendLabel();
-					break;
-
-				case ICON:
-					aWidget = new GwtIconLabel();
-					break;
-			}
-		}
-
-		return aWidget;
-	}
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -179,7 +121,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		setLabelHtml();
+		setLabelContent();
 	}
 
 	/***************************************
@@ -190,32 +132,95 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		this.sText = sText != null ? getContext().expandResource(sText) : null;
 
-		setLabelHtml();
+		setLabelContent();
 	}
 
 	/***************************************
 	 * Sets the label html.
 	 */
-	private void setLabelHtml()
+	private void setLabelContent()
 	{
-		HasHTML rHtml = (HasHTML) getWidget();
+		Widget rWidget = getWidget();
 
-		if (rImage != null)
+		if (rWidget instanceof HasHTML)
 		{
-			getWidget().addStyleName(EWT.CSS.ewtImageLabel());
-			rHtml.setHTML(createImageLabel(sText,
-										   rImage,
-										   rTextPosition,
-										   HasHorizontalAlignment.ALIGN_CENTER,
-										   "100%"));
+			HasHTML rHtml = (HasHTML) rWidget;
+
+			if (rImage != null)
+			{
+				rWidget.addStyleName(EWT.CSS.ewtImageLabel());
+				rHtml.setHTML(createImageLabel(sText,
+											   rImage,
+											   rTextPosition,
+											   HasHorizontalAlignment.ALIGN_CENTER,
+											   "100%"));
+			}
+			else
+			{
+				rHtml.setHTML(sText != null ? sText : "");
+			}
 		}
 		else
 		{
-			rHtml.setHTML(sText != null ? sText : "");
+			((HasText) rWidget).setText(sText);
 		}
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class LabelWidgetFactory<W extends Widget & HasText>
+		implements WidgetFactory<W>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
+		{
+			Widget aWidget = null;
+
+			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
+			{
+				aWidget = new Hyperlink();
+			}
+			else
+			{
+				switch (rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
+										   LabelStyle.DEFAULT))
+				{
+					case DEFAULT:
+						aWidget = new HTML("", rStyle.hasFlag(StyleFlag.WRAP));
+						break;
+
+					case INLINE:
+						aWidget = new InlineHTML();
+						break;
+
+					case FORM:
+						aWidget = new GwtFormLabel();
+						break;
+
+					case TITLE:
+						aWidget = new GwtLegendLabel();
+						break;
+
+					case ICON:
+						aWidget = new GwtIconLabel();
+						break;
+				}
+			}
+
+			return (W) aWidget;
+		}
+	}
 
 	/********************************************************************
 	 * A GWT widget implementation that wraps a certain DOM text element.

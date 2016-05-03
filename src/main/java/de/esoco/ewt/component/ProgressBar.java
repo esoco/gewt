@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,11 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtProgressBar;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
+
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -43,16 +47,6 @@ import de.esoco.ewt.style.StyleFlag;
  */
 public class ProgressBar extends Component
 {
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance.
-	 */
-	public ProgressBar()
-	{
-		super(new GwtProgressBar());
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -121,5 +115,27 @@ public class ProgressBar extends Component
 	private GwtProgressBar getBarWidget()
 	{
 		return (GwtProgressBar) getWidget();
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Widget factory for this component.
+	 *
+	 * @author eso
+	 */
+	public static class ProgressBarWidgetFactory
+		implements WidgetFactory<Widget>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Widget createWidget(Component rComponent, StyleData rStyle)
+		{
+			return new GwtProgressBar();
+		}
 	}
 }

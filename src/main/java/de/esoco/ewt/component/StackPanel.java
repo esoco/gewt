@@ -120,10 +120,10 @@ public class StackPanel extends GroupPanel
 		 */
 		@Override
 		public HasWidgets createLayoutContainer(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+			Container rContainer,
+			StyleData rStyle)
 		{
-			this.rContext     = rContext;
+			this.rContext     = rContainer.getContext();
 			aStackLayoutPanel = new StackLayoutPanel(Unit.EM);
 
 			return aStackLayoutPanel;

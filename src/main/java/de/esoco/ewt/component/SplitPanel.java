@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.layout.DockLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.Alignment;
@@ -109,8 +108,8 @@ public class SplitPanel extends FixedLayoutPanel
 		 */
 		@Override
 		public HasWidgets createLayoutContainer(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+			Container rContainer,
+			StyleData rStyle)
 		{
 			return new SplitLayoutPanel(5);
 		}

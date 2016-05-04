@@ -111,10 +111,10 @@ public abstract class Component implements HasId<String>
 
 	//~ Instance fields --------------------------------------------------------
 
-	private UserInterfaceContext rContext;
 	private Container			 rParent;
-	private IsWidget			 rIsWidget;
 	private StyleData			 rStyle;
+	private IsWidget			 rIsWidget;
+	private UserInterfaceContext rContext;
 
 	private String sId = null;
 
@@ -441,8 +441,8 @@ public abstract class Component implements HasId<String>
 	 * Internal method to create and initialize the GWT widget of this instance
 	 * with the widget factory from {@link EWT#getWidgetFactory(Component)}.
 	 *
-	 * @param    rContext The context the component has been created in
-	 * @param    rStyle   The style data of this instance
+	 * @param    rParent The parent container of the widget
+	 * @param    rStyle  The style data of this instance
 	 *
 	 * @throws   IllegalStateException If no widget factory has been registered
 	 *                                 for the class of this component instance
@@ -450,12 +450,13 @@ public abstract class Component implements HasId<String>
 	 * @category GEWT
 	 * @category Internal
 	 */
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		this.rContext = rContext;
+		this.rContext = rParent.getContext();
+		this.rParent  = rParent;
 		this.rStyle   = rStyle;
 
-		setWidget(createWidget(rContext, rStyle));
+		setWidget(createWidget(rStyle));
 		createEventDispatcher().initEventDispatching(getWidget());
 	}
 
@@ -738,17 +739,19 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Creates the GWT widget for this instance by performing a lookup of the
-	 * widget factory through {@link EWT#getWidgetFactory(Component)}.
+	 * Creates the GWT widget for this instance with the corresponding widget
+	 * factory returned by {@link EWT#getWidgetFactory(Component)}. Subclasses
+	 * that override this method or layouts that need information about this
+	 * component's hierarchy can invoke {@link #getParent()} to access the
+	 * parent container. But this component hasn't yet been added to the parent
+	 * at this point. The method {@link #getContext()} can also be invoked to
+	 * access the {@link UserInterfaceContext}.
 	 *
-	 * @param  rContext The context of this component
-	 * @param  rStyle   The component style
+	 * @param  rStyle The component style
 	 *
 	 * @return The new widget
 	 */
-	protected IsWidget createWidget(
-		UserInterfaceContext rContext,
-		StyleData			 rStyle)
+	protected IsWidget createWidget(StyleData rStyle)
 	{
 		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(this);
 
@@ -898,16 +901,6 @@ public abstract class Component implements HasId<String>
 	void setDefaultStyleName(String sDefaultStyleName)
 	{
 		getWidget().setStylePrimaryName(sDefaultStyleName);
-	}
-
-	/***************************************
-	 * Internal method to set the parent container of this component.
-	 *
-	 * @param rParent The new parent
-	 */
-	void setParent(Container rParent)
-	{
-		this.rParent = rParent;
 	}
 
 	/***************************************

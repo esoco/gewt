@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.Alignment;
 import de.esoco.ewt.style.StyleData;
 
@@ -162,8 +162,8 @@ public class DockLayout extends GenericLayout
 	 */
 	@Override
 	public Panel createLayoutContainer(
-		UserInterfaceContext rContext,
-		StyleData			 rContainerStyle)
+		Container rContainer,
+		StyleData rContainerStyle)
 	{
 		DockLayoutPanel aPanel =
 			new DockLayoutPanel(bPixelUnits ? Unit.PX : Unit.EM);

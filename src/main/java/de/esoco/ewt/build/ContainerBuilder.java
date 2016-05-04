@@ -637,7 +637,7 @@ public class ContainerBuilder<C extends Container>
 					  String    sText,
 					  Object    rImage)
 	{
-		rComponent.initWidget(getContext(), rStyle);
+		rComponent.initWidget(rContainer, rStyle);
 		rContainer.internalAddComponent(rComponent, rStyle);
 
 		if (sText != null)

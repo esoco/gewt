@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.dom.client.Document;
@@ -50,8 +50,8 @@ public class MenuLayout extends GenericLayout
 	 */
 	@Override
 	public HasWidgets createLayoutContainer(
-		UserInterfaceContext rContext,
-		StyleData			 rContainerStyle)
+		Container rContainer,
+		StyleData rContainerStyle)
 	{
 		return new MenuPanel();
 	}

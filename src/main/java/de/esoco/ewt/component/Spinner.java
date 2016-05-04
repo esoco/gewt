@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtSpinner;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -84,9 +83,9 @@ public class Spinner extends Control
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.initWidget(rContext, rStyle);
+		super.initWidget(rParent, rStyle);
 
 		aGwtSpinner = (GwtSpinner) getWidget();
 	}

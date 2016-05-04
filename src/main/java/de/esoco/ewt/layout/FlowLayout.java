@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -64,8 +64,8 @@ public class FlowLayout extends GenericLayout
 	 */
 	@Override
 	public Panel createLayoutContainer(
-		UserInterfaceContext rContext,
-		StyleData			 rContainerStyle)
+		Container rContainer,
+		StyleData rContainerStyle)
 	{
 		Panel aPanel;
 

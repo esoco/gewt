@@ -30,14 +30,12 @@ public class RadioButton extends CheckBox
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Overridden to set the radio button group to the parent.
-	 *
-	 * @see Component#setParent(Container)
+	 * {@inheritDoc}
 	 */
 	@Override
-	void setParent(Container rParent)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.setParent(rParent);
+		super.initWidget(rParent, rStyle);
 
 		String sId = rParent.getId();
 

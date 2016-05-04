@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
@@ -62,9 +61,9 @@ public class List extends ListControl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.initWidget(rContext, rStyle);
+		super.initWidget(rParent, rStyle);
 
 		getGwtListBox().setVisibleItemCount(10);
 		getGwtListBox().setMultipleSelect(rStyle.hasFlag(StyleFlag.MULTISELECT));

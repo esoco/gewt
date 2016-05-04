@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
@@ -58,7 +57,7 @@ public class DeckPanel extends GroupPanel
 	@Override
 	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
 	{
-		getLayout().addWidget(getContainer(), rWidget, rStyleData, -1);
+		getLayout().addWidget(getContainerWidget(), rWidget, rStyleData, -1);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -92,8 +91,8 @@ public class DeckPanel extends GroupPanel
 		 */
 		@Override
 		public HasWidgets createLayoutContainer(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+			Container rContainer,
+			StyleData rStyle)
 		{
 			aDeckLayoutPanel = new DeckLayoutPanel();
 

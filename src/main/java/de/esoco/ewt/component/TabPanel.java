@@ -141,10 +141,10 @@ public class TabPanel extends GroupPanel
 		 */
 		@Override
 		public HasWidgets createLayoutContainer(
-			UserInterfaceContext rContext,
-			StyleData			 rStyle)
+			Container rContainer,
+			StyleData rStyle)
 		{
-			this.rContext = rContext;
+			this.rContext = rContainer.getContext();
 			aTabPanel     = new GwtTabPanel(2, Unit.EM);
 
 			return aTabPanel;

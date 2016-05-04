@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.impl.gwt.code.GwtCodeMirror;
@@ -69,9 +68,9 @@ public class TextArea extends TextComponent
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.initWidget(rContext, rStyle);
+		super.initWidget(rParent, rStyle);
 
 		if (rStyle.hasFlag(StyleFlag.WRAP))
 		{

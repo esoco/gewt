@@ -17,7 +17,6 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
@@ -41,7 +40,7 @@ public abstract class Container extends Component
 	//~ Instance fields --------------------------------------------------------
 
 	private GenericLayout rLayout;
-	private HasWidgets    rContainer;
+	private HasWidgets    rHasWidgets;
 
 	private int nNewComponentPosition = -1;
 
@@ -60,7 +59,7 @@ public abstract class Container extends Component
 	 */
 	public void clear()
 	{
-		rLayout.clear(rContainer);
+		rLayout.clear(rHasWidgets);
 		aComponents.clear();
 	}
 
@@ -138,9 +137,8 @@ public abstract class Container extends Component
 		Component rComponent,
 		StyleData rStyleData)
 	{
-		rComponent.setParent(this);
 		rComponent.applyStyle(rStyleData);
-		addWidget(rContainer, rComponent.getWidget(), rStyleData);
+		addWidget(rHasWidgets, rComponent.getWidget(), rStyleData);
 
 		if (nNewComponentPosition >= 0)
 		{
@@ -172,7 +170,7 @@ public abstract class Container extends Component
 	 */
 	public void removeComponent(Component rComponent)
 	{
-		rLayout.removeWidget(rContainer, rComponent.getWidget());
+		rLayout.removeWidget(rHasWidgets, rComponent.getWidget());
 		aComponents.remove(rComponent);
 	}
 
@@ -204,20 +202,18 @@ public abstract class Container extends Component
 	}
 
 	/***************************************
-	 * Overridden to first check if the layout creates a container widget. A
-	 * final check for a correct container type of the widget will be performed
-	 * be the overridden method {@link #setWidget(Widget)}.
+	 * Overridden to let the layout create the container widget. A final check
+	 * for a correct container type of the widget will be performed be the
+	 * overridden method {@link #setWidget(Widget)}.
 	 *
-	 * @see Component#createWidget(UserInterfaceContext, StyleData)
+	 * @see Component#createWidget(StyleData)
 	 */
 	@Override
-	protected IsWidget createWidget(
-		UserInterfaceContext rContext,
-		StyleData			 rStyle)
+	protected IsWidget createWidget(StyleData rStyle)
 	{
-		rContainer = rLayout.createLayoutContainer(rContext, rStyle);
+		rHasWidgets = rLayout.createLayoutContainer(this, rStyle);
 
-		return (IsWidget) rContainer;
+		return (IsWidget) rHasWidgets;
 	}
 
 	/***************************************
@@ -227,9 +223,9 @@ public abstract class Container extends Component
 	 *
 	 * @category GEWT
 	 */
-	protected final HasWidgets getContainer()
+	protected final HasWidgets getContainerWidget()
 	{
-		return rContainer;
+		return rHasWidgets;
 	}
 
 	/***************************************
@@ -268,7 +264,7 @@ public abstract class Container extends Component
 
 		super.setWidget(rIsWidget);
 
-		rContainer = (HasWidgets) rContainerWidget;
+		rHasWidgets = (HasWidgets) rContainerWidget;
 
 		if (rLayout == null)
 		{
@@ -293,10 +289,10 @@ public abstract class Container extends Component
 		 */
 		@Override
 		public HasWidgets createLayoutContainer(
-			UserInterfaceContext rContext,
-			StyleData			 rContainerStyle)
+			Container rContainer,
+			StyleData rContainerStyle)
 		{
-			return rContainer;
+			return rHasWidgets;
 		}
 	}
 }

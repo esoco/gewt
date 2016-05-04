@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -37,19 +37,19 @@ public abstract class GenericLayout
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Creates a new GWT container that represents this layout. This method is
-	 * only intended to be used internally by the GEWT framework.
+	 * Creates a new GWT container widget that represents this layout. This
+	 * method is only intended to be used internally by the GEWT framework.
 	 *
-	 * @param    rContext The context to create the container in
-	 * @param    rStyle   The style of the container widget
+	 * @param    rContainer The GEWT container to create the widget for
+	 * @param    rStyle     The style of the container widget
 	 *
 	 * @return   A new widget container
 	 *
 	 * @category GEWT
 	 */
 	public abstract HasWidgets createLayoutContainer(
-		UserInterfaceContext rContext,
-		StyleData			 rStyle);
+		Container rContainer,
+		StyleData rStyle);
 
 	/***************************************
 	 * Adds a certain widget to a widget container according to this layout and

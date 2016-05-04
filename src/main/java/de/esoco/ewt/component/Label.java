@@ -193,32 +193,55 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 			}
 			else
 			{
-				switch (rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
-										   LabelStyle.DEFAULT))
-				{
-					case DEFAULT:
-						aWidget = new HTML("", rStyle.hasFlag(StyleFlag.WRAP));
-						break;
+				LabelStyle eLabelStyle =
+					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
+									   LabelStyle.DEFAULT);
 
-					case INLINE:
-						aWidget = new InlineHTML();
-						break;
-
-					case FORM:
-						aWidget = new GwtFormLabel();
-						break;
-
-					case TITLE:
-						aWidget = new GwtLegendLabel();
-						break;
-
-					case ICON:
-						aWidget = new GwtIconLabel();
-						break;
-				}
+				aWidget = createLabelWidget(eLabelStyle, rStyle);
 			}
 
 			return (W) aWidget;
+		}
+
+		/***************************************
+		 * Create the widget for a certain label style.
+		 *
+		 * @param  eLabelStyle The label style
+		 * @param  rStyle      The style data
+		 *
+		 * @return The new label widget
+		 */
+		protected Widget createLabelWidget(
+			LabelStyle eLabelStyle,
+			StyleData  rStyle)
+		{
+			Widget aWidget = null;
+
+			switch (eLabelStyle)
+			{
+				case DEFAULT:
+				case BRAND:
+					aWidget = new HTML("", rStyle.hasFlag(StyleFlag.WRAP));
+					break;
+
+				case INLINE:
+					aWidget = new InlineHTML();
+					break;
+
+				case FORM:
+					aWidget = new GwtFormLabel();
+					break;
+
+				case TITLE:
+					aWidget = new GwtLegendLabel();
+					break;
+
+				case ICON:
+					aWidget = new GwtIconLabel();
+					break;
+			}
+
+			return aWidget;
 		}
 	}
 

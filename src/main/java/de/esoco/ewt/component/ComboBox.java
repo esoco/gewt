@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GwtTagField;
 import de.esoco.ewt.impl.gwt.ValueBoxWrapper;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -179,9 +178,9 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.initWidget(rContext, rStyle);
+		super.initWidget(rParent, rStyle);
 
 		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
 

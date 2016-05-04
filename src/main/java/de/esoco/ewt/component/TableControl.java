@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.impl.gwt.table.GwtTable;
@@ -109,11 +108,12 @@ public abstract class TableControl extends Control implements SingleSelection
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(UserInterfaceContext rContext, StyleData rStyle)
+	public void initWidget(Container rParent, StyleData rStyle)
 	{
-		super.initWidget(rContext, rStyle);
+		super.initWidget(rParent, rStyle);
 
 		aGwtTable = (GwtTable) getWidget();
+		aGwtTable.setContext(getContext());
 		aGwtTable.setEventDispatcher(new GewtEventDispatcherImpl());
 	}
 
@@ -198,19 +198,6 @@ public abstract class TableControl extends Control implements SingleSelection
 		return new TableEventDispatcher();
 	}
 
-	/***************************************
-	 * Overridden to set the context at the internal {@link GwtTable} instance.
-	 *
-	 * @see Component#setParent(Container)
-	 */
-	@Override
-	protected void setParent(Container rParent)
-	{
-		super.setParent(rParent);
-
-		aGwtTable.setContext(rParent.getContext());
-	}
-
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
@@ -243,9 +230,7 @@ public abstract class TableControl extends Control implements SingleSelection
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
-			Component rComponent,
-			StyleData			 rStyle)
+		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new GwtTable(bHierarchical);
 		}

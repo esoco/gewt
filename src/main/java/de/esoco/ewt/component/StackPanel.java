@@ -47,7 +47,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandle
  *
  * <p>Components that are added to a stack panel must have been created with the
  * panel as their parent, else unpredictable results may occur. They must be
- * added to this panel through the {@link #addGroup(Component, String, boolean)}
+ * added to this panel through the {@link #addPage(Component, String, boolean)}
  * method afterwards, else they may not appear at all or the stack may be
  * displayed incorrectly.</p>
  *
@@ -57,7 +57,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandle
  *
  * @author eso
  */
-public class StackPanel extends GroupPanel
+public class StackPanel extends SwitchPanel
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -87,7 +87,7 @@ public class StackPanel extends GroupPanel
 	 *
 	 * @author eso
 	 */
-	public static class StackPanelLayout extends GroupPanelLayout
+	public static class StackPanelLayout extends SwitchPanelLayout
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -100,7 +100,7 @@ public class StackPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addGroup(Component rGroupComponent,
+		public void addPage(Component rGroupComponent,
 							 String    sGroupTitle,
 							 boolean   bCloseable)
 		{
@@ -133,7 +133,7 @@ public class StackPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupCount()
+		public int getPageCount()
 		{
 			return aStackLayoutPanel.getWidgetCount();
 		}
@@ -142,7 +142,7 @@ public class StackPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupIndex(Component rGroupComponent)
+		public int getPageIndex(Component rGroupComponent)
 		{
 			return aStackLayoutPanel.getWidgetIndex(rGroupComponent
 													.getWidget());
@@ -161,7 +161,7 @@ public class StackPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setGroupTitle(int nIndex, String sTitle)
+		public void setPageTitle(int nIndex, String sTitle)
 		{
 			aStackLayoutPanel.setHeaderHTML(nIndex, createStackHeader(sTitle));
 		}

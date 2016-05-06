@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class DeckPanel extends GroupPanel
+public class DeckPanel extends SwitchPanel
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -49,7 +49,7 @@ public class DeckPanel extends GroupPanel
 	/***************************************
 	 * Overridden to reset the base class version to the original implementation
 	 * to support simple addition of components to deck panels which ignore the
-	 * additional parameters of {@link #addGroup(Component, String, boolean)}
+	 * additional parameters of {@link #addPage(Component, String, boolean)}
 	 * anyway.
 	 *
 	 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
@@ -67,7 +67,7 @@ public class DeckPanel extends GroupPanel
 	 *
 	 * @author eso
 	 */
-	public static class DeckPanelLayout extends GroupPanelLayout
+	public static class DeckPanelLayout extends SwitchPanelLayout
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -79,7 +79,7 @@ public class DeckPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addGroup(Component rGroupComponent,
+		public void addPage(Component rGroupComponent,
 							 String    sGroupTitle,
 							 boolean   bCloseable)
 		{
@@ -103,7 +103,7 @@ public class DeckPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupCount()
+		public int getPageCount()
 		{
 			return aDeckLayoutPanel.getWidgetCount();
 		}
@@ -112,7 +112,7 @@ public class DeckPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupIndex(Component rGroupComponent)
+		public int getPageIndex(Component rGroupComponent)
 		{
 			return aDeckLayoutPanel.getWidgetIndex(rGroupComponent.getWidget());
 		}
@@ -130,7 +130,7 @@ public class DeckPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setGroupTitle(int nIndex, String sTitle)
+		public void setPageTitle(int nIndex, String sTitle)
 		{
 			// ignored
 		}

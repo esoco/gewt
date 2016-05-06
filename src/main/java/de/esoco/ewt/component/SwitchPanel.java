@@ -26,12 +26,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * A base class for panels that group components in some way like tabs or
- * stacks.
+ * A base class for panels that switch between pages of components in some way
+ * like tabs or stacks.
  *
  * @author eso
  */
-public abstract class GroupPanel extends FixedLayoutPanel
+public abstract class SwitchPanel extends FixedLayoutPanel
 	implements SingleSelection
 {
 	//~ Constructors -----------------------------------------------------------
@@ -39,9 +39,9 @@ public abstract class GroupPanel extends FixedLayoutPanel
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param rLayout The group panel layout for this instance
+	 * @param rLayout The page panel layout for this instance
 	 */
-	public GroupPanel(GroupPanelLayout rLayout)
+	public SwitchPanel(SwitchPanelLayout rLayout)
 	{
 		super(rLayout);
 	}
@@ -49,50 +49,51 @@ public abstract class GroupPanel extends FixedLayoutPanel
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Adds a new group component to this panel.
+	 * Adds a new page to this panel.
 	 *
-	 * @param rGroupComponent The component to be placed in a group
-	 * @param sGroupTitle     The title of the group
-	 * @param bCloseable      TRUE if the group can be closed by the user
+	 * @param rComponent The component to be placed in a page
+	 * @param sPageTitle The title of the page
+	 * @param bCloseable TRUE if the page can be closed by the user
 	 */
-	public void addGroup(Component rGroupComponent,
-						 String    sGroupTitle,
-						 boolean   bCloseable)
+	public void addPage(Component rComponent,
+						String    sPageTitle,
+						boolean   bCloseable)
 	{
-		getLayout().addGroup(rGroupComponent, sGroupTitle, bCloseable);
+		getLayout().addPage(rComponent, sPageTitle, bCloseable);
 	}
 
 	/***************************************
-	 * Returns the number of groups contained in this instance.
-	 *
-	 * @return The group count
-	 */
-	public int getGroupCount()
-	{
-		return getLayout().getGroupCount();
-	}
-
-	/***************************************
-	 * Returns the index of the group in which a certain component is displayed.
-	 *
-	 * @param  rGroupComponent The component
-	 *
-	 * @return The group index or -1 if the given component is not in a group
-	 */
-	public int getGroupIndex(Component rGroupComponent)
-	{
-		return getLayout().getGroupIndex(rGroupComponent);
-	}
-
-	/***************************************
-	 * Overridden to return the layout after a cast to {@link GroupPanelLayout}.
+	 * Overridden to return the layout after a cast to {@link
+	 * SwitchPanelLayout}.
 	 *
 	 * @see FixedLayoutPanel#getLayout()
 	 */
 	@Override
-	public GroupPanelLayout getLayout()
+	public SwitchPanelLayout getLayout()
 	{
-		return (GroupPanelLayout) super.getLayout();
+		return (SwitchPanelLayout) super.getLayout();
+	}
+
+	/***************************************
+	 * Returns the number of pages in this instance.
+	 *
+	 * @return The page count
+	 */
+	public int getPageCount()
+	{
+		return getLayout().getPageCount();
+	}
+
+	/***************************************
+	 * Returns the index of the page in which a certain component is displayed.
+	 *
+	 * @param  rPageComponent The component to return the index of
+	 *
+	 * @return The page index or -1 if the given component is not a page
+	 */
+	public int getPageIndex(Component rPageComponent)
+	{
+		return getLayout().getPageIndex(rPageComponent);
 	}
 
 	/***************************************
@@ -105,14 +106,14 @@ public abstract class GroupPanel extends FixedLayoutPanel
 	}
 
 	/***************************************
-	 * Sets the title of a particular group.
+	 * Sets the title of a particular page.
 	 *
-	 * @param nIndex The group index
+	 * @param nIndex The page index
 	 * @param sTitle The new title
 	 */
-	public void setGroupTitle(int nIndex, String sTitle)
+	public void setPageTitle(int nIndex, String sTitle)
 	{
-		getLayout().setGroupTitle(nIndex, sTitle);
+		getLayout().setPageTitle(nIndex, sTitle);
 	}
 
 	/***************************************
@@ -125,8 +126,8 @@ public abstract class GroupPanel extends FixedLayoutPanel
 	}
 
 	/***************************************
-	 * Overridden to do nothing. Group components must be added by invoking the
-	 * method {@link #addGroup(Component, String, boolean)}.
+	 * Overridden to do nothing. Page components must be added by invoking the
+	 * method {@link #addPage(Component, String, boolean)}.
 	 *
 	 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
 	 */
@@ -142,46 +143,45 @@ public abstract class GroupPanel extends FixedLayoutPanel
 	 *
 	 * @author eso
 	 */
-	public static abstract class GroupPanelLayout extends GenericLayout
+	public static abstract class SwitchPanelLayout extends GenericLayout
 		implements SingleSelection
 	{
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * Adds a new group component to this panel.
+		 * Adds a new page component to this panel.
 		 *
-		 * @param rGroupComponent The component to be placed in a group
-		 * @param sGroupTitle     The title of the group
-		 * @param bCloseable      TRUE if the group can be closed by the user
+		 * @param rPageComponent The component to be placed in a page
+		 * @param sPageTitle     The title of the page
+		 * @param bCloseable     TRUE if the page can be closed by the user
 		 */
-		public abstract void addGroup(Component rGroupComponent,
-									  String    sGroupTitle,
-									  boolean   bCloseable);
+		public abstract void addPage(Component rPageComponent,
+									 String    sPageTitle,
+									 boolean   bCloseable);
 
 		/***************************************
-		 * Returns the number of groups contained in this instance.
+		 * Returns the number of pages contained in this instance.
 		 *
-		 * @return The group count
+		 * @return The page count
 		 */
-		public abstract int getGroupCount();
+		public abstract int getPageCount();
 
 		/***************************************
-		 * Returns the index of the group in which a certain component is
+		 * Returns the index of the page in which a certain component is
 		 * displayed.
 		 *
-		 * @param  rGroupComponent The component
+		 * @param  rPageComponent The component
 		 *
-		 * @return The group index or -1 if the given component is not in a
-		 *         group
+		 * @return The page index or -1 if the given component is not in a page
 		 */
-		public abstract int getGroupIndex(Component rGroupComponent);
+		public abstract int getPageIndex(Component rPageComponent);
 
 		/***************************************
-		 * Sets the title of a particular group.
+		 * Sets the title of a particular page.
 		 *
-		 * @param nIndex The group index
+		 * @param nIndex The page index
 		 * @param sTitle The new title
 		 */
-		public abstract void setGroupTitle(int nIndex, String sTitle);
+		public abstract void setPageTitle(int nIndex, String sTitle);
 	}
 }

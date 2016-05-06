@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class TabPanel extends GroupPanel
+public class TabPanel extends SwitchPanel
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -93,7 +93,7 @@ public class TabPanel extends GroupPanel
 	 *
 	 * @author eso
 	 */
-	public static class TabPanelLayout extends GroupPanelLayout
+	public static class TabPanelLayout extends SwitchPanelLayout
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -106,7 +106,7 @@ public class TabPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addGroup(Component rGroupComponent,
+		public void addPage(Component rGroupComponent,
 							 String    sGroupTitle,
 							 boolean   bCloseable)
 		{
@@ -154,7 +154,7 @@ public class TabPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupCount()
+		public int getPageCount()
 		{
 			return aTabPanel.getWidgetCount();
 		}
@@ -163,7 +163,7 @@ public class TabPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getGroupIndex(Component rGroupComponent)
+		public int getPageIndex(Component rGroupComponent)
 		{
 			return aTabPanel.getWidgetIndex(rGroupComponent.getWidget());
 		}
@@ -181,7 +181,7 @@ public class TabPanel extends GroupPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setGroupTitle(int nIndex, String sTitle)
+		public void setPageTitle(int nIndex, String sTitle)
 		{
 			aTabPanel.setTabText(nIndex, sTitle);
 		}

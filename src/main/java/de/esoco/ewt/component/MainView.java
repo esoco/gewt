@@ -18,7 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.impl.gwt.GewtResources;
-import de.esoco.ewt.layout.DockLayout;
+import de.esoco.ewt.layout.FillLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
@@ -48,7 +48,7 @@ public class MainView extends View
 	{
 		this.rContext = rContext;
 
-		setLayout(new DockLayout(false, false));
+		setLayout(new MainViewLayout());
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -82,5 +82,18 @@ public class MainView extends View
 		rWidget = getWidget();
 		setDefaultStyleName(GewtResources.INSTANCE.css().ewtMainView());
 		rRootLayoutPanel.add(rWidget);
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * The default layout for the {@link MainView} of an application. This is
+	 * just a sub-class of {@link FillLayout} that can be detected by layout
+	 * factories if necessary.
+	 *
+	 * @author eso
+	 */
+	public static class MainViewLayout extends FillLayout
+	{
 	}
 }

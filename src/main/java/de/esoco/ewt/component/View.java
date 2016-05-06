@@ -16,6 +16,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.style.ViewStyle;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -27,26 +30,53 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public abstract class View extends Container
 {
+	//~ Instance fields --------------------------------------------------------
+
+	private final UserInterfaceContext rContext;
+	private final ViewStyle			   rViewStyle;
+
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @see Container#Container(Panel)
+	 * @param rContext   The user interface context
+	 * @param rViewPanel The panel to place the view component in
+	 * @param rStyle     The view style
 	 */
-	public View(Panel rPanel)
+	public View(UserInterfaceContext rContext,
+				Panel				 rViewPanel,
+				ViewStyle			 rStyle)
 	{
-		setWidget(rPanel);
+		this(rContext, rStyle);
+
+		setWidget(rViewPanel);
 	}
 
 	/***************************************
-	 * @see Container#Container()
+	 * Creates a new instance.
+	 *
+	 * @param rContext The user interface context
+	 * @param rStyle   rViewStyle The view style
 	 */
-	View()
+	View(UserInterfaceContext rContext, ViewStyle rStyle)
 	{
+		this.rContext   = rContext;
+		this.rViewStyle = rStyle;
 	}
 
 	//~ Methods ----------------------------------------------------------------
+
+	/***************************************
+	 * Overridden to return the actual UI context.
+	 *
+	 * @see Container#getContext()
+	 */
+	@Override
+	public UserInterfaceContext getContext()
+	{
+		return rContext;
+	}
 
 	/***************************************
 	 * Returns the view title.
@@ -56,6 +86,16 @@ public abstract class View extends Container
 	public String getTitle()
 	{
 		return Window.getTitle();
+	}
+
+	/***************************************
+	 * Returns the style of this view.
+	 *
+	 * @return The view style
+	 */
+	public final ViewStyle getViewStyle()
+	{
+		return rViewStyle;
 	}
 
 	/***************************************

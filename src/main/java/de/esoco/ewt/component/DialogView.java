@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class DialogView extends ChildView
 {
-	private ViewStyle rViewStyle;
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
@@ -40,10 +40,27 @@ public class DialogView extends ChildView
 	 */
 	public DialogView(UserInterfaceContext rContext, ViewStyle rStyle)
 	{
-		super(rContext, createDialogBox(rStyle));
-
-		rViewStyle = rStyle;
+		super(rContext, createDialogBox(rStyle), rStyle);
 	}
+
+	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * Creates the GWT dialog for this instance.
+	 *
+	 * @param  rStyle The view style
+	 *
+	 * @return The dialog
+	 */
+	private static DialogBox createDialogBox(ViewStyle rStyle)
+	{
+		boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
+		boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
+
+		return new DialogBox(bAutoHide, bModal);
+	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Sets the dialog title.
@@ -69,26 +86,11 @@ public class DialogView extends ChildView
 	{
 		PopupPanel rPopupPanel = getPopupPanel();
 
-		if (bVisible && rViewStyle.hasFlag(ViewStyle.Flag.MODAL))
+		if (bVisible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL))
 		{
 			rPopupPanel.setGlassEnabled(true);
 		}
 
 		super.setVisible(bVisible);
-	}
-
-	/***************************************
-	 * Creates the GWT dialog for this instance.
-	 *
-	 * @param  rStyle The view style
-	 *
-	 * @return The dialog
-	 */
-	private static DialogBox createDialogBox(ViewStyle rStyle)
-	{
-		boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
-		boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
-
-		return new DialogBox(bAutoHide, bModal);
 	}
 }

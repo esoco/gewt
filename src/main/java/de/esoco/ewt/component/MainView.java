@@ -21,8 +21,11 @@ import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.layout.FillLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
+import de.esoco.ewt.style.ViewStyle;
 
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -33,20 +36,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MainView extends View
 {
-	//~ Instance fields --------------------------------------------------------
-
-	private final UserInterfaceContext rContext;
-
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance that wraps a certain root panel.
 	 *
 	 * @param rContext The user interface context this view belongs to
+	 * @param rStyle   The view style
 	 */
-	public MainView(UserInterfaceContext rContext)
+	public MainView(UserInterfaceContext rContext, ViewStyle rStyle)
 	{
-		this.rContext = rContext;
+		super(rContext, rStyle);
 
 		setLayout(new MainViewLayout());
 	}
@@ -54,26 +54,19 @@ public class MainView extends View
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * @see Component#getContext()
-	 */
-	@Override
-	public UserInterfaceContext getContext()
-	{
-		return rContext;
-	}
-
-	/***************************************
 	 * @see Container#setLayout(GenericLayout)
 	 */
 	@Override
 	public void setLayout(GenericLayout rLayout)
 	{
-		RootLayoutPanel rRootLayoutPanel = RootLayoutPanel.get();
-		Widget		    rWidget			 = getWidget();
+		boolean bFullSize = getViewStyle().hasFlag(ViewStyle.Flag.FULL_SIZE);
+		Widget  rWidget   = getWidget();
+
+		Panel rRootPanel = bFullSize ? RootLayoutPanel.get() : RootPanel.get();
 
 		if (rWidget != null)
 		{
-			rRootLayoutPanel.remove(rWidget);
+			rRootPanel.remove(rWidget);
 		}
 
 		super.setLayout(rLayout);
@@ -81,7 +74,7 @@ public class MainView extends View
 
 		rWidget = getWidget();
 		setDefaultStyleName(GewtResources.INSTANCE.css().ewtMainView());
-		rRootLayoutPanel.add(rWidget);
+		rRootPanel.add(rWidget);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------

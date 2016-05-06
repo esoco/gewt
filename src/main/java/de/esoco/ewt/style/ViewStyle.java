@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,12 +34,15 @@ public class ViewStyle
 	/********************************************************************
 	 * Enumeration of view style flags.
 	 */
-	public enum Flag { MODAL, FIXED_SIZE, UNDECORATED, AUTO_HIDE }
+	public enum Flag { MODAL, FIXED_SIZE, FULL_SIZE, UNDECORATED, AUTO_HIDE }
 
 	//~ Static fields/initializers ---------------------------------------------
 
 	/** Constant for the default view style */
 	public static final ViewStyle DEFAULT = new ViewStyle();
+
+	/** Constant for the default view style */
+	public static final ViewStyle FULL_SIZE = new ViewStyle(Flag.FULL_SIZE);
 
 	/** Constant for modal views */
 	public static final ViewStyle MODAL = new ViewStyle(Flag.MODAL);

@@ -35,10 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ChildView extends View
 {
-	//~ Instance fields --------------------------------------------------------
-
-	private final UserInterfaceContext rContext;
-
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
@@ -49,7 +45,7 @@ public class ChildView extends View
 	 */
 	public ChildView(UserInterfaceContext rContext, ViewStyle rStyle)
 	{
-		this(rContext, createChildViewPanel(rStyle));
+		this(rContext, createChildViewPanel(rStyle), rStyle);
 	}
 
 	/***************************************
@@ -58,12 +54,13 @@ public class ChildView extends View
 	 *
 	 * @param rContext   The user interface context this dialog view belongs to
 	 * @param rViewPanel The popup panel of this view
+	 * @param rStyle     TODO: DOCUMENT ME!
 	 */
-	protected ChildView(UserInterfaceContext rContext, PopupPanel rViewPanel)
+	protected ChildView(UserInterfaceContext rContext,
+						PopupPanel			 rViewPanel,
+						ViewStyle			 rStyle)
 	{
-		super(rViewPanel);
-
-		this.rContext = rContext;
+		super(rContext, rViewPanel, rStyle);
 	}
 
 	//~ Static methods ---------------------------------------------------------
@@ -94,15 +91,6 @@ public class ChildView extends View
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UserInterfaceContext getContext()
-	{
-		return rContext;
-	}
 
 	/***************************************
 	 * {@inheritDoc}

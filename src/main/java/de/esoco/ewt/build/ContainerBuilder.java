@@ -595,6 +595,15 @@ public class ContainerBuilder<C extends Container>
 	}
 
 	/***************************************
+	 * Convenience method to remove all components from this builder's
+	 * container. See {@link Container#clear()} for details.
+	 */
+	public void removeAllComponents()
+	{
+		rContainer.clear();
+	}
+
+	/***************************************
 	 * Convenience method to remove a certain component from this builder's
 	 * container. See {@link Container#removeComponent(Component)} for details.
 	 *

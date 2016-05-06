@@ -313,7 +313,7 @@ public class UserInterfaceContext
 	 */
 	public MainView createMainView(ViewStyle rViewStyle)
 	{
-		return new MainView(this);
+		return new MainView(this, rViewStyle);
 	}
 
 	/***************************************

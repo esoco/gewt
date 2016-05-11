@@ -16,7 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.style.StyleData;
+
+import de.esoco.lib.property.UserInterfaceProperties.Layout;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -38,10 +41,14 @@ public class DeckPanel extends SwitchPanel
 
 	/***************************************
 	 * Creates a new instance.
+	 *
+	 * @param rParent The parent container
+	 * @param rStyle  The panel style
 	 */
-	public DeckPanel()
+	public DeckPanel(Container rParent, StyleData rStyle)
 	{
-		super(new DeckPanelLayout());
+		super(EWT.getLayoutFactory()
+			  .createLayout(rParent, rStyle, Layout.DECK));
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -80,8 +87,8 @@ public class DeckPanel extends SwitchPanel
 		 */
 		@Override
 		public void addPage(Component rGroupComponent,
-							 String    sGroupTitle,
-							 boolean   bCloseable)
+							String    sGroupTitle,
+							boolean   bCloseable)
 		{
 			aDeckLayoutPanel.add(rGroupComponent.getWidget());
 		}

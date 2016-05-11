@@ -57,6 +57,8 @@ import de.esoco.ewt.component.Website.WebsiteWidgetFactory;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.layout.LayoutFactory;
+import de.esoco.ewt.layout.LayoutFactory.DefaultLayoutFactory;
 import de.esoco.ewt.layout.LayoutMapper;
 import de.esoco.ewt.layout.LayoutMapper.IdentityLayoutMapper;
 
@@ -100,7 +102,8 @@ public class EWT
 
 	private static Map<String, String> aCssClassMap = null;
 
-	private static LayoutMapper rLayoutMapper = new IdentityLayoutMapper();
+	private static LayoutFactory rLayoutFactory = new DefaultLayoutFactory();
+	private static LayoutMapper  rLayoutMapper  = new IdentityLayoutMapper();
 
 	private static Map<Class<? extends Component>, WidgetFactory<?>> aWidgetFactories =
 		new HashMap<>();
@@ -190,6 +193,16 @@ public class EWT
 	public static int getDoubleClickInterval()
 	{
 		return DOUBLE_CLICK_INTERVAL;
+	}
+
+	/***************************************
+	 * Returns the current layout factory.
+	 *
+	 * @return The layout factory
+	 */
+	public static final LayoutFactory getLayoutFactory()
+	{
+		return rLayoutFactory;
 	}
 
 	/***************************************
@@ -375,6 +388,24 @@ public class EWT
 		if (bReplaceExisting || !aWidgetFactories.containsKey(rComponentClass))
 		{
 			aWidgetFactories.put(rComponentClass, rFactory);
+		}
+	}
+
+	/***************************************
+	 * Sets a new layout factory. EWT extensions can set a factory to create
+	 * their own layouts instead of the defaults.
+	 *
+	 * @param rFactory The new layout factory or NULL to reset to the default
+	 */
+	public static void setLayoutFactory(LayoutFactory rFactory)
+	{
+		if (rFactory != null)
+		{
+			rLayoutFactory = rFactory;
+		}
+		else
+		{
+			rLayoutFactory = new DefaultLayoutFactory();
 		}
 	}
 

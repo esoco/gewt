@@ -39,11 +39,22 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param rLayout The page panel layout for this instance
+	 * @param  rLayout The layout for this instance
+	 *
+	 * @throws IllegalArgumentException If the layout isn't an instance of
+	 *                                  {@link SwitchPanelLayout}
 	 */
-	public SwitchPanel(SwitchPanelLayout rLayout)
+	public SwitchPanel(GenericLayout rLayout)
 	{
 		super(rLayout);
+
+		if (!(rLayout instanceof SwitchPanelLayout))
+		{
+			throw new IllegalArgumentException(getClass().getSimpleName() +
+											   " Layout must be a subclass of " +
+											   SwitchPanelLayout.class
+											   .getSimpleName());
+		}
 	}
 
 	//~ Methods ----------------------------------------------------------------

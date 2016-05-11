@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.build;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.Button;
 import de.esoco.ewt.component.Calendar;
@@ -47,6 +48,8 @@ import de.esoco.ewt.component.Website;
 import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
+
+import de.esoco.lib.property.UserInterfaceProperties.Layout;
 
 import java.util.Date;
 
@@ -192,7 +195,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ContainerBuilder<DeckPanel> addDeckPanel(StyleData rStyle)
 	{
-		DeckPanel aComponent = new DeckPanel();
+		DeckPanel aComponent = new DeckPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
 
@@ -286,6 +289,24 @@ public class ContainerBuilder<C extends Container>
 	public ContainerBuilder<Panel> addPanel(StyleData rStyle)
 	{
 		return addPanel(rStyle, new EdgeLayout(0));
+	}
+
+	/***************************************
+	 * Creates a new {@link Panel} with a layout created through the layout
+	 * factory returned by {@link EWT#getLayoutFactory()} and returns a
+	 * container builder for the new panel.
+	 *
+	 * @param  rStyle  The style data
+	 * @param  eLayout The panel layout
+	 *
+	 * @return A container builder wrapping the new panel
+	 */
+	public ContainerBuilder<Panel> addPanel(StyleData rStyle, Layout eLayout)
+	{
+		GenericLayout aLayout =
+			EWT.getLayoutFactory().createLayout(rContainer, rStyle, eLayout);
+
+		return addPanel(rStyle, aLayout);
 	}
 
 	/***************************************
@@ -402,7 +423,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ContainerBuilder<SplitPanel> addSplitPanel(StyleData rStyle)
 	{
-		SplitPanel aComponent = new SplitPanel();
+		SplitPanel aComponent = new SplitPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
 
@@ -418,7 +439,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ContainerBuilder<StackPanel> addStackPanel(StyleData rStyle)
 	{
-		StackPanel aComponent = new StackPanel();
+		StackPanel aComponent = new StackPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
 
@@ -450,7 +471,7 @@ public class ContainerBuilder<C extends Container>
 	 */
 	public ContainerBuilder<TabPanel> addTabPanel(StyleData rStyle)
 	{
-		TabPanel aComponent = new TabPanel();
+		TabPanel aComponent = new TabPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
 

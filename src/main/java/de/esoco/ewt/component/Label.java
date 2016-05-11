@@ -197,7 +197,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
 									   LabelStyle.DEFAULT);
 
-				aWidget = createLabelWidget(eLabelStyle, rStyle);
+				aWidget = createLabelWidget(rComponent, eLabelStyle, rStyle);
 			}
 
 			return (W) aWidget;
@@ -206,14 +206,15 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		/***************************************
 		 * Create the widget for a certain label style.
 		 *
+		 * @param  rComponent  The component to create the widget for
 		 * @param  eLabelStyle The label style
 		 * @param  rStyle      The style data
 		 *
 		 * @return The new label widget
 		 */
-		protected Widget createLabelWidget(
-			LabelStyle eLabelStyle,
-			StyleData  rStyle)
+		protected Widget createLabelWidget(Component  rComponent,
+										   LabelStyle eLabelStyle,
+										   StyleData  rStyle)
 		{
 			Widget aWidget = null;
 

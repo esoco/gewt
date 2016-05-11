@@ -20,8 +20,10 @@ import de.esoco.ewt.component.Container;
 
 
 /********************************************************************
- * An interface for the mapping of EWT layouts to other layout instances. EWT
- * extensions can use this to replace default layouts with their own instances.
+ * An interface for the mapping of EWT layouts to other layout instances after
+ * their creation. EWT extensions can use this to replace default layouts with
+ * their own instances. This should be used if a {@link LayoutFactory} is not
+ * sufficient because a layout needs initialization.
  *
  * @author eso
  */
@@ -39,9 +41,8 @@ public interface LayoutMapper
 	 * @return Either a new (mapped) layout instance or the original layout if
 	 *         no mapping is necessary
 	 */
-	public GenericLayout mapLayout(
-		Container	  rContainer,
-		GenericLayout rLayout);
+	public GenericLayout mapLayout(Container	 rContainer,
+								   GenericLayout rLayout);
 
 	//~ Inner Classes ----------------------------------------------------------
 

@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
@@ -24,6 +25,8 @@ import de.esoco.ewt.impl.gwt.GwtTabPanel;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
+
+import de.esoco.lib.property.UserInterfaceProperties.Layout;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -69,10 +72,14 @@ public class TabPanel extends SwitchPanel
 
 	/***************************************
 	 * Creates a new instance.
+	 *
+	 * @param rParent The parent container
+	 * @param rStyle  The panel style
 	 */
-	public TabPanel()
+	public TabPanel(Container rParent, StyleData rStyle)
 	{
-		super(new TabPanelLayout());
+		super(EWT.getLayoutFactory()
+			  .createLayout(rParent, rStyle, Layout.TABS));
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -107,8 +114,8 @@ public class TabPanel extends SwitchPanel
 		 */
 		@Override
 		public void addPage(Component rGroupComponent,
-							 String    sGroupTitle,
-							 boolean   bCloseable)
+							String    sGroupTitle,
+							boolean   bCloseable)
 		{
 			Widget rTabContent = rGroupComponent.getWidget();
 

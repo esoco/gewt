@@ -16,12 +16,15 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
+
+import de.esoco.lib.property.UserInterfaceProperties.Layout;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -63,10 +66,14 @@ public class StackPanel extends SwitchPanel
 
 	/***************************************
 	 * Creates a new instance.
+	 *
+	 * @param rParent The parent container
+	 * @param rStyle  The panel style
 	 */
-	public StackPanel()
+	public StackPanel(Container rParent, StyleData rStyle)
 	{
-		super(new StackPanelLayout());
+		super(EWT.getLayoutFactory()
+			  .createLayout(rParent, rStyle, Layout.STACK));
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -101,8 +108,8 @@ public class StackPanel extends SwitchPanel
 		 */
 		@Override
 		public void addPage(Component rGroupComponent,
-							 String    sGroupTitle,
-							 boolean   bCloseable)
+							String    sGroupTitle,
+							boolean   bCloseable)
 		{
 			Widget rWidget = rGroupComponent.getWidget();
 			String rHeader = createStackHeader(sGroupTitle);

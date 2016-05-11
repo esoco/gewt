@@ -16,10 +16,13 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.layout.DockLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.Alignment;
 import de.esoco.ewt.style.StyleData;
+
+import de.esoco.lib.property.UserInterfaceProperties.Layout;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -41,10 +44,14 @@ public class SplitPanel extends FixedLayoutPanel
 
 	/***************************************
 	 * Creates a new instance.
+	 *
+	 * @param rParent The parent container
+	 * @param rStyle  The panel style
 	 */
-	public SplitPanel()
+	public SplitPanel(Container rParent, StyleData rStyle)
 	{
-		super(new SplitPanelLayout());
+		super(EWT.getLayoutFactory()
+			  .createLayout(rParent, rStyle, Layout.SPLIT));
 	}
 
 	//~ Methods ----------------------------------------------------------------

@@ -342,7 +342,7 @@ public class EWT
 							  new ProgressBarWidgetFactory(),
 							  bReplaceExisting);
 		registerWidgetFactory(RadioButton.class,
-							  new RadioButtonWidgetFactory<>(),
+							  new RadioButtonWidgetFactory(),
 							  bReplaceExisting);
 		registerWidgetFactory(Spinner.class,
 							  new SpinnerWidgetFactory(),

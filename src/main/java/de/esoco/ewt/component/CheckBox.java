@@ -42,10 +42,10 @@ public class CheckBox extends SelectableButton
 	 * @see SelectableButton#isSelected()
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean isSelected()
 	{
-		return ((com.google.gwt.user.client.ui.CheckBox) getWidget()).getValue()
-																	 .booleanValue();
+		return ((HasValue<Boolean>) getWidget()).getValue().booleanValue();
 	}
 
 	/***************************************
@@ -55,10 +55,10 @@ public class CheckBox extends SelectableButton
 	 * @param bSelected The new selected state
 	 */
 	@Override
-	@SuppressWarnings("boxing")
+	@SuppressWarnings({ "boxing", "unchecked" })
 	public void setSelected(boolean bSelected)
 	{
-		((com.google.gwt.user.client.ui.CheckBox) getWidget()).setValue(bSelected);
+		((HasValue<Boolean>) getWidget()).setValue(bSelected);
 	}
 
 	/***************************************
@@ -130,12 +130,7 @@ public class CheckBox extends SelectableButton
 		{
 			super.initEventDispatching(rWidget);
 
-			if (rWidget instanceof com.google.gwt.user.client.ui.CheckBox)
-			{
-				((com.google.gwt.user.client.ui.CheckBox) rWidget)
-				.addValueChangeHandler(this);
-			}
-			else if (rWidget instanceof HasValueChangeHandlers)
+			if (rWidget instanceof HasValueChangeHandlers<?>)
 			{
 				((HasValueChangeHandlers<Boolean>) rWidget)
 				.addValueChangeHandler(this);

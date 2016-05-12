@@ -49,9 +49,8 @@ public class RadioButton extends CheckBox
 	 *
 	 * @author eso
 	 */
-	public static class RadioButtonWidgetFactory<W extends com.google.gwt.user
-												 .client.ui.RadioButton>
-		extends CheckBoxWidgetFactory<W>
+	public static class RadioButtonWidgetFactory
+		extends CheckBoxWidgetFactory<com.google.gwt.user.client.ui.RadioButton>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -59,10 +58,11 @@ public class RadioButton extends CheckBox
 		 * {@inheritDoc}
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
+		public com.google.gwt.user.client.ui.RadioButton createWidget(
+			Component rComponent,
+			StyleData rStyle)
 		{
-			return (W) new com.google.gwt.user.client.ui.RadioButton("");
+			return new com.google.gwt.user.client.ui.RadioButton("");
 		}
 	}
 }

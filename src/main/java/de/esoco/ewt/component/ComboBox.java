@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class ComboBox extends TextComponent implements KeyDownHandler,
+public class ComboBox extends TextControl implements KeyDownHandler,
 													   DoubleClickHandler
 {
 	//~ Instance fields --------------------------------------------------------
@@ -184,7 +184,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 
 		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
 
-		IsTextBox rTextBox = getTextBox();
+		IsTextControlWidget rTextBox = getTextBox();
 
 		rTextBox.addKeyDownHandler(this);
 		rTextBox.addDoubleClickHandler(this);
@@ -242,7 +242,7 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	}
 
 	/***************************************
-	 * @see TextComponent#setColumns(int)
+	 * @see TextControl#setColumns(int)
 	 */
 	@Override
 	public void setColumns(int nColumns)
@@ -251,10 +251,10 @@ public class ComboBox extends TextComponent implements KeyDownHandler,
 	}
 
 	/***************************************
-	 * @see TextComponent#getTextBox()
+	 * @see TextControl#getTextBox()
 	 */
 	@Override
-	protected IsTextBox getTextBox()
+	protected IsTextControlWidget getTextBox()
 	{
 		return new ValueBoxWrapper(getSuggestBox().getValueBox());
 	}

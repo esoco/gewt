@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.TextBox;
  *
  * @author eso
  */
-public class TextField extends TextComponent
+public class TextField extends TextControl
 {
 	//~ Methods ----------------------------------------------------------------
 
@@ -56,7 +56,7 @@ public class TextField extends TextComponent
 	}
 
 	/***************************************
-	 * @see TextComponent#setColumns(int)
+	 * @see TextControl#setColumns(int)
 	 */
 	@Override
 	public void setColumns(int nColumns)
@@ -86,7 +86,7 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static class TextFieldWidgetFactory<W extends IsTextBox>
+	public static class TextFieldWidgetFactory<W extends IsTextControlWidget>
 		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
@@ -98,7 +98,7 @@ public class TextField extends TextComponent
 		@SuppressWarnings("unchecked")
 		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			IsTextBox aTextBox;
+			IsTextControlWidget aTextBox;
 
 			if (rStyle.hasFlag(StyleFlag.PASSWORD))
 			{
@@ -118,7 +118,7 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	static class GwtPasswordBox extends PasswordTextBox implements IsTextBox
+	static class GwtPasswordBox extends PasswordTextBox implements IsTextControlWidget
 	{
 		//~ Constructors -------------------------------------------------------
 
@@ -165,7 +165,7 @@ public class TextField extends TextComponent
 	 *
 	 * @author eso
 	 */
-	static class GwtTextField extends TextBox implements IsTextBox
+	static class GwtTextField extends TextBox implements IsTextControlWidget
 	{
 		//~ Constructors -------------------------------------------------------
 

@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.component.TextComponent.IsTextBox;
+import de.esoco.ewt.component.TextControl.IsTextControlWidget;
 
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /********************************************************************
  * A wrapper for {@link ValueBoxBase} implementations that implements the
- * interface {@link IsTextBox}.
+ * interface {@link IsTextControlWidget}.
  *
  * @author eso
  */
-public class ValueBoxWrapper implements IsTextBox
+public class ValueBoxWrapper implements IsTextControlWidget
 {
 	//~ Instance fields --------------------------------------------------------
 

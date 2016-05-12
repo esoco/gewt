@@ -38,7 +38,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
  *
  * @author eso
  */
-public class DateField extends TextComponent implements DateAttribute
+public class DateField extends TextControl implements DateAttribute
 {
 	//~ Methods ----------------------------------------------------------------
 
@@ -83,7 +83,7 @@ public class DateField extends TextComponent implements DateAttribute
 	}
 
 	/***************************************
-	 * @see TextComponent#isEnabled()
+	 * @see TextControl#isEnabled()
 	 */
 	@Override
 	public boolean isEnabled()
@@ -92,7 +92,7 @@ public class DateField extends TextComponent implements DateAttribute
 	}
 
 	/***************************************
-	 * @see TextComponent#setColumns(int)
+	 * @see TextControl#setColumns(int)
 	 */
 	@Override
 	public void setColumns(int nColumns)
@@ -131,7 +131,7 @@ public class DateField extends TextComponent implements DateAttribute
 	}
 
 	/***************************************
-	 * @see TextComponent#setEnabled(boolean)
+	 * @see TextControl#setEnabled(boolean)
 	 */
 	@Override
 	public void setEnabled(boolean bEnabled)
@@ -155,10 +155,10 @@ public class DateField extends TextComponent implements DateAttribute
 	/***************************************
 	 * Overridden to return the result of {@link DateBox#getTextBox()}.
 	 *
-	 * @see TextComponent#getTextBox()
+	 * @see TextControl#getTextBox()
 	 */
 	@Override
-	protected IsTextBox getTextBox()
+	protected IsTextControlWidget getTextBox()
 	{
 		return new ValueBoxWrapper(getDateWidget().getTextBox());
 	}

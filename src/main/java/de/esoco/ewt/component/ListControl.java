@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -237,11 +238,11 @@ public abstract class ListControl extends Control implements SingleSelection,
 	//~ Inner Interfaces -------------------------------------------------------
 
 	/********************************************************************
-	 * Contains the typical methods for list widgets.
+	 * Contains the required methods for list widgets.
 	 *
 	 * @author eso
 	 */
-	public static interface IsListControlWidget extends IsWidget
+	public static interface IsListControlWidget extends IsWidget, Focusable
 	{
 		//~ Methods ------------------------------------------------------------
 

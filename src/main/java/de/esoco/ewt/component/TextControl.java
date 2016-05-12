@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public abstract class TextComponent extends Control implements TextAttribute
+public abstract class TextControl extends Control implements TextAttribute
 {
 	//~ Instance fields --------------------------------------------------------
 
@@ -194,13 +194,13 @@ public abstract class TextComponent extends Control implements TextAttribute
 	}
 
 	/***************************************
-	 * Returns the {@link IsTextBox} implementation of this instance.
+	 * Returns the {@link IsTextControlWidget} implementation of this instance.
 	 *
 	 * @return The text box
 	 */
-	protected IsTextBox getTextBox()
+	protected IsTextControlWidget getTextBox()
 	{
-		return (IsTextBox) getWidget();
+		return (IsTextControlWidget) getWidget();
 	}
 
 	/***************************************
@@ -242,14 +242,16 @@ public abstract class TextComponent extends Control implements TextAttribute
 	//~ Inner Interfaces -------------------------------------------------------
 
 	/********************************************************************
-	 * The interface that needs to be provided by all text box implementations.
+	 * The interface that needs to be provided by all text control widgets
+	 * implementations.
 	 *
 	 * @author eso
 	 */
-	public static interface IsTextBox extends IsWidget, HasText, Focusable,
-											  HasEnabled, HasKeyPressHandlers,
-											  HasKeyDownHandlers,
-											  HasDoubleClickHandlers
+	public static interface IsTextControlWidget extends IsWidget, HasText,
+														Focusable, HasEnabled,
+														HasKeyPressHandlers,
+														HasKeyDownHandlers,
+														HasDoubleClickHandlers
 	{
 		//~ Methods ------------------------------------------------------------
 

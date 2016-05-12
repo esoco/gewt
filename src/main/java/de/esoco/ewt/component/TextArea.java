@@ -38,7 +38,7 @@ import static de.esoco.lib.property.UserInterfaceProperties.MIME_TYPE;
  *
  * @author eso
  */
-public class TextArea extends TextComponent
+public class TextArea extends TextControl
 {
 	//~ Methods ----------------------------------------------------------------
 
@@ -118,7 +118,7 @@ public class TextArea extends TextComponent
 	}
 
 	/***************************************
-	 * @see TextComponent#setColumns(int)
+	 * @see TextControl#setColumns(int)
 	 */
 	@Override
 	public void setColumns(int nColumns)
@@ -198,7 +198,7 @@ public class TextArea extends TextComponent
 	 *
 	 * @author eso
 	 */
-	public static interface IsTextArea extends IsTextBox
+	public static interface IsTextArea extends IsTextControlWidget
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -211,7 +211,7 @@ public class TextArea extends TextComponent
 		public String getText();
 
 		/***************************************
-		 * @see TextComponent#setColumns(int)
+		 * @see TextControl#setColumns(int)
 		 */
 		public void setCharacterWidth(int nColumns);
 

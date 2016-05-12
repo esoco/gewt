@@ -19,13 +19,17 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
-
 import de.esoco.lib.property.MultiSelection;
 import de.esoco.lib.property.SingleSelection;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -116,7 +120,8 @@ public abstract class ListControl extends Control implements SingleSelection,
 	@Override
 	public int[] getSelectionIndices()
 	{
-		ListBox rListBox   = (ListBox) getWidget();
+		IsListControlWidget rListBox   = getGwtListBox();
+		
 		int     nItemCount = rListBox.getItemCount();
 		int[]   aIndices   = new int[nItemCount];
 		int     nIndex     = 0;
@@ -178,7 +183,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 	@Override
 	public void setSelection(int[] rIndices)
 	{
-		ListBox rListBox = (ListBox) getWidget();
+		IsListControlWidget rListBox = getGwtListBox();
 
 		setSelection(-1);
 
@@ -200,7 +205,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 	@Override
 	public void setSelection(int nStart, int nEnd)
 	{
-		ListBox rListBox = (ListBox) getWidget();
+		IsListControlWidget rListBox = getGwtListBox();
 
 		setSelection(-1);
 
@@ -224,12 +229,95 @@ public abstract class ListControl extends Control implements SingleSelection,
 	 *
 	 * @return The GWT list box
 	 */
-	ListBox getGwtListBox()
+	IsListControlWidget getGwtListBox()
 	{
-		return (ListBox) getWidget();
+		return (IsListControlWidget) getWidget();
+	}
+
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * Contains the typical methods for list widgets.
+	 *
+	 * @author eso
+	 */
+	public static interface IsListControlWidget extends IsWidget
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * @see ListBox#addItem(String)
+		 */
+		public void addItem(String sItem);
+
+		/***************************************
+		 * @see ListBox#clear()
+		 */
+		public void clear();
+
+		/***************************************
+		 * @see ListBox#getItemCount()
+		 */
+		public int getItemCount();
+
+		/***************************************
+		 * @see ListBox#getItemText(int)
+		 */
+		public String getItemText(int nIndex);
+
+		/***************************************
+		 * @see ListBox#getSelectedIndex()
+		 */
+		public int getSelectedIndex();
+
+		/***************************************
+		 * @see ListBox#insertItem(String, int)
+		 */
+		public void insertItem(String sItem, int nIndex);
+
+		/***************************************
+		 * @see ListBox#removeItem(int)
+		 */
+		public void removeItem(int nIndex);
+
+		/***************************************
+		 * @see ListBox#isItemSelected(int)
+		 */
+		public boolean isItemSelected(int nIndex);
+		
+		/***************************************
+		 * @see ListBox#setItemSelected(int, boolean)
+		 */
+		public void setItemSelected(int nIndex, boolean bSelected);
+		
+		/***************************************
+		 * @see ListBox#setMultipleSelect(boolean)
+		 */
+		public void setMultipleSelect(boolean bHasMultiSelect);
+
+		/***************************************
+		 * @see ListBox#setSelectedIndex(int)
+		 */
+		public void setSelectedIndex(int nIndex);
+
+		/***************************************
+		 * @see ListBox#setVisibleItemCount(int)
+		 */
+		public void setVisibleItemCount(int nCount);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * A subclass of {@link ListBox} that implements the {@link
+	 * IsListControlWidget} interface.
+	 *
+	 * @author eso
+	 */
+	public static class GwtListBox extends ListBox
+		implements IsListControlWidget
+	{
+	}
 
 	/********************************************************************
 	 * Widget factory for this component.
@@ -237,7 +325,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 	 * @author eso
 	 */
 	public static class ListControlWidgetFactory
-		implements WidgetFactory<Widget>
+		implements WidgetFactory<IsListControlWidget>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -245,11 +333,11 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(
+		public IsListControlWidget createWidget(
 			Component rComponent,
-			StyleData			 rStyle)
+			StyleData rStyle)
 		{
-			return new ListBox();
+			return new GwtListBox();
 		}
 	}
 
@@ -259,7 +347,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 	 * @author eso
 	 */
 	class ListEventDispatcher extends ComponentEventDispatcher
-		implements ChangeHandler
+		implements ChangeHandler, ValueChangeHandler<String>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -286,11 +374,26 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
 		 */
 		@Override
+		@SuppressWarnings("unchecked")
 		void initEventDispatching(Widget rWidget)
 		{
 			super.initEventDispatching(rWidget);
 
-			((ListBox) rWidget).addChangeHandler(this);
+			if (rWidget instanceof HasChangeHandlers)
+			{
+				((HasChangeHandlers) rWidget).addChangeHandler(this);
+			}
+			else if (rWidget instanceof HasValueChangeHandlers)
+			{
+				((HasValueChangeHandlers<String>) rWidget)
+				.addValueChangeHandler(this);
+			}
+		}
+
+		@Override
+		public void onValueChange(ValueChangeEvent<String> rEvent)
+		{
+			notifyEventHandler(EventType.SELECTION, rEvent);
 		}
 	}
 }

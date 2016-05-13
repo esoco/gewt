@@ -101,6 +101,7 @@ public interface LayoutFactory
 				case FLOW:
 				case GRID:
 				case GRID_ROW:
+				case GRID_COLUMN:
 				case CARD:
 				case LIST_ITEM:
 					aLayout = new FlowLayout();

@@ -25,6 +25,8 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.TextAttribute;
+import de.esoco.lib.property.UserInterfaceProperties;
+import de.esoco.lib.property.UserInterfaceProperties.ButtonStyle;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Focusable;
@@ -197,18 +199,23 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		@SuppressWarnings("unchecked")
 		public W createWidget(Component rComponent, StyleData rStyle)
 		{
-			IsWidget aWidget;
+			ButtonStyle eButtonStyle =
+				rStyle.getProperty(UserInterfaceProperties.BUTTON_STYLE,
+								   ButtonStyle.DEFAULT);
 
-			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
+			IsWidget aButtonWidget;
+
+			if (rStyle.hasFlag(StyleFlag.HYPERLINK) ||
+				eButtonStyle == ButtonStyle.LINK)
 			{
-				aWidget = new Anchor();
+				aButtonWidget = new Anchor();
 			}
 			else
 			{
-				aWidget = new PushButton();
+				aButtonWidget = new PushButton();
 			}
 
-			return (W) aWidget;
+			return (W) aButtonWidget;
 		}
 	}
 }

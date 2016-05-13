@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.Focusable;
@@ -61,7 +62,7 @@ public class ToggleButton extends SelectableButton
 	 * @author eso
 	 */
 	public static class ToggleButtonWidgetFactory<W extends Widget & Focusable & HasHTML & HasValue<Boolean>>
-		extends ButtonWidgetFactory<W>
+		implements WidgetFactory<W>
 	{
 		//~ Methods ------------------------------------------------------------
 

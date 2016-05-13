@@ -33,6 +33,7 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.lib.property.HasId;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
+import de.esoco.lib.text.TextConvert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -534,13 +535,14 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Sets the background color of this component. Currently not supported on
-	 * GWT.
+	 * Sets the background color of this component.
 	 *
 	 * @param nColor The new background color
 	 */
 	public void setBackground(int nColor)
 	{
+		getWidget().getElement().getStyle()
+				   .setBackgroundColor(toHtmlColor(nColor));
 	}
 
 	/***************************************
@@ -560,13 +562,13 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Sets the foreground color of this component. Currently not supported on
-	 * GWT.
+	 * Sets the foreground color of this component.
 	 *
 	 * @param nColor The new foreground color
 	 */
 	public void setForeground(int nColor)
 	{
+		getWidget().getElement().getStyle().setColor(toHtmlColor(nColor));
 	}
 
 	/***************************************
@@ -800,6 +802,18 @@ public abstract class Component implements HasId<String>
 		}
 
 		return aTextPosition;
+	}
+
+	/***************************************
+	 * Converts an integer color value to a hexadecimal RGB string.
+	 *
+	 * @param  nColor The integer color value
+	 *
+	 * @return The hex color string
+	 */
+	protected String toHtmlColor(int nColor)
+	{
+		return TextConvert.padLeft(Integer.toHexString(nColor), 6, '0');
 	}
 
 	/***************************************

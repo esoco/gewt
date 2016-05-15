@@ -179,31 +179,6 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
-			Widget aWidget = null;
-
-			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
-			{
-				aWidget = new Hyperlink();
-			}
-			else
-			{
-				LabelStyle eLabelStyle =
-					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
-									   LabelStyle.DEFAULT);
-
-				aWidget = createLabelWidget(rComponent, eLabelStyle, rStyle);
-			}
-
-			return (W) aWidget;
-		}
-
-		/***************************************
 		 * Create the widget for a certain label style.
 		 *
 		 * @param  rComponent  The component to create the widget for
@@ -212,9 +187,9 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		 *
 		 * @return The new label widget
 		 */
-		protected Widget createLabelWidget(Component  rComponent,
-										   LabelStyle eLabelStyle,
-										   StyleData  rStyle)
+		public Widget createLabelWidget(Component  rComponent,
+										LabelStyle eLabelStyle,
+										StyleData  rStyle)
 		{
 			Widget aWidget = null;
 
@@ -243,6 +218,31 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 			}
 
 			return aWidget;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		public W createWidget(Component rComponent, StyleData rStyle)
+		{
+			Widget aWidget = null;
+
+			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
+			{
+				aWidget = new Hyperlink();
+			}
+			else
+			{
+				LabelStyle eLabelStyle =
+					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
+									   LabelStyle.DEFAULT);
+
+				aWidget = createLabelWidget(rComponent, eLabelStyle, rStyle);
+			}
+
+			return (W) aWidget;
 		}
 	}
 

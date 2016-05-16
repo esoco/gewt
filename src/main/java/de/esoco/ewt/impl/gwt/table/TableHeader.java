@@ -24,7 +24,7 @@ import de.esoco.lib.model.ColumnDefinition;
 import de.esoco.lib.model.DataModel;
 import de.esoco.lib.model.SortableDataModel;
 import de.esoco.lib.model.SortableDataModel.SortMode;
-import de.esoco.lib.property.UserInterfaceProperties.ContentType;
+import de.esoco.lib.property.ContentType;
 import de.esoco.lib.text.TextConvert;
 
 import java.sql.Time;

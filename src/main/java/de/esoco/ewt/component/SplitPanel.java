@@ -22,7 +22,7 @@ import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.Alignment;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.UserInterfaceProperties.Layout;
+import de.esoco.lib.property.Layout;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;

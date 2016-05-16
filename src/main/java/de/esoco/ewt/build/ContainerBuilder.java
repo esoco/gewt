@@ -49,7 +49,7 @@ import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.UserInterfaceProperties.Layout;
+import de.esoco.lib.property.Layout;
 
 import java.util.Date;
 

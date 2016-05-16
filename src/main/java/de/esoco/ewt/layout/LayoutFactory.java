@@ -23,7 +23,7 @@ import de.esoco.ewt.component.StackPanel.StackPanelLayout;
 import de.esoco.ewt.component.TabPanel.TabPanelLayout;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.UserInterfaceProperties.Layout;
+import de.esoco.lib.property.Layout;
 
 
 /********************************************************************

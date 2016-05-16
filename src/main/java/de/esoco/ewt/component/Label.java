@@ -23,10 +23,9 @@ import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
-
+import de.esoco.lib.property.LabelStyle;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
-import de.esoco.lib.property.UserInterfaceProperties.LabelStyle;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;

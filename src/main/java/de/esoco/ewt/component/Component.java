@@ -21,6 +21,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.Color;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
@@ -33,7 +34,6 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.lib.property.HasId;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
-import de.esoco.lib.text.TextConvert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -288,6 +288,19 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
+	 * Returns the background color of this component.
+	 *
+	 * @return The background color
+	 */
+	public int getBackgroundColor()
+	{
+		String sColor =
+			getWidget().getElement().getStyle().getBackgroundColor();
+
+		return sColor != null ? Color.valueOf(sColor) : 0;
+	}
+
+	/***************************************
 	 * Returns the user interface context this component belongs to.
 	 *
 	 * @return This component's user interface context
@@ -308,6 +321,18 @@ public abstract class Component implements HasId<String>
 	public Element getElement()
 	{
 		return getWidget().getElement();
+	}
+
+	/***************************************
+	 * Returns the foreground (text) color of this component.
+	 *
+	 * @return The foreground color
+	 */
+	public int getForegroundColor()
+	{
+		String sColor = getWidget().getElement().getStyle().getColor();
+
+		return sColor != null ? Color.valueOf(sColor) : 0;
 	}
 
 	/***************************************
@@ -539,10 +564,10 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @param nColor The new background color
 	 */
-	public void setBackground(int nColor)
+	public void setBackgroundColor(int nColor)
 	{
 		getWidget().getElement().getStyle()
-				   .setBackgroundColor(toHtmlColor(nColor));
+				   .setBackgroundColor(Color.toHtml(nColor));
 	}
 
 	/***************************************
@@ -566,9 +591,9 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @param nColor The new foreground color
 	 */
-	public void setForeground(int nColor)
+	public void setForegroundColor(int nColor)
 	{
-		getWidget().getElement().getStyle().setColor(toHtmlColor(nColor));
+		getWidget().getElement().getStyle().setColor(Color.toHtml(nColor));
 	}
 
 	/***************************************
@@ -802,18 +827,6 @@ public abstract class Component implements HasId<String>
 		}
 
 		return aTextPosition;
-	}
-
-	/***************************************
-	 * Converts an integer color value to a hexadecimal RGB string.
-	 *
-	 * @param  nColor The integer color value
-	 *
-	 * @return The hex color string
-	 */
-	protected String toHtmlColor(int nColor)
-	{
-		return TextConvert.padLeft(Integer.toHexString(nColor), 6, '0');
 	}
 
 	/***************************************

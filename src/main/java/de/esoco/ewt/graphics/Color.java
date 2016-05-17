@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
+
+import de.esoco.lib.text.TextConvert;
+
 
 /********************************************************************
  * This class contains several predefined color constants and provides static
@@ -222,6 +225,19 @@ public class Color
 	}
 
 	/***************************************
+	 * Converts an integer color value to a hexadecimal RGB string as used in
+	 * HTML and CSS.
+	 *
+	 * @param  nColor The integer color value
+	 *
+	 * @return The hex color string
+	 */
+	public static String toHtml(int nColor)
+	{
+		return "#" + TextConvert.padLeft(Integer.toHexString(nColor), 6, '0');
+	}
+
+	/***************************************
 	 * Converts a color into the corresponding RGB integer value.
 	 *
 	 * <p>This method exists only for compatibility with desktop EWT and the
@@ -253,6 +269,18 @@ public class Color
 	public static int valueOf(int nRGB)
 	{
 		return nRGB;
+	}
+
+	/***************************************
+	 * Converts an HTML color value into an integer.
+	 *
+	 * @param  sHtmlColor The HTML color
+	 *
+	 * @return The integer color
+	 */
+	public static int valueOf(String sHtmlColor)
+	{
+		return Integer.parseInt(sHtmlColor, 16);
 	}
 
 	/***************************************

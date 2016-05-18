@@ -19,7 +19,7 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.BitmapImage;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
@@ -112,9 +112,9 @@ public class StackPanel extends SwitchPanel
 							boolean   bCloseable)
 		{
 			Widget rWidget = rGroupComponent.getWidget();
-			String rHeader = createStackHeader(sGroupTitle);
+			String sHeader = createHeader(rContext, sGroupTitle);
 
-			aStackLayoutPanel.add(rWidget, rHeader, true, 2);
+			aStackLayoutPanel.add(rWidget, sHeader, true, 2);
 
 			if (aStackLayoutPanel.getWidgetCount() == 1)
 			{
@@ -170,7 +170,8 @@ public class StackPanel extends SwitchPanel
 		@Override
 		public void setPageTitle(int nIndex, String sTitle)
 		{
-			aStackLayoutPanel.setHeaderHTML(nIndex, createStackHeader(sTitle));
+			aStackLayoutPanel.setHeaderHTML(nIndex,
+											createHeader(rContext, sTitle));
 		}
 
 		/***************************************
@@ -183,17 +184,21 @@ public class StackPanel extends SwitchPanel
 		}
 
 		/***************************************
-		 * Creates the HTML for a stack title string.
+		 * Creates the HTML string for the header of a switch panel element.
 		 *
-		 * @param  sStackTitle The stack title
+		 * @param  rContext     The user interface context for resource lookups
+		 * @param  sHeaderTitle The header title
 		 *
-		 * @return The HTML string for the stack title
+		 * @return The HTML string for the header
 		 */
-		protected String createStackHeader(String sStackTitle)
+		private String createHeader(
+			UserInterfaceContext rContext,
+			String				 sHeaderTitle)
 		{
-			String sTitle = rContext.expandResource(sStackTitle);
-			Image  rImage =
-				rContext.createImage(GewtResources.INSTANCE.imRight());
+			String	    sTitle = rContext.expandResource(sHeaderTitle);
+			BitmapImage rImage =
+				(BitmapImage) rContext.createImage(GewtResources.INSTANCE
+												   .imRight());
 
 			String sTitleHtml =
 				createImageLabel(sTitle,

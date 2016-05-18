@@ -19,10 +19,7 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.Image;
-import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
-import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
@@ -36,7 +33,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -200,29 +196,6 @@ public class TabPanel extends SwitchPanel
 		public void setSelection(int nIndex)
 		{
 			aTabPanel.selectTab(nIndex);
-		}
-
-		/***************************************
-		 * Creates the HTML for a stack title string.
-		 *
-		 * @param  sStackTitle The stack title
-		 *
-		 * @return The HTML string for the stack title
-		 */
-		protected String createStackHeader(String sStackTitle)
-		{
-			String sTitle = rContext.expandResource(sStackTitle);
-			Image  rImage =
-				rContext.createImage(GewtResources.INSTANCE.imRight());
-
-			String sTitleHtml =
-				createImageLabel(sTitle,
-								 rImage,
-								 AlignedPosition.RIGHT,
-								 HasHorizontalAlignment.ALIGN_LEFT,
-								 null);
-
-			return sTitleHtml;
 		}
 
 		//~ Inner Classes ------------------------------------------------------

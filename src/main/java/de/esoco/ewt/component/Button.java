@@ -17,12 +17,14 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.BitmapImage;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
+
 import de.esoco.lib.property.ButtonStyle;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
@@ -99,54 +101,14 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		this.rImage = rImage;
 
 		HasText rWidget = (HasText) getWidget();
-		String  sText   = getText();
 
-		if (rImage != null)
+		if (rWidget instanceof ImageAttribute)
 		{
-			if (rWidget instanceof PushButton &&
-				(sText == null || sText.length() == 0))
-			{
-				com.google.gwt.user.client.ui.Image rGwtImage =
-					rImage.getGwtImage();
-
-				PushButton rPushButton = (PushButton) rWidget;
-
-				rPushButton.getUpFace().setImage(rGwtImage);
-				rPushButton.getUpDisabledFace().setImage(rGwtImage);
-				rPushButton.getUpHoveringFace().setImage(rGwtImage);
-				rPushButton.getDownFace().setImage(rGwtImage);
-				rPushButton.getDownDisabledFace().setImage(rGwtImage);
-				rPushButton.getDownHoveringFace().setImage(rGwtImage);
-			}
-			else
-			{
-				String sImageLabel =
-					createImageLabel(sText,
-									 rImage,
-									 rTextPosition,
-									 HasHorizontalAlignment.ALIGN_CENTER,
-									 "100%");
-
-				if (rWidget instanceof PushButton)
-				{
-					PushButton rPushButton = (PushButton) rWidget;
-
-					rPushButton.getUpFace().setHTML(sImageLabel);
-					rPushButton.getUpDisabledFace().setHTML(sImageLabel);
-					rPushButton.getUpHoveringFace().setHTML(sImageLabel);
-					rPushButton.getDownFace().setHTML(sImageLabel);
-					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
-					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
-				}
-				else if (rWidget instanceof HasHTML)
-				{
-					((HasHTML) rWidget).setHTML(sImageLabel);
-				}
-			}
+			((ImageAttribute) rWidget).setImage(rImage);
 		}
 		else
 		{
-			rWidget.setText(sText);
+			setButtonImage(rWidget, getText(), rImage, rTextPosition);
 		}
 	}
 
@@ -176,6 +138,70 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 			rPushButton.getDownHoveringFace().setText(sText);
 			rPushButton.getUpDisabledFace().setText(sText);
 			rPushButton.getDownDisabledFace().setText(sText);
+		}
+	}
+
+	/***************************************
+	 * Sets an image and/or text on a button widget.
+	 *
+	 * @param rWidget       The button widget
+	 * @param sText         The button text (NULL or empty for none)
+	 * @param rImage        The button image
+	 * @param rTextPosition The position of the text relative to the image
+	 */
+	void setButtonImage(HasText			rWidget,
+						String			sText,
+						Image			rImage,
+						AlignedPosition rTextPosition)
+	{
+		if (rImage instanceof BitmapImage)
+		{
+			BitmapImage rBitmap = (BitmapImage) rImage;
+
+			if (rWidget instanceof PushButton &&
+				(sText == null || sText.length() == 0))
+			{
+				com.google.gwt.user.client.ui.Image rGwtImage =
+					rBitmap.getGwtImage();
+
+				PushButton rPushButton = (PushButton) rWidget;
+
+				rPushButton.getUpFace().setImage(rGwtImage);
+				rPushButton.getUpDisabledFace().setImage(rGwtImage);
+				rPushButton.getUpHoveringFace().setImage(rGwtImage);
+				rPushButton.getDownFace().setImage(rGwtImage);
+				rPushButton.getDownDisabledFace().setImage(rGwtImage);
+				rPushButton.getDownHoveringFace().setImage(rGwtImage);
+			}
+			else
+			{
+				String sImageLabel =
+					createImageLabel(sText,
+									 rBitmap,
+									 rTextPosition,
+									 HasHorizontalAlignment.ALIGN_CENTER,
+									 "100%");
+
+				if (rWidget instanceof PushButton)
+				{
+					PushButton rPushButton = (PushButton) rWidget;
+
+					rPushButton.getUpFace().setHTML(sImageLabel);
+					rPushButton.getUpDisabledFace().setHTML(sImageLabel);
+					rPushButton.getUpHoveringFace().setHTML(sImageLabel);
+					rPushButton.getDownFace().setHTML(sImageLabel);
+					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
+					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
+				}
+				else if (rWidget instanceof HasHTML)
+				{
+					((HasHTML) rWidget).setHTML(sImageLabel);
+				}
+			}
+		}
+		else
+		{
+			rWidget.setText(sText);
 		}
 	}
 

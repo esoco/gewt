@@ -17,12 +17,14 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
+import de.esoco.ewt.graphics.BitmapImage;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
+
 import de.esoco.lib.property.LabelStyle;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
@@ -120,7 +122,16 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		this.rImage = rImage;
 
-		setLabelContent();
+		Widget rWidget = getWidget();
+
+		if (rWidget instanceof ImageAttribute)
+		{
+			((ImageAttribute) rWidget).setImage(rImage);
+		}
+		else
+		{
+			setLabelContent();
+		}
 	}
 
 	/***************************************
@@ -145,11 +156,11 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		{
 			HasHTML rHtml = (HasHTML) rWidget;
 
-			if (rImage != null)
+			if (rImage instanceof BitmapImage)
 			{
 				rWidget.addStyleName(EWT.CSS.ewtImageLabel());
 				rHtml.setHTML(createImageLabel(sText,
-											   rImage,
+											   (BitmapImage) rImage,
 											   rTextPosition,
 											   HasHorizontalAlignment.ALIGN_CENTER,
 											   "100%"));

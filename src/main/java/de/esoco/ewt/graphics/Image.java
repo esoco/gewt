@@ -1,89 +1,42 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// GEWT source file
-// Copyright (c) 2012 by Elmar Sonnenschein / esoco GmbH
+// This file is a part of the 'gewt' project.
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Last Change: 09.02.2012 by eso
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
 
-import com.google.gwt.resources.client.ImageResource;
-
-import de.esoco.ewt.UserInterfaceContext;
-
-
 /********************************************************************
- * This class contains EWT images. For platform compatibility image instances
- * should not be created by invoking the constructor but by using the factory
- * method {@link UserInterfaceContext#createImage(String)}.
+ * The interface for GEWT images.
  *
  * @author eso
  */
-public
-class Image
+public interface Image
 {
-	private com.google.gwt.user.client.ui.Image rGwtImage;
+	//~ Static fields/initializers ---------------------------------------------
 
-	/***************************************
-	 * Creates a new instance from an arbitrary image object. The supported
-	 * argument types are either a {@link String} with the image name or one of
-	 * the GEWT-specific types {@link com.google.gwt.user.client.ui.Image} or
-	 * {@link ImageResource}.
-	 *
-	 * @param  rImageDefinition The image object
-	 *
-	 * @throws IllegalArgumentException If the argument type is not supported
-	 */
-	public Image(Object rImageDefinition)
-	{
-		if (rImageDefinition instanceof ImageResource)
-		{
-			rGwtImage = new com.google.gwt.user.client.ui.Image((ImageResource) rImageDefinition);
-		}
-		else if (rImageDefinition instanceof
-		         com.google.gwt.user.client.ui.Image)
-		{
-			rGwtImage = (com.google.gwt.user.client.ui.Image) rImageDefinition;
-		}
-		else if (rImageDefinition instanceof String)
-		{
-			rGwtImage = new com.google.gwt.user.client.ui.Image((String) rImageDefinition);
-		}
-		else
-		{
-			throw new IllegalArgumentException("Invalid image parameter: " +
-			                                   rImageDefinition);
-		}
-	}
+	/** The separator between image prefix and image name */
+	public static final char IMAGE_PREFIX_SEPARATOR = ':';
 
-	/***************************************
-	 * Returns the internal GWT image.
-	 *
-	 * @return   The GWT image
-	 *
-	 * @category GEWT
-	 */
-	public com.google.gwt.user.client.ui.Image getGwtImage()
-	{
-		return rGwtImage;
-	}
+	/** A prefix for base64 encoded image data */
+	public static final char IMAGE_DATA_PREFIX = 'd';
 
-	/***************************************
-	 * Returns the image height.
-	 *
-	 * @return The height in pixels
-	 */
-	public int getHeight()
-	{
-		return rGwtImage.getHeight();
-	}
+	/** A prefix for an image file name */
+	public static final char IMAGE_FILE_PREFIX = 'f';
 
-	/***************************************
-	 * Returns the image width.
-	 *
-	 * @return The width in pixels
-	 */
-	public int getWidth()
-	{
-		return rGwtImage.getWidth();
-	}
+	/** A prefix for an icon image */
+	public static final char IMAGE_ICON_PREFIX = 'i';
+
+	/** A MINE type declaration for a base64 encoded PNG image. */
+	public static final String BASE64_PNG_IMAGE_DATA_TYPE = "image/png;base64";
 }

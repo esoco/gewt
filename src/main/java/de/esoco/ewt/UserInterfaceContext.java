@@ -26,6 +26,8 @@ import de.esoco.ewt.component.View;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.Icon;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.Screen;
 import de.esoco.ewt.impl.gwt.GewtStrings;
@@ -274,31 +276,43 @@ public class UserInterfaceContext
 		{
 			String sImage = expandResource((String) rImageReference);
 
-			if (sImage.startsWith("data:"))
+			if (sImage.length() > 2)
 			{
-				rImage = new Image(sImage);
-			}
-			else if (sImage.startsWith("file:"))
-			{
-				rImage =
-					new Image(GWT.getModuleBaseForStaticFiles() +
-							  sImage.substring(5));
-			}
-			else
-			{
-				rImage = rResource.getImage(sImage);
-			}
+				if (sImage.charAt(1) == Image.IMAGE_PREFIX_SEPARATOR)
+				{
+					String sImageName = sImage.substring(2);
 
-			if (rImage == null && sImage.length() > 0)
-			{
-				GWT.log("No image for " +
-						(sImage.charAt(0) == '$' ? sImage.substring(1)
-												 : sImage));
+					if (sImage.charAt(0) == Image.IMAGE_ICON_PREFIX)
+					{
+						rImage = new Icon(sImageName);
+					}
+					else if (sImage.charAt(0) == Image.IMAGE_DATA_PREFIX)
+					{
+						rImage = new BitmapImage(sImageName);
+					}
+					else if (sImage.charAt(0) == Image.IMAGE_FILE_PREFIX)
+					{
+						rImage =
+							new BitmapImage(GWT.getModuleBaseForStaticFiles() +
+											sImageName);
+					}
+				}
+				else
+				{
+					rImage = rResource.getImage(sImage);
+				}
+
+				if (rImage == null)
+				{
+					GWT.log("No image for " +
+							(sImage.charAt(0) == '$' ? sImage.substring(1)
+													 : sImage));
+				}
 			}
 		}
 		else
 		{
-			rImage = new Image(rImageReference);
+			rImage = new BitmapImage(rImageReference);
 		}
 
 		return rImage;

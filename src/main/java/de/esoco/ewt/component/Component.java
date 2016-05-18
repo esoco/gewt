@@ -21,6 +21,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.BitmapImage;
 import de.esoco.ewt.graphics.Color;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
@@ -140,7 +141,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public static String createImageLabel(
 		String						sText,
-		Image						rImage,
+		BitmapImage					rImage,
 		AlignedPosition				rTextPosition,
 		HorizontalAlignmentConstant eHorizontalAlignment,
 		String						sWidth)
@@ -678,7 +679,7 @@ public abstract class Component implements HasId<String>
 		{
 			if (rProperty instanceof ImageResource)
 			{
-				rProperty = new Image(rProperty);
+				rProperty = new BitmapImage(rProperty);
 			}
 
 			if (rProperty instanceof Image)

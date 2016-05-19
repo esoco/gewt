@@ -54,6 +54,15 @@ public class MainView extends View
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public View getView()
+	{
+		return this;
+	}
+
+	/***************************************
 	 * @see Container#setLayout(GenericLayout)
 	 */
 	@Override

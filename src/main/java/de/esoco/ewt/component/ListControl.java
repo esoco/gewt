@@ -271,6 +271,12 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 */
 		public int getSelectedIndex();
 
+
+		/***************************************
+		 * @see ListBox#getVisibleItemCount()
+		 */
+		public int getVisibleItemCount();
+
 		/***************************************
 		 * @see ListBox#insertItem(String, int)
 		 */

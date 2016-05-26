@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eso
  */
 public class ComboBox extends TextControl implements KeyDownHandler,
-													   DoubleClickHandler
+													 DoubleClickHandler
 {
 	//~ Instance fields --------------------------------------------------------
 

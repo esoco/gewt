@@ -20,8 +20,6 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
-import com.google.gwt.user.client.ui.ListBox;
-
 
 /********************************************************************
  * A scrollable list of selectable elements.
@@ -54,7 +52,7 @@ public class List extends ListControl
 	 */
 	public int getVisibleItems()
 	{
-		return ((ListBox) getWidget()).getVisibleItemCount();
+		return getGwtListBox().getVisibleItemCount();
 	}
 
 	/***************************************
@@ -76,6 +74,6 @@ public class List extends ListControl
 	 */
 	public void setVisibleItems(int nItems)
 	{
-		((ListBox) getWidget()).setVisibleItemCount(nItems);
+		getGwtListBox().setVisibleItemCount(nItems);
 	}
 }

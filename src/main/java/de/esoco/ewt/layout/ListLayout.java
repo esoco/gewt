@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 /********************************************************************
- * A flow layout implementation.
+ * A list layout implementation.
  *
  * @author eso
  */

@@ -27,7 +27,6 @@ import de.esoco.ewt.style.StyleFlag;
 
 import de.esoco.lib.property.ButtonStyle;
 import de.esoco.lib.property.TextAttribute;
-import de.esoco.lib.property.UserInterfaceProperties;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Focusable;
@@ -37,6 +36,8 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
+
+import static de.esoco.lib.property.StyleProperties.BUTTON_STYLE;
 
 
 /********************************************************************
@@ -225,8 +226,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		public W createWidget(Component rComponent, StyleData rStyle)
 		{
 			ButtonStyle eButtonStyle =
-				rStyle.getProperty(UserInterfaceProperties.BUTTON_STYLE,
-								   ButtonStyle.DEFAULT);
+				rStyle.getProperty(BUTTON_STYLE, ButtonStyle.DEFAULT);
 
 			IsWidget aButtonWidget;
 

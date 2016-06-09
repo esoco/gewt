@@ -17,13 +17,17 @@
 package de.esoco.ewt.layout;
 
 import de.esoco.ewt.component.Container;
+import de.esoco.ewt.component.DeckPanel.DeckLayoutPanelLayout;
 import de.esoco.ewt.component.DeckPanel.DeckPanelLayout;
 import de.esoco.ewt.component.SplitPanel.SplitPanelLayout;
 import de.esoco.ewt.component.StackPanel.StackPanelLayout;
 import de.esoco.ewt.component.TabPanel.TabPanelLayout;
 import de.esoco.ewt.style.StyleData;
 
+import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.Layout;
+
+import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
 
 /********************************************************************
@@ -83,7 +87,20 @@ public interface LayoutFactory
 					break;
 
 				case DECK:
-					aLayout = new DeckPanelLayout();
+
+					Alignment eVAlign =
+						rContainerStyle.getProperty(VERTICAL_ALIGN,
+													Alignment.FILL);
+
+					if (eVAlign == Alignment.FILL)
+					{
+						aLayout = new DeckLayoutPanelLayout();
+					}
+					else
+					{
+						aLayout = new DeckPanelLayout();
+					}
+
 					break;
 
 				case STACK:

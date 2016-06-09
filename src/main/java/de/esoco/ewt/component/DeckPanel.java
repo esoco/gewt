@@ -23,6 +23,7 @@ import de.esoco.lib.property.Layout;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -70,15 +71,16 @@ public class DeckPanel extends SwitchPanel
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * The default layout for this panel.
+	 * TODO: DOCUMENT ME!
 	 *
 	 * @author eso
 	 */
-	public static class DeckPanelLayout extends SwitchPanelLayout
+	public static abstract class AbstractDeckPanelLayout<T extends IndexedPanel & HasWidgets>
+		extends SwitchPanelLayout
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private DeckLayoutPanel aDeckLayoutPanel;
+		private T rDeckPanel;
 
 		//~ Methods ------------------------------------------------------------
 
@@ -90,7 +92,7 @@ public class DeckPanel extends SwitchPanel
 							String    sGroupTitle,
 							boolean   bCloseable)
 		{
-			aDeckLayoutPanel.add(rGroupComponent.getWidget());
+			rDeckPanel.add(rGroupComponent.getWidget());
 		}
 
 		/***************************************
@@ -101,9 +103,9 @@ public class DeckPanel extends SwitchPanel
 			Container rContainer,
 			StyleData rStyle)
 		{
-			aDeckLayoutPanel = new DeckLayoutPanel();
+			rDeckPanel = createDeckPanel(rContainer, rStyle);
 
-			return aDeckLayoutPanel;
+			return rDeckPanel;
 		}
 
 		/***************************************
@@ -112,7 +114,7 @@ public class DeckPanel extends SwitchPanel
 		@Override
 		public int getPageCount()
 		{
-			return aDeckLayoutPanel.getWidgetCount();
+			return rDeckPanel.getWidgetCount();
 		}
 
 		/***************************************
@@ -121,16 +123,7 @@ public class DeckPanel extends SwitchPanel
 		@Override
 		public int getPageIndex(Component rGroupComponent)
 		{
-			return aDeckLayoutPanel.getWidgetIndex(rGroupComponent.getWidget());
-		}
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int getSelectionIndex()
-		{
-			return aDeckLayoutPanel.getVisibleWidgetIndex();
+			return rDeckPanel.getWidgetIndex(rGroupComponent.getWidget());
 		}
 
 		/***************************************
@@ -143,12 +136,101 @@ public class DeckPanel extends SwitchPanel
 		}
 
 		/***************************************
+		 * Must be implemented to create the deck panel widget.
+		 *
+		 * @see #createLayoutContainer(Container, StyleData)
+		 */
+		abstract T createDeckPanel(Container rContainer, StyleData rStyle);
+
+		/***************************************
+		 * Returns the deck panel widget of this instance.
+		 *
+		 * @return The deck panel widget
+		 */
+		final T getDeckPanel()
+		{
+			return rDeckPanel;
+		}
+	}
+
+	/********************************************************************
+	 * A deck layout implementation that is based on {@link DeckLayoutPanel}.
+	 *
+	 * @author eso
+	 */
+	public static class DeckLayoutPanelLayout
+		extends AbstractDeckPanelLayout<DeckLayoutPanel>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public DeckLayoutPanel createDeckPanel(
+			Container rContainer,
+			StyleData rStyle)
+		{
+			return new DeckLayoutPanel();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return getDeckPanel().getVisibleWidgetIndex();
+		}
+
+		/***************************************
 		 * {@inheritDoc}
 		 */
 		@Override
 		public void setSelection(int nIndex)
 		{
-			aDeckLayoutPanel.showWidget(nIndex);
+			getDeckPanel().showWidget(nIndex);
+		}
+	}
+
+	/********************************************************************
+	 * A deck layout implementation that is based on {@link
+	 * com.google.gwt.user.client.ui.DeckPanel}.
+	 *
+	 * @author eso
+	 */
+	public static class DeckPanelLayout
+		extends AbstractDeckPanelLayout<com.google.gwt.user.client.ui.DeckPanel>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public com.google.gwt.user.client.ui.DeckPanel createDeckPanel(
+			Container rContainer,
+			StyleData rStyle)
+		{
+			return new com.google.gwt.user.client.ui.DeckPanel();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getSelectionIndex()
+		{
+			return getDeckPanel().getVisibleWidget();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setSelection(int nIndex)
+		{
+			getDeckPanel().showWidget(nIndex);
 		}
 	}
 }

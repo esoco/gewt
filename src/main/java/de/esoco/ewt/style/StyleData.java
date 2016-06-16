@@ -21,6 +21,7 @@ import de.esoco.lib.property.HasProperties;
 import de.esoco.lib.property.PropertyName;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -544,8 +545,8 @@ public class StyleData extends AbstractStringProperties
 	 */
 	@SuppressWarnings("unchecked")
 	public StyleData withProperties(
-		HasProperties	   rSource,
-		PropertyName<?>... rPropertyNames)
+		HasProperties				rSource,
+		Collection<PropertyName<?>> rPropertyNames)
 	{
 		StyleData aCopy = new StyleData(this);
 

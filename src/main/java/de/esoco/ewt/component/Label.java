@@ -150,29 +150,36 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	 */
 	private void setLabelContent()
 	{
-		Widget rWidget = getWidget();
+		Widget  rWidget     = getWidget();
+		String  sLabel	    = sText != null ? sText : "";
+		boolean bImageLabel = rImage instanceof BitmapImage;
+
+		if (bImageLabel)
+		{
+			rWidget.addStyleName(EWT.CSS.ewtImageLabel());
+
+			sLabel =
+				createImageLabel(sText,
+								 (BitmapImage) rImage,
+								 rTextPosition,
+								 HasHorizontalAlignment.ALIGN_CENTER,
+								 "100%");
+		}
 
 		if (rWidget instanceof HasHTML)
 		{
-			HasHTML rHtml = (HasHTML) rWidget;
-
-			if (rImage instanceof BitmapImage)
+			((HasHTML) rWidget).setHTML(sLabel);
+		}
+		else if (rWidget instanceof HasText)
+		{
+			if (bImageLabel)
 			{
-				rWidget.addStyleName(EWT.CSS.ewtImageLabel());
-				rHtml.setHTML(createImageLabel(sText,
-											   (BitmapImage) rImage,
-											   rTextPosition,
-											   HasHorizontalAlignment.ALIGN_CENTER,
-											   "100%"));
+				rWidget.getElement().setInnerHTML(sLabel);
 			}
 			else
 			{
-				rHtml.setHTML(sText != null ? sText : "");
+				((HasText) rWidget).setText(sLabel);
 			}
-		}
-		else
-		{
-			((HasText) rWidget).setText(sText);
 		}
 	}
 

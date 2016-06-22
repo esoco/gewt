@@ -71,7 +71,7 @@ public class DeckPanel extends SwitchPanel
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * TODO: DOCUMENT ME!
+	 * The base class for GWT deck panel layouts.
 	 *
 	 * @author eso
 	 */

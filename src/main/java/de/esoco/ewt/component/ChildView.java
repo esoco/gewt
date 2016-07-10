@@ -54,7 +54,7 @@ public class ChildView extends View
 	 *
 	 * @param rContext   The user interface context this dialog view belongs to
 	 * @param rViewPanel The popup panel of this view
-	 * @param rStyle     TODO: DOCUMENT ME!
+	 * @param rStyle     The view style
 	 */
 	protected ChildView(UserInterfaceContext rContext,
 						PopupPanel			 rViewPanel,

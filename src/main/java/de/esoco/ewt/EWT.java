@@ -23,6 +23,7 @@ import de.esoco.ewt.component.Calendar;
 import de.esoco.ewt.component.Calendar.CalendarWidgetFactory;
 import de.esoco.ewt.component.CheckBox;
 import de.esoco.ewt.component.CheckBox.CheckBoxWidgetFactory;
+import de.esoco.ewt.component.ChildView.ChildViewFactory;
 import de.esoco.ewt.component.ComboBox;
 import de.esoco.ewt.component.ComboBox.ComboBoxWidgetFactory;
 import de.esoco.ewt.component.Component;
@@ -102,8 +103,10 @@ public class EWT
 
 	private static Map<String, String> aCssClassMap = null;
 
-	private static LayoutFactory rLayoutFactory = new DefaultLayoutFactory();
-	private static LayoutMapper  rLayoutMapper  = new IdentityLayoutMapper();
+	private static ChildViewFactory aChildViewFactory = new ChildViewFactory();
+
+	private static LayoutFactory aLayoutFactory = new DefaultLayoutFactory();
+	private static LayoutMapper  aLayoutMapper  = new IdentityLayoutMapper();
 
 	private static Map<Class<? extends Component>, WidgetFactory<?>> aWidgetFactories =
 		new HashMap<>();
@@ -186,6 +189,16 @@ public class EWT
 	}
 
 	/***************************************
+	 * Returns the factory for child view widgets.
+	 *
+	 * @return The child view factory
+	 */
+	public static ChildViewFactory getChildViewFactory()
+	{
+		return aChildViewFactory;
+	}
+
+	/***************************************
 	 * Returns the default interval for the detection of double clicks.
 	 *
 	 * @return The default double click interval
@@ -202,7 +215,7 @@ public class EWT
 	 */
 	public static final LayoutFactory getLayoutFactory()
 	{
-		return rLayoutFactory;
+		return aLayoutFactory;
 	}
 
 	/***************************************
@@ -212,7 +225,7 @@ public class EWT
 	 */
 	public static final LayoutMapper getLayoutMapper()
 	{
-		return rLayoutMapper;
+		return aLayoutMapper;
 	}
 
 	/***************************************
@@ -392,6 +405,17 @@ public class EWT
 	}
 
 	/***************************************
+	 * Sets the child view factory to be used by the GEWT framework. This will
+	 * override the default factory.
+	 *
+	 * @param rFactory The new child view factory
+	 */
+	public static void setChildViewFactory(ChildViewFactory rFactory)
+	{
+		aChildViewFactory = rFactory;
+	}
+
+	/***************************************
 	 * Sets a new layout factory. EWT extensions can set a factory to create
 	 * their own layouts instead of the defaults.
 	 *
@@ -401,11 +425,11 @@ public class EWT
 	{
 		if (rFactory != null)
 		{
-			rLayoutFactory = rFactory;
+			aLayoutFactory = rFactory;
 		}
 		else
 		{
-			rLayoutFactory = new DefaultLayoutFactory();
+			aLayoutFactory = new DefaultLayoutFactory();
 		}
 	}
 
@@ -419,11 +443,11 @@ public class EWT
 	{
 		if (rMapper != null)
 		{
-			rLayoutMapper = rMapper;
+			aLayoutMapper = rMapper;
 		}
 		else
 		{
-			rLayoutMapper = new IdentityLayoutMapper();
+			aLayoutMapper = new IdentityLayoutMapper();
 		}
 	}
 }

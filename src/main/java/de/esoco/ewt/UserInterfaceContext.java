@@ -48,6 +48,7 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -232,7 +233,7 @@ public class UserInterfaceContext
 	 */
 	public ChildView createChildView(View rParent, ViewStyle rViewStyle)
 	{
-		ChildView aChildView = new ChildView(this, rViewStyle);
+		ChildView aChildView = new ChildView(rParent, rViewStyle);
 
 		return aChildView;
 	}
@@ -248,7 +249,7 @@ public class UserInterfaceContext
 	 */
 	public DialogView createDialog(View rParent, ViewStyle rViewStyle)
 	{
-		return new DialogView(this, rViewStyle);
+		return new DialogView(rParent, rViewStyle);
 	}
 
 	/***************************************
@@ -374,12 +375,18 @@ public class UserInterfaceContext
 					@Override
 					public void execute()
 					{
+						Widget rViewWidget = rView.getWidget();
+
 						rView.setVisible(true);
-						setPopupBounds((PopupPanel) rView.getWidget(),
-									   x,
-									   y,
-									   rOrigin,
-									   bCheckBounds);
+
+						if (rViewWidget instanceof PopupPanel)
+						{
+							setPopupBounds((PopupPanel) rViewWidget,
+										   x,
+										   y,
+										   rOrigin,
+										   bCheckBounds);
+						}
 					}
 				});
 		}
@@ -403,8 +410,14 @@ public class UserInterfaceContext
 					@Override
 					public void execute()
 					{
+						Widget rViewWidget = rView.getWidget();
+
 						rView.setVisible(true);
-						((PopupPanel) rView.getWidget()).center();
+
+						if (rViewWidget instanceof PopupPanel)
+						{
+							((PopupPanel) rView.getWidget()).center();
+						}
 					}
 				});
 		}

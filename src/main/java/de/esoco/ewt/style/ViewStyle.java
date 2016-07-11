@@ -16,9 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.style;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.EnumSet;
 
 
 /********************************************************************
@@ -32,9 +30,20 @@ public class ViewStyle
 	//~ Enums ------------------------------------------------------------------
 
 	/********************************************************************
-	 * Enumeration of view style flags.
+	 * Enumeration of the available view style flags.
+	 *
+	 * <ul>
+	 *   <li>{@link #FULL_SIZE}: a view that fills the available area. Typically
+	 *     used for the main view of an application.</li>
+	 *   <li>{@link #MODAL}: a modal window on top of other content that needs
+	 *     to be dismissed before the underlying UI can be accessed.</li>
+	 *   <li>{@link #AUTO_HIDE}: a view that hides automatically when the user
+	 *     clicks outside of it.</li>
+	 *   <li>{@link #BOTTOM}: the view should be displayed at the bottom of the
+	 *     available area.</li>
+	 * </ul>
 	 */
-	public enum Flag { MODAL, FIXED_SIZE, FULL_SIZE, UNDECORATED, AUTO_HIDE }
+	public enum Flag { FULL_SIZE, MODAL, AUTO_HIDE, BOTTOM }
 
 	//~ Static fields/initializers ---------------------------------------------
 
@@ -57,19 +66,9 @@ public class ViewStyle
 	public static final ViewStyle MODAL_AUTO_HIDE =
 		new ViewStyle(Flag.MODAL, Flag.AUTO_HIDE);
 
-	/** Constant for fixed-size views */
-	public static final ViewStyle FIXED_SIZE = new ViewStyle(Flag.FIXED_SIZE);
-
-	/** Constant for fixed-size modal views */
-	public static final ViewStyle FIXED_SIZE_MODAL =
-		new ViewStyle(Flag.FIXED_SIZE, Flag.MODAL);
-
-	/** Constant for undecorated views */
-	public static final ViewStyle UNDECORATED = new ViewStyle(Flag.UNDECORATED);
-
 	//~ Instance fields --------------------------------------------------------
 
-	private Set<Flag> aFlags = Collections.emptySet();
+	private EnumSet<Flag> aFlags = EnumSet.noneOf(Flag.class);
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -83,8 +82,6 @@ public class ViewStyle
 	{
 		if (rFlags != null)
 		{
-			aFlags = new HashSet<Flag>(rFlags.length);
-
 			for (Flag rFlag : rFlags)
 			{
 				aFlags.add(rFlag);
@@ -104,5 +101,21 @@ public class ViewStyle
 	public boolean hasFlag(Flag rFlag)
 	{
 		return aFlags.contains(rFlag);
+	}
+
+	/***************************************
+	 * Creates a copy of this instance that has additional flags set.
+	 *
+	 * @param  rAdditionalFlags The additional flags to set
+	 *
+	 * @return The new instance
+	 */
+	public ViewStyle withFlags(Flag... rAdditionalFlags)
+	{
+		ViewStyle aViewStyle = new ViewStyle(rAdditionalFlags);
+
+		aViewStyle.aFlags.addAll(aFlags);
+
+		return aViewStyle;
 	}
 }

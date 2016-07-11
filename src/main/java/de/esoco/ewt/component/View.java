@@ -20,7 +20,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.ViewStyle;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.IsWidget;
 
 
 /********************************************************************
@@ -45,7 +45,7 @@ public abstract class View extends Container
 	 * @param rStyle     The view style
 	 */
 	public View(UserInterfaceContext rContext,
-				Panel				 rViewPanel,
+				IsWidget			 rViewPanel,
 				ViewStyle			 rStyle)
 	{
 		this(rContext, rStyle);

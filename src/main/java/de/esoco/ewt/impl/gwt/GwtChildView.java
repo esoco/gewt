@@ -14,65 +14,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.component;
+package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.style.ViewStyle;
+import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 
 
 /********************************************************************
- * A child view subclass that represents dialogs.
+ * Default GWT child view implementation.
  *
  * @author eso
  */
-public class DialogView extends ChildView
+public class GwtChildView extends DecoratedPopupPanel
+	implements IsChildViewWidget
 {
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a new instance.
-	 *
-	 * @param rParent rContext The parent view
-	 * @param rStyle  The style of the dialog
+	 * {@inheritDoc}
 	 */
-	public DialogView(View rParent, ViewStyle rStyle)
+	public GwtChildView(boolean bAutoHide, boolean bModal)
 	{
-		super(rParent,
-			  EWT.getChildViewFactory().createDialogWidget(rParent, rStyle),
-			  rStyle);
+		super(bAutoHide, bModal);
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Sets the dialog title.
-	 *
-	 * @param sTitle The new title
+	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTitle(String sTitle)
+	public boolean isShown()
 	{
-		getChildViewWidget().setViewTitle(getContext().expandResource(sTitle));
+		return isShowing();
 	}
 
 	/***************************************
-	 * @see Component#setVisible(boolean)
+	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisible(boolean bVisible)
+	public void setViewTitle(String sTitle)
 	{
-		if (bVisible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL))
-		{
-			IsChildViewWidget rPanel = getChildViewWidget();
-
-			if (rPanel instanceof PopupPanel)
-			{
-				((PopupPanel) rPanel).setGlassEnabled(true);
-			}
-		}
-
-		super.setVisible(bVisible);
+		// ignored, unsupported by implementation
 	}
 }

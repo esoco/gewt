@@ -16,14 +16,17 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.GwtChildView;
+import de.esoco.ewt.impl.gwt.GwtDialogBox;
 import de.esoco.ewt.style.ViewStyle;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,54 +43,26 @@ public class ChildView extends View
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param rContext The user interface context this dialog view belongs to
-	 * @param rStyle   The style of the view
+	 * @param rParent The parent view
+	 * @param rStyle  The style of the child view
 	 */
-	public ChildView(UserInterfaceContext rContext, ViewStyle rStyle)
+	public ChildView(View rParent, ViewStyle rStyle)
 	{
-		this(rContext, createChildViewPanel(rStyle), rStyle);
+		this(rParent,
+			 EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
+			 rStyle);
 	}
 
 	/***************************************
-	 * Constructor for subclasses to create a new instance for a certain popup
-	 * panel.
+	 * Creates a new instance.
 	 *
-	 * @param rContext   The user interface context this dialog view belongs to
-	 * @param rViewPanel The popup panel of this view
-	 * @param rStyle     The view style
+	 * @param rParent     The parent view
+	 * @param rViewWidget The widget for this view
+	 * @param rStyle      The style of the child view
 	 */
-	protected ChildView(UserInterfaceContext rContext,
-						PopupPanel			 rViewPanel,
-						ViewStyle			 rStyle)
+	ChildView(View rParent, IsChildViewWidget rViewWidget, ViewStyle rStyle)
 	{
-		super(rContext, rViewPanel, rStyle);
-	}
-
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Creates the GWT popup panel for this instance.
-	 *
-	 * @param  rStyle The view style
-	 *
-	 * @return The popup panel
-	 */
-	private static PopupPanel createChildViewPanel(ViewStyle rStyle)
-	{
-		boolean    bAutoHide  = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
-		boolean    bModal     = rStyle.hasFlag(ViewStyle.Flag.MODAL);
-		PopupPanel aViewPanel;
-
-		if (rStyle.hasFlag(ViewStyle.Flag.UNDECORATED))
-		{
-			aViewPanel = new PopupPanel(bAutoHide, bModal);
-		}
-		else
-		{
-			aViewPanel = new DecoratedPopupPanel(bAutoHide, bModal);
-		}
-
-		return aViewPanel;
+		super(rParent.getContext(), rViewWidget, rStyle);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -98,18 +73,7 @@ public class ChildView extends View
 	@Override
 	public boolean isVisible()
 	{
-		return getPopupPanel().isShowing();
-	}
-
-	/***************************************
-	 * Sets the position of this view.
-	 *
-	 * @param x The horizontal coordinate
-	 * @param y The vertical coordinate
-	 */
-	public void setLocation(int x, int y)
-	{
-		getPopupPanel().setPopupPosition(x, y);
+		return getChildViewWidget().isShown();
 	}
 
 	/***************************************
@@ -118,15 +82,15 @@ public class ChildView extends View
 	@Override
 	public void setVisible(boolean bVisible)
 	{
-		PopupPanel rPopupPanel = getPopupPanel();
+		IsChildViewWidget rPanel = getChildViewWidget();
 
 		if (bVisible)
 		{
-			rPopupPanel.show();
+			rPanel.show();
 		}
 		else
 		{
-			rPopupPanel.hide();
+			rPanel.hide();
 		}
 	}
 
@@ -135,9 +99,9 @@ public class ChildView extends View
 	 *
 	 * @return The popup panel
 	 */
-	protected PopupPanel getPopupPanel()
+	protected IsChildViewWidget getChildViewWidget()
 	{
-		return (PopupPanel) getWidget();
+		return (IsChildViewWidget) getWidget();
 	}
 
 	/***************************************
@@ -149,7 +113,91 @@ public class ChildView extends View
 		return new ChildViewEventDispatcher();
 	}
 
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * The interface to be implemented by child view widgets.
+	 *
+	 * @author eso
+	 */
+	public static interface IsChildViewWidget extends IsWidget, HasWidgets
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Hides the child view.
+		 */
+		public void hide();
+
+		/***************************************
+		 * Checks whether the child view is currently displayed.
+		 *
+		 * @return TRUE if the child view is displayed
+		 */
+		public boolean isShown();
+
+		/***************************************
+		 * Sets the view title.
+		 *
+		 * @param sTitle The title text
+		 */
+		public void setViewTitle(String sTitle);
+
+		/***************************************
+		 * Shows the child view.
+		 */
+		public void show();
+	}
+
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Interface and implementation of a factory for the main panel of a child
+	 * view. Can be overridden by subclasses that define different display types
+	 * for child views.
+	 *
+	 * @author eso
+	 */
+	public static class ChildViewFactory
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Creates a GWT child view implementation.
+		 *
+		 * @param  rParent The parent of the new child view
+		 * @param  rStyle  The child view style
+		 *
+		 * @return The child view widget
+		 */
+		public IsChildViewWidget createChildViewWidget(
+			View	  rParent,
+			ViewStyle rStyle)
+		{
+			boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
+			boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
+
+			return new GwtChildView(bAutoHide, bModal);
+		}
+
+		/***************************************
+		 * Creates a GWT dialog implementation.
+		 *
+		 * @param  rParent The parent of the new child view
+		 * @param  rStyle  The view style
+		 *
+		 * @return The dialog widget
+		 */
+		public IsChildViewWidget createDialogWidget(
+			View	  rParent,
+			ViewStyle rStyle)
+		{
+			boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
+			boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
+
+			return new GwtDialogBox(bAutoHide, bModal);
+		}
+	}
 
 	/********************************************************************
 	 * Dispatcher for view events.
@@ -157,7 +205,7 @@ public class ChildView extends View
 	 * @author eso
 	 */
 	class ChildViewEventDispatcher extends ComponentEventDispatcher
-		implements CloseHandler<PopupPanel>
+		implements CloseHandler<Widget>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -165,7 +213,7 @@ public class ChildView extends View
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClose(CloseEvent<PopupPanel> rEvent)
+		public void onClose(CloseEvent<Widget> rEvent)
 		{
 			notifyEventHandler(EventType.VIEW_CLOSING);
 		}
@@ -174,12 +222,12 @@ public class ChildView extends View
 		 * {@inheritDoc}
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		void initEventDispatching(Widget rWidget)
 		{
 			super.initEventDispatching(rWidget);
 
-			((HasCloseHandlers<PopupPanel>) rWidget).addCloseHandler(this);
+			((HasCloseHandlers) rWidget).addCloseHandler(this);
 		}
 	}
 }

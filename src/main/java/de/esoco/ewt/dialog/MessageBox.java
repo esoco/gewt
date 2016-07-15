@@ -18,6 +18,7 @@ package de.esoco.ewt.dialog;
 
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.View;
 import de.esoco.ewt.graphics.BitmapImage;
@@ -25,6 +26,8 @@ import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
+import de.esoco.ewt.style.ViewStyle;
+import de.esoco.ewt.style.ViewStyle.Flag;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -32,11 +35,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CellPanel;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -113,9 +116,9 @@ public class MessageBox implements ClickHandler
 
 	//~ Instance fields --------------------------------------------------------
 
-	private DialogBox     aDialog;
-	private CellPanel     aButtonPanel;
-	private ResultHandler rResultHandler;
+	private IsChildViewWidget aDialog;
+	private CellPanel		  aButtonPanel;
+	private ResultHandler     rResultHandler;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -385,7 +388,10 @@ public class MessageBox implements ClickHandler
 			  Image  rImage,
 			  int    nButtons)
 	{
-		aDialog = new DialogBox(false, true);
+		aDialog =
+			EWT.getChildViewFactory()
+			   .createDialogWidget(rParent,
+								   ViewStyle.MODAL.withFlags(Flag.BOTTOM));
 
 		sTitle   = EWT.expandResource(rParent, sTitle);
 		sMessage = EWT.expandResource(rParent, sMessage);
@@ -401,7 +407,7 @@ public class MessageBox implements ClickHandler
 		aMainPanel.add(aMessagePanel, DockPanel.CENTER);
 		aMainPanel.add(aButtonPanel, DockPanel.SOUTH);
 
-		aDialog.setText(sTitle);
+		aDialog.setViewTitle(sTitle);
 
 		if (rImage instanceof BitmapImage)
 		{
@@ -460,8 +466,16 @@ public class MessageBox implements ClickHandler
 			nButtons >>= 1;
 		}
 
-		aDialog.setWidget(aMainPanel);
-		aDialog.addStyleDependentName(CSS.ewtMessageBox());
+		if (aDialog instanceof PopupPanel)
+		{
+			((PopupPanel) aDialog).setWidget(aMainPanel);
+		}
+		else
+		{
+			aDialog.add(aMainPanel);
+		}
+
+		aDialog.asWidget().addStyleDependentName(CSS.ewtMessageBox());
 	}
 
 	/***************************************
@@ -469,13 +483,19 @@ public class MessageBox implements ClickHandler
 	 */
 	void show()
 	{
-		aDialog.setGlassEnabled(true);
 		aDialog.show();
-		UserInterfaceContext.setPopupBounds(aDialog,
-											Window.getClientWidth() / 2,
-											Window.getClientHeight() / 3,
-											AlignedPosition.CENTER,
-											true);
+
+		if (aDialog instanceof PopupPanel)
+		{
+			PopupPanel rPopupPanel = (PopupPanel) aDialog;
+
+			rPopupPanel.setGlassEnabled(true);
+			UserInterfaceContext.setPopupBounds(rPopupPanel,
+												Window.getClientWidth() / 2,
+												Window.getClientHeight() / 3,
+												AlignedPosition.CENTER,
+												true);
+		}
 	}
 
 	/***************************************

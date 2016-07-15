@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.style;
 
+import java.util.Collection;
 import java.util.EnumSet;
 
 
@@ -115,6 +116,23 @@ public class ViewStyle
 		ViewStyle aViewStyle = new ViewStyle(rAdditionalFlags);
 
 		aViewStyle.aFlags.addAll(aFlags);
+
+		return aViewStyle;
+	}
+
+	/***************************************
+	 * Creates a copy of this instance that has additional flags set.
+	 *
+	 * @param  rAdditionalFlags The additional flags to set
+	 *
+	 * @return The new instance
+	 */
+	public ViewStyle withFlags(Collection<Flag> rAdditionalFlags)
+	{
+		ViewStyle aViewStyle = new ViewStyle();
+
+		aViewStyle.aFlags.addAll(aFlags);
+		aViewStyle.aFlags.addAll(rAdditionalFlags);
 
 		return aViewStyle;
 	}

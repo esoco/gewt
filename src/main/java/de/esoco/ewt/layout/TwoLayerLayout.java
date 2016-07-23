@@ -54,7 +54,10 @@ public abstract class TwoLayerLayout extends GenericLayout
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * {@inheritDoc}
+	 * Overridden to add the given widget to the inner layer, i.e. the content
+	 * panel instead of the enclosing container.
+	 *
+	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
 	public void addWidget(HasWidgets rContainer,
@@ -78,11 +81,12 @@ public abstract class TwoLayerLayout extends GenericLayout
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(
+	public HasWidgets createLayoutContainer(
 		Container rContainer,
 		StyleData rContainerStyle)
 	{
-		Panel rLayoutPanel = createLayoutPanel();
+		HasWidgets rLayoutPanel =
+			createLayoutWidget(rContainer, rContainerStyle);
 
 		aContentPanel = createContentPanel(rLayoutPanel);
 		aContentPanel.setStyleName(EWT.CSS.ewtContentPanel());
@@ -92,7 +96,10 @@ public abstract class TwoLayerLayout extends GenericLayout
 	}
 
 	/***************************************
-	 * {@inheritDoc}
+	 * Overridden to remove the given widget from the inner layer, i.e. the
+	 * content panel instead of the enclosing container.
+	 *
+	 * @see GenericLayout#removeWidget(HasWidgets, Widget)
 	 */
 	@Override
 	public void removeWidget(HasWidgets rContainer, Widget rWidget)
@@ -103,9 +110,14 @@ public abstract class TwoLayerLayout extends GenericLayout
 	/***************************************
 	 * Must be implemented to create the outer panel of this instance.
 	 *
-	 * @return The outer layout panel
+	 * @param  rContainer      The container to create the layout panel for
+	 * @param  rContainerStyle The style data for the container
+	 *
+	 * @return The widget for the outer layout
 	 */
-	protected abstract Panel createLayoutPanel();
+	protected abstract HasWidgets createLayoutWidget(
+		Container rContainer,
+		StyleData rContainerStyle);
 
 	/***************************************
 	 * Creates the inner panel that will contain the content widgets. The

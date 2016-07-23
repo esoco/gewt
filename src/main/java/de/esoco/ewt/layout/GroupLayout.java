@@ -16,34 +16,45 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.component.Container;
+import de.esoco.ewt.style.StyleData;
+
+import de.esoco.lib.property.StandardProperties;
+
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.HasWidgets;
 
 
 /********************************************************************
- * A layout that groups components with an optional title/caption.
+ * A layout that groups components with an optional title/caption. The title
+ * must be set in the container's style data with the name {@link
+ * StandardProperties#TITLE}.
  *
  * @author eso
  */
 public class GroupLayout extends TwoLayerLayout
 {
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
-	 * Creates a new instance that is based on a GWT {@link CaptionPanel}.
-	 */
-	public GroupLayout()
-	{
-	}
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Panel createLayoutPanel()
+	protected HasWidgets createLayoutWidget(
+		Container rContainer,
+		StyleData rContainerStyle)
 	{
-		return null; //new CaptionPanel();
+		CaptionPanel aCaptionPanel = new CaptionPanel();
+
+		String sTitle =
+			rContainerStyle.getProperty(StandardProperties.TITLE, "");
+
+		if (sTitle.length() > 0)
+		{
+			aCaptionPanel.setCaptionText(rContainer.getContext()
+										 .expandResource(sTitle));
+		}
+
+		return aCaptionPanel;
 	}
 }

@@ -61,8 +61,7 @@ public abstract class GenericLayout
 	 *
 	 * @param    rContainer The container to add the widget to
 	 * @param    rWidget    The widget to add
-	 * @param    rStyleData The style data defining the layout position of the
-	 *                      widget
+	 * @param    rStyle     The style defining the layout position of the widget
 	 * @param    nIndex     The index to add the widget add (if supported by the
 	 *                      implementation) or -1 to add as the last widget
 	 *
@@ -70,7 +69,7 @@ public abstract class GenericLayout
 	 */
 	public void addWidget(HasWidgets rContainer,
 						  Widget	 rWidget,
-						  StyleData  rStyleData,
+						  StyleData  rStyle,
 						  int		 nIndex)
 	{
 		if (nIndex >= 0 && rContainer instanceof InsertPanel)

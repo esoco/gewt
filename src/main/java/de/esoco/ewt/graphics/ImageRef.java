@@ -22,13 +22,14 @@ import com.google.gwt.resources.client.ImageResource;
 
 
 /********************************************************************
- * This class contains EWT images. For platform compatibility image instances
- * should not be created by invoking the constructor but by using the factory
- * method {@link UserInterfaceContext#createImage(String)}.
+ * An image implementation that contains some kind of reference to the actual
+ * image data or file. For platform compatibility image instances should not be
+ * created by invoking the constructor but by using the factory method {@link
+ * UserInterfaceContext#createImage(String)}.
  *
  * @author eso
  */
-public class BitmapImage implements Image
+public class ImageRef implements Image
 {
 	//~ Instance fields --------------------------------------------------------
 
@@ -46,7 +47,7 @@ public class BitmapImage implements Image
 	 *
 	 * @throws IllegalArgumentException If the argument type is not supported
 	 */
-	public BitmapImage(Object rImageDefinition)
+	public ImageRef(Object rImageDefinition)
 	{
 		if (rImageDefinition instanceof ImageResource)
 		{

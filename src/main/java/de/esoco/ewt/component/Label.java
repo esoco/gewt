@@ -17,7 +17,7 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
@@ -152,7 +152,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	{
 		Widget  rWidget     = getWidget();
 		String  sLabel	    = sText != null ? sText : "";
-		boolean bImageLabel = rImage instanceof BitmapImage;
+		boolean bImageLabel = rImage instanceof ImageRef;
 
 		if (bImageLabel)
 		{
@@ -160,7 +160,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 
 			sLabel =
 				createImageLabel(sText,
-								 (BitmapImage) rImage,
+								 (ImageRef) rImage,
 								 rTextPosition,
 								 HasHorizontalAlignment.ALIGN_CENTER,
 								 "100%");

@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.app;
 
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
 
 import java.util.Map;
@@ -82,7 +82,7 @@ public class GwtResource implements Resource
 
 			if (rImageResource != null)
 			{
-				rImage = new BitmapImage(rImageResource);
+				rImage = new ImageRef(rImageResource);
 			}
 		}
 

@@ -17,7 +17,7 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.property.ImageAttribute;
@@ -155,9 +155,9 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 						Image			rImage,
 						AlignedPosition rTextPosition)
 	{
-		if (rImage instanceof BitmapImage)
+		if (rImage instanceof ImageRef)
 		{
-			BitmapImage rBitmap = (BitmapImage) rImage;
+			ImageRef rBitmap = (ImageRef) rImage;
 
 			if (rWidget instanceof PushButton &&
 				(sText == null || sText.length() == 0))

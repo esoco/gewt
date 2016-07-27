@@ -26,7 +26,7 @@ import de.esoco.ewt.component.View;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Icon;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.Screen;
@@ -289,12 +289,12 @@ public class UserInterfaceContext
 					}
 					else if (sImage.charAt(0) == Image.IMAGE_DATA_PREFIX)
 					{
-						rImage = new BitmapImage(sImageName);
+						rImage = new ImageRef(sImageName);
 					}
 					else if (sImage.charAt(0) == Image.IMAGE_FILE_PREFIX)
 					{
 						rImage =
-							new BitmapImage(GWT.getModuleBaseForStaticFiles() +
+							new ImageRef(GWT.getModuleBaseForStaticFiles() +
 											sImageName);
 					}
 				}
@@ -313,7 +313,7 @@ public class UserInterfaceContext
 		}
 		else
 		{
-			rImage = new BitmapImage(rImageReference);
+			rImage = new ImageRef(rImageReference);
 		}
 
 		return rImage;

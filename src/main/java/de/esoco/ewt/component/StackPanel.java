@@ -19,7 +19,7 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
@@ -196,8 +196,8 @@ public class StackPanel extends SwitchPanel
 			String				 sHeaderTitle)
 		{
 			String	    sTitle = rContext.expandResource(sHeaderTitle);
-			BitmapImage rImage =
-				(BitmapImage) rContext.createImage(GewtResources.INSTANCE
+			ImageRef rImage =
+				(ImageRef) rContext.createImage(GewtResources.INSTANCE
 												   .imRight());
 
 			String sTitleHtml =

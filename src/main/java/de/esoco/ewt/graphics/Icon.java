@@ -17,7 +17,7 @@
 package de.esoco.ewt.graphics;
 
 /********************************************************************
- * An image implementation that represents an icon that is identified by it's
+ * An image implementation that represents an icon which is identified by it's
  * name.
  *
  * @author eso

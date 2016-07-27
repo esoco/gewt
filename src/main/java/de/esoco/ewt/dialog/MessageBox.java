@@ -21,7 +21,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.View;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
@@ -409,9 +409,9 @@ public class MessageBox implements ClickHandler
 
 		aDialog.setViewTitle(sTitle);
 
-		if (rImage instanceof BitmapImage)
+		if (rImage instanceof ImageRef)
 		{
-			aMessagePanel.add(((BitmapImage) rImage).getGwtImage(),
+			aMessagePanel.add(((ImageRef) rImage).getGwtImage(),
 							  DockPanel.WEST);
 		}
 

@@ -21,7 +21,7 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.Table;
 import de.esoco.ewt.component.TableControl;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.BitmapImage;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
 import de.esoco.ewt.impl.gwt.GewtResources;
@@ -1859,9 +1859,9 @@ public class GwtTable extends Composite
 			de.esoco.ewt.graphics.Image aCellImage =
 				rContext.createImage(sImage);
 
-			if (aCellImage instanceof BitmapImage)
+			if (aCellImage instanceof ImageRef)
 			{
-				Image rImage = ((BitmapImage) aCellImage).getGwtImage();
+				Image rImage = ((ImageRef) aCellImage).getGwtImage();
 
 				rImage.setTitle(rContext.expandResource(sCellValue));
 				aDataTable.setWidget(nRow, nCol, rImage);

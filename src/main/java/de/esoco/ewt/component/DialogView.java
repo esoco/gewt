@@ -42,6 +42,8 @@ public class DialogView extends ChildView
 		super(rParent,
 			  EWT.getChildViewFactory().createDialogWidget(rParent, rStyle),
 			  rStyle);
+
+		getWidget().addStyleName(EWT.CSS.ewtDialogView());
 	}
 
 	//~ Methods ----------------------------------------------------------------

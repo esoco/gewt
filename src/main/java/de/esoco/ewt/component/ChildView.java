@@ -63,6 +63,8 @@ public class ChildView extends View
 	ChildView(View rParent, IsChildViewWidget rViewWidget, ViewStyle rStyle)
 	{
 		super(rParent.getContext(), rViewWidget, rStyle);
+
+		getWidget().addStyleName(EWT.CSS.ewtChildView());
 	}
 
 	//~ Methods ----------------------------------------------------------------

@@ -41,6 +41,15 @@ public interface GewtCss extends CssResource {
   
   @ClassName("ewt-MainView")
   String ewtMainView();
+
+  @ClassName("ewt-ChildView")
+  String ewtChildView();
+
+  @ClassName("ewt-DialogView")
+  String ewtDialogView();
+  
+  @ClassName("ewt-DialogTitle")
+  String ewtDialogTitle();
   
   @ClassName("ewt-MessageBox")
   String ewtMessageBox();

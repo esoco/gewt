@@ -650,20 +650,23 @@ public class GwtTable extends Composite
 	 */
 	public final void setVisibleRowCount(int nCount)
 	{
-		collapseAllNodes();
-
-		int nRows	    = aDataTable.getRowCount();
-		int nLastRow    = Math.min(nTableRows, nRows) - 1;
-		int nNewLastRow = nCount - 1;
-
-		for (int nRow = nLastRow; nRow > nNewLastRow; nRow--)
+		if (nCount != nTableRows)
 		{
-			aDataTable.removeRow(nRow);
+			collapseAllNodes();
+
+			int nRows	    = aDataTable.getRowCount();
+			int nLastRow    = Math.min(nTableRows, nRows) - 1;
+			int nNewLastRow = nCount - 1;
+
+			for (int nRow = nLastRow; nRow > nNewLastRow; nRow--)
+			{
+				aDataTable.removeRow(nRow);
+			}
+
+			nTableRows = nVisibleDataRows = nCount;
+
+			update();
 		}
-
-		nTableRows = nVisibleDataRows = nCount;
-
-		update();
 	}
 
 	/***************************************

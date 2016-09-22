@@ -58,8 +58,8 @@ import de.esoco.ewt.component.Website.WebsiteWidgetFactory;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.layout.DefaultLayoutFactory;
 import de.esoco.ewt.layout.LayoutFactory;
-import de.esoco.ewt.layout.LayoutFactory.DefaultLayoutFactory;
 import de.esoco.ewt.layout.LayoutMapper;
 import de.esoco.ewt.layout.LayoutMapper.IdentityLayoutMapper;
 

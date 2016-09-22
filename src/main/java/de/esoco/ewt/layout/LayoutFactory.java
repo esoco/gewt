@@ -17,17 +17,9 @@
 package de.esoco.ewt.layout;
 
 import de.esoco.ewt.component.Container;
-import de.esoco.ewt.component.DeckPanel.DeckLayoutPanelLayout;
-import de.esoco.ewt.component.DeckPanel.DeckPanelLayout;
-import de.esoco.ewt.component.SplitPanel.SplitPanelLayout;
-import de.esoco.ewt.component.StackPanel.StackPanelLayout;
-import de.esoco.ewt.component.TabPanel.TabPanelLayout;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.Layout;
-
-import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
 
 /********************************************************************
@@ -58,100 +50,4 @@ public interface LayoutFactory
 	public GenericLayout createLayout(Container rParentContainer,
 									  StyleData rContainerStyle,
 									  Layout    eLayout);
-
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
-	 * The default layout factory implementation for GEWT.
-	 *
-	 * @author eso
-	 */
-	public static class DefaultLayoutFactory implements LayoutFactory
-	{
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		public GenericLayout createLayout(Container rParentContainer,
-										  StyleData rContainerStyle,
-										  Layout    eLayout)
-		{
-			GenericLayout aLayout;
-
-			switch (eLayout)
-			{
-				case SPLIT:
-					aLayout = new SplitPanelLayout();
-					break;
-
-				case DECK:
-
-					Alignment eVAlign =
-						rContainerStyle.getProperty(VERTICAL_ALIGN,
-													Alignment.FILL);
-
-					if (eVAlign == Alignment.FILL)
-					{
-						aLayout = new DeckLayoutPanelLayout();
-					}
-					else
-					{
-						aLayout = new DeckPanelLayout();
-					}
-
-					break;
-
-				case STACK:
-					aLayout = new StackPanelLayout();
-					break;
-
-				case TABS:
-					aLayout = new TabPanelLayout();
-					break;
-
-				case FILL:
-					aLayout = new FillLayout();
-					break;
-
-				case FLOW:
-				case GRID:
-				case GRID_ROW:
-				case GRID_COLUMN:
-				case CARD:
-				case LIST_ITEM:
-					aLayout = new FlowLayout();
-					break;
-
-				case LIST:
-					aLayout = new ListLayout();
-					break;
-
-				case FORM:
-					aLayout = new FormLayout();
-					break;
-
-				case GROUP:
-					aLayout = new GroupLayout();
-					break;
-
-				case MENU:
-					aLayout = new MenuLayout();
-					break;
-
-				case HEADER:
-				case CONTENT:
-				case FOOTER:
-					aLayout = new ContentLayout(eLayout);
-					break;
-
-				default:
-					throw new IllegalStateException("Unsupported Layout " +
-													eLayout);
-			}
-
-			return aLayout;
-		}
-	}
 }

@@ -34,6 +34,7 @@ public class FlowLayout extends GenericLayout
 {
 	//~ Instance fields --------------------------------------------------------
 
+	private String		  sLayoutStyleName = null;
 	private final Boolean bHorizontal;
 
 	//~ Constructors -----------------------------------------------------------
@@ -44,6 +45,18 @@ public class FlowLayout extends GenericLayout
 	public FlowLayout()
 	{
 		bHorizontal = null;
+	}
+
+	/***************************************
+	 * Creates a new instance with an additional layout style name.
+	 *
+	 * @param sStyleName The additional style name
+	 */
+	public FlowLayout(String sStyleName)
+	{
+		this();
+
+		sLayoutStyleName = sStyleName;
 	}
 
 	/***************************************
@@ -83,6 +96,11 @@ public class FlowLayout extends GenericLayout
 		}
 
 		aPanel.addStyleName("ewt-FlowLayout");
+
+		if (sLayoutStyleName != null)
+		{
+			aPanel.addStyleName(sLayoutStyleName);
+		}
 
 		return aPanel;
 	}

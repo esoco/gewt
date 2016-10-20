@@ -21,9 +21,9 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Color;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
@@ -315,9 +315,7 @@ public abstract class Component implements HasId<String>
 	 * Returns the DOM element of this component's widget. This is a
 	 * GWT-specific method.
 	 *
-	 * @return   The DOM element
-	 *
-	 * @category GEWT
+	 * @return The DOM element
 	 */
 	public Element getElement()
 	{
@@ -425,9 +423,7 @@ public abstract class Component implements HasId<String>
 	 * specific to GEWT. The method {@link #getImplementation()} should be used
 	 * to access the widget in a generic EWT way.
 	 *
-	 * @return   The widget
-	 *
-	 * @category GEWT
+	 * @return The widget
 	 */
 	public final Widget getWidget()
 	{
@@ -468,14 +464,11 @@ public abstract class Component implements HasId<String>
 	 * Internal method to create and initialize the GWT widget of this instance
 	 * with the widget factory from {@link EWT#getWidgetFactory(Component)}.
 	 *
-	 * @param    rParent The parent container of the widget
-	 * @param    rStyle  The style data of this instance
+	 * @param  rParent The parent container of the widget
+	 * @param  rStyle  The style data of this instance
 	 *
-	 * @throws   IllegalStateException If no widget factory has been registered
-	 *                                 for the class of this component instance
-	 *
-	 * @category GEWT
-	 * @category Internal
+	 * @throws IllegalStateException If no widget factory has been registered
+	 *                               for the class of this component instance
 	 */
 	public void initWidget(Container rParent, StyleData rStyle)
 	{

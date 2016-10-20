@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 /********************************************************************
  * A panel that can contain multiple components of which only one is visible at
  * a time like the cards in a deck of cards. The currently visible component can
- * be set with the method {@link #showComponent(int)}. As the layout of a deck
+ * be set with the method {@link #setSelection(int)}. As the layout of a deck
  * panel is defined by it's implementation setting a layout on an instance has
  * no effect.
  *

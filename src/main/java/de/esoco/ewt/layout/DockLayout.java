@@ -2,11 +2,11 @@
 // This file is a part of the 'gewt' project.
 // Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -63,16 +63,14 @@ public class DockLayout extends GenericLayout
 	 * instance. The widget position will be determined from it's style data. In
 	 * GWT it is important to add the center widget as the last widget.
 	 *
-	 * @param    rWidget     The widget to add
-	 * @param    rDockPanel  The target dock layout panel
-	 * @param    rStyleData  The style data of the widget
-	 * @param    bScrollable TRUE if the element widgets should be marked as
-	 *                       scrollable with overflow set to auto
+	 * @param  rWidget     The widget to add
+	 * @param  rDockPanel  The target dock layout panel
+	 * @param  rStyleData  The style data of the widget
+	 * @param  bScrollable TRUE if the element widgets should be marked as
+	 *                     scrollable with overflow set to auto
 	 *
-	 * @return   TRUE if the added widget was the center widget (and therefore
-	 *           the last widget to be added)
-	 *
-	 * @category GEWT
+	 * @return TRUE if the added widget was the center widget (and therefore the
+	 *         last widget to be added)
 	 */
 	public static boolean addDockLayoutPanelWidget(Widget		   rWidget,
 												   DockLayoutPanel rDockPanel,

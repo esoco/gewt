@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,12 +31,16 @@ import com.google.gwt.event.dom.client.KeyCodes;
  */
 public final class EWTEvent
 {
+	//~ Instance fields --------------------------------------------------------
+
 	private final Object	  rSource;
 	private final Object	  rElement;
 	private final EventType   rEventType;
 	private final NativeEvent rNativeEvent;
 
 	private boolean bCanceled;
+
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Internal constructor, instance creation is controlled by the factory
@@ -58,6 +62,8 @@ public final class EWTEvent
 		this.rEventType   = rType;
 		this.rNativeEvent = rNativeEvent;
 	}
+
+	//~ Static methods ---------------------------------------------------------
 
 	/***************************************
 	 * Factory method that returns a new event instance containing the given
@@ -81,11 +87,9 @@ public final class EWTEvent
 	/***************************************
 	 * Maps a GWT key code to the corresponding {@link KeyCode} instance.
 	 *
-	 * @param    rEvent The native GWT event to map the key code of
+	 * @param  rEvent The native GWT event to map the key code of
 	 *
-	 * @return   The corresponding EWT key code instance
-	 *
-	 * @category GEWT
+	 * @return The corresponding EWT key code instance
 	 */
 	public static KeyCode mapGwtKeyCode(NativeEvent rEvent)
 	{
@@ -158,11 +162,9 @@ public final class EWTEvent
 	 * Maps a GWT modifier key combination to the corresponding instance of
 	 * {@link ModifierKeys}.
 	 *
-	 * @param    rEvent The native GWT event to map the modifiers of
+	 * @param  rEvent The native GWT event to map the modifiers of
 	 *
-	 * @return   The corresponding EWT key modifiers instance
-	 *
-	 * @category GEWT
+	 * @return The corresponding EWT key modifiers instance
 	 */
 	public static ModifierKeys mapGwtModifiers(NativeEvent rEvent)
 	{
@@ -190,6 +192,8 @@ public final class EWTEvent
 
 		return ModifierKeys.valueOf(nBits);
 	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Cancels the event to prevent further processing. What exactly this call

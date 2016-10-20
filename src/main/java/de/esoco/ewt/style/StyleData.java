@@ -45,9 +45,9 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
  * <p>Instances of this class are immutable so that it is possible to create
  * constants from it and to re-use StyleData objects. There are also several
  * copy methods that return a new instance which has certain fields modified
- * (e.g. the methods {@link #merge(StyleData)}, {@link #setFlags(int)})). The
- * possible flags in a style data object are defined as constants in the class
- * {@link StyleFlag}.</p>
+ * (e.g. the methods {@link #merge(StyleData)}, {@link
+ * #setFlags(StyleFlag...)})). The possible flags in a style data object are
+ * defined as constants in the class {@link StyleFlag}.</p>
  *
  * <p>The style data constant {@link #DEFAULT} should be used in all cases where
  * no specific style is needed. This constant is also used internally by GEWT
@@ -300,10 +300,8 @@ public class StyleData extends AbstractStringProperties
 	 * Maps the horizontal alignment style flags in this instance to the
 	 * corresponding GWT constant as defined in {@link HasHorizontalAlignment}.
 	 *
-	 * @return   The corresponding GWT horizontal alignment constant or NULL if
-	 *           this instance contains no horizontal alignment flag
-	 *
-	 * @category GEWT
+	 * @return The corresponding GWT horizontal alignment constant or NULL if
+	 *         this instance contains no horizontal alignment flag
 	 */
 	public HorizontalAlignmentConstant mapHorizontalAlignment()
 	{
@@ -329,10 +327,8 @@ public class StyleData extends AbstractStringProperties
 	 * Maps the horizontal alignment style flags in this instance to the
 	 * corresponding GWT constant as defined in {@link TextBoxBase}.
 	 *
-	 * @return   The corresponding GWT horizontal alignment constant or NULL if
-	 *           this instance contains no horizontal alignment flag
-	 *
-	 * @category GEWT
+	 * @return The corresponding GWT horizontal alignment constant or NULL if
+	 *         this instance contains no horizontal alignment flag
 	 */
 	public TextAlignment mapTextAlignment()
 	{
@@ -358,10 +354,8 @@ public class StyleData extends AbstractStringProperties
 	 * Maps the vertical alignment style flags in this instance to the
 	 * corresponding GWT constant as defined in {@link HasVerticalAlignment}.
 	 *
-	 * @return   The corresponding GWT vertical alignment constant or NULL if
-	 *           this instance contains no vertical alignment flag
-	 *
-	 * @category GEWT
+	 * @return The corresponding GWT vertical alignment constant or NULL if this
+	 *         instance contains no vertical alignment flag
 	 */
 	public VerticalAlignmentConstant mapVerticalAlignment()
 	{

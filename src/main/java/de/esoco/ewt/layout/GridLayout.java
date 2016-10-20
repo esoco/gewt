@@ -2,11 +2,11 @@
 // This file is a part of the 'gewt' project.
 // Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@ public class GridLayout extends GenericLayout
 	 *
 	 * @param  nColumns The number of grid columns
 	 *
-	 * @throws IllegalArgumentException If the count value is <= 0
+	 * @throws IllegalArgumentException If the count value is &lt;= 0
 	 */
 	public GridLayout(int nColumns)
 	{
@@ -76,7 +76,7 @@ public class GridLayout extends GenericLayout
 	 * @param  bIsColumnCount TRUE for a fixed column count or FALSE for a fixed
 	 *                        row count
 	 *
-	 * @throws IllegalArgumentException If the grid count value is <= 0
+	 * @throws IllegalArgumentException If the grid count value is &lt;= 0
 	 */
 	public GridLayout(int nGridCount, boolean bIsColumnCount)
 	{
@@ -94,7 +94,7 @@ public class GridLayout extends GenericLayout
 	 *                        row count
 	 * @param  nGap           The gap between components
 	 *
-	 * @throws IllegalArgumentException If the grid count value is <= 0
+	 * @throws IllegalArgumentException If the grid count value is &lt;= 0
 	 */
 	public GridLayout(int nGridCount, boolean bIsColumnCount, int nGap)
 	{
@@ -115,10 +115,8 @@ public class GridLayout extends GenericLayout
 	 * Adds a style name to the cell in which the last component has been added
 	 * to this layout.
 	 *
-	 * @param    rContainer The container to set the cell style in
-	 * @param    sStyle     The style name to add
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to set the cell style in
+	 * @param sStyle     The style name to add
 	 */
 	public void addCellStyle(Container rContainer, String sStyle)
 	{
@@ -153,12 +151,10 @@ public class GridLayout extends GenericLayout
 	/***************************************
 	 * Adds or removes a style name for the cell of a certain component.
 	 *
-	 * @param    rContainer The container to modify the cell style in
-	 * @param    rComponent The component
-	 * @param    sStyle     The style name to add or remove
-	 * @param    bAdd       TRUE to add the style, FALSE to remove
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to modify the cell style in
+	 * @param rComponent The component
+	 * @param sStyle     The style name to add or remove
+	 * @param bAdd       TRUE to add the style, FALSE to remove
 	 */
 	public void changeCellStyle(Container rContainer,
 								Component rComponent,
@@ -245,10 +241,8 @@ public class GridLayout extends GenericLayout
 	 * or else the result will be undefined. This method must be invoked
 	 * directly after the component that shall span the columns had been added.
 	 *
-	 * @param    rContainer The container to join the columns in
-	 * @param    nCount     The number of columns to join
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to join the columns in
+	 * @param nCount     The number of columns to join
 	 */
 	public void joinColumns(Container rContainer, int nCount)
 	{
@@ -265,10 +259,8 @@ public class GridLayout extends GenericLayout
 	 * or else the result will be undefined. This method must be invoked
 	 * directly after the component that shall span the rows had been added.
 	 *
-	 * @param    rContainer The container to join the rows in
-	 * @param    nCount     The number of rows to join
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to join the rows in
+	 * @param nCount     The number of rows to join
 	 */
 	public void joinRows(Container rContainer, int nCount)
 	{
@@ -283,11 +275,9 @@ public class GridLayout extends GenericLayout
 	 * Sets the size of the cell in which the last component has been added to
 	 * this layout.
 	 *
-	 * @param    rContainer The container to set the component cell size of
-	 * @param    sWidth     The width of the component's cell or NULL for none
-	 * @param    sHeight    The height of the component's cell or NULL for none
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to set the component cell size of
+	 * @param sWidth     The width of the component's cell or NULL for none
+	 * @param sHeight    The height of the component's cell or NULL for none
 	 */
 	public void setCellSize(Container rContainer, String sWidth, String sHeight)
 	{
@@ -311,9 +301,7 @@ public class GridLayout extends GenericLayout
 	 * Sets the grid count, interpreted as columns or rows depending on the
 	 * layout configuration.
 	 *
-	 * @param    nCount The new grid count
-	 *
-	 * @category GEWT
+	 * @param nCount The new grid count
 	 */
 	public final void setGridCount(int nCount)
 	{

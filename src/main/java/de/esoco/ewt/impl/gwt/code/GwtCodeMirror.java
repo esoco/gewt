@@ -186,7 +186,7 @@ public class GwtCodeMirror extends Composite
 	}
 
 	/***************************************
-	 * @see de.esoco.ewt.component.TextComponent$IsTextBox#getSelectedText()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getSelectedText()
@@ -773,14 +773,14 @@ public class GwtCodeMirror extends Composite
 				viewportMargin: Infinity,
 				extraKeys: {
 					"Ctrl-Space": "autocomplete"
-	//						   function (editor) {
-	//							  $wnd.CodeMirror.showHint(editor, function (editor, callback) {
-	//								  var result = [];
-	//								  var cursor = editor.doc.getCursor();
-	//								  var index = editor.indexFromPos(cursor);
-	//								  $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
-	//							  }, {async: true});
-	//						  }
+	//							 function (editor) {
+	//								$wnd.CodeMirror.showHint(editor, function (editor, callback) {
+	//									var result = [];
+	//									var cursor = editor.doc.getCursor();
+	//									var index = editor.indexFromPos(cursor);
+	//									$entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
+	//								}, {async: true});
+	//							}
 				}
 			}
 		);

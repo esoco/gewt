@@ -128,10 +128,8 @@ public abstract class Container extends Component
 	 * code should never invoke this method but use a {@link ContainerBuilder}
 	 * instance instead. The container builder will then invoke this method.
 	 *
-	 * @param    rComponent The component to add
-	 * @param    rStyleData The style data for the component
-	 *
-	 * @category GEWT
+	 * @param rComponent The component to add
+	 * @param rStyleData The style data for the component
 	 */
 	public final void internalAddComponent(
 		Component rComponent,
@@ -204,7 +202,7 @@ public abstract class Container extends Component
 	/***************************************
 	 * Overridden to let the layout create the container widget. A final check
 	 * for a correct container type of the widget will be performed be the
-	 * overridden method {@link #setWidget(Widget)}.
+	 * overridden method {@link #setWidget(IsWidget)}.
 	 *
 	 * @see Component#createWidget(StyleData)
 	 */
@@ -219,9 +217,7 @@ public abstract class Container extends Component
 	/***************************************
 	 * Returns the container widget of this instance.
 	 *
-	 * @return   The container widget
-	 *
-	 * @category GEWT
+	 * @return The container widget
 	 */
 	protected final HasWidgets getContainerWidget()
 	{

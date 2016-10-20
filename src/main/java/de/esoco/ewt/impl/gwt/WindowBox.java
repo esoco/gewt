@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -124,7 +124,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a DialogBoxEx which is permanent (no auto-hide), non-modal, has a
+	 * Creates a DialogBox which is permanent (no auto-hide), non-modal, has a
 	 * "minimize"- and "close"-button in the top-right corner and is not
 	 * resizeable. The dialog box should not be shown until a child widget has
 	 * been added using {@link #add(com.google.gwt.user.client.ui.IsWidget)}.
@@ -133,7 +133,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	 * This is the equivalent for calling <code>DialogBoxEx(false, false, true,
 	 * false)</code>.
 	 *
-	 * @see WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * @see WindowBox#WindowBox(boolean, boolean, boolean, boolean, boolean)
 	 */
 	public WindowBox()
 	{
@@ -149,7 +149,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	 * @param resizeable <code>true</code> to allow resizing by dragging the
 	 *                   borders
 	 *
-	 * @see   WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * @see   WindowBox#WindowBox(boolean, boolean, boolean, boolean, boolean)
 	 */
 	public WindowBox(boolean resizeable)
 	{
@@ -167,7 +167,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	 * @param showCloseIcon <code>true</code> to show "close"-icon in the top
 	 *                      right corner of the header
 	 *
-	 * @see   WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * @see   WindowBox#WindowBox(boolean, boolean, boolean, boolean, boolean)
 	 */
 	public WindowBox(boolean showCloseIcon, boolean resizeable)
 	{
@@ -187,7 +187,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	 * @param showCloseIcon    <code>true</code> to show "close"-icon in the top
 	 *                         right corner of the header
 	 *
-	 * @see   WindowBox#DialogBoxEx(boolean, boolean, boolean, boolean)
+	 * @see   WindowBox#WindowBox(boolean, boolean, boolean, boolean, boolean)
 	 */
 	public WindowBox(boolean showMinimizeIcon,
 					 boolean showCloseIcon,
@@ -238,10 +238,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	 * @param resizeable       <code>true</code> to allow resizing by dragging
 	 *                         the borders
 	 *
-	 * @see   DialogBox#DialogBox()
-	 * @see   DialogBox#DialogBox(boolean)
 	 * @see   DialogBox#DialogBox(boolean, boolean)
-	 * @see   DialogBox#DialogBox(boolean, boolean, boolean)
 	 */
 	public WindowBox(boolean autoHide,
 					 boolean modal,
@@ -938,7 +935,7 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 		{
 			updateCursor(dragMode, this.getElement());
 
-			com.google.gwt.dom.client.Element top = this.getCellElement(0, 1);
+			Element top = this.getCellElement(0, 1);
 
 			updateCursor(dragMode, top);
 
@@ -952,28 +949,28 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 	}
 
 	/***************************************
-	 * TODO: DOCUMENT ME!
+	 * Get relative X
 	 *
 	 * @param  resize
 	 * @param  clientX
 	 *
 	 * @return
 	 */
-	private int getRelX(com.google.gwt.dom.client.Element resize, int clientX)
+	private int getRelX(Element resize, int clientX)
 	{
 		return clientX - resize.getAbsoluteLeft() + resize.getScrollLeft() +
 			   resize.getOwnerDocument().getScrollLeft();
 	}
 
 	/***************************************
-	 * TODO: DOCUMENT ME!
+	 * Get relative Y
 	 *
 	 * @param  resize
 	 * @param  clientY
 	 *
 	 * @return
 	 */
-	private int getRelY(com.google.gwt.dom.client.Element resize, int clientY)
+	private int getRelY(Element resize, int clientY)
 	{
 		return clientY - resize.getAbsoluteTop() + resize.getScrollTop() +
 			   resize.getOwnerDocument().getScrollTop();

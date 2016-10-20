@@ -20,15 +20,16 @@ import de.esoco.ewt.app.ChainedResource;
 import de.esoco.ewt.app.GwtResource;
 import de.esoco.ewt.app.Resource;
 import de.esoco.ewt.component.ChildView;
+import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.DialogView;
 import de.esoco.ewt.component.MainView;
 import de.esoco.ewt.component.View;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Icon;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Screen;
 import de.esoco.ewt.impl.gwt.GewtStrings;
 import de.esoco.ewt.style.AlignedPosition;
@@ -295,7 +296,7 @@ public class UserInterfaceContext
 					{
 						rImage =
 							new ImageRef(GWT.getModuleBaseForStaticFiles() +
-											sImageName);
+										 sImageName);
 					}
 				}
 				else
@@ -439,7 +440,7 @@ public class UserInterfaceContext
 	 *
 	 * <p>This method is used internally by EWT to expand resource keys that are
 	 * used when creating new components or setting component properties with
-	 * {@link Component#setProperties(Object...)}. But it should also be used by
+	 * {@link Component#setProperties(Object)}. But it should also be used by
 	 * application code that needs to query attributes from resources.</p>
 	 *
 	 * @param  sResource The string to check and (if necessary) expand
@@ -575,11 +576,11 @@ public class UserInterfaceContext
 	 *
 	 * <p>EWT handles access from different threads automatically and
 	 * transparently but for large user interface operations (like building a
-	 * view or dialog, for example) it is more efficient to invoke either this
-	 * method or the {@link #runNow(ResultRunner)} method. This is because the
-	 * implementation must create a Runnable instance for each single call and
-	 * invoke one of these methods implicitly. Therefore creating only one large
-	 * Runnable and invoking it once will have better performance.</p>
+	 * view or dialog, for example) it is more efficient to invoke this method.
+	 * This is because the implementation must create a Runnable instance for
+	 * each single call and invoke one of these methods implicitly. Therefore
+	 * creating only one large Runnable and invoking it once will have better
+	 * performance.</p>
 	 *
 	 * <p>How the invocation is actually performed depends on the underlying
 	 * implementation but the application must not expect that the code in the

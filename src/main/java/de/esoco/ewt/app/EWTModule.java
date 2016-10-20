@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,10 +48,10 @@ public interface EWTModule
 	 *
 	 * <p>The implementation should neither invoke {@link View#pack()} nor make
 	 * the view visible already. Packing and displaying the view should only be
-	 * done in the method {@link #showModuleView(View)} which will be invoked by
-	 * the framework after the creation. This separation allows EWT
-	 * implementations to apply any platform-specific attributes to the main
-	 * application view if necessary.</p>
+	 * done in the method {@link #showModuleView(UserInterfaceContext, View)}
+	 * which will be invoked by the framework after the creation. This
+	 * separation allows EWT implementations to apply any platform-specific
+	 * attributes to the main application view if necessary.</p>
 	 *
 	 * <p>This method should not set a menu bar on the view because menus are
 	 * handled differently</p>

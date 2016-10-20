@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,10 +66,8 @@ public class GwtTabPanel extends TabLayoutPanel
 	/***************************************
 	 * Creates a new instance.
 	 *
-	 * @param fBarHeight       The tab bar height
-	 * @param eBarUnit         The unit of the tab bar height
-	 * @param rLeftArrowImage  The left scrolling arrow image
-	 * @param rRightArrowImage The right scrolling arrow image
+	 * @param fBarHeight The tab bar height
+	 * @param eBarUnit   The unit of the tab bar height
 	 *
 	 * @see   TabLayoutPanel#TabLayoutPanel(double, Unit)
 	 */

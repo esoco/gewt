@@ -40,12 +40,10 @@ public abstract class GenericLayout
 	 * Creates a new GWT container widget that represents this layout. This
 	 * method is only intended to be used internally by the GEWT framework.
 	 *
-	 * @param    rContainer The GEWT container to create the widget for
-	 * @param    rStyle     The style of the container widget
+	 * @param  rContainer The GEWT container to create the widget for
+	 * @param  rStyle     The style of the container widget
 	 *
-	 * @return   A new widget container
-	 *
-	 * @category GEWT
+	 * @return A new widget container
 	 */
 	public abstract HasWidgets createLayoutContainer(
 		Container rContainer,
@@ -59,13 +57,11 @@ public abstract class GenericLayout
 	 * Subclasses may override this method to implement a different layout
 	 * strategy.
 	 *
-	 * @param    rContainer The container to add the widget to
-	 * @param    rWidget    The widget to add
-	 * @param    rStyle     The style defining the layout position of the widget
-	 * @param    nIndex     The index to add the widget add (if supported by the
-	 *                      implementation) or -1 to add as the last widget
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to add the widget to
+	 * @param rWidget    The widget to add
+	 * @param rStyle     The style defining the layout position of the widget
+	 * @param nIndex     The index to add the widget add (if supported by the
+	 *                   implementation) or -1 to add as the last widget
 	 */
 	public void addWidget(HasWidgets rContainer,
 						  Widget	 rWidget,
@@ -98,10 +94,8 @@ public abstract class GenericLayout
 	 * method {@link HasWidgets#remove(Widget)}. Subclasses may override this
 	 * method to implement a different layout strategy.
 	 *
-	 * @param    rContainer The container to remove the widget from
-	 * @param    rWidget    The widget to remove
-	 *
-	 * @category GEWT
+	 * @param rContainer The container to remove the widget from
+	 * @param rWidget    The widget to remove
 	 */
 	public void removeWidget(HasWidgets rContainer, Widget rWidget)
 	{

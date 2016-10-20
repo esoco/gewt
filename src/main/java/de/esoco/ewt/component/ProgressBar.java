@@ -70,7 +70,9 @@ public class ProgressBar extends Component
 	}
 
 	/***************************************
-	 * @see AbstractBar#getValue()
+	 * Returns the current value.
+	 *
+	 * @return The current integer value
 	 */
 	public int getValue()
 	{

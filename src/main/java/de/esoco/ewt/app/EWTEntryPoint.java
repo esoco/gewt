@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,9 +23,6 @@ import de.esoco.ewt.component.View;
 import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
-import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
 import com.google.gwt.resources.client.ImageResource;
 
@@ -41,7 +38,7 @@ public abstract class EWTEntryPoint implements EntryPoint
 
 	/***************************************
 	 * Creates a new user interface context for GWT and invokes the method
-	 * {@link EWTModule#showModuleView(UserInterfaceContext)} with it.
+	 * {@link EWTModule#showModuleView(UserInterfaceContext, View)} with it.
 	 */
 	@Override
 	public void onModuleLoad()
@@ -94,94 +91,4 @@ public abstract class EWTEntryPoint implements EntryPoint
 	 * @return The resource strings for this application or NULL for none
 	 */
 	protected abstract ConstantsWithLookup[] getApplicationStrings();
-
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
-	 * An implementation of {@link GWT#uncaughtExceptionHandler} that prints
-	 * readable client stack traces.
-	 *
-	 * <p>{@link https://gist.github.com/jnehlmeier/cddbc476fd330b1d4999}</p>
-	 *
-	 * @author eso
-	 */
-	public static class SuperDevModeUncaughtExceptionHandler
-		implements UncaughtExceptionHandler
-	{
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void onUncaughtException(final Throwable t)
-		{
-			logException(t, false);
-		}
-
-		/***************************************
-		 * Ends a group.
-		 */
-		private native void groupEnd() /*-{
-		var groupEnd = console.groupEnd || function(){};
-		groupEnd.call(console);
-		}-*/;
-
-		/***************************************
-		 * Starts a group.
-		 *
-		 * @param sMsg The group message
-		 */
-		private native void groupStart(String sMsg) /*-{
-		var groupStart = console.groupCollapsed || console.group || console.error || console.log;
-		groupStart.call(console, sMsg);
-		}-*/;
-
-		/***************************************
-		 * Logs an exception
-		 *
-		 * @param t The exception
-		 */
-		private native void log(Throwable t) /*-{
-		var logError = console.error || console.log;
-		var backingError = t.__gwt$backingJsError;
-		logError.call(console, backingError && backingError.stack);
-		}-*/;
-
-		/***************************************
-		 * Logs an exception to the browser console.
-		 *
-		 * @param t        The exception
-		 * @param bIsCause TRUE if the exception is part of the cause stack of
-		 *                 the original exception
-		 */
-		private void logException(Throwable t, boolean bIsCause)
-		{
-			String msg = t.toString();
-
-			if (bIsCause)
-			{
-				msg = "caused by: " + msg;
-			}
-
-			groupStart(msg);
-			log(t);
-
-			if (t instanceof UmbrellaException)
-			{
-				UmbrellaException umbrella = (UmbrellaException) t;
-
-				for (Throwable cause : umbrella.getCauses())
-				{
-					logException(cause, true);
-				}
-			}
-			else if (t.getCause() != null)
-			{
-				logException(t.getCause(), true);
-			}
-
-			groupEnd();
-		}
-	}
 }

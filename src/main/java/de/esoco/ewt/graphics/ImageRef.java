@@ -2,11 +2,11 @@
 // This file is a part of the 'gewt' project.
 // Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Apache License, Version 3.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+//	  http://www.apache.org/licenses/LICENSE-3.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import com.google.gwt.resources.client.ImageResource;
  * An image implementation that contains some kind of reference to the actual
  * image data or file. For platform compatibility image instances should not be
  * created by invoking the constructor but by using the factory method {@link
- * UserInterfaceContext#createImage(String)}.
+ * UserInterfaceContext#createImage(Object)}.
  *
  * @author eso
  */
@@ -78,9 +78,7 @@ public class ImageRef implements Image
 	/***************************************
 	 * Returns the internal GWT image.
 	 *
-	 * @return   The GWT image
-	 *
-	 * @category GEWT
+	 * @return The GWT image
 	 */
 	public com.google.gwt.user.client.ui.Image getGwtImage()
 	{

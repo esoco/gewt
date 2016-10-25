@@ -1,8 +1,33 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// GEWT source file
-// Copyright (c) 2015 by Elmar Sonnenschein / esoco GmbH
+// This file is a part of the 'gewt' project.
+// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
+
+import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
+
+import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.SearchableDataModel;
+import de.esoco.lib.text.TextConvert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -40,27 +65,15 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
-import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
-
-import de.esoco.lib.model.ColumnDefinition;
-import de.esoco.lib.model.SearchableDataModel;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_AND_PREFIX;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_COMPARISON_CHARS;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_OR_PREFIX;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_SEPARATOR;
 import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_SEPARATOR_ESCAPE;
 import static de.esoco.lib.model.SearchableDataModel.NULL_CONSTRAINT_VALUE;
-import static de.esoco.lib.property.UserInterfaceProperties.ALLOWED_VALUES;
-import static de.esoco.lib.property.UserInterfaceProperties.INPUT_CONSTRAINT;
-import static de.esoco.lib.property.UserInterfaceProperties.VALUE_RESOURCE_PREFIX;
-import de.esoco.lib.text.TextConvert;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import static de.esoco.lib.property.ContentProperties.ALLOWED_VALUES;
+import static de.esoco.lib.property.ContentProperties.INPUT_CONSTRAINT;
+import static de.esoco.lib.property.ContentProperties.VALUE_RESOURCE_PREFIX;
 
 
 /********************************************************************
@@ -69,33 +82,42 @@ import java.util.Map.Entry;
  * @author eso
  */
 class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
-                                                    ChangeHandler
+													ChangeHandler
 {
-	static private final int COL_FILTER_JOIN    = 0;
-	static private final int COL_FILTER_COLUMN  = COL_FILTER_JOIN + 1;
-	static private final int COL_FILTER_COMPARE = COL_FILTER_COLUMN + 1;
-	static private final int COL_FILTER_VALUE   = COL_FILTER_COMPARE + 1;
-	static private final int COL_FILTER_BUTTON  = COL_FILTER_VALUE + 1;
+	//~ Static fields/initializers ---------------------------------------------
 
-	static private final DateTimeFormat FILTER_DATE_FORMAT = DateTimeFormat
-	                                                         .getFormat(SearchableDataModel.CONSTRAINT_DATE_FORMAT_PATTERN);
+	private static final int COL_FILTER_JOIN    = 0;
+	private static final int COL_FILTER_COLUMN  = COL_FILTER_JOIN + 1;
+	private static final int COL_FILTER_COMPARE = COL_FILTER_COLUMN + 1;
+	private static final int COL_FILTER_VALUE   = COL_FILTER_COMPARE + 1;
+	private static final int COL_FILTER_BUTTON  = COL_FILTER_VALUE + 1;
+
+	private static final DateTimeFormat FILTER_DATE_FORMAT =
+		DateTimeFormat.getFormat(SearchableDataModel.CONSTRAINT_DATE_FORMAT_PATTERN);
+
+	//~ Instance fields --------------------------------------------------------
 
 	private final GwtTable rTable;
 
 	private FlexTable aFilterPanel = new FlexTable();
 	private TextBox   aFilterValue = new TextBox();
 
-	private ToggleButton aFilterButton      = new ToggleButton(new Image(GwtTable.RES.imFilter()));
-	private PushButton   aClearFilterButton = new PushButton(new Image(GwtTable.RES.imCancel()));
+	private ToggleButton aFilterButton	    =
+		new ToggleButton(new Image(GwtTable.RES.imFilter()));
+	private PushButton   aClearFilterButton =
+		new PushButton(new Image(GwtTable.RES.imCancel()));
 
-	private List<ColumnDefinition> aFilterColumns = new ArrayList<ColumnDefinition>();
+	private List<ColumnDefinition> aFilterColumns =
+		new ArrayList<ColumnDefinition>();
 
 	private PopupPanel aFilterPopup;
 	private FlexTable  aFilterCriteriaPanel;
-	private Timer      aFilterInputTimer;
+	private Timer	   aFilterInputTimer;
 
 	private KeyDownHandler aComplexFilterKeyDownHandler = null;
 	private KeyUpHandler   aComplexFilterKeyUpHandler   = null;
+
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance.
@@ -128,6 +150,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		initWidget(aFilterPanel);
 	}
 
+	//~ Methods ----------------------------------------------------------------
+
 	/***************************************
 	 * Processes filter popup column change events.
 	 *
@@ -136,11 +160,15 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	@Override
 	public void onChange(ChangeEvent rEvent)
 	{
-		int nRow = findFilterCriterionRow(COL_FILTER_COLUMN, (Widget) rEvent.getSource());
+		int nRow =
+			findFilterCriterionRow(COL_FILTER_COLUMN,
+								   (Widget) rEvent.getSource());
 
 		ColumnDefinition rColumn = getSelectedFilterColumn(nRow);
 
-		aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_VALUE, createInputWidget(rColumn, null));
+		aFilterCriteriaPanel.setWidget(nRow,
+									   COL_FILTER_VALUE,
+									   createInputWidget(rColumn, null));
 	}
 
 	/***************************************
@@ -179,25 +207,26 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			switch (nKeyCode)
 			{
 				case KeyCodes.KEY_ESCAPE:
-				    resetInputValue(aFilterValue);
+					resetInputValue(aFilterValue);
 
-				    break;
+					break;
 
 				default:
 
-				    if (aFilterInputTimer == null)
+					if (aFilterInputTimer == null)
 					{
-					    aFilterInputTimer = new Timer()
-						{
-							@Override
-							public void run()
+						aFilterInputTimer =
+							new Timer()
 							{
-								applyGlobalFilter(aFilterValue.getText());
-							}
-						};
+								@Override
+								public void run()
+								{
+									applyGlobalFilter(aFilterValue.getText());
+								}
+							};
 					}
 
-				    aFilterInputTimer.schedule(500);
+					aFilterInputTimer.schedule(500);
 			}
 		}
 	}
@@ -242,8 +271,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	void applyGlobalFilter(String sConstraint)
 	{
-		SearchableDataModel<?> rModel            = getSearchableModel();
-		String                 sNumberConstraint = null;
+		SearchableDataModel<?> rModel			 = getSearchableModel();
+		String				   sNumberConstraint = null;
 
 		if (sConstraint.length() == 0)
 		{
@@ -251,7 +280,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		}
 		else
 		{
-			boolean bHasComparison = CONSTRAINT_COMPARISON_CHARS.indexOf(sConstraint.charAt(0)) >= 0;
+			boolean bHasComparison =
+				CONSTRAINT_COMPARISON_CHARS.indexOf(sConstraint.charAt(0)) >= 0;
 
 			if (!bHasComparison)
 			{
@@ -263,7 +293,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			if (!bHasComparison && sConstraint.indexOf('*') == -1)
 			{
 				sNumberConstraint = sConstraint;
-				sConstraint       = sConstraint + "*";
+				sConstraint		  = sConstraint + "*";
 			}
 		}
 
@@ -283,6 +313,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		}
 
 		updateTable();
+		rTable.setSelection(-1);
 	}
 
 	/***************************************
@@ -300,17 +331,19 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			{
 				case KeyCodes.KEY_TAB:
 
-				    if (!rEvent.isAnyModifierKeyDown())
+					if (!rEvent.isAnyModifierKeyDown())
 					{
-					    int nRow = findFilterCriterionRow(COL_FILTER_VALUE, (Widget) rEvent.getSource());
+						int nRow =
+							findFilterCriterionRow(COL_FILTER_VALUE,
+												   (Widget) rEvent.getSource());
 
-					    if (nRow == aFilterCriteriaPanel.getRowCount() - 2)
+						if (nRow == aFilterCriteriaPanel.getRowCount() - 2)
 						{
-						    addFilterRow(-1, ' ', null, false);
+							addFilterRow(-1, ' ', null, false);
 						}
 					}
 
-				    break;
+					break;
 			}
 		}
 	}
@@ -329,14 +362,14 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			switch (nKeyCode)
 			{
 				case KeyCodes.KEY_ENTER:
-				    hideComplexFilterPopup(true);
+					hideComplexFilterPopup(true);
 
-				    break;
+					break;
 
 				case KeyCodes.KEY_ESCAPE:
-				    hideComplexFilterPopup(false);
+					hideComplexFilterPopup(false);
 
-				    break;
+					break;
 			}
 		}
 	}
@@ -349,12 +382,13 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *                               searchable fields or NULL for none
 	 * @param bHasTextColumns        TRUE if at least one text column is present
 	 */
-	void init(SearchableDataModel<?> rModel, String sCommonFilterCriterion,
-	          boolean bHasTextColumns)
+	void init(SearchableDataModel<?> rModel,
+			  String				 sCommonFilterCriterion,
+			  boolean				 bHasTextColumns)
 	{
 		boolean bHasConstraints     = rModel.getConstraints().size() != 0;
-		boolean bEnableSimpleFilter = (sCommonFilterCriterion != null ||
-		                               !bHasConstraints);
+		boolean bEnableSimpleFilter =
+			(sCommonFilterCriterion != null || !bHasConstraints);
 
 		aFilterValue.setEnabled(bEnableSimpleFilter);
 		aFilterValue.setText(sCommonFilterCriterion);
@@ -413,8 +447,10 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 
 					char cComparison = sConstraint.charAt(1);
 
-					sConstraint = sConstraint.substring(2).replaceAll(CONSTRAINT_SEPARATOR_ESCAPE,
-					                                                  CONSTRAINT_SEPARATOR);
+					sConstraint =
+						sConstraint.substring(2)
+								   .replaceAll(CONSTRAINT_SEPARATOR_ESCAPE,
+											   CONSTRAINT_SEPARATOR);
 					addFilterRow(nColumn, cComparison, sConstraint, bOr);
 				}
 			}
@@ -432,11 +468,13 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 * @param sFilterValue The current filter value or NULL for the default
 	 * @param bOrTerm      TRUE for OR, FALSE for AND
 	 */
-	private void addFilterRow(int nColumnIndex, char cComparison,
-	                          String sFilterValue, boolean bOrTerm)
+	private void addFilterRow(int	  nColumnIndex,
+							  char    cComparison,
+							  String  sFilterValue,
+							  boolean bOrTerm)
 	{
-		ListBox aJoinList      = null;
-		int     nRow           = aFilterCriteriaPanel.getRowCount() - 1;
+		ListBox aJoinList	   = null;
+		int     nRow		   = aFilterCriteriaPanel.getRowCount() - 1;
 		boolean bAdditionalRow = nRow != 0;
 
 		aFilterCriteriaPanel.insertRow(nRow);
@@ -452,7 +490,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_JOIN, aJoinList);
 		}
 
-		ListBox          aColumnList = createFilterRowColumnList(nColumnIndex);
+		ListBox			 aColumnList = createFilterRowColumnList(nColumnIndex);
 		ColumnDefinition rColumn     = aFilterColumns.get(nColumnIndex);
 
 		Widget  rValueInput  = createInputWidget(rColumn, sFilterValue);
@@ -473,7 +511,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 
 		if (bAdditionalRow)
 		{
-			aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_BUTTON, createEditFilterListButton(false));
+			aFilterCriteriaPanel.setWidget(nRow,
+										   COL_FILTER_BUTTON,
+										   createEditFilterListButton(false));
 		}
 
 		if (aJoinList != null)
@@ -512,12 +552,12 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 
 		for (int nRow = 0; nRow < nFilterRows; nRow++)
 		{
-			Widget rWidget = aFilterCriteriaPanel.getWidget(nRow,
-			                                                COL_FILTER_VALUE);
+			Widget rWidget =
+				aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_VALUE);
 
 			ColumnDefinition rColumn   = getSelectedFilterColumn(nRow);
-			String           sColumnId = rColumn.getId();
-			boolean          bOrTerm   = isOrTerm(nRow);
+			String			 sColumnId = rColumn.getId();
+			boolean			 bOrTerm   = isOrTerm(nRow);
 
 			String sConstraint = getFilterConstraint(rColumn, rWidget);
 
@@ -525,14 +565,19 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			{
 				String sCurrentConstraint = rModel.getConstraint(sColumnId);
 
-				char cPrefix = bOrTerm ? CONSTRAINT_OR_PREFIX
-				                       : CONSTRAINT_AND_PREFIX;
+				char cPrefix =
+					bOrTerm ? CONSTRAINT_OR_PREFIX : CONSTRAINT_AND_PREFIX;
 
-				sConstraint = cPrefix + getSelectedFilterComparison(nRow) + sConstraint.replaceAll(CONSTRAINT_SEPARATOR, CONSTRAINT_SEPARATOR_ESCAPE);
+				sConstraint =
+					cPrefix + getSelectedFilterComparison(nRow) +
+					sConstraint.replaceAll(CONSTRAINT_SEPARATOR,
+										   CONSTRAINT_SEPARATOR_ESCAPE);
 
-				if (sCurrentConstraint != null && sCurrentConstraint.length() > 0)
+				if (sCurrentConstraint != null &&
+					sCurrentConstraint.length() > 0)
 				{
-					sConstraint = sCurrentConstraint + CONSTRAINT_SEPARATOR + sConstraint;
+					sConstraint =
+						sCurrentConstraint + CONSTRAINT_SEPARATOR + sConstraint;
 				}
 
 				rModel.setConstraint(sColumnId, sConstraint);
@@ -562,7 +607,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		final CheckBox aCheckBox = new CheckBox();
 
-		if (sInitialValue != null && sInitialValue.length() > 0 && !NULL_CONSTRAINT_VALUE.equals(sInitialValue))
+		if (sInitialValue != null &&
+			sInitialValue.length() > 0 &&
+			!NULL_CONSTRAINT_VALUE.equals(sInitialValue))
 		{
 			try
 			{
@@ -589,7 +636,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private ListBox createComparisonsWidget(char cInitialValue)
 	{
 		ListBox aComparisons = new ListBox();
-		int     nChars       = CONSTRAINT_COMPARISON_CHARS.length();
+		int     nChars		 = CONSTRAINT_COMPARISON_CHARS.length();
 		int     nSelection   = 0;
 
 		if (cInitialValue != ' ')
@@ -620,13 +667,17 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private DateBox createDateBox(String sInitialValue)
 	{
-		DateTimeFormat rDisplayFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
+		DateTimeFormat rDisplayFormat =
+			DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
 
-		final DateBox aDateBox = new DateBox(new DatePicker(),
-		                                     null,
-		                                     new DefaultFormat(rDisplayFormat));
+		final DateBox aDateBox =
+			new DateBox(new DatePicker(),
+						null,
+						new DefaultFormat(rDisplayFormat));
 
-		if (sInitialValue != null && sInitialValue.length() > 0 && !NULL_CONSTRAINT_VALUE.equals(sInitialValue))
+		if (sInitialValue != null &&
+			sInitialValue.length() > 0 &&
+			!NULL_CONSTRAINT_VALUE.equals(sInitialValue))
 		{
 			try
 			{
@@ -652,9 +703,12 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private PushButton createEditFilterListButton(final boolean bAdd)
 	{
-		PushButton aButton = new PushButton(new Image(bAdd ? GwtTable.RES.imAdd() : GwtTable.RES.imCancel()));
+		PushButton aButton =
+			new PushButton(new Image(bAdd ? GwtTable.RES.imAdd()
+										  : GwtTable.RES.imCancel()));
 
-		aButton.setTitle(expand(bAdd ? "$ttTableFilterAdd" : "$ttTableFilterRemove"));
+		aButton.setTitle(expand(bAdd ? "$ttTableFilterAdd"
+									 : "$ttTableFilterRemove"));
 
 		aButton.addClickHandler(new ClickHandler()
 			{
@@ -676,8 +730,10 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private Panel createFilterPopupButtonPanel()
 	{
 		HorizontalPanel aButtonPanel  = new HorizontalPanel();
-		PushButton      aApplyButton  = new PushButton(new Image(GwtTable.RES.imOk()));
-		PushButton      aCancelButton = new PushButton(new Image(GwtTable.RES.imCancel()));
+		PushButton	    aApplyButton  =
+			new PushButton(new Image(GwtTable.RES.imOk()));
+		PushButton	    aCancelButton =
+			new PushButton(new Image(GwtTable.RES.imCancel()));
 
 		aApplyButton.setTitle(expand("$ttTableFilterApply"));
 		aCancelButton.setTitle(expand("$ttTableFilterCancel"));
@@ -770,10 +826,10 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 * @return The new list box
 	 */
 	private ListBox createFilterValueListBox(ColumnDefinition rColumn,
-	                                         String[] rValues,
-	                                         String sInitialValue)
+											 String[]		  rValues,
+											 String			  sInitialValue)
 	{
-		ListBox      aListBox     = new ListBox();
+		ListBox		 aListBox     = new ListBox();
 		List<String> aConstraints = new ArrayList<String>();
 
 		String sPrefix = rColumn.getProperty(VALUE_RESOURCE_PREFIX, "");
@@ -815,18 +871,20 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *
 	 * @return The new input widget
 	 */
-	private Widget createInputWidget(ColumnDefinition rColumn,
-	                                 String sInitialValue)
+	private Widget createInputWidget(
+		ColumnDefinition rColumn,
+		String			 sInitialValue)
 	{
 		String[] rAllowedValues = getAllowedValues(rColumn);
-		String   sDatatype      = rColumn.getDatatype();
+		String   sDatatype	    = rColumn.getDatatype();
 		Widget   rWidget;
 
 		if (rAllowedValues != null)
 		{
-			rWidget = createFilterValueListBox(rColumn,
-			                                   rAllowedValues,
-			                                   sInitialValue);
+			rWidget =
+				createFilterValueListBox(rColumn,
+										 rAllowedValues,
+										 sInitialValue);
 		}
 		else if (Date.class.getSimpleName().equals(sDatatype))
 		{
@@ -852,8 +910,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *
 	 * @return The new text box
 	 */
-	private TextBox createTextBox(ColumnDefinition rColumn,
-	                              String sInitialValue)
+	private TextBox createTextBox(
+		ColumnDefinition rColumn,
+		String			 sInitialValue)
 	{
 		TextBox aTextBox    = new TextBox();
 		String  sConstraint = rColumn.getProperty(INPUT_CONSTRAINT, null);
@@ -895,15 +954,15 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private int findFilterCriterionRow(int nColumn, Widget rWidget)
 	{
 		int     nRowCount = aFilterCriteriaPanel.getRowCount();
-		int     nRow      = 0;
+		int     nRow	  = 0;
 		boolean bFound    = false;
 
 		while (!bFound && nRow < nRowCount)
 		{
 			if (nColumn < aFilterCriteriaPanel.getCellCount(nRow))
 			{
-				Widget rRowWidget = aFilterCriteriaPanel.getWidget(nRow,
-				                                                   nColumn);
+				Widget rRowWidget =
+					aFilterCriteriaPanel.getWidget(nRow, nColumn);
 
 				if (rRowWidget instanceof DateBox)
 				{
@@ -933,7 +992,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private String[] getAllowedValues(ColumnDefinition rColumn)
 	{
 		String[] aAllowedValues = null;
-		String   sValues        = rColumn.getProperty(ALLOWED_VALUES, null);
+		String   sValues	    = rColumn.getProperty(ALLOWED_VALUES, null);
 
 		if (sValues != null)
 		{
@@ -954,7 +1013,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		int nColumn = aFilterColumns.size() - 1;
 
-		while (nColumn >= 0 && !aFilterColumns.get(nColumn).getId().equals(sColumnId))
+		while (nColumn >= 0 &&
+			   !aFilterColumns.get(nColumn).getId().equals(sColumnId))
 		{
 			nColumn--;
 		}
@@ -972,14 +1032,15 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		if (aComplexFilterKeyDownHandler == null)
 		{
-			aComplexFilterKeyDownHandler = new KeyDownHandler()
-			{
-				@Override
-				public void onKeyDown(KeyDownEvent rEvent)
+			aComplexFilterKeyDownHandler =
+				new KeyDownHandler()
 				{
-					handleComplexFilterKeyDown(rEvent);
-				}
-			};
+					@Override
+					public void onKeyDown(KeyDownEvent rEvent)
+					{
+						handleComplexFilterKeyDown(rEvent);
+					}
+				};
 		}
 
 		return aComplexFilterKeyDownHandler;
@@ -995,14 +1056,15 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		if (aComplexFilterKeyUpHandler == null)
 		{
-			aComplexFilterKeyUpHandler = new KeyUpHandler()
-			{
-				@Override
-				public void onKeyUp(KeyUpEvent rEvent)
+			aComplexFilterKeyUpHandler =
+				new KeyUpHandler()
 				{
-					handleComplexFilterKeyUp(rEvent);
-				}
-			};
+					@Override
+					public void onKeyUp(KeyUpEvent rEvent)
+					{
+						handleComplexFilterKeyUp(rEvent);
+					}
+				};
 		}
 
 		return aComplexFilterKeyUpHandler;
@@ -1016,8 +1078,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *
 	 * @return The constraint value string
 	 */
-	private String getFilterConstraint(ColumnDefinition rColumn,
-	                                   Widget rValueWidget)
+	private String getFilterConstraint(
+		ColumnDefinition rColumn,
+		Widget			 rValueWidget)
 	{
 		String sValue = "";
 
@@ -1076,9 +1139,11 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private ColumnDefinition getSelectedFilterColumn(int nRow)
 	{
-		ListBox rColumnList = (ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COLUMN);
+		ListBox rColumnList =
+			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COLUMN);
 
-		ColumnDefinition rColumn = aFilterColumns.get(rColumnList.getSelectedIndex());
+		ColumnDefinition rColumn =
+			aFilterColumns.get(rColumnList.getSelectedIndex());
 
 		return rColumn;
 	}
@@ -1093,8 +1158,10 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private String getSelectedFilterComparison(int nRow)
 	{
-		ListBox rComparisons = (ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COMPARE);
-		String  sComparison  = rComparisons.getItemText(rComparisons.getSelectedIndex());
+		ListBox rComparisons =
+			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COMPARE);
+		String  sComparison  =
+			rComparisons.getItemText(rComparisons.getSelectedIndex());
 
 		return sComparison;
 	}
@@ -1104,20 +1171,20 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private void handleComplexFilterButton()
 	{
-		Map<String, String> rConstraints = getSearchableModel()
-		                                   .getConstraints();
+		Map<String, String> rConstraints =
+			getSearchableModel().getConstraints();
 
-		aFilterPopup         = new DecoratedPopupPanel(true, true);
+		aFilterPopup		 = new DecoratedPopupPanel(true, true);
 		aFilterCriteriaPanel = new FlexTable();
 
 		aFilterPopup.addStyleName(GwtTable.CSS.ewtTableFilterPopup());
 
-		Panel      aButtonPanel     = createFilterPopupButtonPanel();
+		Panel	   aButtonPanel     = createFilterPopupButtonPanel();
 		PushButton aAddFilterButton = createEditFilterListButton(true);
-		int        nButtonRow       = 0;
+		int		   nButtonRow	    = 0;
 
-		FlexCellFormatter rCellFormatter = aFilterCriteriaPanel
-		                                   .getFlexCellFormatter();
+		FlexCellFormatter rCellFormatter =
+			aFilterCriteriaPanel.getFlexCellFormatter();
 
 		aFilterCriteriaPanel.setWidget(nButtonRow, 0, aButtonPanel);
 		aFilterCriteriaPanel.setWidget(nButtonRow, 1, aAddFilterButton);
@@ -1167,7 +1234,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		}
 		else
 		{
-			int nRow = findFilterCriterionRow(COL_FILTER_BUTTON, (Widget) rEvent.getSource());
+			int nRow =
+				findFilterCriterionRow(COL_FILTER_BUTTON,
+									   (Widget) rEvent.getSource());
 
 			aFilterCriteriaPanel.removeRow(nRow);
 		}
@@ -1230,7 +1299,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private boolean isOrTerm(int nRow)
 	{
 		boolean bOrTerm = false;
-		ListBox rJoins  = (ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_JOIN);
+		ListBox rJoins  =
+			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_JOIN);
 
 		if (rJoins != null)
 		{
@@ -1314,7 +1384,8 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private void updateFilterPopupPosition(int nPopupHeight)
 	{
-		aFilterPopup.setPopupPosition(getAbsoluteLeft(), getAbsoluteTop() - nPopupHeight);
+		aFilterPopup.setPopupPosition(getAbsoluteLeft(),
+									  getAbsoluteTop() - nPopupHeight);
 	}
 
 	/***************************************

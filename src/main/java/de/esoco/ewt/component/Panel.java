@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.ClickEvent;
 
 
 /********************************************************************
@@ -36,8 +36,11 @@ public class Panel extends Container
 	@Override
 	ComponentEventDispatcher createEventDispatcher()
 	{
-		getWidget().sinkEvents(Event.ONCLICK);
+		ComponentEventDispatcher rEventDispatcher =
+			super.createEventDispatcher();
 
-		return super.createEventDispatcher();
+		getWidget().addDomHandler(rEventDispatcher, ClickEvent.getType());
+
+		return rEventDispatcher;
 	}
 }

@@ -16,13 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtSpinner;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -130,15 +127,6 @@ public class Spinner extends Control
 		aGwtSpinner.setValue(nValue);
 	}
 
-	/***************************************
-	 * @see Component#createEventDispatcher()
-	 */
-	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
-		return new SpinnerEventDispatcher();
-	}
-
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
@@ -157,37 +145,6 @@ public class Spinner extends Control
 		public Widget createWidget(Component rComponent, StyleData rStyle)
 		{
 			return new GwtSpinner(0, 100, 1);
-		}
-	}
-
-	/********************************************************************
-	 * Dispatcher for list-specific events.
-	 *
-	 * @author eso
-	 */
-	class SpinnerEventDispatcher extends ComponentEventDispatcher
-		implements ValueChangeHandler<Integer>
-	{
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
-		 */
-		@Override
-		public void onValueChange(ValueChangeEvent<Integer> rEvent)
-		{
-			notifyEventHandler(EventType.VALUE_CHANGED);
-		}
-
-		/***************************************
-		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
-		 */
-		@Override
-		void initEventDispatching(Widget rWidget)
-		{
-			super.initEventDispatching(rWidget);
-
-			((GwtSpinner) rWidget).addValueChangeHandler(this);
 		}
 	}
 }

@@ -169,14 +169,20 @@ public class Tree extends Control
 		}
 
 		/***************************************
-		 * @see ControlEventDispatcher#initEventDispatching(Widget)
+		 * {@inheritDoc}
 		 */
 		@Override
-		void initEventDispatching(Widget rWidget)
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget);
+			super.initEventDispatching(rWidget, eEventType);
 
-			((com.google.gwt.user.client.ui.Tree) rWidget).addSelectionHandler(this);
+			if (eEventType == EventType.SELECTION)
+			{
+				((com.google.gwt.user.client.ui.Tree) rWidget)
+				.addSelectionHandler(this);
+			}
 		}
 	}
 }

@@ -19,6 +19,7 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
+
 import de.esoco.lib.property.MultiSelection;
 import de.esoco.lib.property.SingleSelection;
 
@@ -28,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
@@ -121,11 +121,11 @@ public abstract class ListControl extends Control implements SingleSelection,
 	@Override
 	public int[] getSelectionIndices()
 	{
-		IsListControlWidget rListBox   = getGwtListBox();
-		
-		int     nItemCount = rListBox.getItemCount();
-		int[]   aIndices   = new int[nItemCount];
-		int     nIndex     = 0;
+		IsListControlWidget rListBox = getGwtListBox();
+
+		int   nItemCount = rListBox.getItemCount();
+		int[] aIndices   = new int[nItemCount];
+		int   nIndex     = 0;
 
 		for (int i = 0; i < nItemCount; i++)
 		{
@@ -271,7 +271,6 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 */
 		public int getSelectedIndex();
 
-
 		/***************************************
 		 * @see ListBox#getVisibleItemCount()
 		 */
@@ -283,20 +282,20 @@ public abstract class ListControl extends Control implements SingleSelection,
 		public void insertItem(String sItem, int nIndex);
 
 		/***************************************
+		 * @see ListBox#isItemSelected(int)
+		 */
+		public boolean isItemSelected(int nIndex);
+
+		/***************************************
 		 * @see ListBox#removeItem(int)
 		 */
 		public void removeItem(int nIndex);
 
 		/***************************************
-		 * @see ListBox#isItemSelected(int)
-		 */
-		public boolean isItemSelected(int nIndex);
-		
-		/***************************************
 		 * @see ListBox#setItemSelected(int, boolean)
 		 */
 		public void setItemSelected(int nIndex, boolean bSelected);
-		
+
 		/***************************************
 		 * @see ListBox#setMultipleSelect(boolean)
 		 */
@@ -354,7 +353,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 	 * @author eso
 	 */
 	class ListEventDispatcher extends ComponentEventDispatcher
-		implements ChangeHandler, ValueChangeHandler<String>
+		implements ChangeHandler
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -378,29 +377,44 @@ public abstract class ListControl extends Control implements SingleSelection,
 		}
 
 		/***************************************
-		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
+		 * {@inheritDoc}
 		 */
 		@Override
-		@SuppressWarnings("unchecked")
-		void initEventDispatching(Widget rWidget)
+		public void onValueChange(ValueChangeEvent<Object> rEvent)
 		{
-			super.initEventDispatching(rWidget);
-
-			if (rWidget instanceof HasChangeHandlers)
+			if (hasListenerFor(EventType.SELECTION))
 			{
-				((HasChangeHandlers) rWidget).addChangeHandler(this);
+				notifyEventHandler(EventType.SELECTION, rEvent);
 			}
-			else if (rWidget instanceof HasValueChangeHandlers)
+			else
 			{
-				((HasValueChangeHandlers<String>) rWidget)
-				.addValueChangeHandler(this);
+				super.onValueChange(rEvent);
 			}
 		}
 
+		/***************************************
+		 * {@inheritDoc}
+		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<String> rEvent)
+		@SuppressWarnings("unchecked")
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			notifyEventHandler(EventType.SELECTION, rEvent);
+			super.initEventDispatching(rWidget, eEventType);
+
+			if (eEventType == EventType.SELECTION)
+			{
+				if (rWidget instanceof HasChangeHandlers)
+				{
+					((HasChangeHandlers) rWidget).addChangeHandler(this);
+				}
+				else if (rWidget instanceof HasValueChangeHandlers)
+				{
+					((HasValueChangeHandlers<Object>) rWidget)
+					.addValueChangeHandler(this);
+				}
+			}
 		}
 	}
 }

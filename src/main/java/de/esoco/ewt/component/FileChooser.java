@@ -168,11 +168,14 @@ public class FileChooser extends Control implements TextAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		void initEventDispatching(Widget rWidget)
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget);
+			super.initEventDispatching(rWidget, eEventType);
 
-			if (rWidget instanceof GwtFileChooser)
+			if (eEventType == EventType.ACTION &&
+				rWidget instanceof GwtFileChooser)
 			{
 				((GwtFileChooser) rWidget).getFormPanel()
 										  .addSubmitCompleteHandler(this);

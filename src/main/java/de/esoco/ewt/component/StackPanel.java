@@ -195,10 +195,10 @@ public class StackPanel extends SwitchPanel
 			UserInterfaceContext rContext,
 			String				 sHeaderTitle)
 		{
-			String	    sTitle = rContext.expandResource(sHeaderTitle);
+			String   sTitle = rContext.expandResource(sHeaderTitle);
 			ImageRef rImage =
 				(ImageRef) rContext.createImage(GewtResources.INSTANCE
-												   .imRight());
+												.imRight());
 
 			String sTitleHtml =
 				createImageLabel(sTitle,
@@ -253,6 +253,32 @@ public class StackPanel extends SwitchPanel
 		}
 
 		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		@SuppressWarnings("unchecked")
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
+		{
+			super.initEventDispatching(rWidget, eEventType);
+
+			if (eEventType == EventType.SELECTION)
+			{
+				if (rWidget instanceof HasSelectionHandlers)
+				{
+					((HasSelectionHandlers<Integer>) rWidget)
+					.addSelectionHandler(this);
+				}
+				else if (rWidget instanceof HasSelectionChangedHandlers)
+				{
+					((HasSelectionChangedHandlers) rWidget)
+					.addSelectionChangeHandler(this);
+				}
+			}
+		}
+
+		/***************************************
 		 * Performs the deferred handling of selection events. Invoked by the
 		 * {@link #onSelection(SelectionEvent)} method.
 		 */
@@ -281,26 +307,6 @@ public class StackPanel extends SwitchPanel
 			}
 
 			notifyEventHandler(EventType.SELECTION);
-		}
-
-		/***************************************
-		 * @see ControlEventDispatcher#initEventDispatching(Widget)
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		void initEventDispatching(Widget rWidget)
-		{
-			super.initEventDispatching(rWidget);
-
-			if (rWidget instanceof HasSelectionHandlers)
-			{
-				((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(this);
-			}
-			else if (rWidget instanceof HasSelectionChangedHandlers)
-			{
-				((HasSelectionChangedHandlers) rWidget)
-				.addSelectionChangeHandler(this);
-			}
 		}
 	}
 }

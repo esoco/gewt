@@ -225,11 +225,16 @@ public class ChildView extends View
 		 */
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		void initEventDispatching(Widget rWidget)
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget);
+			super.initEventDispatching(rWidget, eEventType);
 
-			((HasCloseHandlers) rWidget).addCloseHandler(this);
+			if (eEventType == EventType.VIEW_CLOSING)
+			{
+				((HasCloseHandlers) rWidget).addCloseHandler(this);
+			}
 		}
 	}
 }

@@ -120,14 +120,17 @@ public class ScrollPanel extends FixedLayoutPanel
 		}
 
 		/***************************************
-		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
+		 * {@inheritDoc}
 		 */
 		@Override
-		void initEventDispatching(Widget rWidget)
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget);
+			super.initEventDispatching(rWidget, eEventType);
 
-			if (rWidget instanceof HasScrollHandlers)
+			if (eEventType == EventType.VALUE_CHANGED &&
+				rWidget instanceof HasScrollHandlers)
 			{
 				((HasScrollHandlers) rWidget).addScrollHandler(this);
 			}

@@ -16,7 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtDatePicker;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
@@ -25,10 +24,6 @@ import de.esoco.ewt.style.StyleFlag;
 import de.esoco.lib.property.DateAttribute;
 
 import java.util.Date;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
@@ -109,15 +104,6 @@ public class Calendar extends Component implements DateAttribute
 	}
 
 	/***************************************
-	 * @see Component#createEventDispatcher()
-	 */
-	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
-		return new CalendarEventDispatcher();
-	}
-
-	/***************************************
 	 * Internal method to return the date widget of this instance.
 	 *
 	 * @return The date widget
@@ -149,37 +135,6 @@ public class Calendar extends Component implements DateAttribute
 		{
 			return new GwtDatePicker(rComponent.getContext(),
 									 rStyle.hasFlag(StyleFlag.DATE_TIME));
-		}
-	}
-
-	/********************************************************************
-	 * Dispatcher for calendar-specific events.
-	 *
-	 * @author eso
-	 */
-	class CalendarEventDispatcher extends ComponentEventDispatcher
-		implements ValueChangeHandler<Date>
-	{
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
-		 */
-		@Override
-		public void onValueChange(ValueChangeEvent<Date> rEvent)
-		{
-			notifyEventHandler(EventType.VALUE_CHANGED);
-		}
-
-		/***************************************
-		 * @see ComponentEventDispatcher#initEventDispatching(Widget)
-		 */
-		@Override
-		void initEventDispatching(Widget rWidget)
-		{
-			super.initEventDispatching(rWidget);
-
-			getDatePicker().addValueChangeHandler(this);
 		}
 	}
 }

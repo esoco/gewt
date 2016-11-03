@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
+import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -351,7 +352,10 @@ public abstract class TextControl extends Control implements TextAttribute
 		@Override
 		public void onKeyUp(KeyUpEvent rEvent)
 		{
-			super.onKeyUp(rEvent);
+			if (hasListenerFor(EventType.KEY_RELEASED))
+			{
+				super.onKeyUp(rEvent);
+			}
 
 			handleKeyUp(rEvent);
 		}
@@ -383,15 +387,27 @@ public abstract class TextControl extends Control implements TextAttribute
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		void initEventDispatching(Widget rWidget)
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget);
+			super.initEventDispatching(rWidget, eEventType);
 
-			if (rWidget instanceof HasValueChangeHandlers)
+			if (eEventType == EventType.ACTION)
 			{
-				// register generic event handler to support subclasses like DateField
-				((HasValueChangeHandlers<Object>) rWidget)
-				.addValueChangeHandler(this);
+				if (rWidget instanceof HasKeyUpHandlers)
+				{
+					((HasKeyUpHandlers) rWidget).addKeyUpHandler(this);
+				}
+			}
+			else if (eEventType == EventType.VALUE_CHANGED)
+			{
+				if (rWidget instanceof HasValueChangeHandlers)
+				{
+					// register generic event handler to support subclasses like DateField
+					((HasValueChangeHandlers<Object>) rWidget)
+					.addValueChangeHandler(this);
+				}
 			}
 		}
 	}

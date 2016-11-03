@@ -20,9 +20,6 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
@@ -99,7 +96,6 @@ public class CheckBox extends SelectableButton
 	 * @author eso
 	 */
 	class CheckBoxEventDispatcher extends ComponentEventDispatcher
-		implements ValueChangeHandler<Boolean>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -110,31 +106,6 @@ public class CheckBox extends SelectableButton
 		public void onClick(ClickEvent rEvent)
 		{
 			notifyEventHandler(EventType.POINTER_CLICKED, rEvent);
-		}
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void onValueChange(ValueChangeEvent<Boolean> rEvent)
-		{
-			notifyEventHandler(EventType.ACTION);
-		}
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		@SuppressWarnings("unchecked")
-		void initEventDispatching(Widget rWidget)
-		{
-			super.initEventDispatching(rWidget);
-
-			if (rWidget instanceof HasValueChangeHandlers<?>)
-			{
-				((HasValueChangeHandlers<Boolean>) rWidget)
-				.addValueChangeHandler(this);
-			}
 		}
 	}
 }

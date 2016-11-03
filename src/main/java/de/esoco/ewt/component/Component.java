@@ -77,6 +77,9 @@ import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -1120,7 +1123,8 @@ public abstract class Component implements HasId<String>
 											  BlurHandler, MouseDownHandler,
 											  MouseUpHandler, MouseMoveHandler,
 											  MouseOutHandler, MouseOverHandler,
-											  MouseWheelHandler
+											  MouseWheelHandler,
+											  ValueChangeHandler<Object>
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -1247,6 +1251,15 @@ public abstract class Component implements HasId<String>
 		}
 
 		/***************************************
+		 * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
+		 */
+		@Override
+		public void onValueChange(ValueChangeEvent<Object> rEvent)
+		{
+			notifyEventHandler(EventType.VALUE_CHANGED);
+		}
+
+		/***************************************
 		 * Removes an event handler for a certain event type.
 		 *
 		 * @param eEventType The event type the listener shall be unregistered
@@ -1277,84 +1290,61 @@ public abstract class Component implements HasId<String>
 		}
 
 		/***************************************
-		 * Returns the event listener for a certain event type. If multiple
-		 * listeners are registered for the given type the returned listener
-		 * will be an event multicaster that will notify all listeners on
-		 * invocation.
+		 * Allows to check whether a listener has been registered for a certain
+		 * event type.
 		 *
-		 * @param  eEventType The event type to return the listener for
+		 * @param  eEventType The event type to check
 		 *
-		 * @return The event listener for the given type or NULL for none
+		 * @return TRUE if a listener has been registered for the event type
 		 */
-		EWTEventHandler getEventListener(EventType eEventType)
+		protected boolean hasListenerFor(EventType eEventType)
 		{
-			return aEventListenerMap.get(eEventType);
+			return getEventListener(eEventType) != null;
 		}
 
 		/***************************************
 		 * This method can be overridden by subclasses to initialize the event
-		 * dispatching for it's specific widget subclass. The default
-		 * implementation does nothing.
+		 * dispatching for a certain event type and it's specific widget
+		 * subclass. The superclass method must alsways be invoked.
 		 *
-		 * @param rWidget The widget to initialize the event dispatching for
-		 */
-		void initEventDispatching(Widget rWidget)
-		{
-		}
-
-		/***************************************
-		 * This method performs the setup for the dispatching of a certain event
-		 * type. It also invokes {@link #initEventDispatching(Widget)} which
-		 * subclasses may implement to perform additional event dispatch
-		 * initializations-
-		 *
-		 * @param rWidget    The widget to initialize the dispatching for
+		 * @param rWidget    The widget to initialize the event dispatching for
 		 * @param eEventType The event type
-		 * @param rListener  The event listener to be notified of events
 		 */
-		void setupEventDispatching(Widget		   rWidget,
-								   EventType	   eEventType,
-								   EWTEventHandler rListener)
+		@SuppressWarnings("incomplete-switch")
+		protected void initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
 		{
-			rListener =
-				EventMulticaster.add(aEventListenerMap.get(eEventType),
-									 rListener);
-
-			aEventListenerMap.put(eEventType, rListener);
-
 			if (rWidget instanceof HasAllMouseHandlers)
 			{
 				HasAllMouseHandlers rMouseWidget =
 					(HasAllMouseHandlers) rWidget;
 
-				if (eEventType == EventType.POINTER_PRESSED)
+				switch (eEventType)
 				{
-					rMouseWidget.addMouseDownHandler(this);
-				}
+					case POINTER_PRESSED:
+						rMouseWidget.addMouseDownHandler(this);
+						break;
 
-				if (eEventType == EventType.POINTER_RELEASED)
-				{
-					rMouseWidget.addMouseUpHandler(this);
-				}
+					case POINTER_RELEASED:
+						rMouseWidget.addMouseUpHandler(this);
+						break;
 
-				if (eEventType == EventType.POINTER_MOVED)
-				{
-					rMouseWidget.addMouseMoveHandler(this);
-				}
+					case POINTER_MOVED:
+						rMouseWidget.addMouseMoveHandler(this);
+						break;
 
-				if (eEventType == EventType.POINTER_EXITED)
-				{
-					rMouseWidget.addMouseOutHandler(this);
-				}
+					case POINTER_EXITED:
+						rMouseWidget.addMouseOutHandler(this);
+						break;
 
-				if (eEventType == EventType.POINTER_ENTERED)
-				{
-					rMouseWidget.addMouseOverHandler(this);
-				}
+					case POINTER_ENTERED:
+						rMouseWidget.addMouseOverHandler(this);
+						break;
 
-				if (eEventType == EventType.POINTER_WHEEL)
-				{
-					rMouseWidget.addMouseWheelHandler(this);
+					case POINTER_WHEEL:
+						rMouseWidget.addMouseWheelHandler(this);
+						break;
 				}
 			}
 
@@ -1367,8 +1357,7 @@ public abstract class Component implements HasId<String>
 				{
 					rFocusWidget.addFocusHandler(this);
 				}
-
-				if (eEventType == EventType.FOCUS_LOST)
+				else if (eEventType == EventType.FOCUS_LOST)
 				{
 					rFocusWidget.addBlurHandler(this);
 				}
@@ -1378,36 +1367,85 @@ public abstract class Component implements HasId<String>
 			{
 				HasAllKeyHandlers rKeyWidget = (HasAllKeyHandlers) rWidget;
 
-				if (eEventType == EventType.KEY_PRESSED)
+				switch (eEventType)
 				{
-					rKeyWidget.addKeyDownHandler(this);
-				}
+					case KEY_PRESSED:
+						rKeyWidget.addKeyDownHandler(this);
+						break;
 
-				if (eEventType == EventType.KEY_RELEASED)
-				{
-					rKeyWidget.addKeyUpHandler(this);
-				}
+					case KEY_RELEASED:
+						rKeyWidget.addKeyUpHandler(this);
+						break;
 
-				if (eEventType == EventType.KEY_TYPED)
-				{
-					rKeyWidget.addKeyPressHandler(this);
+					case KEY_TYPED:
+						rKeyWidget.addKeyPressHandler(this);
+						break;
 				}
 			}
 
-			if (eEventType == EventType.ACTION &&
-				rWidget instanceof HasClickHandlers)
+			if (eEventType == EventType.ACTION)
 			{
-				((HasClickHandlers) rWidget).addClickHandler(this);
+				if (rWidget instanceof HasClickHandlers)
+				{
+					((HasClickHandlers) rWidget).addClickHandler(this);
+				}
 			}
-
-			if (eEventType == EventType.POINTER_DOUBLE_CLICKED &&
-				rWidget instanceof HasDoubleClickHandlers)
+			else if (eEventType == EventType.POINTER_DOUBLE_CLICKED)
 			{
-				((HasDoubleClickHandlers) rWidget).addDoubleClickHandler(this);
+				if (rWidget instanceof HasDoubleClickHandlers)
+				{
+					((HasDoubleClickHandlers) rWidget).addDoubleClickHandler(this);
+				}
 			}
+			else if (eEventType == EventType.VALUE_CHANGED)
+			{
+				if (rWidget instanceof HasValueChangeHandlers)
+				{
+					@SuppressWarnings("unchecked")
+					HasValueChangeHandlers<Object> rHasValueChangeHandlers =
+						(HasValueChangeHandlers<Object>) rWidget;
 
-			// subclasses initialization
-			initEventDispatching(rWidget);
+					rHasValueChangeHandlers.addValueChangeHandler(this);
+				}
+			}
+		}
+
+		/***************************************
+		 * This method performs the setup for the dispatching of a certain event
+		 * type. It also invokes {@link #initEventDispatching(Widget)} which
+		 * subclasses may implement to perform additional event dispatch
+		 * initializations-
+		 *
+		 * @param rWidget    The widget to initialize the dispatching for
+		 * @param eEventType The event type
+		 * @param rListener  The event listener to be notified of events
+		 */
+		protected void setupEventDispatching(Widget			 rWidget,
+											 EventType		 eEventType,
+											 EWTEventHandler rListener)
+		{
+			rListener =
+				EventMulticaster.add(aEventListenerMap.get(eEventType),
+									 rListener);
+
+			aEventListenerMap.put(eEventType, rListener);
+
+			initEventDispatching(rWidget, eEventType);
+		}
+
+		/***************************************
+		 * Returns the event listener for a certain event type. If multiple
+		 * listeners are registered for the given type the returned listener
+		 * will be an event multicaster that will notify all listeners on
+		 * invocation.
+		 *
+		 * @param  eEventType The event type to return the listener for
+		 *
+		 * @return The event listener for the given type or NULL for none
+		 */
+		EWTEventHandler getEventListener(EventType eEventType)
+		{
+			return aEventListenerMap.get(eEventType);
 		}
 	}
 

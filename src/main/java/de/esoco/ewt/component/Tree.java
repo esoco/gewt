@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import de.esoco.lib.model.DataModel;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -170,18 +171,23 @@ public class Tree extends Control
 
 		/***************************************
 		 * {@inheritDoc}
+		 *
+		 * @return
 		 */
 		@Override
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
-			if (eEventType == EventType.SELECTION)
+			if (eEventType == EventType.SELECTION &&
+				rWidget instanceof com.google.gwt.user.client.ui.Tree)
 			{
-				((com.google.gwt.user.client.ui.Tree) rWidget)
-				.addSelectionHandler(this);
+				return ((com.google.gwt.user.client.ui.Tree) rWidget)
+					   .addSelectionHandler(this);
+			}
+			else
+			{
+				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}
 	}

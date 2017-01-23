@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -256,17 +257,18 @@ public class TabPanel extends SwitchPanel
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
 			if (eEventType == EventType.SELECTION &&
 				rWidget instanceof HasSelectionHandlers)
 			{
-				((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(this);
+				return ((HasSelectionHandlers<Integer>) rWidget)
+					   .addSelectionHandler(this);
 			}
+
+			return super.initEventDispatching(rWidget, eEventType);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.TextAttribute;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -168,17 +169,19 @@ public class FileChooser extends Control implements TextAttribute
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
 			if (eEventType == EventType.ACTION &&
 				rWidget instanceof GwtFileChooser)
 			{
-				((GwtFileChooser) rWidget).getFormPanel()
-										  .addSubmitCompleteHandler(this);
+				return ((GwtFileChooser) rWidget).getFormPanel()
+												 .addSubmitCompleteHandler(this);
+			}
+			else
+			{
+				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}
 	}

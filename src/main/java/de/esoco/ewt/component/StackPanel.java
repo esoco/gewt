@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -257,25 +258,34 @@ public class StackPanel extends SwitchPanel
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
+			HandlerRegistration rHandler = null;
 
 			if (eEventType == EventType.SELECTION)
 			{
 				if (rWidget instanceof HasSelectionHandlers)
 				{
-					((HasSelectionHandlers<Integer>) rWidget)
-					.addSelectionHandler(this);
+					rHandler =
+						((HasSelectionHandlers<Integer>) rWidget)
+						.addSelectionHandler(this);
 				}
 				else if (rWidget instanceof HasSelectionChangedHandlers)
 				{
-					((HasSelectionChangedHandlers) rWidget)
-					.addSelectionChangeHandler(this);
+					rHandler =
+						((HasSelectionChangedHandlers) rWidget)
+						.addSelectionChangeHandler(this);
 				}
 			}
+
+			if (rHandler == null)
+			{
+				rHandler = super.initEventDispatching(rWidget, eEventType);
+			}
+
+			return rHandler;
 		}
 
 		/***************************************

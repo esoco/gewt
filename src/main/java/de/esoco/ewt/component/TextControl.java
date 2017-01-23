@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -352,7 +352,7 @@ public abstract class TextControl extends Control implements TextAttribute
 		@Override
 		public void onKeyUp(KeyUpEvent rEvent)
 		{
-			if (hasListenerFor(EventType.KEY_RELEASED))
+			if (hasHandlerFor(EventType.KEY_RELEASED))
 			{
 				super.onKeyUp(rEvent);
 			}
@@ -387,27 +387,25 @@ public abstract class TextControl extends Control implements TextAttribute
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
-			if (eEventType == EventType.ACTION)
+			if (eEventType == EventType.ACTION &&
+				rWidget instanceof HasKeyUpHandlers)
 			{
-				if (rWidget instanceof HasKeyUpHandlers)
-				{
-					((HasKeyUpHandlers) rWidget).addKeyUpHandler(this);
-				}
+				return ((HasKeyUpHandlers) rWidget).addKeyUpHandler(this);
 			}
-			else if (eEventType == EventType.VALUE_CHANGED)
+			else if (eEventType == EventType.VALUE_CHANGED &&
+					 rWidget instanceof HasValueChangeHandlers)
 			{
-				if (rWidget instanceof HasValueChangeHandlers)
-				{
-					// register generic event handler to support subclasses like DateField
-					((HasValueChangeHandlers<Object>) rWidget)
-					.addValueChangeHandler(this);
-				}
+				// register generic event handler to support subclasses like DateField
+				return ((HasValueChangeHandlers<Object>) rWidget)
+					   .addValueChangeHandler(this);
+			}
+			else
+			{
+				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}
 	}

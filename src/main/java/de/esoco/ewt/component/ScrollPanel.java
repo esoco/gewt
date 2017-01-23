@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import de.esoco.ewt.style.StyleFlag;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
@@ -123,16 +124,18 @@ public class ScrollPanel extends FixedLayoutPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
 			if (eEventType == EventType.VALUE_CHANGED &&
 				rWidget instanceof HasScrollHandlers)
 			{
-				((HasScrollHandlers) rWidget).addScrollHandler(this);
+				return ((HasScrollHandlers) rWidget).addScrollHandler(this);
+			}
+			else
+			{
+				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}
 	}

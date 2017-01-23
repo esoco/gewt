@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import de.esoco.ewt.style.ViewStyle;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -225,15 +226,18 @@ public class ChildView extends View
 		 */
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
-
-			if (eEventType == EventType.VIEW_CLOSING)
+			if (eEventType == EventType.VIEW_CLOSING &&
+				rWidget instanceof HasCloseHandlers)
 			{
-				((HasCloseHandlers) rWidget).addCloseHandler(this);
+				return ((HasCloseHandlers) rWidget).addCloseHandler(this);
+			}
+			else
+			{
+				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}
 	}

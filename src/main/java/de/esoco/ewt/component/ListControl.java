@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
@@ -382,7 +383,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 		@Override
 		public void onValueChange(ValueChangeEvent<Object> rEvent)
 		{
-			if (hasListenerFor(EventType.SELECTION))
+			if (hasHandlerFor(EventType.SELECTION))
 			{
 				notifyEventHandler(EventType.SELECTION, rEvent);
 			}
@@ -397,24 +398,33 @@ public abstract class ListControl extends Control implements SingleSelection,
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
-			super.initEventDispatching(rWidget, eEventType);
+			HandlerRegistration rHandler = null;
 
 			if (eEventType == EventType.SELECTION)
 			{
 				if (rWidget instanceof HasChangeHandlers)
 				{
-					((HasChangeHandlers) rWidget).addChangeHandler(this);
+					rHandler =
+						((HasChangeHandlers) rWidget).addChangeHandler(this);
 				}
 				else if (rWidget instanceof HasValueChangeHandlers)
 				{
-					((HasValueChangeHandlers<Object>) rWidget)
-					.addValueChangeHandler(this);
+					rHandler =
+						((HasValueChangeHandlers<Object>) rWidget)
+						.addValueChangeHandler(this);
 				}
 			}
+
+			if (rHandler == null)
+			{
+				rHandler = super.initEventDispatching(rWidget, eEventType);
+			}
+
+			return rHandler;
 		}
 	}
 }

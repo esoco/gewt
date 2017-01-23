@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,6 +80,7 @@ import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -837,7 +838,7 @@ public abstract class Component implements HasId<String>
 	{
 		if (aEventDispatcher != null)
 		{
-			return aEventDispatcher.getEventListener(eEventType);
+			return aEventDispatcher.getEventHandler(eEventType);
 		}
 		else
 		{
@@ -1128,8 +1129,11 @@ public abstract class Component implements HasId<String>
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private Map<EventType, EWTEventHandler> aEventListenerMap =
-			new HashMap<EventType, EWTEventHandler>(1);
+		private Map<EventType, EWTEventHandler> aEventHandlers =
+			new HashMap<>(1);
+
+		private Map<EventType, HandlerRegistration> aHandlerRegistrations =
+			new HashMap<>(1);
 
 		//~ Methods ------------------------------------------------------------
 
@@ -1260,46 +1264,16 @@ public abstract class Component implements HasId<String>
 		}
 
 		/***************************************
-		 * Removes an event handler for a certain event type.
-		 *
-		 * @param eEventType The event type the listener shall be unregistered
-		 *                   for
-		 * @param rListener  The event listener to be removed
-		 */
-		public void stopEventDispatching(
-			EventType		eEventType,
-			EWTEventHandler rListener)
-		{
-			{
-				EWTEventHandler rHandler = getEventListener(eEventType);
-
-				if (rHandler != null)
-				{
-					rHandler = EventMulticaster.remove(rHandler, rListener);
-
-					if (rHandler != null)
-					{
-						aEventListenerMap.put(eEventType, rHandler);
-					}
-					else
-					{
-						aEventListenerMap.remove(eEventType);
-					}
-				}
-			}
-		}
-
-		/***************************************
-		 * Allows to check whether a listener has been registered for a certain
+		 * Allows to check whether a handler has been registered for a certain
 		 * event type.
 		 *
 		 * @param  eEventType The event type to check
 		 *
-		 * @return TRUE if a listener has been registered for the event type
+		 * @return TRUE if a handler has been registered for the event type
 		 */
-		protected boolean hasListenerFor(EventType eEventType)
+		protected boolean hasHandlerFor(EventType eEventType)
 		{
-			return getEventListener(eEventType) != null;
+			return getEventHandler(eEventType) != null;
 		}
 
 		/***************************************
@@ -1307,14 +1281,19 @@ public abstract class Component implements HasId<String>
 		 * dispatching for a certain event type and it's specific widget
 		 * subclass. The superclass method must alsways be invoked.
 		 *
-		 * @param rWidget    The widget to initialize the event dispatching for
-		 * @param eEventType The event type
+		 * @param  rWidget    The widget to initialize the event dispatching for
+		 * @param  eEventType The event type
+		 *
+		 * @return The event handler registration or NULL if no handler has been
+		 *         registered
 		 */
 		@SuppressWarnings("incomplete-switch")
-		protected void initEventDispatching(
+		protected HandlerRegistration initEventDispatching(
 			Widget    rWidget,
 			EventType eEventType)
 		{
+			HandlerRegistration rHandler = null;
+
 			if (rWidget instanceof HasAllMouseHandlers)
 			{
 				HasAllMouseHandlers rMouseWidget =
@@ -1323,27 +1302,27 @@ public abstract class Component implements HasId<String>
 				switch (eEventType)
 				{
 					case POINTER_PRESSED:
-						rMouseWidget.addMouseDownHandler(this);
+						rHandler = rMouseWidget.addMouseDownHandler(this);
 						break;
 
 					case POINTER_RELEASED:
-						rMouseWidget.addMouseUpHandler(this);
+						rHandler = rMouseWidget.addMouseUpHandler(this);
 						break;
 
 					case POINTER_MOVED:
-						rMouseWidget.addMouseMoveHandler(this);
+						rHandler = rMouseWidget.addMouseMoveHandler(this);
 						break;
 
 					case POINTER_EXITED:
-						rMouseWidget.addMouseOutHandler(this);
+						rHandler = rMouseWidget.addMouseOutHandler(this);
 						break;
 
 					case POINTER_ENTERED:
-						rMouseWidget.addMouseOverHandler(this);
+						rHandler = rMouseWidget.addMouseOverHandler(this);
 						break;
 
 					case POINTER_WHEEL:
-						rMouseWidget.addMouseWheelHandler(this);
+						rHandler = rMouseWidget.addMouseWheelHandler(this);
 						break;
 				}
 			}
@@ -1355,11 +1334,11 @@ public abstract class Component implements HasId<String>
 
 				if (eEventType == EventType.FOCUS_GAINED)
 				{
-					rFocusWidget.addFocusHandler(this);
+					rHandler = rFocusWidget.addFocusHandler(this);
 				}
 				else if (eEventType == EventType.FOCUS_LOST)
 				{
-					rFocusWidget.addBlurHandler(this);
+					rHandler = rFocusWidget.addBlurHandler(this);
 				}
 			}
 
@@ -1370,15 +1349,15 @@ public abstract class Component implements HasId<String>
 				switch (eEventType)
 				{
 					case KEY_PRESSED:
-						rKeyWidget.addKeyDownHandler(this);
+						rHandler = rKeyWidget.addKeyDownHandler(this);
 						break;
 
 					case KEY_RELEASED:
-						rKeyWidget.addKeyUpHandler(this);
+						rHandler = rKeyWidget.addKeyUpHandler(this);
 						break;
 
 					case KEY_TYPED:
-						rKeyWidget.addKeyPressHandler(this);
+						rHandler = rKeyWidget.addKeyPressHandler(this);
 						break;
 				}
 			}
@@ -1387,14 +1366,17 @@ public abstract class Component implements HasId<String>
 			{
 				if (rWidget instanceof HasClickHandlers)
 				{
-					((HasClickHandlers) rWidget).addClickHandler(this);
+					rHandler =
+						((HasClickHandlers) rWidget).addClickHandler(this);
 				}
 			}
 			else if (eEventType == EventType.POINTER_DOUBLE_CLICKED)
 			{
 				if (rWidget instanceof HasDoubleClickHandlers)
 				{
-					((HasDoubleClickHandlers) rWidget).addDoubleClickHandler(this);
+					rHandler =
+						((HasDoubleClickHandlers) rWidget)
+						.addDoubleClickHandler(this);
 				}
 			}
 			else if (eEventType == EventType.VALUE_CHANGED)
@@ -1405,9 +1387,12 @@ public abstract class Component implements HasId<String>
 					HasValueChangeHandlers<Object> rHasValueChangeHandlers =
 						(HasValueChangeHandlers<Object>) rWidget;
 
-					rHasValueChangeHandlers.addValueChangeHandler(this);
+					rHandler =
+						rHasValueChangeHandlers.addValueChangeHandler(this);
 				}
 			}
+
+			return rHandler;
 		}
 
 		/***************************************
@@ -1418,34 +1403,71 @@ public abstract class Component implements HasId<String>
 		 *
 		 * @param rWidget    The widget to initialize the dispatching for
 		 * @param eEventType The event type
-		 * @param rListener  The event listener to be notified of events
+		 * @param rHandler   The event listener to be notified of events
 		 */
 		protected void setupEventDispatching(Widget			 rWidget,
 											 EventType		 eEventType,
-											 EWTEventHandler rListener)
+											 EWTEventHandler rHandler)
 		{
-			rListener =
-				EventMulticaster.add(aEventListenerMap.get(eEventType),
-									 rListener);
+			aEventHandlers.put(eEventType,
+							   EventMulticaster.add(aEventHandlers.get(eEventType),
+													rHandler));
 
-			aEventListenerMap.put(eEventType, rListener);
+			if (aHandlerRegistrations.get(eEventType) == null)
+			{
+				HandlerRegistration rRegistration =
+					initEventDispatching(rWidget, eEventType);
 
-			initEventDispatching(rWidget, eEventType);
+				if (rRegistration != null)
+				{
+					aHandlerRegistrations.put(eEventType, rRegistration);
+				}
+			}
 		}
 
 		/***************************************
-		 * Returns the event listener for a certain event type. If multiple
-		 * listeners are registered for the given type the returned listener
-		 * will be an event multicaster that will notify all listeners on
-		 * invocation.
+		 * Returns the event handler for a certain event type. If multiple
+		 * handlers are registered for the given type the returned hadnler will
+		 * be an event multicaster that will notify all handlers on invocation.
 		 *
-		 * @param  eEventType The event type to return the listener for
+		 * @param  eEventType The event type to return the handler for
 		 *
-		 * @return The event listener for the given type or NULL for none
+		 * @return The event handler for the given type or NULL for none
 		 */
-		EWTEventHandler getEventListener(EventType eEventType)
+		EWTEventHandler getEventHandler(EventType eEventType)
 		{
-			return aEventListenerMap.get(eEventType);
+			return aEventHandlers.get(eEventType);
+		}
+
+		/***************************************
+		 * Removes an event handler for a certain event type.
+		 *
+		 * @param eEventType The event type the handler shall be unregistered
+		 *                   for
+		 * @param rHandler   The event handler to be removed
+		 */
+		void stopEventDispatching(
+			EventType		eEventType,
+			EWTEventHandler rHandler)
+		{
+			{
+				EWTEventHandler rHandlerChain = getEventHandler(eEventType);
+
+				if (rHandlerChain != null)
+				{
+					rHandlerChain =
+						EventMulticaster.remove(rHandlerChain, rHandler);
+
+					if (rHandlerChain != null)
+					{
+						aEventHandlers.put(eEventType, rHandlerChain);
+					}
+					else
+					{
+						aEventHandlers.remove(eEventType);
+					}
+				}
+			}
 		}
 	}
 

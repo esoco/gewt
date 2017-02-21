@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,10 +39,11 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 
 
 /********************************************************************
- * A wrapper for the native JavaScript CodeMirror editor.
+ * A variation of the CodeMirror wrapper, adapted for GEWT.
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
  *         Research Group, Date: 18/03/2014
+ * @link   <a href="https://github.com/protegeproject/codemirror-gwt">https://github.com/protegeproject/codemirror-gwt</a>
  */
 public class GwtCodeMirror extends Composite
 	implements Focusable, IsTextArea, HasValueChangeHandlers<String>
@@ -52,29 +53,38 @@ public class GwtCodeMirror extends Composite
 	private static final FocusImpl aFocusImpl =
 		FocusImpl.getFocusImplForWidget();
 
-	private static final NullAutoCompletionHandler NULL_AUTO_COMPLETION_HANDLER =
-		new NullAutoCompletionHandler();
+	private static final AutoCompletionHandler NO_AUTO_COMPLETION_HANDLER =
+		new AutoCompletionHandler()
+		{
+			@Override
+			public void getCompletions(String				  sText,
+									   EditorPosition		  rCaretPosition,
+									   int					  nCaretIndex,
+									   AutoCompletionCallback rCallback)
+			{
+				rCallback.completionsReady(AutoCompletionResult.emptyResult());
+			}
+		};
 
 	private static final String  ELEMENT_ID_PREFIX     = "cm-editor-";
 	private static final boolean DEFAULT_READ_ONLY     = false;
 	private static final boolean DEFAULT_LINE_NUMBERS  = true;
 	private static final boolean DEFAULT_LINE_WRAPPING = true;
 
-	/*
-		Important things to remember:
-		JavaScriptObjects can only be created in and mutated in native java script code.
-	 */
-	private static int counter = 0;
+	private static int nInstanceCounter = 0;
 
 	//~ Instance fields --------------------------------------------------------
 
-	private boolean			  bSettingValue = false;
-	private JavaScriptObject  aCodeMirror;
-	private TextMarker		  aErrorMarker  = null;
-	private CodeMirrorOptions rOptions	    = new CodeMirrorOptions();
+	private boolean bLoaded		    = false;
+	private boolean bIsSettingValue = false;
+
+	private JavaScriptObject aCodeMirror;
+	private TextMarker		 aErrorMarker = null;
+
+	private CodeMirrorOptions aOptions = new CodeMirrorOptions();
 
 	private AutoCompletionHandler rAutoCompletionHandler =
-		NULL_AUTO_COMPLETION_HANDLER;
+		NO_AUTO_COMPLETION_HANDLER;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -85,7 +95,7 @@ public class GwtCodeMirror extends Composite
 	 */
 	public GwtCodeMirror(String sMode)
 	{
-		rOptions.setMode(sMode);
+		aOptions.setMode(sMode);
 
 		initWidget(new SimplePanel());
 	}
@@ -135,7 +145,7 @@ public class GwtCodeMirror extends Composite
 	 */
 	public void clearAutoCompletionHandler()
 	{
-		setAutoCompletionHandler(NULL_AUTO_COMPLETION_HANDLER);
+		setAutoCompletionHandler(NO_AUTO_COMPLETION_HANDLER);
 	}
 
 	/***************************************
@@ -210,7 +220,7 @@ public class GwtCodeMirror extends Composite
 	public String getText()
 	{
 		return aCodeMirror != null ? getValue(aCodeMirror)
-								   : rOptions.getValue();
+								   : aOptions.getValue();
 	}
 
 	/***************************************
@@ -240,7 +250,7 @@ public class GwtCodeMirror extends Composite
 	public boolean isReadOnly()
 	{
 		return aCodeMirror != null ? isReadOnly(aCodeMirror)
-								   : rOptions.isReadOnly();
+								   : aOptions.isReadOnly();
 	}
 
 	/***************************************
@@ -271,7 +281,7 @@ public class GwtCodeMirror extends Composite
 	@Override
 	public void setCharacterWidth(int nColumns)
 	{
-		// TODO: possible in CodeMirror?
+		// unsupported
 	}
 
 	/***************************************
@@ -291,12 +301,12 @@ public class GwtCodeMirror extends Composite
 	}
 
 	/***************************************
-	 * @see com.google.gwt.user.client.ui.HasEnabled#setEnabled(boolean)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setEnabled(boolean bEnabled)
 	{
-		// TODO: Implement
+		// unsupported
 	}
 
 	/***************************************
@@ -352,7 +362,7 @@ public class GwtCodeMirror extends Composite
 		}
 		else
 		{
-			rOptions.setLineWrapping(bWrap);
+			aOptions.setLineWrapping(bWrap);
 		}
 	}
 
@@ -364,7 +374,7 @@ public class GwtCodeMirror extends Composite
 	{
 		if (aCodeMirror == null)
 		{
-			rOptions.setReadOnly(bReadOnly);
+			aOptions.setReadOnly(bReadOnly);
 		}
 		else
 		{
@@ -378,7 +388,7 @@ public class GwtCodeMirror extends Composite
 	@Override
 	public void setSelectionRange(int nStart, int nLength)
 	{
-		// TODO Add method code here
+		// unsupported
 	}
 
 	/***************************************
@@ -398,19 +408,19 @@ public class GwtCodeMirror extends Composite
 	{
 		if (aCodeMirror == null)
 		{
-			rOptions.setValue(sText);
+			aOptions.setValue(sText);
 		}
 		else
 		{
 			try
 			{
-				bSettingValue = true;
+				bIsSettingValue = true;
 				setValue(aCodeMirror, sText);
 				refresh();
 			}
 			finally
 			{
-				bSettingValue = false;
+				bIsSettingValue = false;
 			}
 		}
 	}
@@ -421,7 +431,7 @@ public class GwtCodeMirror extends Composite
 	@Override
 	public void setVisibleLength(int nColumns)
 	{
-		// TODO Add method code here
+		// unsupported
 	}
 
 	/***************************************
@@ -430,7 +440,7 @@ public class GwtCodeMirror extends Composite
 	@Override
 	public void setVisibleLines(int nRows)
 	{
-		// TODO Add method code here
+		// unsupported
 	}
 
 	/***************************************
@@ -441,11 +451,14 @@ public class GwtCodeMirror extends Composite
 	{
 		super.onLoad();
 
-		Element rElement = getElement();
-		String  sId		 = ELEMENT_ID_PREFIX + ++counter;
+		if (!bLoaded)
+		{
+			Element rElement = getElement();
+			String  sId		 = ELEMENT_ID_PREFIX + nInstanceCounter++;
 
-		rElement.setId(sId);
-		aCodeMirror = setup(this, sId, rOptions.toJavaScriptObject());
+			rElement.setId(sId);
+			aCodeMirror = setup(this, sId, aOptions.toJavaScriptObject());
+		}
 	}
 
 	/***************************************
@@ -517,8 +530,8 @@ public class GwtCodeMirror extends Composite
 	 * @param  text        The text to insert.
 	 * @param  displayText The text to display.
 	 * @param  className   The CSS class name of the item in the list.
-	 * @param  from        TODO: DOCUMENT ME!
-	 * @param  to          TODO: DOCUMENT ME!
+	 * @param  from
+	 * @param  to
 	 *
 	 * @return The JavaScriptObject that specified the given properties.
 	 */
@@ -564,7 +577,7 @@ public class GwtCodeMirror extends Composite
 	 */
 	private void fireValueChangeEvent()
 	{
-		if (!bSettingValue)
+		if (!bIsSettingValue)
 		{
 			ValueChangeEvent.fire(this, getText());
 		}
@@ -773,14 +786,14 @@ public class GwtCodeMirror extends Composite
 				viewportMargin: Infinity,
 				extraKeys: {
 					"Ctrl-Space": "autocomplete"
-	//							 function (editor) {
-	//								$wnd.CodeMirror.showHint(editor, function (editor, callback) {
-	//									var result = [];
-	//									var cursor = editor.doc.getCursor();
-	//									var index = editor.indexFromPos(cursor);
-	//									$entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
-	//								}, {async: true});
-	//							}
+	//													  function (editor) {
+	//														 $wnd.CodeMirror.showHint(editor, function (editor, callback) {
+	//															 var result = [];
+	//															 var cursor = editor.doc.getCursor();
+	//															 var index = editor.indexFromPos(cursor);
+	//															 $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
+	//														 }, {async: true});
+	//													 }
 				}
 			}
 		);
@@ -824,11 +837,11 @@ public class GwtCodeMirror extends Composite
 		//~ Static methods -----------------------------------------------------
 
 		/***************************************
-		 * TODO: DOCUMENT ME!
+		 * Add a property.
 		 *
-		 * @param javaScriptObject TODO: DOCUMENT ME!
-		 * @param property         TODO: DOCUMENT ME!
-		 * @param value            TODO: DOCUMENT ME!
+		 * @param javaScriptObject
+		 * @param property
+		 * @param value
 		 */
 		private static native void addProperty(
 			JavaScriptObject javaScriptObject,
@@ -838,11 +851,11 @@ public class GwtCodeMirror extends Composite
 		}-*/;
 
 		/***************************************
-		 * TODO: DOCUMENT ME!
+		 * Add a boolean property.
 		 *
-		 * @param javaScriptObject TODO: DOCUMENT ME!
-		 * @param property         TODO: DOCUMENT ME!
-		 * @param value            TODO: DOCUMENT ME!
+		 * @param javaScriptObject
+		 * @param property
+		 * @param value
 		 */
 		private static native void addProperty(
 			JavaScriptObject javaScriptObject,

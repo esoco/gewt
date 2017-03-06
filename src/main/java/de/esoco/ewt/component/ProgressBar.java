@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 
 /********************************************************************
@@ -56,7 +56,7 @@ public class ProgressBar extends Component
 	 */
 	public int getMaximum()
 	{
-		return (int) getBarWidget().getMaxProgress();
+		return getBarWidget().getMaximum();
 	}
 
 	/***************************************
@@ -66,7 +66,7 @@ public class ProgressBar extends Component
 	 */
 	public int getMinimum()
 	{
-		return (int) getBarWidget().getMinProgress();
+		return getBarWidget().getMinimum();
 	}
 
 	/***************************************
@@ -76,7 +76,7 @@ public class ProgressBar extends Component
 	 */
 	public int getValue()
 	{
-		return (int) getBarWidget().getProgress();
+		return getBarWidget().getProgress();
 	}
 
 	/***************************************
@@ -86,7 +86,7 @@ public class ProgressBar extends Component
 	 */
 	public void setMaximum(int nValue)
 	{
-		getBarWidget().setMaxProgress(nValue);
+		getBarWidget().setMaximum(nValue);
 	}
 
 	/***************************************
@@ -96,7 +96,7 @@ public class ProgressBar extends Component
 	 */
 	public void setMinimum(int nValue)
 	{
-		getBarWidget().setMinProgress(nValue);
+		getBarWidget().setMinimum(nValue);
 	}
 
 	/***************************************
@@ -114,9 +114,63 @@ public class ProgressBar extends Component
 	 *
 	 * @return The bar widget
 	 */
-	private GwtProgressBar getBarWidget()
+	private IsProgressBarWidget getBarWidget()
 	{
-		return (GwtProgressBar) getWidget();
+		return (IsProgressBarWidget) getWidget();
+	}
+
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * The interface of progress bar widgets
+	 *
+	 * @author eso
+	 */
+	public static interface IsProgressBarWidget extends IsWidget
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Returns the maximum.
+		 *
+		 * @return The maximum
+		 */
+		public int getMaximum();
+
+		/***************************************
+		 * Returns the minimum.
+		 *
+		 * @return The minimum
+		 */
+		public int getMinimum();
+
+		/***************************************
+		 * Returns the current progress value.
+		 *
+		 * @return The progress
+		 */
+		public int getProgress();
+
+		/***************************************
+		 * Sets the maximum.
+		 *
+		 * @param nMaximum The new maximum
+		 */
+		public void setMaximum(int nMaximum);
+
+		/***************************************
+		 * Sets the minimum.
+		 *
+		 * @param nMinimum The new minimum
+		 */
+		public void setMinimum(int nMinimum);
+
+		/***************************************
+		 * Sets the current progress value.
+		 *
+		 * @param nProgress The new progress value
+		 */
+		public void setProgress(int nProgress);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -127,7 +181,7 @@ public class ProgressBar extends Component
 	 * @author eso
 	 */
 	public static class ProgressBarWidgetFactory
-		implements WidgetFactory<Widget>
+		implements WidgetFactory<IsProgressBarWidget>
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -135,7 +189,9 @@ public class ProgressBar extends Component
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
+		public IsProgressBarWidget createWidget(
+			Component rComponent,
+			StyleData rStyle)
 		{
 			return new GwtProgressBar();
 		}

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@
  */
 package de.esoco.ewt.impl.gwt;
 
+import de.esoco.ewt.component.ProgressBar.IsProgressBarWidget;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,30 +54,20 @@ import com.google.gwt.user.client.ui.Widget;
  *     text when progress is greater than 50 percent }</li>
  * </ul>
  */
-public class GwtProgressBar extends Widget // implements ResizableWidget
+public class GwtProgressBar extends Widget implements IsProgressBarWidget
 {
 	//~ Instance fields --------------------------------------------------------
 
-	/** The bar element that displays the progress. */
 	private Element aBarElement;
-
-	/** The current progress. */
-	private double curProgress;
-
-	/** The maximum progress. */
-	private double maxProgress;
-
-	/** The minimum progress. */
-	private double minProgress;
-
-	/** A boolean that determines if the text is visible. */
-	private boolean textVisible = true;
-
-	/** The element that displays text on the page. */
 	private Element aTextElement;
 
-	/** The current text formatter. */
-	private TextFormatter textFormatter;
+	private int nProgress;
+	private int nMinimum;
+	private int nMaximum;
+
+	private boolean bShowText = true;
+
+	private TextFormatter rTextFormatter;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -84,63 +76,61 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public GwtProgressBar()
 	{
-		this(0.0, 100.0, 0.0);
+		this(0);
 	}
 
 	/***************************************
 	 * Create a progress bar with an initial progress and a default range of 0
 	 * to 100.
 	 *
-	 * @param curProgress the current progress
+	 * @param nProgress the current progress
 	 */
-	public GwtProgressBar(double curProgress)
+	public GwtProgressBar(int nProgress)
 	{
-		this(0.0, 100.0, curProgress);
+		this(0, 100, nProgress);
 	}
 
 	/***************************************
 	 * Create a progress bar within the given range.
 	 *
-	 * @param minProgress the minimum progress
-	 * @param maxProgress the maximum progress
+	 * @param nMinimum the minimum progress
+	 * @param nMaximum the maximum progress
 	 */
-	public GwtProgressBar(double minProgress, double maxProgress)
+	public GwtProgressBar(int nMinimum, int nMaximum)
 	{
-		this(minProgress, maxProgress, 0.0);
+		this(nMinimum, nMaximum, 0);
 	}
 
 	/***************************************
 	 * Create a progress bar within the given range starting at the specified
 	 * progress amount.
 	 *
-	 * @param minProgress the minimum progress
-	 * @param maxProgress the maximum progress
-	 * @param curProgress the current progress
+	 * @param nMinimum  the minimum progress
+	 * @param nMaximum  the maximum progress
+	 * @param nProgress the current progress
 	 */
-	public GwtProgressBar(double minProgress,
-						  double maxProgress,
-						  double curProgress)
+	public GwtProgressBar(int nMinimum, int nMaximum, int nProgress)
 	{
-		this(minProgress, maxProgress, curProgress, null);
+		this(nMinimum, nMaximum, nProgress, null);
 	}
 
 	/***************************************
 	 * Create a progress bar within the given range starting at the specified
 	 * progress amount.
 	 *
-	 * @param minProgress   the minimum progress
-	 * @param maxProgress   the maximum progress
-	 * @param curProgress   the current progress
+	 * @param nMinimum      the minimum progress
+	 * @param nMaximum      the maximum progress
+	 * @param nProgress     the current progress
 	 * @param textFormatter the text formatter
 	 */
-	public GwtProgressBar(double		minProgress,
-						  double		maxProgress,
-						  double		curProgress,
+	public GwtProgressBar(int			nMinimum,
+						  int			nMaximum,
+						  int			nProgress,
 						  TextFormatter textFormatter)
 	{
-		this.minProgress = minProgress;
-		this.maxProgress = maxProgress;
-		this.curProgress = curProgress;
+		this.nMinimum  = nMinimum;
+		this.nMaximum  = nMaximum;
+		this.nProgress = nProgress;
 
 		setTextFormatter(textFormatter);
 
@@ -166,29 +156,31 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 									   "gwt-ProgressBar-text-firstHalf");
 
 		// Set the current progress
-		setProgress(curProgress);
+		setProgress(nProgress);
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Get the maximum progress.
+	 * Get the maximum value.
 	 *
-	 * @return the maximum progress
+	 * @return the maximum value
 	 */
-	public double getMaxProgress()
+	@Override
+	public int getMaximum()
 	{
-		return maxProgress;
+		return nMaximum;
 	}
 
 	/***************************************
-	 * Get the minimum progress.
+	 * Get the minimum value.
 	 *
-	 * @return the minimum progress
+	 * @return the minimum value
 	 */
-	public double getMinProgress()
+	@Override
+	public int getMinimum()
 	{
-		return minProgress;
+		return nMinimum;
 	}
 
 	/***************************************
@@ -197,19 +189,17 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 *
 	 * @return the current percent complete
 	 */
-	public double getPercent()
+	public int getPercent()
 	{
-		// If we have no range
-		if (maxProgress <= minProgress)
+		int nPercent = 0;
+
+		if (nMaximum > nMinimum)
 		{
-			return 0.0;
+			nPercent = (nProgress - nMinimum) * 100 / (nMaximum - nMinimum);
+			nPercent = Math.max(0, Math.min(100, nPercent));
 		}
 
-		// Calculate the relative progress
-		double percent =
-			(curProgress - minProgress) / (maxProgress - minProgress);
-
-		return Math.max(0.0, Math.min(1.0, percent));
+		return nPercent;
 	}
 
 	/***************************************
@@ -217,9 +207,10 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 *
 	 * @return the current progress
 	 */
-	public double getProgress()
+	@Override
+	public int getProgress()
 	{
-		return curProgress;
+		return nProgress;
 	}
 
 	/***************************************
@@ -229,7 +220,7 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public TextFormatter getTextFormatter()
 	{
-		return textFormatter;
+		return rTextFormatter;
 	}
 
 	/***************************************
@@ -239,7 +230,7 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public boolean isTextVisible()
 	{
-		return textVisible;
+		return bShowText;
 	}
 
 	/***************************************
@@ -253,7 +244,7 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public void onResize(int width, int height)
 	{
-		if (textVisible)
+		if (bShowText)
 		{
 			int textWidth = aTextElement.getPropertyInt("offsetWidth");
 			int left	  = (width / 2) - (textWidth / 2);
@@ -282,12 +273,13 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 * current progress, the current progress is adjusted to be within the new
 	 * range.
 	 *
-	 * @param maxProgress the maximum progress
+	 * @param nMaximum the maximum progress
 	 */
-	public void setMaxProgress(double maxProgress)
+	@Override
+	public void setMaximum(int nMaximum)
 	{
-		this.maxProgress = maxProgress;
-		curProgress		 = Math.min(curProgress, maxProgress);
+		this.nMaximum = nMaximum;
+		nProgress     = Math.min(nProgress, nMaximum);
 
 		resetProgress();
 	}
@@ -297,12 +289,13 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 * current progress, the current progress is adjusted to be within the new
 	 * range.
 	 *
-	 * @param minProgress the minimum progress
+	 * @param nMinimum the minimum progress
 	 */
-	public void setMinProgress(double minProgress)
+	@Override
+	public void setMinimum(int nMinimum)
 	{
-		this.minProgress = minProgress;
-		curProgress		 = Math.max(curProgress, minProgress);
+		this.nMinimum = nMinimum;
+		nProgress     = Math.max(nProgress, nMinimum);
 
 		resetProgress();
 	}
@@ -310,21 +303,21 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	/***************************************
 	 * Set the current progress.
 	 *
-	 * @param curProgress the current progress
+	 * @param nProgress the current progress
 	 */
-	public void setProgress(double curProgress)
+	@Override
+	public void setProgress(int nProgress)
 	{
-		this.curProgress =
-			Math.max(minProgress, Math.min(maxProgress, curProgress));
+		this.nProgress = Math.max(nMinimum, Math.min(nMaximum, nProgress));
 
 		// Calculate percent complete
-		int percent = (int) (100 * getPercent());
+		int nPercent = getPercent();
 
-		aBarElement.getStyle().setProperty("width", percent + "%");
-		aTextElement.setPropertyString("innerHTML", generateText(curProgress));
+		aBarElement.getStyle().setProperty("width", nPercent + "%");
+		aTextElement.setPropertyString("innerHTML", generateText(nPercent));
 
 		// Set the style depending on the size of the bar
-		if (percent < 50)
+		if (nPercent < 50)
 		{
 			aTextElement.setPropertyString("className",
 										   "gwt-ProgressBar-text gwt-ProgressBar-text-firstHalf");
@@ -346,7 +339,7 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public void setTextFormatter(TextFormatter textFormatter)
 	{
-		this.textFormatter = textFormatter;
+		this.rTextFormatter = textFormatter;
 	}
 
 	/***************************************
@@ -356,9 +349,9 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 */
 	public void setTextVisible(boolean isVisible)
 	{
-		this.textVisible = isVisible;
+		this.bShowText = isVisible;
 
-		if (this.textVisible)
+		if (this.bShowText)
 		{
 			aTextElement.getStyle().setProperty("display", "");
 			redraw();
@@ -374,19 +367,19 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 	 * function to change the default progress percent to a more informative
 	 * message, such as the number of kilobytes downloaded.
 	 *
-	 * @param  curProgress the current progress
+	 * @param  nPercent curProgress the current progress
 	 *
 	 * @return the text to display in the progress bar
 	 */
-	protected String generateText(double curProgress)
+	protected String generateText(int nPercent)
 	{
-		if (textFormatter != null)
+		if (rTextFormatter != null)
 		{
-			return textFormatter.getText(this, curProgress);
+			return rTextFormatter.getText(this, nPercent);
 		}
 		else
 		{
-			return (int) (100 * getPercent()) + "%";
+			return nPercent + "%";
 		}
 	}
 
@@ -440,12 +433,12 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 		setProgress(getProgress());
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
+	//~ Inner Interfaces -------------------------------------------------------
 
 	/********************************************************************
 	 * A formatter used to format the text displayed in the progress bar widget.
 	 */
-	public static abstract class TextFormatter
+	public static interface TextFormatter
 	{
 		//~ Methods ------------------------------------------------------------
 
@@ -456,13 +449,11 @@ public class GwtProgressBar extends Widget // implements ResizableWidget
 		 * <p>Override this method to change the text displayed within the
 		 * ProgressBar.</p>
 		 *
-		 * @param  bar         the progress bar
-		 * @param  curProgress the current progress
+		 * @param  rProgressBar the progress bar
+		 * @param  nProgress    the current progress
 		 *
 		 * @return the text to display in the progress bar
 		 */
-		protected abstract String getText(
-			GwtProgressBar bar,
-			double		   curProgress);
+		public String getText(GwtProgressBar rProgressBar, int nProgress);
 	}
 }

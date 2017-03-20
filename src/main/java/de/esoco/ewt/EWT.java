@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -245,6 +245,24 @@ public class EWT
 		}
 
 		return aWidgetFactories.get(rComponent.getClass());
+	}
+
+	/***************************************
+	 * Measures and logs the time of a profiled execution.
+	 *
+	 * @param sInfo  An info string describing the profiling
+	 * @param sName  The name of the profiled context
+	 * @param nStart The starting time of the measuring in milliseconds
+	 */
+	public static void logTime(String sInfo, String sName, long nStart)
+	{
+		long t = System.currentTimeMillis() - nStart;
+
+		if (t > 50)
+		{
+			GWT.log(t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 +
+					": " + sInfo + " " + sName);
+		}
 	}
 
 	/***************************************

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public abstract class Container extends Component
 
 	private List<Component> aComponents = new ArrayList<Component>();
 
-	private List<Component> aComponentList =
+	private List<Component> aImmutableComponentList =
 		Collections.unmodifiableList(aComponents);
 
 	//~ Methods ----------------------------------------------------------------
@@ -95,7 +95,7 @@ public abstract class Container extends Component
 	 */
 	public final List<Component> getComponents()
 	{
-		return aComponentList;
+		return aImmutableComponentList;
 	}
 
 	/***************************************
@@ -170,6 +170,25 @@ public abstract class Container extends Component
 	{
 		rLayout.removeWidget(rHasWidgets, rComponent.getWidget());
 		aComponents.remove(rComponent);
+	}
+
+	/***************************************
+	 * Sets the enabled state of all child components. This is done recursively,
+	 * i.e. the method will be invoked on all child containers.
+	 *
+	 * @param bEnable The new enabled state
+	 */
+	public void setChildrenEnabled(boolean bEnable)
+	{
+		for (Component rChild : aComponents)
+		{
+			rChild.setEnabled(bEnable);
+
+			if (rChild instanceof Container)
+			{
+				((Container) rChild).setChildrenEnabled(bEnable);
+			}
+		}
 	}
 
 	/***************************************

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,17 +35,15 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.Widget;
-
-import static com.google.gwt.user.client.ui.HasVerticalAlignment.ALIGN_MIDDLE;
 
 
 /********************************************************************
@@ -60,8 +58,8 @@ public class GwtTagField extends Composite
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private final HorizontalPanel aMainPanel;
-	private final SuggestBox	  aTagInput;
+	private final FlowPanel  aMainPanel;
+	private final SuggestBox aTagInput;
 
 	private Set<String> aDeletedTags;
 
@@ -72,7 +70,7 @@ public class GwtTagField extends Composite
 	 */
 	public GwtTagField()
 	{
-		aMainPanel = new HorizontalPanel();
+		aMainPanel = new FlowPanel();
 		aTagInput  = new SuggestBox(new MultiWordSuggestOracle());
 
 		initWidget(aMainPanel);
@@ -86,8 +84,6 @@ public class GwtTagField extends Composite
 		aTagInput.setStylePrimaryName(EWT.CSS.ewtTagInput());
 
 		aMainPanel.add(aTagInput);
-		aMainPanel.setCellVerticalAlignment(aTagInput, ALIGN_MIDDLE);
-		aMainPanel.setCellWidth(aTagInput, "100%");
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -102,7 +98,6 @@ public class GwtTagField extends Composite
 		TagDisplay aTagDisplay = new TagDisplay(sTag);
 
 		aMainPanel.insert(aTagDisplay, aMainPanel.getWidgetCount() - 1);
-		aMainPanel.setCellVerticalAlignment(aTagDisplay, ALIGN_MIDDLE);
 	}
 
 	/***************************************

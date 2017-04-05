@@ -1095,7 +1095,7 @@ public abstract class Component implements HasId<String>
 
 		if (sWebAdditionalStyles != null)
 		{
-			rAdditionalStyles = sWebAdditionalStyles.split(" ");
+			rAdditionalStyles = sWebAdditionalStyles.split("\\s+");
 
 			for (String sStyle : rAdditionalStyles)
 			{

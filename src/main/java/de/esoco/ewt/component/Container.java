@@ -135,8 +135,8 @@ public abstract class Container extends Component
 		Component rComponent,
 		StyleData rStyleData)
 	{
-		rComponent.applyStyle(rStyleData);
 		addWidget(rHasWidgets, rComponent.getWidget(), rStyleData);
+		rComponent.applyStyle(rStyleData);
 
 		if (nNewComponentPosition >= 0)
 		{

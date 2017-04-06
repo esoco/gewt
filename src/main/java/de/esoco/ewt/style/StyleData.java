@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -167,17 +168,24 @@ public class StyleData extends AbstractStringProperties
 
 		if (sCurrentValue.length() > 0)
 		{
-			String[] rNewValues = sValue.split(sSeparator);
+			Set<String> aCurrentValues = new LinkedHashSet<>(5);
 
-			sValue = sCurrentValue;
-
-			for (String sNewValue : rNewValues)
+			for (String s : sCurrentValue.split(sSeparator))
 			{
-				if (sValue.indexOf(sNewValue) == -1)
+				aCurrentValues.add(s);
+			}
+
+			StringBuilder aResult = new StringBuilder(sCurrentValue);
+
+			for (String sNewValue : sValue.split(sSeparator))
+			{
+				if (!aCurrentValues.contains(sNewValue))
 				{
-					sValue += sSeparator + sNewValue;
+					aResult.append(sSeparator).append(sNewValue);
 				}
 			}
+
+			sValue = aResult.toString();
 		}
 
 		return set(rName, sValue);

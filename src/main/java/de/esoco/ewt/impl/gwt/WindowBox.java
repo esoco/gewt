@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 3.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-3.0
+//	  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -494,8 +494,8 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 
 	/***************************************
 	 * Sets the minimum height to which this widget can be resized by the user,
-	 * if resizing is enabled. If the value is invalid, it is reset to {@link
-	 * #MIN_WIDTH}
+	 * if resizing is enabled. If the value is invalid, it is reset to
+	 * MIN_WIDTH.
 	 *
 	 * @param minHeight A positive int value
 	 */
@@ -522,8 +522,8 @@ public class WindowBox extends DialogBox implements HasOpenHandlers<WindowBox>
 
 	/***************************************
 	 * Sets the minimum width to which this widget can be resized by the user,
-	 * if resizing is enabled. If the value is invalid, it is reset to {@link
-	 * #MIN_WIDTH}
+	 * if resizing is enabled. If the value is invalid, it is reset to
+	 * MIN_WIDTH.
 	 *
 	 * @param minWidth A positive int value
 	 */

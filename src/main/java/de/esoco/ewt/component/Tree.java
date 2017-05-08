@@ -161,7 +161,7 @@ public class Tree extends Control
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see SelectionHandler#onSelection(SelectionEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onSelection(SelectionEvent<TreeItem> rEvent)
@@ -171,8 +171,6 @@ public class Tree extends Control
 
 		/***************************************
 		 * {@inheritDoc}
-		 *
-		 * @return
 		 */
 		@Override
 		protected HandlerRegistration initEventDispatching(

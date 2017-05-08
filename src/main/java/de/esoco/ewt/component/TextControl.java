@@ -328,7 +328,7 @@ public abstract class TextControl extends Control implements TextAttribute
 		 * Overridden to send {@link EventType#POINTER_CLICKED} instead of
 		 * ACTION.
 		 *
-		 * @see ComponentEventDispatcher#onClick(ClickEvent)
+		 * @param rEvent The click event
 		 */
 		@Override
 		public void onClick(ClickEvent rEvent)
@@ -339,7 +339,7 @@ public abstract class TextControl extends Control implements TextAttribute
 		/***************************************
 		 * Overridden to do nothing.
 		 *
-		 * @see ComponentEventDispatcher#onDoubleClick(DoubleClickEvent)
+		 * @param rEvent The event
 		 */
 		@Override
 		public void onDoubleClick(DoubleClickEvent rEvent)

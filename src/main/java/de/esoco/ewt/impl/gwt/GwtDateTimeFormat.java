@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package de.esoco.ewt.impl.gwt;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.DATE_FULL;
 import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.DATE_LONG;
@@ -43,51 +44,51 @@ public class GwtDateTimeFormat implements ValueFormat
 {
 	//~ Static fields/initializers ---------------------------------------------
 
-	/** {@link DateTimeFormat#getShortDateTimeFormat()} */
+	/** {@link PredefinedFormat#DATE_TIME_SHORT} */
 	public static final ValueFormat SHORT_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_SHORT));
 
-	/** {@link DateTimeFormat#getShortDateFormat()} */
+	/** {@link PredefinedFormat#DATE_SHORT} */
 	public static final ValueFormat SHORT_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_SHORT));
 
-	/** {@link DateTimeFormat#getShortTimeFormat()} */
+	/** {@link PredefinedFormat#TIME_SHORT} */
 	public static final ValueFormat SHORT_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_SHORT));
 
-	/** {@link DateTimeFormat#getMediumDateTimeFormat()} */
+	/** {@link PredefinedFormat#DATE_TIME_MEDIUM} */
 	public static final ValueFormat MEDIUM_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_MEDIUM));
 
-	/** {@link DateTimeFormat#getMediumDateFormat()} */
+	/** {@link PredefinedFormat#DATE_MEDIUM} */
 	public static final ValueFormat MEDIUM_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_MEDIUM));
 
-	/** {@link DateTimeFormat#getMediumTimeFormat()} */
+	/** {@link PredefinedFormat#TIME_MEDIUM} */
 	public static final ValueFormat MEDIUM_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_MEDIUM));
 
-	/** {@link DateTimeFormat#getLongDateTimeFormat()} */
+	/** {@link PredefinedFormat#DATE_TIME_LONG} */
 	public static final ValueFormat LONG_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_LONG));
 
-	/** {@link DateTimeFormat#getLongDateFormat()} */
+	/** {@link PredefinedFormat#DATE_LONG} */
 	public static final ValueFormat LONG_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_LONG));
 
-	/** {@link DateTimeFormat#getLongTimeFormat()} */
+	/** {@link PredefinedFormat#TIME_LONG} */
 	public static final ValueFormat LONG_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_LONG));
 
-	/** {@link DateTimeFormat#getFullDateTimeFormat()} */
+	/** {@link PredefinedFormat#DATE_TIME_FULL} */
 	public static final ValueFormat FULL_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_FULL));
 
-	/** {@link DateTimeFormat#getFullDateFormat()} */
+	/** {@link PredefinedFormat#DATE_FULL} */
 	public static final ValueFormat FULL_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_FULL));
 
-	/** {@link DateTimeFormat#getFullTimeFormat()} */
+	/** {@link PredefinedFormat#TIME_FULL} */
 	public static final ValueFormat FULL_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_FULL));
 

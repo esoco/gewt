@@ -359,7 +359,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see ChangeHandler#onChange(ChangeEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onChange(ChangeEvent rEvent)
@@ -368,7 +368,7 @@ public abstract class ListControl extends Control implements SingleSelection,
 		}
 
 		/***************************************
-		 * @see ComponentEventDispatcher#onClick(ClickEvent)
+		 * {@inheritDoc}
 		 */
 		@Override
 		public void onClick(ClickEvent rEvent)

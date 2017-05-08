@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
  *         Research Group, Date: 18/03/2014
- * @link   <a href="https://github.com/protegeproject/codemirror-gwt">https://github.com/protegeproject/codemirror-gwt</a>
+ * @see    "https://github.com/protegeproject/codemirror-gwt"
  */
 public class GwtCodeMirror extends Composite
 	implements Focusable, IsTextArea, HasValueChangeHandlers<String>
@@ -786,14 +786,14 @@ public class GwtCodeMirror extends Composite
 				viewportMargin: Infinity,
 				extraKeys: {
 					"Ctrl-Space": "autocomplete"
-	//													  function (editor) {
-	//														 $wnd.CodeMirror.showHint(editor, function (editor, callback) {
-	//															 var result = [];
-	//															 var cursor = editor.doc.getCursor();
-	//															 var index = editor.indexFromPos(cursor);
-	//															 $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
-	//														 }, {async: true});
-	//													 }
+	//														function (editor) {
+	//														   $wnd.CodeMirror.showHint(editor, function (editor, callback) {
+	//															   var result = [];
+	//															   var cursor = editor.doc.getCursor();
+	//															   var index = editor.indexFromPos(cursor);
+	//															   $entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor.line, cursor.ch, index, result, callback));
+	//														   }, {async: true});
+	//													   }
 				}
 			}
 		);

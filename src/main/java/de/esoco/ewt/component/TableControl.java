@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -250,7 +250,7 @@ public abstract class TableControl extends Control implements SingleSelection
 		 * instead of the default {@link EventType#ACTION} because the latter is
 		 * generated directly by {@link GwtTable}.
 		 *
-		 * @see ComponentEventDispatcher#onClick(ClickEvent)
+		 * @param rEvent The click event
 		 */
 		@Override
 		public void onClick(ClickEvent rEvent)

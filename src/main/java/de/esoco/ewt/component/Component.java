@@ -1210,7 +1210,7 @@ public abstract class Component implements HasId<String>
 		}
 
 		/***************************************
-		 * @see MouseMoveHandler#onMouseMove(Widget, int, int)
+		 * @see MouseMoveHandler#onMouseMove(MouseMoveEvent)
 		 */
 		@Override
 		public void onMouseMove(MouseMoveEvent rEvent)
@@ -1397,9 +1397,9 @@ public abstract class Component implements HasId<String>
 
 		/***************************************
 		 * This method performs the setup for the dispatching of a certain event
-		 * type. It also invokes {@link #initEventDispatching(Widget)} which
-		 * subclasses may implement to perform additional event dispatch
-		 * initializations-
+		 * type. It also invokes {@link #initEventDispatching(Widget,
+		 * EventType)} which subclasses may implement to perform additional
+		 * event dispatch initializations-
 		 *
 		 * @param rWidget    The widget to initialize the dispatching for
 		 * @param eEventType The event type

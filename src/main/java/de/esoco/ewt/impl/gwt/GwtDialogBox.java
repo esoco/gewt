@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class GwtDialogBox extends DialogBox implements IsChildViewWidget
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * {@inheritDoc}
+	 * @see DialogBox#DialogBox(boolean, boolean)
 	 */
 	public GwtDialogBox(boolean bAutoHide, boolean bModal)
 	{

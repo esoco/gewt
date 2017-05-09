@@ -53,6 +53,17 @@ artifacts {
     archives javadocJar
 }
 
+allprojects {
+	tasks.withType(Javadoc) {
+		failOnError = false
+		options.addBooleanOption('quiet', true)
+		
+		if (JavaVersion.current().isJava8Compatible()) {
+			options.addBooleanOption('Xdoclint:none', true)	
+		}
+	}
+}
+
 // ----------- Bintray Release -----------
 
 buildscript {

@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 3.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-3.0
+//	  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,6 @@
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
-
-import de.esoco.ewt.UserInterfaceContext;
 
 import com.google.gwt.resources.client.ImageResource;
 
@@ -32,6 +30,8 @@ import com.google.gwt.resources.client.ImageResource;
 public class ImageRef implements Image
 {
 	//~ Instance fields --------------------------------------------------------
+
+	private Object rImageDefinition;
 
 	private com.google.gwt.user.client.ui.Image rGwtImage;
 
@@ -49,6 +49,8 @@ public class ImageRef implements Image
 	 */
 	public ImageRef(Object rImageDefinition)
 	{
+		this.rImageDefinition = rImageDefinition;
+
 		if (rImageDefinition instanceof ImageResource)
 		{
 			rGwtImage =
@@ -93,6 +95,16 @@ public class ImageRef implements Image
 	public int getHeight()
 	{
 		return rGwtImage.getHeight();
+	}
+
+	/***************************************
+	 * Returns the original input value this instance has been created from.
+	 *
+	 * @return The image definition value
+	 */
+	public Object getImageDefinition()
+	{
+		return rImageDefinition;
 	}
 
 	/***************************************

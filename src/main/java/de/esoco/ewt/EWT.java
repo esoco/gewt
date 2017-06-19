@@ -70,7 +70,6 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
@@ -245,6 +244,31 @@ public class EWT
 		}
 
 		return aWidgetFactories.get(rComponent.getClass());
+	}
+
+	/***************************************
+	 * A simplified GWT debug logging method with a variable list of message
+	 * parameters. Simplified because the only formatting placeholder that is
+	 * considered in the template is '%s' and all parameters will be converted
+	 * by means of their toString() method. There's also no error handling
+	 * regarding the message format and parameter count as this method is only
+	 * intended for debugging purposes.
+	 *
+	 * @param sTemplate The message template string
+	 * @param rParams   The message parameters
+	 */
+	public static void log(String sTemplate, Object... rParams)
+	{
+		String[]	  aLiterals = sTemplate.split("%s", -1);
+		StringBuilder aMessage  = new StringBuilder(aLiterals[0]);
+
+		for (int i = 1; i < aLiterals.length; i++)
+		{
+			aMessage.append(rParams[i - 1]);
+			aMessage.append(aLiterals[i]);
+		}
+
+		GWT.log(aMessage.toString());
 	}
 
 	/***************************************

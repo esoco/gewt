@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.layout.DockLayout;
 import de.esoco.ewt.layout.GenericLayout;
-import de.esoco.ewt.style.Alignment;
 import de.esoco.ewt.style.StyleData;
 
+import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.Layout;
 
 import com.google.gwt.user.client.ui.HasWidgets;

@@ -17,6 +17,7 @@
 package de.esoco.ewt.style;
 
 import de.esoco.lib.property.AbstractStringProperties;
+import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.HasProperties;
 import de.esoco.lib.property.PropertyName;
 

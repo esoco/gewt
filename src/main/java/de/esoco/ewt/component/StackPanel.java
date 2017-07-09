@@ -24,7 +24,7 @@ import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -74,7 +74,7 @@ public class StackPanel extends SwitchPanel
 	public StackPanel(Container rParent, StyleData rStyle)
 	{
 		super(EWT.getLayoutFactory()
-			  .createLayout(rParent, rStyle, Layout.STACK));
+			  .createLayout(rParent, rStyle, LayoutType.STACK));
 	}
 
 	//~ Methods ----------------------------------------------------------------

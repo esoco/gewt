@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import de.esoco.ewt.component.TabPanel.TabPanelLayout;
 import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.Alignment;
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
@@ -45,8 +45,8 @@ public class DefaultLayoutFactory implements LayoutFactory
 	//~ Static methods ---------------------------------------------------------
 
 	/***************************************
-	 * Allows to set the style names for the layouts {@link Layout#GRID_ROW} and
-	 * {@link Layout#GRID_COLUMN}.
+	 * Allows to set the style names for the layouts {@link LayoutType#GRID_ROW}
+	 * and {@link LayoutType#GRID_COLUMN}.
 	 *
 	 * @param sRowStyleName    The new grid row style name
 	 * @param sColumnStyleName The new grid column style name
@@ -65,9 +65,9 @@ public class DefaultLayoutFactory implements LayoutFactory
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GenericLayout createLayout(Container rParentContainer,
-									  StyleData rContainerStyle,
-									  Layout    eLayout)
+	public GenericLayout createLayout(Container  rParentContainer,
+									  StyleData  rContainerStyle,
+									  LayoutType eLayout)
 	{
 		GenericLayout aLayout;
 
@@ -117,6 +117,7 @@ public class DefaultLayoutFactory implements LayoutFactory
 			case GRID:
 			case CARD:
 			case LIST_ITEM:
+			case CSS_GRID:
 				aLayout = new FlowLayout();
 				break;
 

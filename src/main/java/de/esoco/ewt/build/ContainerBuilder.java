@@ -49,7 +49,7 @@ import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import java.util.Date;
 
@@ -300,7 +300,7 @@ public class ContainerBuilder<C extends Container>
 	 *
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<Panel> addPanel(StyleData rStyle, Layout eLayout)
+	public ContainerBuilder<Panel> addPanel(StyleData rStyle, LayoutType eLayout)
 	{
 		GenericLayout aLayout =
 			EWT.getLayoutFactory().createLayout(rContainer, rStyle, eLayout);

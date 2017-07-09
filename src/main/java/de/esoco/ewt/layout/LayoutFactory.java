@@ -19,7 +19,7 @@ package de.esoco.ewt.layout;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 
 /********************************************************************
@@ -49,5 +49,5 @@ public interface LayoutFactory
 	 */
 	public GenericLayout createLayout(Container rParentContainer,
 									  StyleData rContainerStyle,
-									  Layout    eLayout);
+									  LayoutType    eLayout);
 }

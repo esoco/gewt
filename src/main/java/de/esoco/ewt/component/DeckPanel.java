@@ -19,7 +19,7 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -49,7 +49,7 @@ public class DeckPanel extends SwitchPanel
 	public DeckPanel(Container rParent, StyleData rStyle)
 	{
 		super(EWT.getLayoutFactory()
-			  .createLayout(rParent, rStyle, Layout.DECK));
+			  .createLayout(rParent, rStyle, LayoutType.DECK));
 	}
 
 	//~ Methods ----------------------------------------------------------------

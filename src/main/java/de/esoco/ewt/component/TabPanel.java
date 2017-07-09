@@ -22,7 +22,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtTabPanel;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,7 +62,7 @@ public class TabPanel extends SwitchPanel
 	public TabPanel(Container rParent, StyleData rStyle)
 	{
 		super(EWT.getLayoutFactory()
-			  .createLayout(rParent, rStyle, Layout.TABS));
+			  .createLayout(rParent, rStyle, LayoutType.TABS));
 	}
 
 	//~ Methods ----------------------------------------------------------------

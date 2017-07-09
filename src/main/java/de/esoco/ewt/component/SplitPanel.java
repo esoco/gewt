@@ -22,7 +22,7 @@ import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.Alignment;
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -51,7 +51,7 @@ public class SplitPanel extends FixedLayoutPanel
 	public SplitPanel(Container rParent, StyleData rStyle)
 	{
 		super(EWT.getLayoutFactory()
-			  .createLayout(rParent, rStyle, Layout.SPLIT));
+			  .createLayout(rParent, rStyle, LayoutType.SPLIT));
 	}
 
 	//~ Methods ----------------------------------------------------------------

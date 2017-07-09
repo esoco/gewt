@@ -19,7 +19,7 @@ package de.esoco.ewt.layout;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
-import de.esoco.lib.property.Layout;
+import de.esoco.lib.property.LayoutType;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -37,7 +37,7 @@ public class ContentLayout extends GenericLayout
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private final Layout eLayoutType;
+	private final LayoutType eLayoutType;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -46,7 +46,7 @@ public class ContentLayout extends GenericLayout
 	 *
 	 * @param eLayoutType The type of this content layout
 	 */
-	public ContentLayout(Layout eLayoutType)
+	public ContentLayout(LayoutType eLayoutType)
 	{
 		this.eLayoutType = eLayoutType;
 	}
@@ -69,7 +69,7 @@ public class ContentLayout extends GenericLayout
 	 *
 	 * @return The layout value
 	 */
-	public final Layout getLayoutType()
+	public final LayoutType getLayoutType()
 	{
 		return eLayoutType;
 	}

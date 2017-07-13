@@ -27,6 +27,9 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.LayoutType;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
+
 import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
 
@@ -117,8 +120,23 @@ public class DefaultLayoutFactory implements LayoutFactory
 			case GRID:
 			case CARD:
 			case LIST_ITEM:
-			case CSS_GRID:
 				aLayout = new FlowLayout();
+				break;
+
+			case CSS_GRID:
+				aLayout =
+					new GenericLayout()
+					{
+						@Override
+						public HasWidgets createLayoutContainer(
+							Container rContainer,
+							StyleData rStyle)
+						{
+							return new CssGridPanel();
+						}
+					};
+
+
 				break;
 
 			case LIST:
@@ -149,5 +167,27 @@ public class DefaultLayoutFactory implements LayoutFactory
 		}
 
 		return aLayout;
+	}
+
+	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * Panel for CSS grids.
+	 *
+	 * @author eso
+	 */
+	static class CssGridPanel extends FlowPanel
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * @see com.google.gwt.user.client.ui.Widget#onAttach()
+		 */
+		@Override
+		protected void onAttach()
+		{
+			super.onAttach();
+			addStyleName("ewt-CssGridPanel");
+		}
 	}
 }

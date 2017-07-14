@@ -21,7 +21,6 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.Color;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
@@ -32,6 +31,7 @@ import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.Alignment;
+import de.esoco.lib.property.Color;
 import de.esoco.lib.property.HasId;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
@@ -296,12 +296,12 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @return The background color
 	 */
-	public int getBackgroundColor()
+	public Color getBackgroundColor()
 	{
 		String sColor =
 			getWidget().getElement().getStyle().getBackgroundColor();
 
-		return sColor != null ? Color.valueOf(sColor) : 0;
+		return sColor != null ? Color.valueOf(sColor) : Color.WHITE;
 	}
 
 	/***************************************
@@ -330,11 +330,11 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @return The foreground color
 	 */
-	public int getForegroundColor()
+	public Color getForegroundColor()
 	{
 		String sColor = getWidget().getElement().getStyle().getColor();
 
-		return sColor != null ? Color.valueOf(sColor) : 0;
+		return sColor != null ? Color.valueOf(sColor) : Color.BLACK;
 	}
 
 	/***************************************
@@ -544,12 +544,11 @@ public abstract class Component implements HasId<String>
 	/***************************************
 	 * Sets the background color of this component.
 	 *
-	 * @param nColor The new background color
+	 * @param rColor The new background color
 	 */
-	public void setBackgroundColor(int nColor)
+	public void setBackgroundColor(Color rColor)
 	{
-		getWidget().getElement().getStyle()
-				   .setBackgroundColor(Color.toHtml(nColor));
+		getWidget().getElement().getStyle().setBackgroundColor(rColor.toHtml());
 	}
 
 	/***************************************
@@ -571,11 +570,11 @@ public abstract class Component implements HasId<String>
 	/***************************************
 	 * Sets the foreground color of this component.
 	 *
-	 * @param nColor The new foreground color
+	 * @param rColor The new foreground color
 	 */
-	public void setForegroundColor(int nColor)
+	public void setForegroundColor(Color rColor)
 	{
-		getWidget().getElement().getStyle().setColor(Color.toHtml(nColor));
+		getWidget().getElement().getStyle().setColor(rColor.toHtml());
 	}
 
 	/***************************************

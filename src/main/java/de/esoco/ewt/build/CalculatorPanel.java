@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.KeyCode;
-import de.esoco.ewt.graphics.Color;
 import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.FillLayout;
 import de.esoco.ewt.layout.GridLayout;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
+import de.esoco.lib.property.Color;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -190,15 +190,15 @@ public class CalculatorPanel implements EWTEventHandler
 			rBuilder.addPanel(AlignedPosition.TOP,
 							  new GridLayout(1, false, nGap));
 
-		addButtons(rBuilder, CONTROL_BUTTONS, Color.toRGB(Color.RED));
+		addButtons(rBuilder, CONTROL_BUTTONS, Color.RED.toRGB());
 		rBuilder = rBuilder.getParent();
 
 		rBuilder =
 			rBuilder.addPanel(AlignedPosition.CENTER,
 							  new GridLayout(4, false, nGap));
-		addButtons(rBuilder, MEMORY_BUTTONS, Color.toRGB(Color.RED));
+		addButtons(rBuilder, MEMORY_BUTTONS, Color.RED.toRGB());
 		addButtons(rBuilder, DIGIT_BUTTONS, Integer.MIN_VALUE);
-		addButtons(rBuilder, FUNCTION_BUTTONS, Color.toRGB(Color.BLUE));
+		addButtons(rBuilder, FUNCTION_BUTTONS, Color.BLUE.toRGB());
 
 		update(true);
 	}

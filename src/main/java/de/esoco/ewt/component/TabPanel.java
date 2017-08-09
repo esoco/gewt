@@ -96,11 +96,11 @@ public class TabPanel extends SwitchPanel
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addPage(Component rGroupComponent,
+		public void addPage(Component rTabComponent,
 							String    sGroupTitle,
 							boolean   bCloseable)
 		{
-			Widget rTabContent = rGroupComponent.getWidget();
+			Widget rTabContent = rTabComponent.getWidget();
 
 			sGroupTitle = rContext.expandResource(sGroupTitle);
 

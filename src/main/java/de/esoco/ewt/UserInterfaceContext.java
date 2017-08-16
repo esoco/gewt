@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -282,21 +282,25 @@ public class UserInterfaceContext
 			{
 				if (sImage.charAt(1) == Image.IMAGE_PREFIX_SEPARATOR)
 				{
-					String sImageName = sImage.substring(2);
+					String sImageUri = sImage.substring(2);
 
 					if (sImage.charAt(0) == Image.IMAGE_ICON_PREFIX)
 					{
-						rImage = new Icon(sImageName);
+						rImage = new Icon(sImageUri);
 					}
 					else if (sImage.charAt(0) == Image.IMAGE_DATA_PREFIX)
 					{
-						rImage = new ImageRef(sImageName);
+						rImage = new ImageRef(sImageUri);
 					}
 					else if (sImage.charAt(0) == Image.IMAGE_FILE_PREFIX)
 					{
-						rImage =
-							new ImageRef(GWT.getModuleBaseForStaticFiles() +
-										 sImageName);
+						if (!sImageUri.startsWith("http"))
+						{
+							sImageUri =
+								GWT.getModuleBaseForStaticFiles() + sImageUri;
+						}
+
+						rImage = new ImageRef(sImageUri);
 					}
 				}
 				else

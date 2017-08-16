@@ -548,7 +548,12 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setBackgroundColor(Color rColor)
 	{
-		getWidget().getElement().getStyle().setBackgroundColor(rColor.toHtml());
+		if (rColor != null)
+		{
+			getWidget().getElement()
+					   .getStyle()
+					   .setBackgroundColor(rColor.toHtml());
+		}
 	}
 
 	/***************************************
@@ -574,7 +579,10 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setForegroundColor(Color rColor)
 	{
-		getWidget().getElement().getStyle().setColor(rColor.toHtml());
+		if (rColor != null)
+		{
+			getWidget().getElement().getStyle().setColor(rColor.toHtml());
+		}
 	}
 
 	/***************************************

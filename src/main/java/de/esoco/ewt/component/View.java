@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.style.ViewStyle;
 
+import de.esoco.lib.property.TitleAttribute;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -28,7 +30,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  *
  * @author eso
  */
-public abstract class View extends Container
+public abstract class View extends Container implements TitleAttribute
 {
 	//~ Instance fields --------------------------------------------------------
 
@@ -83,6 +85,7 @@ public abstract class View extends Container
 	 *
 	 * @return The title string
 	 */
+	@Override
 	public String getTitle()
 	{
 		return Window.getTitle();
@@ -111,6 +114,7 @@ public abstract class View extends Container
 	 *
 	 * @param sTitle The new title
 	 */
+	@Override
 	public void setTitle(String sTitle)
 	{
 		Window.setTitle(sTitle);

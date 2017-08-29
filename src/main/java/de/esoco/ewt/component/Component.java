@@ -26,6 +26,7 @@ import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
 import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.impl.gwt.WidgetStyleHandler;
 import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
@@ -114,6 +115,8 @@ public abstract class Component implements HasId<String>
 		"~#" + COMPOUND_PROPERTY_CHARS;
 
 	private static int nNextId = 1;
+
+	private static WidgetStyleHandler rWidgetStyleHandler = null;
 
 	//~ Instance fields --------------------------------------------------------
 
@@ -205,6 +208,18 @@ public abstract class Component implements HasId<String>
 		return rLabelWidget.getElement().getString();
 	}
 
+	/***************************************
+	 * Registers a global handler that will be invoked to apply component styles
+	 * to widgets. This can be used by extensions of the base GEWT
+	 * implementation to be notified of style changes.
+	 *
+	 * @param rHandler The widget style handler
+	 */
+	public static void registerWidgetStyleHandler(WidgetStyleHandler rHandler)
+	{
+		rWidgetStyleHandler = rHandler;
+	}
+
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
@@ -258,6 +273,11 @@ public abstract class Component implements HasId<String>
 		applyStyleNames(rStyle);
 		applyAlignments(rStyle);
 		applyCssStyles(rStyle);
+
+		if (rWidgetStyleHandler != null)
+		{
+			rWidgetStyleHandler.applyWidgetStyle(rIsWidget, rNewStyle);
+		}
 	}
 
 	/***************************************

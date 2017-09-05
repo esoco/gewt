@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.View;
-import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.GewtCss;
 import de.esoco.ewt.impl.gwt.GewtResources;
 import de.esoco.ewt.style.AlignedPosition;
@@ -390,8 +390,8 @@ public class MessageBox implements ClickHandler
 	{
 		aDialog =
 			EWT.getChildViewFactory()
-			   .createDialogWidget(rParent,
-								   ViewStyle.MODAL.withFlags(Flag.BOTTOM));
+			   .createChildViewWidget(rParent,
+									  ViewStyle.MODAL.withFlags(Flag.BOTTOM));
 
 		sTitle   = EWT.expandResource(rParent, sTitle);
 		sMessage = EWT.expandResource(rParent, sMessage);

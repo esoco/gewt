@@ -19,6 +19,7 @@ package de.esoco.ewt.impl.gwt;
 import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.DialogBox;
 
 
 /********************************************************************
@@ -26,8 +27,7 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
  *
  * @author eso
  */
-public class GwtChildView extends DecoratedPopupPanel
-	implements IsChildViewWidget
+public class GwtChildView extends DialogBox implements IsChildViewWidget
 {
 	//~ Constructors -----------------------------------------------------------
 
@@ -56,6 +56,8 @@ public class GwtChildView extends DecoratedPopupPanel
 	@Override
 	public void setViewTitle(String sTitle)
 	{
-		// ignored, unsupported by implementation
+		getCaption().asWidget().setVisible(sTitle != null);
+
+		setText(sTitle != null ? sTitle : "");
 	}
 }

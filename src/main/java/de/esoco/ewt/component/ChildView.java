@@ -19,7 +19,6 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtChildView;
-import de.esoco.ewt.impl.gwt.GwtDialogBox;
 import de.esoco.ewt.style.ViewStyle;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -181,24 +180,6 @@ public class ChildView extends View
 			boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
 
 			return new GwtChildView(bAutoHide, bModal);
-		}
-
-		/***************************************
-		 * Creates a GWT dialog implementation.
-		 *
-		 * @param  rParent The parent of the new child view
-		 * @param  rStyle  The view style
-		 *
-		 * @return The dialog widget
-		 */
-		public IsChildViewWidget createDialogWidget(
-			View	  rParent,
-			ViewStyle rStyle)
-		{
-			boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
-			boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
-
-			return new GwtDialogBox(bAutoHide, bModal);
 		}
 	}
 

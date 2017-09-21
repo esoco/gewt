@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1805,6 +1805,12 @@ public class GwtTable extends Composite
 
 			for (String sCriterion : rSearchableModel.getConstraints().values())
 			{
+				if (sCriterion.endsWith("*"))
+				{
+					sCriterion =
+						sCriterion.substring(0, sCriterion.length() - 1);
+				}
+
 				if (sFilter == null)
 				{
 					sFilter = sCriterion;
@@ -1825,11 +1831,6 @@ public class GwtTable extends Composite
 					sFilter.charAt(0) == CONSTRAINT_OR_PREFIX)
 				{
 					sFilter = sFilter.substring(2);
-
-					if (sFilter.endsWith("*"))
-					{
-						sFilter = sFilter.substring(0, sFilter.length() - 1);
-					}
 				}
 				else
 				{

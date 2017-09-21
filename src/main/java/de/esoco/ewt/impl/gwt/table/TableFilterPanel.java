@@ -287,16 +287,26 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 
 			if (!bHasComparison)
 			{
+				if (sConstraint.indexOf('*') == -1)
+				{
+					try
+					{
+						Integer.parseInt(sConstraint);
+						sNumberConstraint =
+							CONSTRAINT_OR_PREFIX + "=" + sConstraint;
+					}
+					catch (Exception e)
+					{
+						// leave number constraint as null
+					}
+
+					sConstraint = sConstraint + "*";
+				}
+
 				sConstraint = "=" + sConstraint;
 			}
 
 			sConstraint = CONSTRAINT_OR_PREFIX + sConstraint;
-
-			if (!bHasComparison && sConstraint.indexOf('*') == -1)
-			{
-				sNumberConstraint = sConstraint;
-				sConstraint		  = sConstraint + "*";
-			}
 		}
 
 		for (ColumnDefinition rColumn : aFilterColumns)

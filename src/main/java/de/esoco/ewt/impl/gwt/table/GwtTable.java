@@ -434,10 +434,20 @@ public class GwtTable extends Composite
 	@Override
 	public void onResize()
 	{
-		setHeightLocked(false);
-		setRowUnselected(nSelectedRow);
-		collapseAllNodes();
-		deferredUpdate(false);
+		if (aMainPanel.getOffsetHeight() > 0)
+		{
+			setHeightLocked(false);
+
+			setRowUnselected(nSelectedRow);
+
+			if (nNewSelection == -1 && nSelectedRow >= 0)
+			{
+				nNewSelection = nFirstRow + nSelectedRow;
+			}
+
+			collapseAllNodes();
+			deferredUpdate(false);
+		}
 	}
 
 	/***************************************
@@ -1232,24 +1242,31 @@ public class GwtTable extends Composite
 	 */
 	private void checkBounds()
 	{
-		int nRows	   = rData.getElementCount();
-		int nPrevFirst = nFirstRow;
-
-		if (nRows > 0)
-		{
-			if (nFirstRow >= nRows)
-			{
-				nFirstRow = nRows - 1;
-			}
-
-			if (nFirstRow < 0)
-			{
-				nFirstRow = 0;
-			}
-		}
-
 		if (nTableRows > 0)
 		{
+			int nRows	   = rData.getElementCount();
+			int nPrevFirst = nFirstRow;
+
+			if (nRows > 0)
+			{
+				if (nFirstRow >= nRows)
+				{
+					nFirstRow = nRows - 1;
+				}
+
+				if (nFirstRow < 0)
+				{
+					nFirstRow = 0;
+				}
+			}
+
+			if (nSelectedRow >= 0)
+			{
+				// set to selection to prevent page change on boundary rounding
+				// that makes the selection invisible
+				nFirstRow = nFirstRow + nSelectedRow;
+			}
+
 			nFirstRow = nFirstRow / nTableRows * nTableRows;
 
 			if (nSelectedRow >= 0)

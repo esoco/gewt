@@ -110,13 +110,13 @@ public abstract class View extends Container implements TitleAttribute
 	}
 
 	/***************************************
-	 * Sets the view title.
+	 * Sets the view title. Should be overridden by view implementations that
+	 * can display a view title.
 	 *
 	 * @param sTitle The new title
 	 */
 	@Override
 	public void setTitle(String sTitle)
 	{
-		Window.setTitle(sTitle);
 	}
 }

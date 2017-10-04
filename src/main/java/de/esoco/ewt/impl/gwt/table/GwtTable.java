@@ -519,6 +519,7 @@ public class GwtTable extends Composite
 	public void setData(DataModel<? extends DataModel<?>> rData)
 	{
 		this.rData = rData;
+		nFirstRow  = 0;
 
 		if (aToolBar == null)
 		{

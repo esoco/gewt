@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,12 +60,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-import static de.esoco.lib.property.UserInterfaceProperties.CONTENT_TYPE;
-import static de.esoco.lib.property.UserInterfaceProperties.HAS_IMAGES;
-import static de.esoco.lib.property.UserInterfaceProperties.MAX_CHARS;
-import static de.esoco.lib.property.UserInterfaceProperties.MIN_CHARS;
-import static de.esoco.lib.property.UserInterfaceProperties.SEARCHABLE;
-import static de.esoco.lib.property.UserInterfaceProperties.SORTABLE;
+import static de.esoco.lib.property.ContentProperties.CONTENT_TYPE;
+import static de.esoco.lib.property.StyleProperties.HAS_IMAGES;
+import static de.esoco.lib.property.StyleProperties.MAX_CHARS;
+import static de.esoco.lib.property.StyleProperties.MIN_CHARS;
+import static de.esoco.lib.property.StyleProperties.SEARCHABLE;
+import static de.esoco.lib.property.StyleProperties.SORTABLE;
 
 
 /********************************************************************
@@ -339,16 +339,13 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 	 * Initializes the table columns from the column data model. This will also
 	 * set the filterable columns in the filter panel if it is available.
 	 *
-	 * @param  rFilterPanel The table's filter panel or NULL for none
-	 *
-	 * @return TRUE if the columns model contain at least one text format column
+	 * @param rFilterPanel The table's filter panel or NULL for none
 	 */
-	boolean initColumns(TableFilterPanel rFilterPanel)
+	void initColumns(TableFilterPanel rFilterPanel)
 	{
 		UserInterfaceContext rContext = rTable.getContext();
 
-		int     nColumn		    = 0;
-		boolean bHasTextColumns = false;
+		int nColumn = 0;
 
 		aColumnHeaders.clear();
 		aColumnFormats.clear();
@@ -356,6 +353,8 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 		aHeaderTable.resize(1, rColumns.getElementCount());
 		aHeaderTable.getRowFormatter()
 					.setStylePrimaryName(0, GwtTable.CSS.ewtHeader());
+
+		rFilterPanel.resetFilterColumns();
 
 		for (ColumnDefinition rColumn : rColumns)
 		{
@@ -366,10 +365,8 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 				sTitle = sTitle.substring(3);
 			}
 
-			String	    sDatatype     = rColumn.getDatatype();
-			ValueFormat rColumnFormat = getColumnFormat(rColumn);
-
-			ColumnHeader aHeader = new ColumnHeader(sTitle, nColumn);
+			ValueFormat  rColumnFormat = getColumnFormat(rColumn);
+			ColumnHeader aHeader	   = new ColumnHeader(sTitle, nColumn);
 
 			setColumnStyle(nColumn, rColumn);
 			aHeaderTable.setWidget(0, nColumn++, aHeader);
@@ -380,20 +377,12 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 			if (rFilterPanel != null && rColumn.hasFlag(SEARCHABLE))
 			{
 				rFilterPanel.addFilterColumn(rColumn);
-
-				if (!bHasTextColumns)
-				{
-					bHasTextColumns =
-						String.class.getName().endsWith(sDatatype);
-				}
 			}
 			else
 			{
 				aHeader.addStyleName(GwtTable.CSS.ewtLimited());
 			}
 		}
-
-		return bHasTextColumns;
 	}
 
 	/***************************************
@@ -676,7 +665,8 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 		else
 		{
 			nWidth =
-				aHeaderTable.getColumnFormatter().getElement(nColumn)
+				aHeaderTable.getColumnFormatter()
+							.getElement(nColumn)
 							.getOffsetWidth();
 		}
 

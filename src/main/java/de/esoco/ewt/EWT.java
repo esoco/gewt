@@ -63,6 +63,8 @@ import de.esoco.ewt.layout.LayoutFactory;
 import de.esoco.ewt.layout.LayoutMapper;
 import de.esoco.ewt.layout.LayoutMapper.IdentityLayoutMapper;
 
+import de.esoco.lib.text.TextConvert;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -70,6 +72,7 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
@@ -247,28 +250,16 @@ public class EWT
 	}
 
 	/***************************************
-	 * A simplified GWT debug logging method with a variable list of message
-	 * parameters. Simplified because the only formatting placeholder that is
-	 * considered in the template is '%s' and all parameters will be converted
-	 * by means of their toString() method. There's also no error handling
-	 * regarding the message format and parameter count as this method is only
-	 * intended for debugging purposes.
+	 * An enhanced GWT logging method that allows to use a (simple) format
+	 * string and message arguments. Based on {@link GWT#log(String)} and {@link
+	 * TextConvert#format(String, java.util.Collection)}.
 	 *
-	 * @param sTemplate The message template string
-	 * @param rParams   The message parameters
+	 * @param sFormat The message format string
+	 * @param rArgs   The message arguments
 	 */
-	public static void log(String sTemplate, Object... rParams)
+	public static void log(String sFormat, Object... rArgs)
 	{
-		String[]	  aLiterals = sTemplate.split("%s", -1);
-		StringBuilder aMessage  = new StringBuilder(aLiterals[0]);
-
-		for (int i = 1; i < aLiterals.length; i++)
-		{
-			aMessage.append(rParams[i - 1]);
-			aMessage.append(aLiterals[i]);
-		}
-
-		GWT.log(aMessage.toString());
+		GWT.log(TextConvert.format(sFormat, rArgs));
 	}
 
 	/***************************************

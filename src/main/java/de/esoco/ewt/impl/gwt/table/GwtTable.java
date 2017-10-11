@@ -79,7 +79,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_OR_PREFIX;
 import static de.esoco.lib.property.StyleProperties.HAS_IMAGES;
 
 
@@ -722,6 +721,19 @@ public class GwtTable extends Composite
 						deferredUpdate(true);
 					}
 				});
+		}
+	}
+
+	/***************************************
+	 * Updates the filter panel from the data model.
+	 */
+	protected void updateFilterPanel()
+	{
+		TableFilterPanel rFilterPanel = aToolBar.getFilterPanel();
+
+		if (rFilterPanel != null)
+		{
+			rFilterPanel.update((SearchableDataModel<?>) rData);
 		}
 	}
 
@@ -1792,83 +1804,12 @@ public class GwtTable extends Composite
 	 */
 	private void resetColumns()
 	{
-		TableFilterPanel rFilterPanel  = aToolBar.getFilterPanel();
-		String			 sCommonFilter = searchCommonFilterCriterion();
-
 		nDataWidth = nDataHeight = 0;
 
 		aDataTable.removeAllRows();
-
-		SearchableDataModel<?> rSearchableModel = null;
-
-		if (rFilterPanel != null)
-		{
-			rSearchableModel = (SearchableDataModel<?>) rData;
-			rFilterPanel.reset();
-		}
-
-		boolean bHasTextColumns = aHeader.initColumns(rFilterPanel);
-
-		if (rFilterPanel != null)
-		{
-			rFilterPanel.init(rSearchableModel, sCommonFilter, bHasTextColumns);
-		}
+		aHeader.initColumns(aToolBar.getFilterPanel());
 
 		bColumnsChanged = false;
-	}
-
-	/***************************************
-	 * Analyzes the constraints of a {@link SearchableDataModel} to check
-	 * whether they represent a common search term for all searchable columns.
-	 *
-	 * @return The general filter criterion or NULL for none
-	 */
-	private String searchCommonFilterCriterion()
-	{
-		String sFilter = null;
-
-		if (rData instanceof SearchableDataModel)
-		{
-			SearchableDataModel<?> rSearchableModel =
-				(SearchableDataModel<?>) rData;
-
-			for (String sCriterion : rSearchableModel.getConstraints().values())
-			{
-				if (sCriterion.endsWith("*"))
-				{
-					sCriterion =
-						sCriterion.substring(0, sCriterion.length() - 1);
-				}
-
-				if (sFilter == null)
-				{
-					sFilter = sCriterion;
-				}
-				else if (!sFilter.equals(sCriterion))
-				{
-					sFilter = null;
-
-					break;
-				}
-			}
-
-			if (sFilter != null)
-			{
-				// a common filter criterion must always begin with the OR
-				// prefix and the comparison character
-				if (sFilter.length() >= 2 &&
-					sFilter.charAt(0) == CONSTRAINT_OR_PREFIX)
-				{
-					sFilter = sFilter.substring(2);
-				}
-				else
-				{
-					sFilter = null;
-				}
-			}
-		}
-
-		return sFilter;
 	}
 
 	/***************************************
@@ -2022,6 +1963,7 @@ public class GwtTable extends Composite
 			aToolBar.updatePosition(nCount, nRows, nFirstRow + 1);
 			initNewVisibleRows(nPrevRows);
 			aHeader.setAllColumnWidths();
+			updateFilterPanel();
 
 			int nEmptyRow = fillRows();
 

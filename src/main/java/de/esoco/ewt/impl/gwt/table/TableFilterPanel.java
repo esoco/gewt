@@ -19,6 +19,7 @@ package de.esoco.ewt.impl.gwt.table;
 import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
 
 import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.DataModel;
 import de.esoco.lib.model.SearchableDataModel;
 import de.esoco.lib.text.TextConvert;
 
@@ -100,7 +101,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private final GwtTable rTable;
 
 	private FlexTable aFilterPanel = new FlexTable();
-	private TextBox   aFilterValue = new TextBox();
+	private TextBox   aFilterInput = new TextBox();
 
 	private ToggleButton aFilterButton	    =
 		new ToggleButton(new Image(GwtTable.RES.imFilter()));
@@ -129,15 +130,15 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		this.rTable = rTable;
 
 		aClearFilterButton.setTitle(expand("$ttClearTableFilter"));
-		aFilterValue.setTitle(expand("$ttTableFilterValue"));
+		aFilterInput.setTitle(expand("$ttTableFilterValue"));
 
 		aFilterPanel.setWidget(0, 0, aFilterButton);
-		aFilterPanel.setWidget(0, 1, aFilterValue);
+		aFilterPanel.setWidget(0, 1, aFilterInput);
 		aFilterPanel.setWidget(0, 2, aClearFilterButton);
 
-		aFilterValue.setWidth("100%");
-		aFilterValue.setStylePrimaryName(GwtTable.CSS.ewtTableFilterValue());
-		aFilterValue.addKeyUpHandler(this);
+		aFilterInput.setWidth("100%");
+		aFilterInput.setStylePrimaryName(GwtTable.CSS.ewtTableFilterValue());
+		aFilterInput.addKeyUpHandler(this);
 
 		aFilterPanel.setWidth("100%");
 		aFilterPanel.getCellFormatter().setWidth(0, 1, "100%");
@@ -207,7 +208,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			switch (nKeyCode)
 			{
 				case KeyCodes.KEY_ESCAPE:
-					resetInputValue(aFilterValue);
+					resetInputValue(aFilterInput);
 
 					break;
 
@@ -221,7 +222,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 								@Override
 								public void run()
 								{
-									applyGlobalFilter(aFilterValue.getText());
+									applyGlobalFilter(aFilterInput.getText());
 								}
 							};
 					}
@@ -238,7 +239,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	public void setEnabled(boolean bEnabled)
 	{
-		aFilterValue.setEnabled(bEnabled);
+		aFilterInput.setEnabled(bEnabled);
 		aFilterButton.setEnabled(bEnabled);
 		aClearFilterButton.setEnabled(bEnabled);
 	}
@@ -250,7 +251,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	public void setFocus(boolean bFocused)
 	{
-		aFilterValue.setFocus(bFocused);
+		aFilterInput.setFocus(bFocused);
 	}
 
 	/***************************************
@@ -387,53 +388,48 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	}
 
 	/***************************************
-	 * Initializes this filter panel.
-	 *
-	 * @param rModel                 The search table model
-	 * @param sCommonFilterCriterion The common filter criterion for all
-	 *                               searchable fields or NULL for none
-	 * @param bHasTextColumns        TRUE if at least one text column is present
-	 */
-	void init(SearchableDataModel<?> rModel,
-			  String				 sCommonFilterCriterion,
-			  boolean				 bHasTextColumns)
-	{
-		boolean bHasConstraints     = rModel.getConstraints().size() != 0;
-		boolean bEnableSimpleFilter =
-			(sCommonFilterCriterion != null || !bHasConstraints);
-
-		aFilterValue.setEnabled(bEnableSimpleFilter);
-		aFilterValue.setText(sCommonFilterCriterion);
-
-		if (bEnableSimpleFilter)
-		{
-			aFilterValue.removeStyleDependentName("disabled");
-		}
-		else
-		{
-			aFilterValue.addStyleDependentName("disabled");
-			setFilterButtonActive(bHasConstraints);
-		}
-	}
-
-	/***************************************
 	 * Removes all filter constraints from the data model.
 	 */
 	void removeFilter()
 	{
 		getSearchableModel().removeConstraints();
-		resetInputValue(aFilterValue);
+		resetInputValue(aFilterInput);
 
 		updateTable();
 	}
 
 	/***************************************
-	 * Resets this filter panel for re-initialization.
+	 * Removes all filter columns.
 	 */
-	void reset()
+	void resetFilterColumns()
 	{
-		aFilterValue.setText("");
 		aFilterColumns.clear();
+	}
+
+	/***************************************
+	 * Updates this filter panel from a data model.
+	 *
+	 * @param rModel The model to read the filter constraints from
+	 */
+	void update(SearchableDataModel<?> rModel)
+	{
+		String  sSimpleFilter	    = searchSimpleFilter(rModel);
+		boolean bHasConstraints     = rModel.getConstraints().size() != 0;
+		boolean bEnableSimpleFilter =
+			(sSimpleFilter != null || !bHasConstraints);
+
+		aFilterInput.setEnabled(bEnableSimpleFilter);
+		aFilterInput.setText(sSimpleFilter);
+
+		if (bEnableSimpleFilter)
+		{
+			aFilterInput.removeStyleDependentName("disabled");
+		}
+		else
+		{
+			aFilterInput.addStyleDependentName("disabled");
+			setFilterButtonActive(bHasConstraints);
+		}
 	}
 
 	/***************************************
@@ -1289,9 +1285,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		if (aFilterButton.isDown() || rConstraints.isEmpty())
 		{
-			aFilterValue.setText("");
-			aFilterValue.setEnabled(false);
-			aFilterValue.addStyleDependentName("disabled");
+			aFilterInput.setText("");
+			aFilterInput.setEnabled(false);
+			aFilterInput.addStyleDependentName("disabled");
 			addFilterRow(-1, ' ', null, false);
 		}
 		else
@@ -1329,9 +1325,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private void resetFilter()
 	{
 		rTable.setSelection(-1);
-		aFilterValue.setText(null);
-		aFilterValue.setEnabled(true);
-		aFilterValue.removeStyleDependentName("disabled");
+		aFilterInput.setText(null);
+		aFilterInput.setEnabled(true);
+		aFilterInput.removeStyleDependentName("disabled");
 		setFilterButtonActive(false);
 		removeFilter();
 	}
@@ -1351,6 +1347,62 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		{
 			((ListBox) rWidget).setSelectedIndex(0);
 		}
+	}
+
+	/***************************************
+	 * Analyzes the constraints of a {@link SearchableDataModel} to check
+	 * whether they represent a single search term for all searchable columns.
+	 *
+	 * @param  rDataModel The data model to get the filter criteria from
+	 *
+	 * @return The single filter criterion or NULL for none
+	 */
+	private String searchSimpleFilter(DataModel<?> rDataModel)
+	{
+		String sFilter = null;
+
+		if (rDataModel instanceof SearchableDataModel)
+		{
+			SearchableDataModel<?> rSearchableModel =
+				(SearchableDataModel<?>) rDataModel;
+
+			for (String sCriterion : rSearchableModel.getConstraints().values())
+			{
+				if (sCriterion.endsWith("*"))
+				{
+					sCriterion =
+						sCriterion.substring(0, sCriterion.length() - 1);
+				}
+
+				if (sFilter == null)
+				{
+					sFilter = sCriterion;
+				}
+				else if (!sFilter.equals(sCriterion))
+				{
+					sFilter = null;
+
+					break;
+				}
+			}
+
+			if (sFilter != null)
+			{
+				// a common filter criterion must always begin with the OR
+				// prefix and the comparison character
+				if (sFilter.length() >= 2 &&
+					sFilter.charAt(0) == CONSTRAINT_OR_PREFIX)
+				{
+					sFilter = sFilter.substring(2);
+				}
+				else
+				{
+					sFilter = null;
+				}
+			}
+		}
+
+		return sFilter;
 	}
 
 	/***************************************

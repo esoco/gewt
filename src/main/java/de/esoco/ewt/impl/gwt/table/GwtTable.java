@@ -516,21 +516,32 @@ public class GwtTable extends Composite
 	/***************************************
 	 * @see Table#setData(DataModel)
 	 */
-	public void setData(DataModel<? extends DataModel<?>> rData)
+	public void setData(DataModel<? extends DataModel<?>> rNewData)
 	{
-		this.rData = rData;
-		nFirstRow  = 0;
-
-		if (aToolBar == null)
+		if (rNewData != rData)
 		{
-			// the toolbar depends on model features, so it can only be created
-			// after the model is available
-			aToolBar = new TableToolBar(this);
-			aMainPanel.setWidget(TOOLBAR_ROW, 0, aToolBar);
-			aMainPanel.getCellFormatter()
-					  .setVerticalAlignment(TOOLBAR_ROW,
-											0,
-											HasVerticalAlignment.ALIGN_BOTTOM);
+			rData = rNewData;
+
+			if (rData instanceof RemoteDataModel)
+			{
+				nFirstRow = ((RemoteDataModel<?>) rData).getWindowStart();
+			}
+			else
+			{
+				nFirstRow = 0;
+			}
+
+			if (aToolBar == null)
+			{
+				// the toolbar depends on model features, so it can only be created
+				// after the model is available
+				aToolBar = new TableToolBar(this);
+				aMainPanel.setWidget(TOOLBAR_ROW, 0, aToolBar);
+				aMainPanel.getCellFormatter()
+						  .setVerticalAlignment(TOOLBAR_ROW,
+												0,
+												HasVerticalAlignment.ALIGN_BOTTOM);
+			}
 		}
 
 		update();

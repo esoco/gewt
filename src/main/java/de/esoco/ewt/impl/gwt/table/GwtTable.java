@@ -543,6 +543,7 @@ public class GwtTable extends Composite
 			}
 		}
 
+		updateFilterPanel();
 		update();
 	}
 
@@ -1963,7 +1964,6 @@ public class GwtTable extends Composite
 			aToolBar.updatePosition(nCount, nRows, nFirstRow + 1);
 			initNewVisibleRows(nPrevRows);
 			aHeader.setAllColumnWidths();
-			updateFilterPanel();
 
 			int nEmptyRow = fillRows();
 

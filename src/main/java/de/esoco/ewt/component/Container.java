@@ -64,6 +64,47 @@ public abstract class Container extends Component
 	}
 
 	/***************************************
+	 * Recursively searches a child component with a certain style name.
+	 *
+	 * @param  sStyle The style name to search
+	 *
+	 * @return The first child with the given style name or NULL if none could
+	 *         be found in this container's hierarchy
+	 */
+	public Component findChildByStyleName(String sStyle)
+	{
+		Component rResult = null;
+
+		for (Component rChild : aComponents)
+		{
+			if (rChild.getWidget().getStyleName().contains(sStyle))
+			{
+				rResult = rChild;
+
+				break;
+			}
+		}
+
+		if (rResult == null)
+		{
+			for (Component rChild : aComponents)
+			{
+				if (rChild instanceof Container)
+				{
+					rResult = ((Container) rChild).findChildByStyleName(sStyle);
+
+					if (rResult != null)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		return rResult;
+	}
+
+	/***************************************
 	 * Returns the index of a certain child component. This method will only
 	 * work correctly for indexed containers for which the {@link #isIndexed()}
 	 * returns TRUE.

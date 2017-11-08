@@ -305,6 +305,26 @@ public class EWT
 	}
 
 	/***************************************
+	 * A helper method that measures the execution time of a {@link Runnable}
+	 * object.
+	 *
+	 * @param sDescription  The description of the measured code
+	 * @param rProfiledCode The code to measure the execution time of
+	 */
+	@SuppressWarnings("boxing")
+	public static void measure(String sDescription, Runnable rProfiledCode)
+	{
+		long t = System.currentTimeMillis();
+
+		rProfiledCode.run();
+
+		t = System.currentTimeMillis() - t;
+		EWT.log("[TIME] %s: %ss",
+				sDescription,
+				t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10);
+	}
+
+	/***************************************
 	 * Opens a URL that is relative to the current web application in an
 	 * invisible frame. This can be used to initiate downloads.
 	 *

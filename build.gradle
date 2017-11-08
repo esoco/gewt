@@ -32,7 +32,7 @@ dependencies
 
 
 gwt {
-    gwtVersion='2.8.1'
+    gwtVersion='2.8.2'
 }
 
 // sources are need for the GWT compiler

@@ -411,8 +411,12 @@ public class MessageBox implements ClickHandler
 
 		if (rImage instanceof ImageRef)
 		{
-			aMessagePanel.add(((ImageRef) rImage).getGwtImage(),
-							  DockPanel.WEST);
+			com.google.gwt.user.client.ui.Image rGwtImage =
+				((ImageRef) rImage).getGwtImage();
+
+			rGwtImage.addStyleName(CSS.ewtMessageIcon());
+
+			aMessagePanel.add(rGwtImage, DockPanel.WEST);
 		}
 
 		if (sMessage != null)
@@ -475,7 +479,7 @@ public class MessageBox implements ClickHandler
 			aDialog.add(aMainPanel);
 		}
 
-		aDialog.asWidget().addStyleDependentName(CSS.ewtMessageBox());
+		aDialog.asWidget().addStyleName(CSS.ewtMessageBox());
 	}
 
 	/***************************************

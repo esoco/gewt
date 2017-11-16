@@ -98,6 +98,8 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static de.esoco.lib.property.StateProperties.NO_EVENT_PROPAGATION;
+
 
 /********************************************************************
  * This is the base class for all GEWT components.
@@ -954,6 +956,11 @@ public abstract class Component implements HasId<String>
 	void notifyEventHandler(EventType rEventType, DomEvent<?> rDomEvent)
 	{
 		notifyEventHandler(rEventType, null, rDomEvent.getNativeEvent());
+
+		if (rStyle != null && rStyle.hasFlag(NO_EVENT_PROPAGATION))
+		{
+			rDomEvent.stopPropagation();
+		}
 	}
 
 	/***************************************

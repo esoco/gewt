@@ -3,9 +3,11 @@
 .datePickerMonthSelector, .datePickerMonth
 {}
 
-@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited;
+@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main,
+@external .ewt-Limited, .ewt-Error;
 
-.ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited
+.ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited,
+.ewt-Error;
 {}
 
 @external .ewt-EdgeLayout, .ewt-ContentPanel;

@@ -40,6 +40,7 @@ import de.esoco.lib.property.UserInterfaceProperties;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -118,6 +119,9 @@ public abstract class Component implements HasId<String>
 
 	private static WidgetStyleHandler rWidgetStyleHandler = null;
 
+	private static BiConsumer<Component, String> fApplyComponentErrorState =
+		Component::applyComponentErrorState;
+
 	//~ Instance fields --------------------------------------------------------
 
 	private Container			 rParent;
@@ -125,13 +129,41 @@ public abstract class Component implements HasId<String>
 	private IsWidget			 rIsWidget;
 	private UserInterfaceContext rContext;
 
-	private String sId = null;
+	private String sId	    = null;
+	private String sToolTip = "";
 
 	private ComponentEventDispatcher aEventDispatcher;
 
 	private String[] rAdditionalStyles;
 
 	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * The default implementation to set or remove the error state for a certain
+	 * widget.
+	 *
+	 * @param rComponent rWidget The widget to change the error state of
+	 * @param sMessage   The error message to display or NULL to remove the
+	 *                   error state
+	 */
+	public static void applyComponentErrorState(
+		Component rComponent,
+		String    sMessage)
+	{
+		UserInterfaceContext rContext = rComponent.getContext();
+		Widget				 rWidget  = rComponent.getWidget();
+
+		if (sMessage != null)
+		{
+			rComponent.addStyleName(EWT.CSS.ewtError());
+			rWidget.setTitle(rContext.expandResource(sMessage));
+		}
+		else
+		{
+			rComponent.removeStyleName(EWT.CSS.ewtError());
+			rWidget.setTitle(rContext.expandResource(rComponent.getToolTip()));
+		}
+	}
 
 	/***************************************
 	 * Helper method to create the HTML string for a label that contains a
@@ -209,13 +241,24 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Registers a global handler that will be invoked to apply component styles
-	 * to widgets. This can be used by extensions of the base GEWT
-	 * implementation to be notified of style changes.
+	 * Sets a global handler to apply error states to component widgets.
+	 *
+	 * @param fApplyErrorState The new widget error state handler
+	 */
+	public static void setWidgetErrorStateHandler(
+		BiConsumer<Component, String> fApplyErrorState)
+	{
+		fApplyComponentErrorState = fApplyErrorState;
+	}
+
+	/***************************************
+	 * Sets a global handler that will be invoked to apply component styles to
+	 * widgets. This can be used by extensions of the base GEWT implementation
+	 * to be notified of style changes.
 	 *
 	 * @param rHandler The widget style handler
 	 */
-	public static void registerWidgetStyleHandler(WidgetStyleHandler rHandler)
+	public static void setWidgetStyleHandler(WidgetStyleHandler rHandler)
 	{
 		rWidgetStyleHandler = rHandler;
 	}
@@ -415,13 +458,14 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Returns the text of the component's tool tip.
+	 * Returns the original tool-tip text as it has been set with {@link
+	 * #setToolTip(String)}.
 	 *
-	 * @return The tool tip text string
+	 * @return The tool tip text
 	 */
 	public String getToolTip()
 	{
-		return getWidget().getTitle();
+		return sToolTip;
 	}
 
 	/***************************************
@@ -593,6 +637,20 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
+	 * Sets or removes an error state for this component. Depending on the
+	 * underlying implementation this will modify the component style to be
+	 * rendered in an error state (if a message is provided) and display the
+	 * error message (e.g. as a tool-tip).
+	 *
+	 * @param sErrorMessage The error message to display or NULL to remove the
+	 *                      error state
+	 */
+	public void setError(String sErrorMessage)
+	{
+		fApplyComponentErrorState.accept(this, sErrorMessage);
+	}
+
+	/***************************************
 	 * Sets the foreground color of this component.
 	 *
 	 * @param rColor The new foreground color
@@ -709,12 +767,14 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Sets the text of the component's tool tip.
+	 * Sets the text of the component's tool-tip. If the string contains a
+	 * resource key it will be expanded.
 	 *
-	 * @param sText The new tool tip text (NULL for no tool tip)
+	 * @param sText The new tool tip text or NULL for no tool-tip
 	 */
 	public void setToolTip(String sText)
 	{
+		sToolTip = sText;
 		getWidget().setTitle(getContext().expandResource(sText));
 	}
 

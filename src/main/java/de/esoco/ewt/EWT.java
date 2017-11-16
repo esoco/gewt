@@ -311,7 +311,6 @@ public class EWT
 	 * @param sDescription  The description of the measured code
 	 * @param rProfiledCode The code to measure the execution time of
 	 */
-	@SuppressWarnings("boxing")
 	public static void measure(String sDescription, Runnable rProfiledCode)
 	{
 		long t = System.currentTimeMillis();

@@ -13,6 +13,8 @@ public interface GewtCss extends CssResource {
   String ewtMain();
   @ClassName("ewt-Empty")
   String ewtEmpty();
+  @ClassName("ewt-Error")
+  String ewtError();
   @ClassName("ewt-Limited")
   String ewtLimited();
   @ClassName("ewt-Selected")

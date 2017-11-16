@@ -1,4 +1,5 @@
-@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited;
+@external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main;
+@external .ewt-Limited, .ewt-Error;
 @external .gwt-Label, .gwt-HTML, .gwt-Image, .gwt-Button, .gwt-DatePicker;
 @external .gwt-TabLayoutPanelContent;
 @external .gwt-PushButton, .gwt-ToggleButton, .gwt-ToggleButton-down;
@@ -386,4 +387,8 @@ td.datePickerMonth {
 
 .ewt-TagDisplay td {
 	white-space: nowrap;
+}
+
+.ewt-Error {
+	color: red;
 }

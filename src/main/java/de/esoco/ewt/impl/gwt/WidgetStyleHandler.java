@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /********************************************************************
  * An interface for the global handling of widget style updates. Registered with
- * {@link Component#registerWidgetStyleHandler(WidgetStyleHandler)}.
+ * {@link Component#setWidgetStyleHandler(WidgetStyleHandler)}.
  *
  * @author eso
  */

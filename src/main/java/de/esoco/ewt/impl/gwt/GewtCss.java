@@ -7,16 +7,22 @@ public interface GewtCss extends CssResource {
   
   @ClassName("ewt-TableRow")
   String ewtTableRow();
+  
   @ClassName("ewt-Odd")
   String ewtOdd();
+  
   @ClassName("ewt-Main")
   String ewtMain();
+  
   @ClassName("ewt-Empty")
   String ewtEmpty();
+  
   @ClassName("ewt-Error")
   String ewtError();
+  
   @ClassName("ewt-Limited")
   String ewtLimited();
+  
   @ClassName("ewt-Selected")
   String ewtSelected();
   

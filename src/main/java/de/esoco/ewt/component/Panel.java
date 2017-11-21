@@ -16,8 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.event.EventType;
+
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -38,17 +42,57 @@ public class Panel extends Container
 	@Override
 	ComponentEventDispatcher createEventDispatcher()
 	{
-		ComponentEventDispatcher rEventDispatcher =
-			super.createEventDispatcher();
+		return new PanelEventDispatcher();
+	}
 
-		Widget rWidget = getWidget();
+	//~ Inner Classes ----------------------------------------------------------
 
-		if (!(rWidget instanceof HasClickHandlers))
+	/********************************************************************
+	 * Dispatcher for panel-specific events.
+	 *
+	 * @author eso
+	 */
+	class PanelEventDispatcher extends ComponentEventDispatcher
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * @see ClickHandler#onClick(ClickEvent)
+		 */
+		@Override
+		public void onClick(ClickEvent rEvent)
 		{
-			// enable click events for panel widgets that without native support
-			rWidget.addDomHandler(rEventDispatcher, ClickEvent.getType());
+//			Widget rWidget = getWidget();
+
+//			if (!(rWidget instanceof ActiveState) ||
+//				!((ActiveState) rWidget).isActive())
+			{
+				super.onClick(rEvent);
+			}
 		}
 
-		return rEventDispatcher;
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected HandlerRegistration initEventDispatching(
+			Widget    rWidget,
+			EventType eEventType)
+		{
+			HandlerRegistration rHandler;
+
+			if (eEventType == EventType.ACTION &&
+				!(rWidget instanceof HasClickHandlers))
+			{
+				// enable click events for panel widgets without native support
+				rHandler = rWidget.addDomHandler(this, ClickEvent.getType());
+			}
+			else
+			{
+				rHandler = super.initEventDispatching(rWidget, eEventType);
+			}
+
+			return rHandler;
+		}
 	}
 }

@@ -19,7 +19,6 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.event.EventType;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,28 +47,14 @@ public class Panel extends Container
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Dispatcher for panel-specific events.
+	 * A panel event dispatcher that implements action events through DOM events
+	 * if not supported natively by a panel widget.
 	 *
 	 * @author eso
 	 */
 	class PanelEventDispatcher extends ComponentEventDispatcher
 	{
 		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * @see ClickHandler#onClick(ClickEvent)
-		 */
-		@Override
-		public void onClick(ClickEvent rEvent)
-		{
-//			Widget rWidget = getWidget();
-
-//			if (!(rWidget instanceof ActiveState) ||
-//				!((ActiveState) rWidget).isActive())
-			{
-				super.onClick(rEvent);
-			}
-		}
 
 		/***************************************
 		 * {@inheritDoc}

@@ -31,6 +31,7 @@ import de.esoco.ewt.property.ImageAttribute;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 
+import de.esoco.lib.property.ActiveState;
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.Color;
 import de.esoco.lib.property.HasId;
@@ -98,6 +99,7 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static de.esoco.lib.property.StateProperties.ACTION_EVENT_ON_ACTIVATION_ONLY;
 import static de.esoco.lib.property.StateProperties.NO_EVENT_PROPAGATION;
 
 
@@ -1223,11 +1225,24 @@ public abstract class Component implements HasId<String>
 	{
 		//~ Instance fields ----------------------------------------------------
 
+		private boolean bActionEventOnActivationOnly = false;
+
 		private Map<EventType, EWTEventHandler> aEventHandlers =
 			new HashMap<>(1);
 
 		private Map<EventType, HandlerRegistration> aHandlerRegistrations =
 			new HashMap<>(1);
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		public ComponentEventDispatcher()
+		{
+			bActionEventOnActivationOnly =
+				rStyle.hasFlag(ACTION_EVENT_ON_ACTIVATION_ONLY);
+		}
 
 		//~ Methods ------------------------------------------------------------
 
@@ -1246,7 +1261,12 @@ public abstract class Component implements HasId<String>
 		@Override
 		public void onClick(ClickEvent rEvent)
 		{
-			notifyEventHandler(EventType.ACTION, rEvent);
+			if (!bActionEventOnActivationOnly ||
+				!(getWidget() instanceof ActiveState) ||
+				!((ActiveState) getWidget()).isActive())
+			{
+				notifyEventHandler(EventType.ACTION, rEvent);
+			}
 		}
 
 		/***************************************

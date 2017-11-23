@@ -1241,6 +1241,7 @@ public abstract class Component implements HasId<String>
 		public ComponentEventDispatcher()
 		{
 			bActionEventOnActivationOnly =
+				rStyle != null &&
 				rStyle.hasFlag(ACTION_EVENT_ON_ACTIVATION_ONLY);
 		}
 

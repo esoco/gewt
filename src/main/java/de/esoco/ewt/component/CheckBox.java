@@ -19,7 +19,10 @@ package de.esoco.ewt.component;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 
+import de.esoco.lib.property.StateProperties;
+
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -108,7 +111,13 @@ public class CheckBox extends SelectableButton
 		@Override
 		public void onClick(ClickEvent rEvent)
 		{
-			notifyEventHandler(EventType.POINTER_CLICKED, rEvent);
+			StyleData rStyle = getStyle();
+
+			if (rStyle != null &&
+				rStyle.hasFlag(StateProperties.NO_EVENT_PROPAGATION))
+			{
+				rEvent.stopPropagation();
+			}
 		}
 
 		/***************************************
@@ -132,6 +141,11 @@ public class CheckBox extends SelectableButton
 			if (eEventType == EventType.ACTION &&
 				rWidget instanceof HasValueChangeHandlers<?>)
 			{
+				if (rWidget instanceof HasClickHandlers)
+				{
+					((HasClickHandlers) rWidget).addClickHandler(this);
+				}
+
 				return ((HasValueChangeHandlers<Object>) rWidget)
 					   .addValueChangeHandler(this);
 			}

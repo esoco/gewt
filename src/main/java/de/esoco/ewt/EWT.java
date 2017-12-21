@@ -271,9 +271,26 @@ public class EWT
 	 */
 	public static void logTime(String sInfo, String sName, long nStart)
 	{
+		logTime(sInfo, sName, nStart, 0);
+	}
+
+	/***************************************
+	 * Measures and logs the time of a profiled execution if it exceeds a
+	 * certain threshold.
+	 *
+	 * @param sInfo      An info string describing the profiling
+	 * @param sName      The name of the profiled context
+	 * @param nStart     The starting time of the measuring in milliseconds
+	 * @param nThreshold The threshold in milliseconds
+	 */
+	public static void logTime(String sInfo,
+							   String sName,
+							   long   nStart,
+							   int    nThreshold)
+	{
 		long t = System.currentTimeMillis() - nStart;
 
-		if (t > 50)
+		if (t > nThreshold)
 		{
 			GWT.log(t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 +
 					": " + sInfo + " " + sName);

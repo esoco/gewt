@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -789,7 +789,12 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setVisible(boolean bVisible)
 	{
-		getWidget().setVisible(bVisible);
+		Widget rWidget = getWidget();
+
+		if (rWidget.isVisible() != bVisible)
+		{
+			rWidget.setVisible(bVisible);
+		}
 	}
 
 	/***************************************

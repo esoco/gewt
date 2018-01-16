@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public abstract class TableControl extends Control implements SingleSelection
 		int nRows =
 			rStyle.getIntProperty(UserInterfaceProperties.TABLE_ROWS, 0);
 
-		if (nRows != 0)
+		if (nRows > 0)
 		{
 			aGwtTable.setVisibleRowCount(nRows);
 		}

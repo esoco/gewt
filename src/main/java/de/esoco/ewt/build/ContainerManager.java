@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,14 +52,12 @@ public abstract class ContainerManager<C extends Container>
 	 * invoking it's {@link #buildIn(ContainerBuilder, StyleData)} method.
 	 *
 	 * @param rChildManager The child container manager to build
-	 * @param rStyleData    The style data for the appearance and positioning of
+	 * @param rStyle        The style data for the appearance and positioning of
 	 *                      the new child container
 	 */
-	public final void build(
-		ContainerManager<?> rChildManager,
-		StyleData			rStyleData)
+	public final void build(ContainerManager<?> rChildManager, StyleData rStyle)
 	{
-		rChildManager.buildIn(this, rStyleData);
+		rChildManager.buildIn(this, rStyle);
 	}
 
 	/***************************************
@@ -71,17 +69,14 @@ public abstract class ContainerManager<C extends Container>
 	 *
 	 * @param rParentBuilder The parent container builder to build the panel
 	 *                       with
-	 * @param rStyleData     The style data for the appearance and positioning
+	 * @param rStyle         The style data for the appearance and positioning
 	 *                       of the new container
 	 */
-	public void buildIn(
-		ContainerBuilder<?> rParentBuilder,
-		StyleData			rStyleData)
+	public void buildIn(ContainerBuilder<?> rParentBuilder, StyleData rStyle)
 	{
-		rBaseStyle = rStyleData;
+		rBaseStyle = rStyle;
 
-		ContainerBuilder<C> aBuilder =
-			createContainer(rParentBuilder, rStyleData);
+		ContainerBuilder<C> aBuilder = createContainer(rParentBuilder, rStyle);
 
 		setContainer(aBuilder.getContainer());
 		setParent(aBuilder.getParent());

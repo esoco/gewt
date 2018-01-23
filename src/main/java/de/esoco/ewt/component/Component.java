@@ -99,6 +99,7 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static de.esoco.lib.property.ContentProperties.ELEMENT_ID;
 import static de.esoco.lib.property.StateProperties.ACTION_EVENT_ON_ACTIVATION_ONLY;
 import static de.esoco.lib.property.StateProperties.NO_EVENT_PROPAGATION;
 
@@ -316,6 +317,13 @@ public abstract class Component implements HasId<String>
 	public void applyStyle(StyleData rNewStyle)
 	{
 		rStyle = rNewStyle;
+
+		String sId = rStyle.getProperty(ELEMENT_ID, null);
+
+		if (sId != null)
+		{
+			getWidget().getElement().setId(sId);
+		}
 
 		applyStyleNames(rStyle);
 		applyAlignments(rStyle);

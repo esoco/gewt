@@ -17,6 +17,7 @@
 package de.esoco.ewt.component;
 
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.impl.gwt.table.GwtTable;
 import de.esoco.ewt.style.StyleData;
@@ -24,10 +25,13 @@ import de.esoco.ewt.style.StyleData;
 import de.esoco.lib.model.ColumnDefinition;
 import de.esoco.lib.model.DataModel;
 import de.esoco.lib.property.SingleSelection;
+import de.esoco.lib.property.TitleAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.IsWidget;
 
 
 /********************************************************************
@@ -35,11 +39,12 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public abstract class TableControl extends Control implements SingleSelection
+public abstract class TableControl extends Control implements SingleSelection,
+															  TitleAttribute
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private GwtTable aGwtTable;
+	private IsTableControlWidget aTable;
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -58,7 +63,7 @@ public abstract class TableControl extends Control implements SingleSelection
 
 		if (nRows > 0)
 		{
-			aGwtTable.setVisibleRowCount(nRows);
+			aTable.setVisibleRowCount(nRows);
 		}
 	}
 
@@ -70,7 +75,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public DataModel<ColumnDefinition> getColumns()
 	{
-		return aGwtTable.getColumns();
+		return aTable.getColumns();
 	}
 
 	/***************************************
@@ -81,7 +86,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public DataModel<?> getData()
 	{
-		return aGwtTable.getData();
+		return aTable.getData();
 	}
 
 	/***************************************
@@ -92,7 +97,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public DataModel<?> getSelection()
 	{
-		return aGwtTable.getSelection();
+		return aTable.getSelection();
 	}
 
 	/***************************************
@@ -108,13 +113,21 @@ public abstract class TableControl extends Control implements SingleSelection
 	 * {@inheritDoc}
 	 */
 	@Override
+	public String getTitle()
+	{
+		return aTable.getTableTitle();
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void initWidget(Container rParent, StyleData rStyle)
 	{
 		super.initWidget(rParent, rStyle);
 
-		aGwtTable = (GwtTable) getWidget();
-		aGwtTable.setContext(getContext());
-		aGwtTable.setEventDispatcher(new GewtEventDispatcherImpl());
+		aTable = (IsTableControlWidget) getWidget();
+		aTable.setEventDispatcher(new GewtEventDispatcherImpl());
 	}
 
 	/***************************************
@@ -123,7 +136,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	@Override
 	public boolean isEnabled()
 	{
-		return aGwtTable.isEnabled();
+		return aTable.isEnabled();
 	}
 
 	/***************************************
@@ -132,7 +145,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	@Override
 	public void repaint()
 	{
-		aGwtTable.repaint();
+		aTable.repaint();
 	}
 
 	/***************************************
@@ -143,7 +156,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public void setColumns(DataModel<ColumnDefinition> rColumnModel)
 	{
-		aGwtTable.setColumns(rColumnModel);
+		aTable.setColumns(rColumnModel);
 	}
 
 	/***************************************
@@ -156,7 +169,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public void setData(DataModel<? extends DataModel<?>> rDataModel)
 	{
-		aGwtTable.setData(rDataModel);
+		aTable.setData(rDataModel);
 	}
 
 	/***************************************
@@ -165,7 +178,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	@Override
 	public void setEnabled(boolean bEnabled)
 	{
-		aGwtTable.setEnabled(bEnabled);
+		aTable.setEnabled(bEnabled);
 	}
 
 	/***************************************
@@ -186,7 +199,16 @@ public abstract class TableControl extends Control implements SingleSelection
 	 */
 	public void setSelection(int nIndex, boolean bFireEvent)
 	{
-		aGwtTable.setSelection(nIndex, bFireEvent);
+		aTable.setSelection(nIndex, bFireEvent);
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTitle(String sTitle)
+	{
+		aTable.setTableTitle(sTitle);
 	}
 
 	/***************************************
@@ -198,6 +220,97 @@ public abstract class TableControl extends Control implements SingleSelection
 		return new TableEventDispatcher();
 	}
 
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * The interface for table widgets.
+	 *
+	 * @author eso
+	 */
+	public static interface IsTableControlWidget extends IsWidget, Focusable,
+														 HasEnabled,
+														 SingleSelection
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Returns the column model.
+		 *
+		 * @return The column model
+		 */
+		public DataModel<ColumnDefinition> getColumns();
+
+		/***************************************
+		 * Returns the model of the table data.
+		 *
+		 * @return The data model
+		 */
+		public DataModel<?> getData();
+
+		/***************************************
+		 * Returns the data model of the current selection.
+		 *
+		 * @return The current selection
+		 */
+		public DataModel<?> getSelection();
+
+		/***************************************
+		 * Returns the table title.
+		 *
+		 * @return The table title
+		 */
+		public String getTableTitle();
+
+		/***************************************
+		 * Renders the table from updated content.
+		 */
+		public void repaint();
+
+		/***************************************
+		 * Sets the table columns from a data model of column definitions.
+		 *
+		 * @param rColumnModel The column data model
+		 */
+		public void setColumns(DataModel<ColumnDefinition> rColumnModel);
+
+		/***************************************
+		 * Sets the table data to a data model that contains data models for
+		 * each table row.
+		 *
+		 * @param rDataModel The table data model
+		 */
+		public void setData(DataModel<? extends DataModel<?>> rDataModel);
+
+		/***************************************
+		 * Sets the event dispatcher to be used to notify event listeners.
+		 *
+		 * @param rEventDispatcher The event dispatcher
+		 */
+		public void setEventDispatcher(GewtEventDispatcher rEventDispatcher);
+
+		/***************************************
+		 * Sets the selection and optionally fires a selection event.
+		 *
+		 * @param nIndex     The index of the new selection
+		 * @param bFireEvent TRUE to fire a selection event
+		 */
+		public void setSelection(int nIndex, boolean bFireEvent);
+
+		/***************************************
+		 * Sets the table title.
+		 *
+		 * @param sTableTitle The new table title
+		 */
+		public void setTableTitle(String sTableTitle);
+
+		/***************************************
+		 * Sets the visible row count.
+		 *
+		 * @param nCount The new visible row count
+		 */
+		public void setVisibleRowCount(int nCount);
+	}
+
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
@@ -206,7 +319,7 @@ public abstract class TableControl extends Control implements SingleSelection
 	 * @author eso
 	 */
 	public static class TableControlWidgetFactory
-		implements WidgetFactory<Widget>
+		implements WidgetFactory<IsTableControlWidget>
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -230,9 +343,11 @@ public abstract class TableControl extends Control implements SingleSelection
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
+		public IsTableControlWidget createWidget(
+			Component rComponent,
+			StyleData rStyle)
 		{
-			return new GwtTable(bHierarchical);
+			return new GwtTable(rComponent.getContext(), bHierarchical);
 		}
 	}
 

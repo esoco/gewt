@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.Table;
 import de.esoco.ewt.component.TableControl;
+import de.esoco.ewt.component.TableControl.IsTableControlWidget;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.GewtCss;
@@ -87,9 +88,9 @@ import static de.esoco.lib.property.StyleProperties.HAS_IMAGES;
  * supports the display of hierarchical data.
  */
 public class GwtTable extends Composite
-	implements SingleSelection, Focusable, HasAllFocusHandlers,
-			   HasAllKeyHandlers, HasClickHandlers, HasDoubleClickHandlers,
-			   ClickHandler, KeyDownHandler, RequiresResize,
+	implements IsTableControlWidget, HasAllFocusHandlers, HasAllKeyHandlers,
+			   HasClickHandlers, HasDoubleClickHandlers, ClickHandler,
+			   KeyDownHandler, RequiresResize,
 			   Callback<RemoteDataModel<DataModel<?>>>
 {
 	//~ Static fields/initializers ---------------------------------------------
@@ -145,11 +146,13 @@ public class GwtTable extends Composite
 	/***************************************
 	 * Creates a new instance.
 	 *
+	 * @param rContext      The user interface context
 	 * @param bHierarchical If TRUE the table will display instances of {@link
 	 *                      HierarchicalDataModel} as a tree
 	 */
-	public GwtTable(boolean bHierarchical)
+	public GwtTable(UserInterfaceContext rContext, boolean bHierarchical)
 	{
+		this.rContext	   = rContext;
 		this.bHierarchical = bHierarchical;
 
 		aDataTable.addClickHandler(this);
@@ -251,6 +254,7 @@ public class GwtTable extends Composite
 	/***************************************
 	 * @see Table#getColumns()
 	 */
+	@Override
 	public final DataModel<ColumnDefinition> getColumns()
 	{
 		return aHeader.rColumns;
@@ -269,6 +273,7 @@ public class GwtTable extends Composite
 	/***************************************
 	 * @see Table#getData()
 	 */
+	@Override
 	public final DataModel<? extends DataModel<?>> getData()
 	{
 		return rData;
@@ -277,6 +282,7 @@ public class GwtTable extends Composite
 	/***************************************
 	 * @see TableControl#getSelection()
 	 */
+	@Override
 	public DataModel<?> getSelection()
 	{
 		DataModel<?> rSelection = null;
@@ -320,6 +326,16 @@ public class GwtTable extends Composite
 	}
 
 	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTableTitle()
+	{
+		// not supported
+		return "";
+	}
+
+	/***************************************
 	 * Returns the visible row count.
 	 *
 	 * @return The visible row count
@@ -345,6 +361,7 @@ public class GwtTable extends Composite
 	 *
 	 * @return The enabled state
 	 */
+	@Override
 	public final boolean isEnabled()
 	{
 		return bEnabled;
@@ -474,6 +491,7 @@ public class GwtTable extends Composite
 	 * the type of the data model the model may first need to be updated
 	 * asynchronously.
 	 */
+	@Override
 	public void repaint()
 	{
 		if (nTableRows == -1)
@@ -496,6 +514,7 @@ public class GwtTable extends Composite
 	 *
 	 * @param rNewColumns The table columns data model
 	 */
+	@Override
 	public void setColumns(DataModel<ColumnDefinition> rNewColumns)
 	{
 		// always keep TRUE column change state in case of multiple invocations
@@ -503,18 +522,9 @@ public class GwtTable extends Composite
 	}
 
 	/***************************************
-	 * Sets the user interface context.
-	 *
-	 * @param rContext The new context
-	 */
-	public final void setContext(UserInterfaceContext rContext)
-	{
-		this.rContext = rContext;
-	}
-
-	/***************************************
 	 * @see Table#setData(DataModel)
 	 */
+	@Override
 	public void setData(DataModel<? extends DataModel<?>> rNewData)
 	{
 		if (rNewData != rData)
@@ -552,6 +562,7 @@ public class GwtTable extends Composite
 	 *
 	 * @param bEnabled The new enabled state
 	 */
+	@Override
 	public final void setEnabled(boolean bEnabled)
 	{
 		this.bEnabled = bEnabled;
@@ -576,6 +587,7 @@ public class GwtTable extends Composite
 	 *
 	 * @param rEventDispatcher The event dispatcher
 	 */
+	@Override
 	public void setEventDispatcher(GewtEventDispatcher rEventDispatcher)
 	{
 		this.rEventDispatcher = rEventDispatcher;
@@ -612,6 +624,7 @@ public class GwtTable extends Composite
 	 * @param nRow        The selected row or -1 for no selection
 	 * @param bFireEvents TRUE to fire a selection event
 	 */
+	@Override
 	public void setSelection(int nRow, boolean bFireEvents)
 	{
 		if (nRow == -1 && nSelectedRow != -1 ||
@@ -665,11 +678,21 @@ public class GwtTable extends Composite
 	}
 
 	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTableTitle(String sTableTitle)
+	{
+		// not supported
+	}
+
+	/***************************************
 	 * Sets the visible row count or -1 to calculate the number of rows that fit
 	 * into the table height.
 	 *
 	 * @param nCount The new visible row count
 	 */
+	@Override
 	public final void setVisibleRowCount(int nCount)
 	{
 		if (nCount != nTableRows)
@@ -1508,8 +1531,7 @@ public class GwtTable extends Composite
 				@Override
 				public void execute()
 				{
-					rRemoteModel.setWindowSize(nRows);
-					rRemoteModel.setWindow(nStartRow, rCallback);
+					rRemoteModel.setWindow(nStartRow, nRows, rCallback);
 				}
 			});
 	}

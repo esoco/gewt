@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,6 +30,16 @@ import com.google.gwt.dom.client.NativeEvent;
 public interface GewtEventDispatcher
 {
 	//~ Methods ----------------------------------------------------------------
+
+	/***************************************
+	 * Dispatches an event without a native event.
+	 *
+	 * @param rEventType The event type
+	 */
+	default public void dispatchEvent(EventType rEventType)
+	{
+		dispatchEvent(rEventType, null);
+	}
 
 	/***************************************
 	 * Dispatches an event of a certain type to the registered listeners. If the

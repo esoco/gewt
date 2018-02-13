@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 3.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-3.0
+//	  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.View;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -44,7 +45,6 @@ public abstract class EWTEntryPoint implements EntryPoint
 	public void onModuleLoad()
 	{
 		EWT.CSS.ensureInjected();
-//		GWT.setUncaughtExceptionHandler(new SuperDevModeUncaughtExceptionHandler());
 
 		EWTModule rModule = getApplicationModule();
 
@@ -60,17 +60,6 @@ public abstract class EWTEntryPoint implements EntryPoint
 	}
 
 	/***************************************
-	 * Must be implemented to return a mapping from resource identifiers to
-	 * image resources defining the application images. Subclasses must also
-	 * take into account any superclass implementation and add the superclass
-	 * images to the returned map unless it wants to overriden the parent
-	 * completely.
-	 *
-	 * @return The image resources for this application or NULL for none
-	 */
-	protected abstract Map<String, ImageResource> getApplicationImages();
-
-	/***************************************
 	 * Must be implemented by subclasses to return the application module that
 	 * creates and manages the user interface of this GEWT entry point. This
 	 * method will only be invoked once. Therefore the implementation may create
@@ -82,13 +71,25 @@ public abstract class EWTEntryPoint implements EntryPoint
 	protected abstract EWTModule getApplicationModule();
 
 	/***************************************
-	 * Must be implemented to return an arrays that contains instance of the
-	 * {@link ConstantsWithLookup} interface that contains the application's
-	 * resource string. This method will only be invoked once. Therefore the
-	 * implementation may create the resource on request and doesn't need to
-	 * keep a reference to it.
+	 * Returns a mapping from resource identifiers to image resources. The
+	 * default implementation returns an empty map.
+	 *
+	 * @return The image resources for this application or NULL for none
+	 */
+	protected Map<String, ImageResource> getApplicationImages()
+	{
+		return new HashMap<>();
+	}
+
+	/***************************************
+	 * Returns an arrays of {@link ConstantsWithLookup} instances with the
+	 * application's resource string. The default implementation returns an
+	 * empty array.
 	 *
 	 * @return The resource strings for this application or NULL for none
 	 */
-	protected abstract ConstantsWithLookup[] getApplicationStrings();
+	protected ConstantsWithLookup[] getApplicationStrings()
+	{
+		return new ConstantsWithLookup[0];
+	}
 }

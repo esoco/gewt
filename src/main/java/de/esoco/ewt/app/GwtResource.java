@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.app;
 
-import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.ImageRef;
 
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -37,7 +37,7 @@ public class GwtResource implements Resource
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private ConstantsWithLookup[]			 rStringContants;
+	private final ConstantsWithLookup[]		 rStringContants;
 	private final Map<String, ImageResource> rImages;
 
 	//~ Constructors -----------------------------------------------------------

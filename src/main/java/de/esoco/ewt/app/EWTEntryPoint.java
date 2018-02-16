@@ -20,7 +20,9 @@ import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.View;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -71,25 +73,52 @@ public abstract class EWTEntryPoint implements EntryPoint
 	protected abstract EWTModule getApplicationModule();
 
 	/***************************************
-	 * Returns a mapping from resource identifiers to image resources. The
-	 * default implementation returns an empty map.
+	 * Replaced with {@link #getImageResources()}.
 	 *
-	 * @return The image resources for this application or NULL for none
+	 * @return
+	 *
+	 * @deprecated
 	 */
+	@Deprecated
 	protected Map<String, ImageResource> getApplicationImages()
 	{
-		return new HashMap<>();
+		return getImageResources();
 	}
 
 	/***************************************
-	 * Returns an arrays of {@link ConstantsWithLookup} instances with the
-	 * application's resource string. The default implementation returns an
-	 * empty array.
+	 * Replaced with {@link #getStringResources()}.
 	 *
-	 * @return The resource strings for this application or NULL for none
+	 * @return
+	 *
+	 * @deprecated
 	 */
+	@Deprecated
 	protected ConstantsWithLookup[] getApplicationStrings()
 	{
 		return new ConstantsWithLookup[0];
+	}
+
+	/***************************************
+	 * Returns a mapping from resource identifiers to image resources. The
+	 * default implementation returns an empty map that can be modified by
+	 * subclasses.
+	 *
+	 * @return The image resources for this application
+	 */
+	protected Map<String, ImageResource> getImageResources()
+	{
+		return getApplicationImages();
+	}
+
+	/***************************************
+	 * Returns a list of {@link ConstantsWithLookup} instances with the
+	 * application's resource string. The default implementation returns an
+	 * empty list that can be modified by subclasses.
+	 *
+	 * @return The resource strings for this application
+	 */
+	protected List<ConstantsWithLookup> getStringResources()
+	{
+		return new ArrayList<>(Arrays.asList(getApplicationStrings()));
 	}
 }

@@ -19,7 +19,7 @@ package de.esoco.ewt.impl.gwt.table;
 import de.esoco.ewt.UserInterfaceContext;
 
 import de.esoco.lib.model.Downloadable;
-import de.esoco.lib.model.SearchableDataModel;
+import de.esoco.lib.model.FilterableDataModel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -72,7 +72,7 @@ class TableToolBar extends Composite implements ClickHandler
 
 		UserInterfaceContext rContext = rTable.getContext();
 
-		boolean bFilterPanel = rTable.getData() instanceof SearchableDataModel;
+		boolean bFilterPanel = rTable.getData() instanceof FilterableDataModel;
 
 		Grid aNavButtons   = new Grid(1, 5);
 		Grid aRightButtons = new Grid(1, 3);

@@ -34,7 +34,7 @@ import de.esoco.lib.model.DataModel;
 import de.esoco.lib.model.Downloadable;
 import de.esoco.lib.model.HierarchicalDataModel;
 import de.esoco.lib.model.RemoteDataModel;
-import de.esoco.lib.model.SearchableDataModel;
+import de.esoco.lib.model.FilterableDataModel;
 import de.esoco.lib.property.Flags;
 import de.esoco.lib.property.SingleSelection;
 
@@ -757,7 +757,7 @@ public class GwtTable extends Composite
 
 		if (rFilterPanel != null)
 		{
-			rFilterPanel.update((SearchableDataModel<?>) rData);
+			rFilterPanel.update((FilterableDataModel<?>) rData);
 		}
 	}
 

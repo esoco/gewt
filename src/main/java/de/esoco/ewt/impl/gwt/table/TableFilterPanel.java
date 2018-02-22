@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
 
 import de.esoco.lib.model.ColumnDefinition;
 import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.SearchableDataModel;
+import de.esoco.lib.model.FilterableDataModel;
 import de.esoco.lib.text.TextConvert;
 
 import java.util.ArrayList;
@@ -66,12 +66,12 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_AND_PREFIX;
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_COMPARISON_CHARS;
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_OR_PREFIX;
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_SEPARATOR;
-import static de.esoco.lib.model.SearchableDataModel.CONSTRAINT_SEPARATOR_ESCAPE;
-import static de.esoco.lib.model.SearchableDataModel.NULL_CONSTRAINT_VALUE;
+import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_AND_PREFIX;
+import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_COMPARISON_CHARS;
+import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_OR_PREFIX;
+import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_SEPARATOR;
+import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_SEPARATOR_ESCAPE;
+import static de.esoco.lib.model.FilterableDataModel.NULL_CONSTRAINT_VALUE;
 import static de.esoco.lib.property.ContentProperties.ALLOWED_VALUES;
 import static de.esoco.lib.property.ContentProperties.INPUT_CONSTRAINT;
 import static de.esoco.lib.property.ContentProperties.VALUE_RESOURCE_PREFIX;
@@ -94,7 +94,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	private static final int COL_FILTER_BUTTON  = COL_FILTER_VALUE + 1;
 
 	private static final DateTimeFormat FILTER_DATE_FORMAT =
-		DateTimeFormat.getFormat(SearchableDataModel.CONSTRAINT_DATE_FORMAT_PATTERN);
+		DateTimeFormat.getFormat(FilterableDataModel.CONSTRAINT_DATE_FORMAT_PATTERN);
 
 	//~ Instance fields --------------------------------------------------------
 
@@ -272,7 +272,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	void applyGlobalFilter(String sConstraint)
 	{
-		SearchableDataModel<?> rModel			 = getSearchableModel();
+		FilterableDataModel<?> rModel			 = getSearchableModel();
 		String				   sNumberConstraint = null;
 
 		sConstraint = sConstraint.trim();
@@ -317,11 +317,11 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 
 			if (String.class.getSimpleName().equals(sDatatype))
 			{
-				rModel.setConstraint(sColumnId, sConstraint);
+				rModel.setFilter(sColumnId, sConstraint);
 			}
 			else if (Integer.class.getSimpleName().equals(sDatatype))
 			{
-				rModel.setConstraint(sColumnId, sNumberConstraint);
+				rModel.setFilter(sColumnId, sNumberConstraint);
 			}
 		}
 
@@ -392,7 +392,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	void removeFilter()
 	{
-		getSearchableModel().removeConstraints();
+		getSearchableModel().removeAllFilters();
 		resetInputValue(aFilterInput);
 
 		updateTable();
@@ -411,10 +411,10 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *
 	 * @param rModel The model to read the filter constraints from
 	 */
-	void update(SearchableDataModel<?> rModel)
+	void update(FilterableDataModel<?> rModel)
 	{
 		String  sSimpleFilter	    = searchSimpleFilter(rModel);
-		boolean bHasConstraints     = rModel.getConstraints().size() != 0;
+		boolean bHasConstraints     = rModel.getFilters().size() != 0;
 		boolean bEnableSimpleFilter =
 			(sSimpleFilter != null || !bHasConstraints);
 
@@ -551,12 +551,12 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private void applyComplexFilter()
 	{
-		SearchableDataModel<?> rModel = getSearchableModel();
+		FilterableDataModel<?> rModel = getSearchableModel();
 
 		int     nFilterRows  = aFilterCriteriaPanel.getRowCount() - 1;
 		boolean bHasCriteria = false;
 
-		rModel.removeConstraints();
+		rModel.removeAllFilters();
 
 		for (int nRow = 0; nRow < nFilterRows; nRow++)
 		{
@@ -567,28 +567,26 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 			String			 sColumnId = rColumn.getId();
 			boolean			 bOrTerm   = isOrTerm(nRow);
 
-			String sConstraint = getFilterConstraint(rColumn, rWidget);
+			String sFilter = getFilterConstraint(rColumn, rWidget);
 
-			if (sConstraint.length() > 0)
+			if (sFilter.length() > 0)
 			{
-				String sCurrentConstraint = rModel.getConstraint(sColumnId);
+				String sCurrentFilter = rModel.getFilter(sColumnId);
 
 				char cPrefix =
 					bOrTerm ? CONSTRAINT_OR_PREFIX : CONSTRAINT_AND_PREFIX;
 
-				sConstraint =
+				sFilter =
 					cPrefix + getSelectedFilterComparison(nRow) +
-					sConstraint.replaceAll(CONSTRAINT_SEPARATOR,
-										   CONSTRAINT_SEPARATOR_ESCAPE);
+					sFilter.replaceAll(CONSTRAINT_SEPARATOR,
+									   CONSTRAINT_SEPARATOR_ESCAPE);
 
-				if (sCurrentConstraint != null &&
-					sCurrentConstraint.length() > 0)
+				if (sCurrentFilter != null && sCurrentFilter.length() > 0)
 				{
-					sConstraint =
-						sCurrentConstraint + CONSTRAINT_SEPARATOR + sConstraint;
+					sFilter = sCurrentFilter + CONSTRAINT_SEPARATOR + sFilter;
 				}
 
-				rModel.setConstraint(sColumnId, sConstraint);
+				rModel.setFilter(sColumnId, sFilter);
 				bHasCriteria = true;
 			}
 		}
@@ -1132,9 +1130,9 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 *
 	 * @return The searchable model of the table
 	 */
-	private SearchableDataModel<?> getSearchableModel()
+	private FilterableDataModel<?> getSearchableModel()
 	{
-		return (SearchableDataModel<?>) rTable.getData();
+		return (FilterableDataModel<?>) rTable.getData();
 	}
 
 	/***************************************
@@ -1179,8 +1177,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	 */
 	private void handleComplexFilterButton()
 	{
-		Map<String, String> rConstraints =
-			getSearchableModel().getConstraints();
+		Map<String, String> rConstraints = getSearchableModel().getFilters();
 
 		aFilterPopup		 = new DecoratedPopupPanel(true, true);
 		aFilterCriteriaPanel = new FlexTable();
@@ -1269,7 +1266,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 		{
 			applyComplexFilter();
 		}
-		else if (getSearchableModel().getConstraints().isEmpty())
+		else if (getSearchableModel().getFilters().isEmpty())
 		{
 			resetFilter();
 		}
@@ -1350,7 +1347,7 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	}
 
 	/***************************************
-	 * Analyzes the constraints of a {@link SearchableDataModel} to check
+	 * Analyzes the constraints of a {@link FilterableDataModel} to check
 	 * whether they represent a single search term for all searchable columns.
 	 *
 	 * @param  rDataModel The data model to get the filter criteria from
@@ -1361,12 +1358,12 @@ class TableFilterPanel extends Composite implements ClickHandler, KeyUpHandler,
 	{
 		String sFilter = null;
 
-		if (rDataModel instanceof SearchableDataModel)
+		if (rDataModel instanceof FilterableDataModel)
 		{
-			SearchableDataModel<?> rSearchableModel =
-				(SearchableDataModel<?>) rDataModel;
+			FilterableDataModel<?> rSearchableModel =
+				(FilterableDataModel<?>) rDataModel;
 
-			for (String sCriterion : rSearchableModel.getConstraints().values())
+			for (String sCriterion : rSearchableModel.getFilters().values())
 			{
 				if (sCriterion.endsWith("*"))
 				{

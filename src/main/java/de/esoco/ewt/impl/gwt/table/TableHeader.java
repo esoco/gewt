@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import de.esoco.ewt.impl.gwt.ValueFormat;
 import de.esoco.lib.model.ColumnDefinition;
 import de.esoco.lib.model.DataModel;
 import de.esoco.lib.model.SortableDataModel;
-import de.esoco.lib.model.SortableDataModel.SortMode;
 import de.esoco.lib.property.ContentType;
+import de.esoco.lib.property.SortDirection;
 import de.esoco.lib.text.TextConvert;
 
 import java.sql.Time;
@@ -521,28 +521,29 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 
 		if (rColumn.hasFlag(SORTABLE) && rData instanceof SortableDataModel<?>)
 		{
-			SortableDataModel<?> rModel    = (SortableDataModel<?>) rData;
-			String				 sColumnId = rColumn.getId();
-			SortMode			 rSortMode = rModel.getSortMode(sColumnId);
+			SortableDataModel<?> rModel		    = (SortableDataModel<?>) rData;
+			String				 sColumnId	    = rColumn.getId();
+			SortDirection		 rSortDirection =
+				rModel.getSortDirection(sColumnId);
 
 			ColumnHeader rHeader =
 				(ColumnHeader) aHeaderTable.getWidget(0, nCol);
 
-			if (rSortMode == SortMode.ASCENDING)
+			if (rSortDirection == SortDirection.ASCENDING)
 			{
-				rSortMode = SortMode.DESCENDING;
+				rSortDirection = SortDirection.DESCENDING;
 			}
-			else if (rSortMode == SortMode.DESCENDING)
+			else if (rSortDirection == SortDirection.DESCENDING)
 			{
-				rSortMode = null;
+				rSortDirection = null;
 			}
 			else
 			{
-				rSortMode = SortMode.ASCENDING;
+				rSortDirection = SortDirection.ASCENDING;
 			}
 
-			rHeader.setSortIndicator(rSortMode);
-			rModel.setSortMode(sColumnId, rSortMode);
+			rHeader.setSortIndicator(rSortDirection);
+			rModel.setSortDirection(sColumnId, rSortDirection);
 			rTable.update();
 		}
 	}
@@ -840,13 +841,13 @@ class TableHeader extends Composite implements ClickHandler, MouseMoveHandler,
 		/***************************************
 		 * Sets the sort indicator.
 		 *
-		 * @param rMode The new sort indicator
+		 * @param eDirection The new sort indicator
 		 */
-		void setSortIndicator(SortMode rMode)
+		void setSortIndicator(SortDirection eDirection)
 		{
-			if (rMode != null)
+			if (eDirection != null)
 			{
-				aSortIndicator.setResource(rMode == SortMode.ASCENDING
+				aSortIndicator.setResource(eDirection == SortDirection.ASCENDING
 										   ? GwtTable.RES.imSortAscending()
 										   : GwtTable.RES.imSortDescending());
 				aSortIndicator.setVisible(true);

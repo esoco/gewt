@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
+import de.esoco.lib.property.ContentType;
 import de.esoco.lib.property.LabelStyle;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
@@ -42,6 +43,8 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 
+import static de.esoco.lib.property.ContentProperties.CONTENT_TYPE;
+
 
 /********************************************************************
  * A GWT-specific EWT label implementation.
@@ -52,9 +55,11 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private String		    sText;
-	private Image		    rImage;
+	private String sText;
+	private Image  rImage;
+
 	private AlignedPosition rTextPosition;
+	private boolean		    bContainsHtml;
 
 	//~ Methods ----------------------------------------------------------------
 
@@ -67,6 +72,8 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		super.applyStyle(rStyle);
 
 		rTextPosition = getTextPosition(rStyle);
+		bContainsHtml =
+			rStyle.getProperty(CONTENT_TYPE, null) == ContentType.HTML;
 	}
 
 	/***************************************
@@ -166,20 +173,17 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 								 "100%");
 		}
 
-		if (rWidget instanceof HasHTML)
+		if (bContainsHtml && rWidget instanceof HasHTML)
 		{
 			((HasHTML) rWidget).setHTML(sLabel);
 		}
+		else if (bImageLabel)
+		{
+			rWidget.getElement().setInnerHTML(sLabel);
+		}
 		else if (rWidget instanceof HasText)
 		{
-			if (bImageLabel)
-			{
-				rWidget.getElement().setInnerHTML(sLabel);
-			}
-			else
-			{
-				((HasText) rWidget).setText(sLabel);
-			}
+			((HasText) rWidget).setText(sLabel);
 		}
 	}
 

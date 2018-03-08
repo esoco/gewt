@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.component.DeckPanel.DeckLayoutPanelLayout;
 import de.esoco.ewt.component.DeckPanel.DeckPanelLayout;
@@ -123,20 +124,12 @@ public class DefaultLayoutFactory implements LayoutFactory
 				aLayout = new FlowLayout();
 				break;
 
+			case FLEX:
+				aLayout = new CssStyleLayout(EWT.CSS.ewtFlexboxPanel());
+				break;
+
 			case CSS_GRID:
-				aLayout =
-					new GenericLayout()
-					{
-						@Override
-						public HasWidgets createLayoutContainer(
-							Container rContainer,
-							StyleData rStyle)
-						{
-							return new CssGridPanel();
-						}
-					};
-
-
+				aLayout = new CssStyleLayout(EWT.CSS.ewtCssGridPanel());
 				break;
 
 			case LIST:
@@ -172,22 +165,56 @@ public class DefaultLayoutFactory implements LayoutFactory
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Panel for CSS grids.
+	 * A generic layout implementation that creates a simple panel that is
+	 * controlled by CSS styles (like CSS grid or flexbox).
+	 *
+	 * <p>If the panel needs a specific value of it's 'display' property that
+	 * must be set in the CSS for the given style name. This is because the GWT
+	 * setVisible() implementation toggles 'display' between 'none' and it's CSS
+	 * default; setting it programmatically therefore wouldn't have an effect
+	 * because it would be overridden by invocations of setVisible().</p>
 	 *
 	 * @author eso
 	 */
-	static class CssGridPanel extends FlowPanel
+	static class CssStyleLayout extends GenericLayout
 	{
+		//~ Instance fields ----------------------------------------------------
+
+		private String sCssStyleName;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sStyleName The CSS style name of this instance
+		 */
+		public CssStyleLayout(String sStyleName)
+		{
+			super();
+			sCssStyleName = sStyleName;
+		}
+
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see com.google.gwt.user.client.ui.Widget#onAttach()
+		 * {@inheritDoc}
 		 */
 		@Override
-		protected void onAttach()
+		public HasWidgets createLayoutContainer(
+			Container rContainer,
+			StyleData rStyle)
 		{
-			super.onAttach();
-			addStyleName("ewt-CssGridPanel");
+			return new FlowPanel()
+			{
+				@Override
+				protected void onAttach()
+				{
+					super.onAttach();
+
+					addStyleName(sCssStyleName);
+				}
+			};
 		}
 	}
 }

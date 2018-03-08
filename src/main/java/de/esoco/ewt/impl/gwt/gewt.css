@@ -1,59 +1,64 @@
 @external .datePickerMonthSelector, datePickerMonth;
-
-.datePickerMonthSelector, .datePickerMonth
-{}
+.datePickerMonthSelector, .datePickerMonth {
+	
+}
 
 @external .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main;
 @external .ewt-Limited, .ewt-Error;
-
 .ewt-TableRow, .ewt-Empty, .ewt-Odd, .ewt-Selected, .ewt-Main, .ewt-Limited,
-.ewt-Error
-{}
+	.ewt-Error {
+	
+}
 
 @external .ewt-EdgeLayout, .ewt-ContentPanel;
 @external .ewt-MainView, .ewt-ChildView, .ewt-DialogView, .ewt-DialogTitle;
 @external .ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon;
-@external .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker; 
+@external .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker;
 @external .ewt-Chart, .ewt-NoChartDataLabel  .ewt-TreeNode;
-@external .ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer; 
+@external .ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer;
 @external .ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect;
+.ewt-EdgeLayout, .ewt-ContentPanel, .ewt-MainView, .ewt-ChildView,
+	.ewt-DialogView, .ewt-DialogTitle, .ewt-MessageBox, .ewt-MessageLabel,
+	.ewt-MessageIcon, .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker,
+	.ewt-Chart, .ewt-NoChartDataLabel, .ewt-TreeNode, .ewt-Header, .ewt-Toolbar,
+	.ewt-SortIndicator, .ewt-Resizer, .ewt-NavButtons, .ewt-Filter, .ewt-NoSelect {
+	
+}
 
-.ewt-EdgeLayout, .ewt-ContentPanel,
-.ewt-MainView, .ewt-ChildView, .ewt-DialogView, .ewt-DialogTitle,
-.ewt-MessageBox, .ewt-MessageLabel, .ewt-MessageIcon,
-.ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker, 
-.ewt-Chart, .ewt-NoChartDataLabel, .ewt-TreeNode,
-.ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer, 
-.ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect 
-{}
-
-@external .ewt-Table, .ewt-Table-disabled, .ewt-DataTable;  
+@external .ewt-Table, .ewt-Table-disabled, .ewt-DataTable;
 @external .ewt-TableFilterPopup, .ewt-TableFilterButton;
 @external .ewt-TableFilterButton-active;
 @external .ewt-TableFilterValue, .ewt-TableFilterValue-disabled;
-
-.ewt-Table, .ewt-Table-disabled, .ewt-DataTable,  
-.ewt-TableFilterPopup, .ewt-TableFilterButton,
-.ewt-TableFilterButton-active,
-.ewt-TableFilterValue, .ewt-TableFilterValue-disabled
-{}
+.ewt-Table, .ewt-Table-disabled, .ewt-DataTable, .ewt-TableFilterPopup,
+	.ewt-TableFilterButton, .ewt-TableFilterButton-active, .ewt-TableFilterValue,
+	.ewt-TableFilterValue-disabled {
+	
+}
 
 @external .ewt-TagField, .ewt-TagField-disabled, .ewt-TagInput;
 @external .ewt-TagDisplay, .ewt-TagDisplay-selected;
-
-.ewt-TagField, .ewt-TagField-disabled, .ewt-TagInput,
-.ewt-TagDisplay, .ewt-TagDisplay-selected
-{}
+.ewt-TagField, .ewt-TagField-disabled, .ewt-TagInput, .ewt-TagDisplay,
+	.ewt-TagDisplay-selected {
+	
+}
 
 @external .ewt-Spinner, .ewt-SpinnerInput, .ewt-SpinnerButtons;
 @external .ewt-SpinnerButton, .ewt-SpinnerButton-up;
-@external .ewt-SpinnerButton-up-hovering, .ewt-SpinnerButton-up-disabled; 
+@external .ewt-SpinnerButton-up-hovering, .ewt-SpinnerButton-up-disabled;
 @external .ewt-SpinnerButton-down;
 @external .ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled;
- 
 .ewt-Spinner, .ewt-SpinnerInput, .ewt-SpinnerButtons, .ewt-SpinnerButton,
-.ewt-SpinnerButton-up,
-.ewt-SpinnerButton-up-hovering, .ewt-SpinnerButton-up-disabled, 
-.ewt-SpinnerButton-down, 
-.ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled 
-{}
+	.ewt-SpinnerButton-up, .ewt-SpinnerButton-up-hovering,
+	.ewt-SpinnerButton-up-disabled, .ewt-SpinnerButton-down,
+	.ewt-SpinnerButton-down-hovering, .ewt-SpinnerButton-down-disabled {
+	
+}
+
+@external .ewt-CssGridPanel, .ewt-FlexboxPanel;
+.ewt-CssGridPanel {
+	display: grid;
+}
+
+.ewt-FlexboxPanel {
+	display: flex;	
+}

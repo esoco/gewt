@@ -338,7 +338,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		@Override
 		public void setText(String sText)
 		{
-			setStyleName(sText);
+			rElement.setInnerText(sText);
 		}
 	}
 

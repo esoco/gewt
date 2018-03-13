@@ -22,6 +22,7 @@ import de.esoco.ewt.component.View;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public abstract class EWTEntryPoint implements EntryPoint
 		EWTModule rModule = getApplicationModule();
 
 		GwtResource aResource =
-			new GwtResource(getApplicationStrings(), getApplicationImages());
+			new GwtResource(getStringResources(), getImageResources());
 
 		UserInterfaceContext rContext =
 			EWT.createUserInterfaceContext(aResource);
@@ -82,7 +83,7 @@ public abstract class EWTEntryPoint implements EntryPoint
 	@Deprecated
 	protected Map<String, ImageResource> getApplicationImages()
 	{
-		return getImageResources();
+		return new HashMap<>();
 	}
 
 	/***************************************

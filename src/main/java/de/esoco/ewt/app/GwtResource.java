@@ -19,6 +19,7 @@ package de.esoco.ewt.app;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.ImageRef;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.MissingResourceException;
 
@@ -37,8 +38,8 @@ public class GwtResource implements Resource
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private final ConstantsWithLookup[]		 rStringContants;
-	private final Map<String, ImageResource> rImages;
+	private final Collection<ConstantsWithLookup> rStrings;
+	private final Map<String, ImageResource>	  rImages;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -49,21 +50,21 @@ public class GwtResource implements Resource
 	 */
 	public GwtResource(ConstantsWithLookup rConstants)
 	{
-		this(new ConstantsWithLookup[] { rConstants }, null);
+		this(null, null);
 	}
 
 	/***************************************
 	 * Creates a new instance performs string and image lookups.
 	 *
-	 * @param rStringConstants The constants to lookup strings from
-	 * @param rImages          A mapping from string keys to image resources
+	 * @param rStrings The constants to lookup strings from
+	 * @param rImages  A mapping from string keys to image resources
 	 */
 	public GwtResource(
-		ConstantsWithLookup[]	   rStringConstants,
-		Map<String, ImageResource> rImages)
+		Collection<ConstantsWithLookup> rStrings,
+		Map<String, ImageResource>		rImages)
 	{
-		this.rStringContants = rStringConstants;
-		this.rImages		 = rImages;
+		this.rStrings = rStrings;
+		this.rImages  = rImages;
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -97,9 +98,9 @@ public class GwtResource implements Resource
 	{
 		String sValue = null;
 
-		if (rStringContants != null)
+		if (rStrings != null)
 		{
-			for (ConstantsWithLookup rStrings : rStringContants)
+			for (ConstantsWithLookup rStrings : rStrings)
 			{
 				try
 				{
@@ -107,7 +108,7 @@ public class GwtResource implements Resource
 				}
 				catch (MissingResourceException e)
 				{
-					// ignore and return NULL
+					// ignore and continue checking or return NULL
 				}
 
 				if (sValue != null)

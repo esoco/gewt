@@ -30,6 +30,7 @@ import de.esoco.lib.property.LabelStyle;
 import de.esoco.lib.property.TextAttribute;
 import de.esoco.lib.property.UserInterfaceProperties;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.LabelElement;
@@ -53,6 +54,10 @@ import static de.esoco.lib.property.ContentProperties.CONTENT_TYPE;
  */
 public class Label extends Component implements TextAttribute, ImageAttribute
 {
+	//~ Static fields/initializers ---------------------------------------------
+
+	private static final String URL_TEXT_PREFIX = "url:";
+
 	//~ Instance fields --------------------------------------------------------
 
 	private String sText;
@@ -74,6 +79,11 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		rTextPosition = getTextPosition(rStyle);
 		bContainsHtml =
 			rStyle.getProperty(CONTENT_TYPE, null) == ContentType.HTML;
+
+		if (bContainsHtml)
+		{
+			addStyleName("contains-html");
+		}
 	}
 
 	/***************************************
@@ -137,7 +147,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 		else
 		{
-			setLabelContent();
+			setLabelContent(sText);
 		}
 	}
 
@@ -145,20 +155,45 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 	 * @see TextAttribute#setText(String)
 	 */
 	@Override
-	public void setText(String sText)
+	public void setText(String sNewText)
 	{
-		this.sText = sText != null ? getContext().expandResource(sText) : null;
+		sText = sNewText != null ? getContext().expandResource(sNewText) : null;
 
-		setLabelContent();
+		if (sText != null && sText.startsWith(URL_TEXT_PREFIX))
+		{
+			EWT.requestUrlContent(sText.substring(URL_TEXT_PREFIX.length()),
+								  (t, u) ->
+								  setLabelContent(EWT.convertToInnerHtml(t, u)),
+								  this::handleUrlAccessError);
+		}
+		else
+		{
+			setLabelContent(sText);
+		}
+	}
+
+	/***************************************
+	 * Logs and displays an error upon querying the label text from a URL.
+	 *
+	 * @param e The error exception
+	 */
+	private void handleUrlAccessError(Throwable e)
+	{
+		GWT.log("Error reading " + sText, e);
+		sText = getContext().expandResource("$msgUrlTextNotAvailable");
+		setLabelContent(sText);
 	}
 
 	/***************************************
 	 * Sets the label html.
+	 *
+	 * @param sLabelText The text to set the content from (may be NULL for
+	 *                   image-only labels)
 	 */
-	private void setLabelContent()
+	private void setLabelContent(String sLabelText)
 	{
 		Widget  rWidget     = getWidget();
-		String  sLabel	    = sText != null ? sText : "";
+		String  sLabel	    = sLabelText != null ? sLabelText : "";
 		boolean bImageLabel = rImage instanceof ImageRef;
 
 		if (bImageLabel)
@@ -166,7 +201,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 			rWidget.addStyleName(EWT.CSS.ewtImageLabel());
 
 			sLabel =
-				createImageLabel(sText,
+				createImageLabel(sLabelText,
 								 (ImageRef) rImage,
 								 rTextPosition,
 								 HasHorizontalAlignment.ALIGN_CENTER,

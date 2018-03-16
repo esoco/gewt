@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -68,8 +68,18 @@ import de.esoco.lib.text.TextConvert;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -157,6 +167,57 @@ public class EWT
 		{
 			addCssClassMapping(rMapping.getKey(), rMapping.getValue());
 		}
+	}
+
+	/***************************************
+	 * Converts an HTML string so that it can be used as the inner HTML of a
+	 * widget. If the input is a complete HTML page this method then first
+	 * extracts the content of the body tag. Then it converts all relative URL
+	 * references with absolute URLs of the given base URL.
+	 *
+	 * @param  sHtml    The HTML to convert
+	 * @param  sBaseUrl The base URL for the conversion of relative URLs
+	 *
+	 * @return The converted HTML string
+	 */
+	public static String convertToInnerHtml(String sHtml, String sBaseUrl)
+	{
+		MatchResult aResult =
+			RegExp.compile("<body[^>]*>[\\s\\S]*<\\/body>").exec(sHtml);
+
+		if (aResult != null && aResult.getGroupCount() > 0)
+		{
+			// use only body content if the request returns a full HTML page
+			sHtml = aResult.getGroup(0);
+		}
+
+		SplitResult aSrcRefs  = RegExp.compile("src=\"(.*?)\"").split(sHtml);
+		int		    nRefCount = aSrcRefs.length() / 3;
+
+		if (nRefCount > 0)
+		{
+			StringBuilder aExpandedText = new StringBuilder();
+
+			for (int i = 0; i < nRefCount; i += 3)
+			{
+				String sUrl = aSrcRefs.get(i + 1);
+
+				if (!sUrl.startsWith("http"))
+				{
+					sUrl = sBaseUrl + sUrl;
+				}
+
+				aExpandedText.append(aSrcRefs.get(i));
+				aExpandedText.append("src=\"");
+				aExpandedText.append(sUrl);
+				aExpandedText.append('"');
+				aExpandedText.append(aSrcRefs.get(i + 2));
+			}
+
+			sHtml = aExpandedText.toString();
+		}
+
+		return sHtml;
 	}
 
 	/***************************************
@@ -470,6 +531,59 @@ public class EWT
 		if (bReplaceExisting || !aWidgetFactories.containsKey(rComponentClass))
 		{
 			aWidgetFactories.put(rComponentClass, rFactory);
+		}
+	}
+
+	/***************************************
+	 * Executes an HTTP request that retrieves the content of the argument URL.
+	 * If the URL is relative (i.e. doesn't start with 'http') it will be
+	 * retrieved relative to the GWT base path for static resources.
+	 *
+	 * @param sUrl            The URL to retrieve
+	 * @param fProcessContent a binary function that receives the retrieved URL
+	 *                        content and the base URL of the content as it's
+	 *                        argument
+	 * @param fHandleError    A function that handles errors
+	 */
+	public static void requestUrlContent(
+		String					   sUrl,
+		BiConsumer<String, String> fProcessContent,
+		Consumer<Throwable>		   fHandleError)
+	{
+		if (!sUrl.startsWith("http"))
+		{
+			sUrl = GWT.getModuleBaseForStaticFiles() + sUrl;
+		}
+
+		String sBaseUrl = sUrl.substring(0, sUrl.lastIndexOf('/') + 1);
+
+		RequestBuilder aRequestBuilder =
+			new RequestBuilder(RequestBuilder.GET, sUrl);
+
+		aRequestBuilder.setCallback(new RequestCallback()
+			{
+				@Override
+				public void onResponseReceived(
+					Request  rRequest,
+					Response rResponse)
+				{
+					fProcessContent.accept(rResponse.getText(), sBaseUrl);
+				}
+
+				@Override
+				public void onError(Request rRequest, Throwable e)
+				{
+					fHandleError.accept(e);
+				}
+			});
+
+		try
+		{
+			aRequestBuilder.send();
+		}
+		catch (RequestException e)
+		{
+			fHandleError.accept(e);
 		}
 	}
 

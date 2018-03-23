@@ -331,7 +331,7 @@ public abstract class Component implements HasId<String>
 
 		if (rWidgetStyleHandler != null)
 		{
-			rWidgetStyleHandler.applyWidgetStyle(rIsWidget, rNewStyle);
+			rWidgetStyleHandler.applyWidgetStyle(this, rNewStyle);
 		}
 	}
 

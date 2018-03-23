@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package de.esoco.ewt.impl.gwt;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.style.StyleData;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 
 /********************************************************************
  * An interface for the global handling of widget style updates. Registered with
@@ -35,8 +33,8 @@ public interface WidgetStyleHandler
 	/***************************************
 	 * Will be invoked to apply a new style to a component widget.
 	 *
-	 * @param rWidget The widget
-	 * @param rStyle  The new style
+	 * @param rComponent rWidget The component
+	 * @param rStyle     The new style
 	 */
-	public void applyWidgetStyle(IsWidget rWidget, StyleData rStyle);
+	public void applyWidgetStyle(Component rComponent, StyleData rStyle);
 }

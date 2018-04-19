@@ -192,26 +192,25 @@ public class EWT
 		}
 
 		SplitResult aSrcRefs  = RegExp.compile("src=\"(.*?)\"").split(sHtml);
-		int		    nRefCount = aSrcRefs.length() / 3;
+		int		    nRefCount = aSrcRefs.length();
 
 		if (nRefCount > 0)
 		{
-			StringBuilder aExpandedText = new StringBuilder();
+			StringBuilder aExpandedText = new StringBuilder(aSrcRefs.get(0));
 
-			for (int i = 0; i < nRefCount; i += 3)
+			for (int i = 1; i < nRefCount; i += 2)
 			{
-				String sUrl = aSrcRefs.get(i + 1);
+				String sUrl = aSrcRefs.get(i);
 
 				if (!sUrl.startsWith("http"))
 				{
 					sUrl = sBaseUrl + sUrl;
 				}
 
-				aExpandedText.append(aSrcRefs.get(i));
 				aExpandedText.append("src=\"");
 				aExpandedText.append(sUrl);
 				aExpandedText.append('"');
-				aExpandedText.append(aSrcRefs.get(i + 2));
+				aExpandedText.append(aSrcRefs.get(i + 1));
 			}
 
 			sHtml = aExpandedText.toString();

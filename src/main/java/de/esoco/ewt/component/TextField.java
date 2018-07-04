@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
+import de.esoco.lib.property.TextFieldStyle;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -27,6 +29,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+
+import static de.esoco.lib.property.StyleProperties.TEXT_FIELD_STYLE;
 
 
 /********************************************************************
@@ -98,9 +102,12 @@ public class TextField extends TextControl
 		@SuppressWarnings("unchecked")
 		public W createWidget(Component rComponent, StyleData rStyle)
 		{
+			TextFieldStyle eStyle =
+				rStyle.getProperty(TEXT_FIELD_STYLE, TextFieldStyle.DEFAULT);
+
 			IsTextControlWidget aTextBox;
 
-			if (rStyle.hasFlag(StyleFlag.PASSWORD))
+			if (eStyle == TextFieldStyle.PASSWORD)
 			{
 				aTextBox = new GwtPasswordBox();
 			}
@@ -118,7 +125,8 @@ public class TextField extends TextControl
 	 *
 	 * @author eso
 	 */
-	static class GwtPasswordBox extends PasswordTextBox implements IsTextControlWidget
+	static class GwtPasswordBox extends PasswordTextBox
+		implements IsTextControlWidget
 	{
 		//~ Constructors -------------------------------------------------------
 

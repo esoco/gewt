@@ -866,7 +866,7 @@ public abstract class Component implements HasId<String>
 	 */
 	protected IsWidget createWidget(StyleData rStyle)
 	{
-		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(this);
+		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(getClass());
 
 		if (rWidgetFactory != null)
 		{

@@ -293,20 +293,22 @@ public class EWT
 	/***************************************
 	 * Returns the widget factory for a certain component or layout instance.
 	 *
-	 * @param  rComponent The object for which to return the factory for
+	 * @param  rComponentClass The component class for which to return the
+	 *                         factory for
 	 *
 	 * @return The widget factory or NULL if no factory has been registered
 	 *
 	 * @see    #registerWidgetFactory(Class, WidgetFactory, boolean)
 	 */
-	public static WidgetFactory<?> getWidgetFactory(Component rComponent)
+	public static WidgetFactory<?> getWidgetFactory(
+		Class<? extends Component> rComponentClass)
 	{
 		if (aWidgetFactories.isEmpty())
 		{
 			registerDefaultWidgetFactories(true);
 		}
 
-		return aWidgetFactories.get(rComponent.getClass());
+		return aWidgetFactories.get(rComponentClass);
 	}
 
 	/***************************************

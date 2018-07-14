@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.build;
+package de.esoco.ewt.component;
 
-import de.esoco.ewt.component.Button;
-import de.esoco.ewt.component.Label;
-import de.esoco.ewt.component.TextField;
+import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.KeyCode;
 import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.FillLayout;
-import de.esoco.ewt.layout.GridLayout;
+import de.esoco.ewt.layout.TableGridLayout;
 import de.esoco.ewt.style.AlignedPosition;
 import de.esoco.ewt.style.StyleData;
-import de.esoco.ewt.style.StyleFlag;
+
 import de.esoco.lib.property.Color;
 
 import java.math.BigDecimal;
@@ -38,13 +36,12 @@ import java.util.Stack;
 
 
 /********************************************************************
- * A builder object that creates a calculator panel with a builder. The method
- * {@link #buildPanel(ContainerBuilder, StyleData)} must be invoked to create
- * the panel for the instance.
+ * A calculator composite that allows the user to interactively calculate a
+ * {@link BigDecimal} value.
  *
  * @author eso
  */
-public class CalculatorPanel implements EWTEventHandler
+public class Calculator extends Composite implements EWTEventHandler
 {
 	//~ Static fields/initializers ---------------------------------------------
 
@@ -103,23 +100,33 @@ public class CalculatorPanel implements EWTEventHandler
 
 	private Stack<Operation> aOperationStack = new Stack<Operation>();
 
+	//~ Constructors -----------------------------------------------------------
+
+	/***************************************
+	 * Creates a new instance.
+	 */
+	public Calculator()
+	{
+		super(new EdgeLayout(0));
+	}
+
 	//~ Static methods ---------------------------------------------------------
 
 	/***************************************
 	 * Calculates the square root of a {@link BigDecimal} value.
 	 *
-	 * @param  nValue  The value to calculate the square root of
+	 * @param  dValue  The value to calculate the square root of
 	 * @param  nDigits The number of digits to calculate
 	 *
 	 * @return A big decimal containing the square root value
 	 */
-	public static BigDecimal sqrt(BigDecimal nValue, int nDigits)
+	public static BigDecimal sqrt(BigDecimal dValue, int nDigits)
 	{
 		BigDecimal zero		  = BigDecimal.ZERO.setScale(nDigits + 10);
 		BigDecimal one		  = BigDecimal.ONE.setScale(nDigits + 10);
 		BigDecimal two		  = new BigDecimal(2).setScale(nDigits + 10);
 		BigDecimal nFinalDiff = one.movePointLeft(nDigits);
-		BigDecimal nUpper     = nValue.compareTo(one) <= 0 ? one : nValue;
+		BigDecimal nUpper     = dValue.compareTo(one) <= 0 ? one : dValue;
 		BigDecimal nLower     = zero;
 		BigDecimal nMiddle;
 		boolean    bContinue;
@@ -129,13 +136,13 @@ public class CalculatorPanel implements EWTEventHandler
 			nMiddle = nLower.add(nUpper).divide(two, BigDecimal.ROUND_HALF_UP);
 
 			BigDecimal nSquare = nMiddle.multiply(nMiddle);
-			BigDecimal nDiff   = nValue.subtract(nSquare).abs();
+			BigDecimal nDiff   = dValue.subtract(nSquare).abs();
 
 			bContinue = nDiff.compareTo(nFinalDiff) > 0;
 
 			if (bContinue)
 			{
-				if (nSquare.compareTo(nValue) < 0)
+				if (nSquare.compareTo(dValue) < 0)
 				{
 					nLower = nMiddle;
 				}
@@ -151,57 +158,6 @@ public class CalculatorPanel implements EWTEventHandler
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * Builds this calculator panel with the given builder.
-	 *
-	 * @param rBuilder The builder to create the panel with
-	 * @param rStyle   The base style of the panel
-	 */
-	public void buildPanel(ContainerBuilder<?> rBuilder, StyleData rStyle)
-	{
-		int nGap = 3;
-
-		rBuilder = rBuilder.addPanel(rStyle);
-
-		StyleData rDisplayStyle     =
-			StyleData.DEFAULT.setFlags(StyleFlag.HORIZONTAL_ALIGN_RIGHT,
-									   StyleFlag.BEVEL_LOWERED,
-									   StyleFlag.NO_BORDER);
-		StyleData rMemoryLabelStyle =
-			StyleData.DEFAULT.setFlags(StyleFlag.HORIZONTAL_ALIGN_CENTER,
-									   StyleFlag.ETCHED_OUT);
-
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.TOP.setFlags(StyleFlag.BEVEL_RAISED),
-							  new FillLayout(nGap));
-
-		aDisplay     = rBuilder.addTextField(rDisplayStyle, "0.");
-		aMemoryLabel = rBuilder.addLabel(rMemoryLabelStyle, "", null);
-
-		aDisplay.setEditable(false);
-		aDisplay.addEventListener(EventType.KEY_PRESSED, this);
-		rBuilder = rBuilder.getParent();
-
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.CENTER,
-							  new EdgeLayout(nGap, nGap * 2));
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.TOP,
-							  new GridLayout(1, false, nGap));
-
-		addButtons(rBuilder, CONTROL_BUTTONS, Color.RED.toRGB());
-		rBuilder = rBuilder.getParent();
-
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.CENTER,
-							  new GridLayout(4, false, nGap));
-		addButtons(rBuilder, MEMORY_BUTTONS, Color.RED.toRGB());
-		addButtons(rBuilder, DIGIT_BUTTONS, Integer.MIN_VALUE);
-		addButtons(rBuilder, FUNCTION_BUTTONS, Color.BLUE.toRGB());
-
-		update(true);
-	}
 
 	/***************************************
 	 * Returns the currentValue value.
@@ -249,6 +205,45 @@ public class CalculatorPanel implements EWTEventHandler
 	public final void setValue(BigDecimal rCurrentValue)
 	{
 		aCurrentValue = rCurrentValue;
+		update(true);
+	}
+
+	/***************************************
+	 * Builds this calculator panel with the given builder.
+	 *
+	 * @param rBuilder The builder to create the panel with
+	 */
+	@Override
+	protected void build(ContainerBuilder<?> rBuilder)
+	{
+		int nGap = 3;
+
+		rBuilder = rBuilder.addPanel(AlignedPosition.TOP, new FillLayout(nGap));
+
+		aDisplay     = rBuilder.addTextField(StyleData.DEFAULT, "0.");
+		aMemoryLabel = rBuilder.addLabel(StyleData.DEFAULT, "", null);
+
+		aDisplay.setEditable(true);
+		aDisplay.addEventListener(EventType.KEY_PRESSED, this);
+
+		rBuilder = rBuilder.getParent();
+		rBuilder =
+			rBuilder.addPanel(AlignedPosition.CENTER,
+							  new EdgeLayout(nGap, nGap * 2));
+		rBuilder =
+			rBuilder.addPanel(AlignedPosition.TOP,
+							  new TableGridLayout(1, false, nGap));
+
+		addButtons(rBuilder, CONTROL_BUTTONS, Color.RED.toRGB());
+		rBuilder = rBuilder.getParent();
+
+		rBuilder =
+			rBuilder.addPanel(AlignedPosition.CENTER,
+							  new TableGridLayout(4, false, nGap));
+		addButtons(rBuilder, MEMORY_BUTTONS, Color.RED.toRGB());
+		addButtons(rBuilder, DIGIT_BUTTONS, Integer.MIN_VALUE);
+		addButtons(rBuilder, FUNCTION_BUTTONS, Color.BLUE.toRGB());
+
 		update(true);
 	}
 

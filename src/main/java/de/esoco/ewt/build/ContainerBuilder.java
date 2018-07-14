@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 3.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-3.0
+//	  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import de.esoco.ewt.component.Calendar;
 import de.esoco.ewt.component.CheckBox;
 import de.esoco.ewt.component.ComboBox;
 import de.esoco.ewt.component.Component;
+import de.esoco.ewt.component.Composite;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.component.DateField;
 import de.esoco.ewt.component.DeckPanel;
@@ -169,6 +170,37 @@ public class ContainerBuilder<C extends Container>
 	}
 
 	/***************************************
+	 * Adds a custom {@link Component} component to the container.
+	 *
+	 * @param  rComponent The component to add
+	 * @param  rStyle     The style data
+	 *
+	 * @return The input component, attached to the container
+	 */
+	public <T extends Component> T addComponent(T rComponent, StyleData rStyle)
+	{
+		addComponent(rComponent, rStyle, null, null);
+
+		return rComponent;
+	}
+
+	/***************************************
+	 * Adds an instance of a certain {@link Composite} implementation to the
+	 * container.
+	 *
+	 * @param  rComposite The composite to add
+	 * @param  rStyle     The style data
+	 *
+	 * @return The input composite, attached to the container
+	 */
+	public <T extends Composite> T addComposite(T rComposite, StyleData rStyle)
+	{
+		addComponent(rComposite, rStyle, null, null);
+
+		return rComposite;
+	}
+
+	/***************************************
 	 * Creates a new {@link DateField}.
 	 *
 	 * @param  rStyle The style data
@@ -300,7 +332,9 @@ public class ContainerBuilder<C extends Container>
 	 *
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<Panel> addPanel(StyleData rStyle, LayoutType eLayout)
+	public ContainerBuilder<Panel> addPanel(
+		StyleData  rStyle,
+		LayoutType eLayout)
 	{
 		GenericLayout aLayout =
 			EWT.getLayoutFactory().createLayout(rContainer, rStyle, eLayout);

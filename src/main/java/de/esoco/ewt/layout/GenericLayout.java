@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -112,18 +112,18 @@ public abstract class GenericLayout
 	}
 
 	/***************************************
-	 * Method for subclasses to set the cell alignment in GWT tables according
-	 * to the style flags in a style data object.
+	 * Method for table-based subclasses to set the cell alignment according to
+	 * a style data object.
 	 *
 	 * @param rStyle         The style data
 	 * @param rCellFormatter The cell formatter of the table
 	 * @param nRow           The row of the cell
 	 * @param nCol           The column of the cell
 	 */
-	protected void setCellAlignment(StyleData	  rStyle,
-									CellFormatter rCellFormatter,
-									int			  nRow,
-									int			  nCol)
+	void setCellAlignment(StyleData		rStyle,
+						  CellFormatter rCellFormatter,
+						  int			nRow,
+						  int			nCol)
 	{
 		HorizontalAlignmentConstant rHAlign = rStyle.mapHorizontalAlignment();
 		VerticalAlignmentConstant   rVAlign = rStyle.mapVerticalAlignment();

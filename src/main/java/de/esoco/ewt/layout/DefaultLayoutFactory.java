@@ -191,7 +191,6 @@ public class DefaultLayoutFactory implements LayoutFactory
 		 */
 		public CssStyleLayout(String sStyleName)
 		{
-			super();
 			sCssStyleName = sStyleName;
 		}
 

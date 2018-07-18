@@ -4,8 +4,10 @@
 
 	<source path='ewt'/>
 	<!-- import packages from esoco-common project -->  
+	<source path='lib/math'/>
 	<source path='lib/model'/>
 	<source path='lib/property'/>
+	<source path='lib/datatype' includes="Pair.java,Tuple.java"/>
 	<source path='lib/text' includes="TextConvert.java"/>
 
 	<inherits name='com.google.gwt.user.User'/>

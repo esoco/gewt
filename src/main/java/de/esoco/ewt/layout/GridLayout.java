@@ -88,7 +88,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout areas(String sAreas)
+	public final GridLayout areas(String sAreas)
 	{
 		return _with(() -> sTemplateAreas = sAreas);
 	}
@@ -101,7 +101,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout autoCols(String sSize)
+	public final GridLayout autoCols(String sSize)
 	{
 		return _with(() -> sAutoCols = sSize);
 	}
@@ -116,7 +116,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout autoFlow(Orientation eDirection, boolean bDense)
+	public final GridLayout autoFlow(Orientation eDirection, boolean bDense)
 	{
 		return _with(() ->
 		 			{
@@ -133,7 +133,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout autoRows(String sSize)
+	public final GridLayout autoRows(String sSize)
 	{
 		return _with(() -> sAutoRows = sSize);
 	}
@@ -145,7 +145,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout colGap(String sGap)
+	public final GridLayout colGap(String sGap)
 	{
 		return _with(() -> sColGap = sGap);
 	}
@@ -157,7 +157,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout columns(String sTemplate)
+	public final GridLayout columns(String sTemplate)
 	{
 		return _with(() -> sColTemplate = sTemplate);
 	}
@@ -172,7 +172,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 * @see    #colGap(String)
 	 * @see    #rowGap(String)
 	 */
-	public GridLayout gap(String sGap)
+	public final GridLayout gaps(String sGap)
 	{
 		return rowGap(sGap).colGap(sGap);
 	}
@@ -184,7 +184,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout hAlign(ContentAlignment eAlignment)
+	public final GridLayout hAlign(ContentAlignment eAlignment)
 	{
 		return _with(() -> eHorizontalGridAlignment = eAlignment);
 	}
@@ -196,7 +196,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout hAlignItems(Alignment eAlignment)
+	public final GridLayout hAlignItems(Alignment eAlignment)
 	{
 		return _with(() -> eHorizontalItemAlignment = eAlignment);
 	}
@@ -206,7 +206,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout inline()
+	public final GridLayout inline()
 	{
 		return _with(() -> bInline = true);
 	}
@@ -218,7 +218,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout rowGap(String sGap)
+	public final GridLayout rowGap(String sGap)
 	{
 		return _with(() -> sRowGap = sGap);
 	}
@@ -230,7 +230,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout rows(String sTemplate)
+	public final GridLayout rows(String sTemplate)
 	{
 		return _with(() -> sRowTemplate = sTemplate);
 	}
@@ -242,7 +242,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout vAlign(ContentAlignment eAlignment)
+	public final GridLayout vAlign(ContentAlignment eAlignment)
 	{
 		return _with(() -> eVerticalGridAlignment = eAlignment);
 	}
@@ -254,7 +254,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout vAlignItems(Alignment eAlignment)
+	public final GridLayout vAlignItems(Alignment eAlignment)
 	{
 		return _with(() -> eVerticalItemAlignment = eAlignment);
 	}
@@ -268,7 +268,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 		rStyle.setProperty("display", bInline ? "inline-grid" : "grid");
 
 		setStyleProperty("gridRowGap", rStyle, sRowGap);
-		setStyleProperty("gridColGap", rStyle, sColGap);
+		setStyleProperty("gridColumnGap", rStyle, sColGap);
 
 		setStyleProperty("gridTemplateAreas", rStyle, sTemplateAreas);
 		setStyleProperty("gridTemplateRows", rStyle, sRowTemplate);
@@ -341,7 +341,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 		int nPosition = rStyleData.getProperty(rPositionProperty, -1);
 		int nSpan     = rStyleData.getProperty(rSpanProperty, 1);
 
-		if (nSpan > 1 && nPosition < 0)
+		if (nSpan > 1 && nPosition <= 0)
 		{
 			throw new IllegalArgumentException("Grid posistion needed if grid span is set");
 		}
@@ -350,7 +350,7 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 			throw new IllegalArgumentException("Invalid grid span: " + nSpan);
 		}
 
-		if (nPosition >= 0)
+		if (nPosition > 0)
 		{
 			rStyle.setProperty(sCssProperty, nPosition + " / span " + nSpan);
 		}

@@ -226,7 +226,7 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 *
-	 * @throws IllegalArgumentException If an unsupported aligment is provided
+	 * @throws IllegalArgumentException If an unsupported alignment is provided
 	 */
 	public FlexLayout justify(ContentAlignment eAlignment)
 	{

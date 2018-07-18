@@ -21,18 +21,24 @@ import de.esoco.ewt.event.EWTEvent;
 import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.KeyCode;
-import de.esoco.ewt.layout.EdgeLayout;
 import de.esoco.ewt.layout.FillLayout;
-import de.esoco.ewt.layout.TableGridLayout;
-import de.esoco.ewt.style.AlignedPosition;
-import de.esoco.ewt.style.StyleData;
+import de.esoco.ewt.layout.GridLayout;
 
-import de.esoco.lib.property.Color;
+import de.esoco.lib.datatype.Pair;
+import de.esoco.lib.math.MathUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import java.util.Stack;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import static de.esoco.ewt.style.StyleData.DEFAULT;
+
+import static de.esoco.lib.property.LayoutProperties.COLUMN;
+import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
 
 
 /********************************************************************
@@ -43,62 +49,309 @@ import java.util.Stack;
  */
 public class Calculator extends Composite implements EWTEventHandler
 {
+	//~ Enums ------------------------------------------------------------------
+
+	/********************************************************************
+	 * Enumeration of calculator actions.
+	 */
+	enum CalculatorAction implements CalculatorFunction
+	{
+		BACK("⌫", CalculatorState::backOneDigit),
+		CLEAR_ALL("C", CalculatorState::clearAll),
+		CLEAR_ENTRY("CE", CalculatorState::clearEntry),
+		DOT(".", CalculatorState::startFractionInput),
+		EQUALS("=", CalculatorState::calculate);
+
+		//~ Instance fields ----------------------------------------------------
+
+		private final String				    sSymbol;
+		private final Consumer<CalculatorState> fPerformAction;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sSymbol        The action symbol
+		 * @param fPerformAction The function to perform this action
+		 */
+		private CalculatorAction(
+			String					  sSymbol,
+			Consumer<CalculatorState> fPerformAction)
+		{
+			this.sSymbol	    = sSymbol;
+			this.fPerformAction = fPerformAction;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void accept(CalculatorState rState)
+		{
+			fPerformAction.accept(rState);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getSymbol()
+		{
+			return sSymbol;
+		}
+	}
+
+	/********************************************************************
+	 * Enumeration of calculator actions.
+	 */
+	enum BinaryCalculation
+		implements CalculatorFunction,
+				   BiFunction<BigDecimal, BigDecimal, BigDecimal>
+	{
+		ADD("+", 1, BigDecimal::add), SUBTRACT("-", 1, BigDecimal::subtract),
+		MULTIPLY("×", 1, BigDecimal::multiply),
+		DIVIDE("÷", 1, BigDecimal::divide),
+		PERCENT("%", 1, (d1, d2) -> d1.multiply(d2).divide(MathUtil.HUNDRED));
+
+		//~ Instance fields ----------------------------------------------------
+
+		private final String sSymbol;
+		private final int    nPriority;
+
+		private final BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sSymbol   The function symbol
+		 * @param nPriority The priority of this calculation in relation to
+		 *                  other calculations
+		 * @param fCalc     The calculation function
+		 */
+		private BinaryCalculation(
+			String										   sSymbol,
+			int											   nPriority,
+			BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc)
+		{
+			this.sSymbol   = sSymbol;
+			this.fCalc     = fCalc;
+			this.nPriority = nPriority;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void accept(CalculatorState rState)
+		{
+			rState.addOperation(this);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public BigDecimal apply(BigDecimal dLeft, BigDecimal dRight)
+		{
+			return fCalc.apply(dLeft, dRight);
+		}
+
+		/***************************************
+		 * Returns the calculation priority (precedence).
+		 *
+		 * @return The priority
+		 */
+		public int getPriority()
+		{
+			return nPriority;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getSymbol()
+		{
+			return sSymbol;
+		}
+	}
+
+	/********************************************************************
+	 * Enumeration of calculator actions.
+	 */
+	enum UnaryCalculation implements CalculatorFunction,
+									 Function<BigDecimal, BigDecimal>
+	{
+		INVERT("¹/x", BigDecimal.ONE::divide), SIGN("±", BigDecimal::negate),
+		SQUARE("x²", d -> d.multiply(d)), SQUARE_ROOT("√", MathUtil::sqrt);
+
+		//~ Instance fields ----------------------------------------------------
+
+		private final String					 sSymbol;
+		private Function<BigDecimal, BigDecimal> fCalc;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sSymbol The function symbol
+		 * @param fCalc   The calculation function
+		 */
+		private UnaryCalculation(
+			String							 sSymbol,
+			Function<BigDecimal, BigDecimal> fCalc)
+		{
+			this.sSymbol = sSymbol;
+			this.fCalc   = fCalc;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void accept(CalculatorState rState)
+		{
+			rState.dCurrentValue = fCalc.apply(rState.dCurrentValue);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public BigDecimal apply(BigDecimal dValue)
+		{
+			return fCalc.apply(dValue);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getSymbol()
+		{
+			return sSymbol;
+		}
+	}
+
+	/********************************************************************
+	 * Enumeration of calculator memory manipulation functions. All instances
+	 * implement a binary function that take the current display and memory
+	 * values and return a pair that contains these value (in that order) after
+	 * the function execution.
+	 */
+	enum MemoryFunction
+		implements CalculatorFunction,
+				   BiFunction<BigDecimal,
+							  BigDecimal, Pair<BigDecimal, BigDecimal>>
+	{
+		MEMORY_EXCHANCE("MX", (v, m) -> Pair.of(m, v)),
+		MEMORY_CLEAR("MC", (v, m) -> Pair.of(v, BigDecimal.ZERO)),
+		MEMORY_RECALL("MR", (v, m) -> Pair.of(m, m)),
+		MEMORY_STORE("MS", (v, m) -> Pair.of(v, v)),
+		MEMORY_ADD("M+", (v, m) -> Pair.of(v, m.add(v))),
+		MEMORY_SUBTRACT("M-", (v, m) -> Pair.of(v, m.subtract(v)));
+
+		//~ Instance fields ----------------------------------------------------
+
+		private final String sSymbol;
+
+		private final BiFunction<BigDecimal,
+								 BigDecimal, Pair<BigDecimal, BigDecimal>> fMemory;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sSymbol The function symbol
+		 * @param fMemory The function that performs the actual memory function
+		 */
+		private MemoryFunction(
+			String															 sSymbol,
+			BiFunction<BigDecimal, BigDecimal, Pair<BigDecimal, BigDecimal>> fMemory)
+		{
+			this.sSymbol = sSymbol;
+			this.fMemory = fMemory;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void accept(CalculatorState rState)
+		{
+			Pair<BigDecimal, BigDecimal> aResult =
+				fMemory.apply(rState.dCurrentValue, rState.dMemoryValue);
+
+			rState.dCurrentValue = aResult.first();
+			rState.dMemoryValue  = aResult.second();
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Pair<BigDecimal, BigDecimal> apply(
+			BigDecimal dValue,
+			BigDecimal dMemory)
+		{
+			return fMemory.apply(dValue, dMemory);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getSymbol()
+		{
+			return sSymbol;
+		}
+	}
+
 	//~ Static fields/initializers ---------------------------------------------
 
-	private static final BigDecimal TEN     = new BigDecimal(10);
-	private static final BigDecimal HUNDRED = new BigDecimal(100);
-
-	private static final String CLEAR		  = "C";
-	private static final String CLEAR_CURRENT = "CE";
-	private static final String BACK		  = "<<";
-
-	private static final String ADD		    = "+";
-	private static final String SUBTRACT    = "-";
-	private static final String MULTIPLY    = "*";
-	private static final String DIVIDE	    = "/";
-	private static final String PERCENT     = "%";
-	private static final String INVERT	    = "1/x";
-	private static final String SIGN	    = "+/-";
-	private static final String SQUARE_ROOT = "sr";
-	private static final String EQUALS	    = "=";
-	private static final String DOT		    = ".";
-
-	private static final String MEMORY_EXCHANCE = "MX";
-	private static final String MEMORY_CLEAR    = "MC";
-	private static final String MEMORY_RECALL   = "MR";
-	private static final String MEMORY_STORE    = "MS";
-	private static final String MEMORY_SUBTRACT = "M-";
-	private static final String MEMORY_ADD	    = "M+";
-
-	private static final String[] CONTROL_BUTTONS =
-	{ MEMORY_EXCHANCE, MEMORY_CLEAR, CLEAR_CURRENT, CLEAR, BACK };
-
-	private static final String[] MEMORY_BUTTONS =
-	{ MEMORY_RECALL, MEMORY_STORE, MEMORY_SUBTRACT, MEMORY_ADD };
-
-	private static final String[] DIGIT_BUTTONS =
-	{ "7", "4", "1", "0", "8", "5", "2", DOT, "9", "6", "3" };
-
-	private static final String[] FUNCTION_BUTTONS =
-	{
-		SIGN, DIVIDE, MULTIPLY, SUBTRACT, ADD, PERCENT, INVERT, SQUARE_ROOT,
-		EQUALS
-	};
+	private static CalculatorFunction[][] STANDARD_LAYOUT =
+		new CalculatorFunction[][]
+		{
+			{
+				MemoryFunction.MEMORY_CLEAR, MemoryFunction.MEMORY_STORE,
+				MemoryFunction.MEMORY_RECALL, MemoryFunction.MEMORY_EXCHANCE
+			},
+			{
+				BinaryCalculation.PERCENT, UnaryCalculation.SQUARE_ROOT,
+				UnaryCalculation.SQUARE, UnaryCalculation.INVERT
+			},
+			{
+				CalculatorAction.CLEAR_ALL, CalculatorAction.CLEAR_ENTRY,
+				CalculatorAction.BACK, BinaryCalculation.DIVIDE
+			},
+			{ digit('7'), digit('8'), digit('9'), BinaryCalculation.MULTIPLY },
+			{ digit('4'), digit('5'), digit('6'), BinaryCalculation.SUBTRACT },
+			{ digit('1'), digit('2'), digit('3'), BinaryCalculation.ADD },
+			{
+				UnaryCalculation.SIGN, digit('0'), CalculatorAction.DOT,
+				CalculatorAction.EQUALS
+			}
+		};
 
 	//~ Instance fields --------------------------------------------------------
 
 	private TextField aDisplay;
 	private Label     aMemoryLabel;
 
-	private BigDecimal aCurrentValue = BigDecimal.ZERO;
-
-	private BigDecimal aMemoryValue = BigDecimal.ZERO;
-	private BigDecimal aInputDigit  = BigDecimal.ONE;
-
-	private boolean bFractionInput;
-	private boolean bEnterNewValue;
-
-	private Stack<Operation> aOperationStack = new Stack<Operation>();
+	private CalculatorState aState = new CalculatorState();
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -107,54 +360,24 @@ public class Calculator extends Composite implements EWTEventHandler
 	 */
 	public Calculator()
 	{
-		super(new EdgeLayout(0));
+		super(new GridLayout().columns("repeat(4, 1fr)")
+			  .rows("repeat(8, 1fr)")
+			  .colGap("6px")
+			  .rowGap("6px"));
 	}
 
 	//~ Static methods ---------------------------------------------------------
 
 	/***************************************
-	 * Calculates the square root of a {@link BigDecimal} value.
+	 * Returns a new {@link CalculatorDigit} function for calculator input.
 	 *
-	 * @param  dValue  The value to calculate the square root of
-	 * @param  nDigits The number of digits to calculate
+	 * @param  cDigit The digit character
 	 *
-	 * @return A big decimal containing the square root value
+	 * @return The new input function
 	 */
-	public static BigDecimal sqrt(BigDecimal dValue, int nDigits)
+	static CalculatorDigit digit(char cDigit)
 	{
-		BigDecimal zero		  = BigDecimal.ZERO.setScale(nDigits + 10);
-		BigDecimal one		  = BigDecimal.ONE.setScale(nDigits + 10);
-		BigDecimal two		  = new BigDecimal(2).setScale(nDigits + 10);
-		BigDecimal nFinalDiff = one.movePointLeft(nDigits);
-		BigDecimal nUpper     = dValue.compareTo(one) <= 0 ? one : dValue;
-		BigDecimal nLower     = zero;
-		BigDecimal nMiddle;
-		boolean    bContinue;
-
-		do
-		{
-			nMiddle = nLower.add(nUpper).divide(two, BigDecimal.ROUND_HALF_UP);
-
-			BigDecimal nSquare = nMiddle.multiply(nMiddle);
-			BigDecimal nDiff   = dValue.subtract(nSquare).abs();
-
-			bContinue = nDiff.compareTo(nFinalDiff) > 0;
-
-			if (bContinue)
-			{
-				if (nSquare.compareTo(dValue) < 0)
-				{
-					nLower = nMiddle;
-				}
-				else
-				{
-					nUpper = nMiddle;
-				}
-			}
-		}
-		while (bContinue);
-
-		return nMiddle;
+		return new CalculatorDigit(cDigit);
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -166,7 +389,7 @@ public class Calculator extends Composite implements EWTEventHandler
 	 */
 	public final BigDecimal getValue()
 	{
-		return aCurrentValue;
+		return aState.dCurrentValue;
 	}
 
 	/***************************************
@@ -177,34 +400,22 @@ public class Calculator extends Composite implements EWTEventHandler
 	@Override
 	public void handleEvent(EWTEvent rEvent)
 	{
-		String sFunction = null;
-
 		if (rEvent.getType() == EventType.KEY_PRESSED)
 		{
 			if (rEvent.getKeyCode() != KeyCode.NONE)
 			{
-				sFunction = getKeyFunction(rEvent);
 			}
-		}
-		else
-		{
-			sFunction = ((Button) rEvent.getSource()).getText();
-		}
-
-		if (sFunction != null)
-		{
-			performFunction(sFunction);
 		}
 	}
 
 	/***************************************
 	 * Sets the value of this calculator.
 	 *
-	 * @param rCurrentValue The new value
+	 * @param dValue The new value
 	 */
-	public final void setValue(BigDecimal rCurrentValue)
+	public final void setValue(BigDecimal dValue)
 	{
-		aCurrentValue = rCurrentValue;
+		aState.dCurrentValue = dValue;
 		update(true);
 	}
 
@@ -218,90 +429,42 @@ public class Calculator extends Composite implements EWTEventHandler
 	{
 		int nGap = 3;
 
-		rBuilder = rBuilder.addPanel(AlignedPosition.TOP, new FillLayout(nGap));
+		rBuilder =
+			rBuilder.addPanel(DEFAULT.set(COLUMN, 1).set(COLUMN_SPAN, 4),
+							  new FillLayout(nGap));
 
-		aDisplay     = rBuilder.addTextField(StyleData.DEFAULT, "0.");
-		aMemoryLabel = rBuilder.addLabel(StyleData.DEFAULT, "", null);
+		aDisplay     = rBuilder.addTextField(DEFAULT, "0.");
+		aMemoryLabel = rBuilder.addLabel(DEFAULT, "", null);
 
 		aDisplay.setEditable(true);
 		aDisplay.addEventListener(EventType.KEY_PRESSED, this);
 
 		rBuilder = rBuilder.getParent();
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.CENTER,
-							  new EdgeLayout(nGap, nGap * 2));
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.TOP,
-							  new TableGridLayout(1, false, nGap));
 
-		addButtons(rBuilder, CONTROL_BUTTONS, Color.RED.toRGB());
-		rBuilder = rBuilder.getParent();
-
-		rBuilder =
-			rBuilder.addPanel(AlignedPosition.CENTER,
-							  new TableGridLayout(4, false, nGap));
-		addButtons(rBuilder, MEMORY_BUTTONS, Color.RED.toRGB());
-		addButtons(rBuilder, DIGIT_BUTTONS, Integer.MIN_VALUE);
-		addButtons(rBuilder, FUNCTION_BUTTONS, Color.BLUE.toRGB());
+		for (CalculatorFunction[] rRow : STANDARD_LAYOUT)
+		{
+			for (CalculatorFunction rFunction : rRow)
+			{
+				addButtons(rBuilder, rFunction);
+			}
+		}
 
 		update(true);
 	}
 
 	/***************************************
-	 * Adds the buttons from a string array to the given container builder.
+	 * Adds a button for a function with a container builder.
 	 *
-	 * @param  rBuilder The container builder
-	 * @param  rLabels  The button labels
-	 * @param  nColor   The button foreground color or {@link Integer#MIN_VALUE}
-	 *                  for the default
-	 *
-	 * @return An array containing the buttons that have been created
+	 * @param rBuilder  The container builder
+	 * @param rFunction rLabels The button labels
 	 */
-	Button[] addButtons(ContainerBuilder<?> rBuilder,
-						String[]			rLabels,
-						int					nColor)
+	void addButtons(ContainerBuilder<?> rBuilder, CalculatorFunction rFunction)
 	{
-		Button[] aButtons = new Button[rLabels.length];
+		Button aButton =
+			rBuilder.addButton(DEFAULT, rFunction.getSymbol(), null);
 
-		for (int i = 0; i < rLabels.length; i++)
-		{
-			// escape all labels to prevent expansion of property prefixes
-			aButtons[i] =
-				rBuilder.addButton(StyleData.DEFAULT, "~" + rLabels[i], null);
-
-			aButtons[i].addEventListener(EventType.ACTION, this);
-			aButtons[i].addEventListener(EventType.KEY_PRESSED, this);
-
-			if (nColor != Integer.MIN_VALUE)
-			{
-				aButtons[i].setForegroundColor(Color.valueOf(nColor));
-			}
-		}
-
-		return aButtons;
-	}
-
-	/***************************************
-	 * Executes the topmost operations on the operation stack that have a
-	 * certain minimum priority, starting with the given right value and
-	 * returning the resulting value.
-	 *
-	 * @param  rRightValue  The right value to start with
-	 * @param  nMinPriority The minimum priority
-	 *
-	 * @return The result of executing all operations
-	 */
-	BigDecimal executeOperations(BigDecimal rRightValue, int nMinPriority)
-	{
-		while (!aOperationStack.isEmpty() &&
-			   aOperationStack.peek().getPriority() >= nMinPriority)
-		{
-			Operation rOperation = aOperationStack.pop();
-
-			rRightValue = rOperation.execute(rRightValue);
-		}
-
-		return rRightValue;
+		aButton.addEventListener(EventType.ACTION, this);
+		aButton.addEventListener(EventType.KEY_PRESSED, this);
 	}
 
 	/***************************************
@@ -311,201 +474,117 @@ public class Calculator extends Composite implements EWTEventHandler
 	 *
 	 * @return The function string for the event's key code
 	 */
-	String getKeyFunction(EWTEvent rEvent)
+	CalculatorFunction getKeyFunction(EWTEvent rEvent)
 	{
-		String sFunction;
+		CalculatorFunction rFunction = null;
 
 		if (rEvent.getKeyCode() == KeyCode.STAR)
 		{
-			sFunction = DOT;
+			rFunction = CalculatorAction.DOT;
 		}
 		else if (rEvent.getKeyCode() == KeyCode.POUND)
 		{
-			sFunction = BACK;
+			rFunction = CalculatorAction.BACK;
 		}
 		else
 		{
-			sFunction = "" + rEvent.getKeyCode().getChar();
+//			rFunction = "" + rEvent.getKeyCode().getChar();
 		}
 
-		return sFunction;
-	}
-
-	/***************************************
-	 * Performs a calculator function, which ranges from simple number input to
-	 * mathematical operations.
-	 *
-	 * @param sFunction A string describing the function as defined in the class
-	 *                  constants
-	 */
-	void performFunction(String sFunction)
-	{
-		char    cChar	    = sFunction.charAt(0);
-		boolean bResetInput = true;
-
-		if (sFunction.length() == 1 && cChar >= '0' && cChar <= '9')
-		{
-			BigDecimal aDigit = new BigDecimal(sFunction);
-
-			if (bEnterNewValue)
-			{
-				aCurrentValue  = BigDecimal.ZERO;
-				bEnterNewValue = false;
-			}
-
-			if (bFractionInput)
-			{
-				aInputDigit   = aInputDigit.divide(TEN);
-				aCurrentValue = aCurrentValue.add(aInputDigit.multiply(aDigit));
-			}
-			else
-			{
-				aCurrentValue = aCurrentValue.multiply(TEN).add(aDigit);
-			}
-
-			bResetInput = false;
-		}
-		else if ("+-*/".indexOf(sFunction) >= 0)
-		{
-			aCurrentValue =
-				executeOperations(aCurrentValue,
-								  Operation.getOperatorPriority(cChar));
-
-			Operation aOperation = new Operation(cChar, aCurrentValue);
-
-			aOperationStack.push(aOperation);
-		}
-		else if (SIGN.equals(sFunction))
-		{
-			aCurrentValue = aCurrentValue.negate();
-			bResetInput   = false;
-		}
-		else if (PERCENT.equals(sFunction))
-		{
-			if (aOperationStack.size() > 0)
-			{
-				Operation rTop = aOperationStack.peek();
-
-				aCurrentValue =
-					rTop.getLeftValue().multiply(aCurrentValue).divide(HUNDRED);
-			}
-		}
-		else if (INVERT.equals(sFunction))
-		{
-			aCurrentValue = BigDecimal.ONE.divide(aCurrentValue);
-		}
-		else if (SQUARE_ROOT.equals(sFunction))
-		{
-			aCurrentValue = sqrt(aCurrentValue, 10);
-		}
-		else if (EQUALS.equals(sFunction))
-		{
-			aCurrentValue = executeOperations(aCurrentValue, 0);
-		}
-		else if (CLEAR.equals(sFunction) || CLEAR_CURRENT.equals(sFunction))
-		{
-			if (CLEAR.equals(sFunction))
-			{
-				aOperationStack.removeAllElements();
-			}
-
-			aCurrentValue = BigDecimal.ZERO;
-		}
-		else if (BACK.equals(sFunction))
-		{
-			if (!bEnterNewValue)
-			{
-				if (bFractionInput)
-				{
-					if (aInputDigit.compareTo(BigDecimal.ONE) < 0)
-					{
-						aInputDigit   = aInputDigit.multiply(TEN);
-						aCurrentValue =
-							aCurrentValue.divide(aInputDigit,
-												 RoundingMode.HALF_UP);
-						aCurrentValue = aCurrentValue.multiply(aInputDigit);
-					}
-					else
-					{
-						bFractionInput = false;
-					}
-				}
-				else
-				{
-					aCurrentValue =
-						aCurrentValue.divide(TEN, RoundingMode.HALF_UP);
-				}
-			}
-
-			bResetInput = false;
-		}
-		else if (DOT.equals(sFunction))
-		{
-			bFractionInput = true;
-			bResetInput    = false;
-		}
-		else if (MEMORY_STORE.equals(sFunction))
-		{
-			aMemoryValue = aCurrentValue;
-		}
-		else if (MEMORY_ADD.equals(sFunction))
-		{
-			aMemoryValue = aMemoryValue.add(aCurrentValue);
-		}
-		else if (MEMORY_SUBTRACT.equals(sFunction))
-		{
-			aMemoryValue = aMemoryValue.subtract(aCurrentValue);
-		}
-		else if (MEMORY_RECALL.equals(sFunction))
-		{
-			aCurrentValue = aMemoryValue;
-		}
-		else if (MEMORY_EXCHANCE.equals(sFunction))
-		{
-			BigDecimal tmp = aCurrentValue;
-
-			aCurrentValue = aMemoryValue;
-			aMemoryValue  = tmp;
-		}
-		else if (MEMORY_CLEAR.equals(sFunction))
-		{
-			aMemoryValue = BigDecimal.ZERO;
-		}
-		else
-		{
-			bResetInput = false;
-		}
-
-		update(bResetInput);
+		return rFunction;
 	}
 
 	/***************************************
 	 * Updates the display text field with the current value.
 	 *
-	 * @param bResetInput TRUE to reset all input parameters
+	 * @param bReset TRUE to reset all input parameters
 	 */
-	void update(boolean bResetInput)
+	void update(boolean bReset)
 	{
-		if (bResetInput)
+		if (bReset)
 		{
-			aInputDigit    = BigDecimal.ONE;
-			bFractionInput = false;
-			bEnterNewValue = true;
+			aState.aInputDigit    = BigDecimal.ONE;
+			aState.bFractionInput = false;
+			aState.bEnterNewValue = true;
 		}
 
-		if (BigDecimal.ZERO.equals(aCurrentValue))
+		if (BigDecimal.ZERO.equals(aState.dCurrentValue))
 		{
 			// remove a possible negative sign on a zero value
-			aCurrentValue = BigDecimal.ZERO;
+			aState.dCurrentValue = BigDecimal.ZERO;
 		}
 
-		aDisplay.setText(aCurrentValue.toString());
-		aMemoryLabel.setText(BigDecimal.ZERO.equals(aMemoryValue) ? "" : "M");
+		aDisplay.setText(aState.dCurrentValue.toString());
+		aMemoryLabel.setText(BigDecimal.ZERO.equals(aState.dMemoryValue) ? ""
+																		 : "M");
 		aMemoryLabel.repaint();
 		aDisplay.repaint();
 	}
 
+	//~ Inner Interfaces -------------------------------------------------------
+
+	/********************************************************************
+	 * An interface for all calculator function enums.
+	 *
+	 * @author eso
+	 */
+	static interface CalculatorFunction extends Consumer<CalculatorState>
+	{
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Returns the symbol string for this function.
+		 *
+		 * @return The symbol string
+		 */
+		String getSymbol();
+	}
+
 	//~ Inner Classes ----------------------------------------------------------
+
+	/********************************************************************
+	 * A calculator function for the input of digits.
+	 *
+	 * @author eso
+	 */
+	static class CalculatorDigit implements CalculatorFunction
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private final char cDigit;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param cDigit sSymbol The input digit
+		 */
+		public CalculatorDigit(char cDigit)
+		{
+			this.cDigit = cDigit;
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void accept(CalculatorState rState)
+		{
+			rState.input(cDigit - '0');
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getSymbol()
+		{
+			return Character.toString(cDigit);
+		}
+	}
 
 	/********************************************************************
 	 * Inner class to encapsulate a mathematical operation.
@@ -514,9 +593,8 @@ public class Calculator extends Composite implements EWTEventHandler
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private char	   cOperator;
-		private int		   nPriority;
-		private BigDecimal rLeftValue;
+		private BinaryCalculation eCalculation;
+		private BigDecimal		  rLeftValue;
 
 		//~ Constructors -------------------------------------------------------
 
@@ -524,43 +602,13 @@ public class Calculator extends Composite implements EWTEventHandler
 		 * Creates a new instance with a certain operator and left value for the
 		 * operation.
 		 *
-		 * @param cOperator  The operator character
-		 * @param rLeftValue The left value for the operation
+		 * @param eCalculation The operator character
+		 * @param rLeftValue   The left value for the operation
 		 */
-		Operation(char cOperator, BigDecimal rLeftValue)
+		Operation(BinaryCalculation eCalculation, BigDecimal rLeftValue)
 		{
-			this.cOperator  = cOperator;
-			this.rLeftValue = rLeftValue;
-			nPriority	    = getOperatorPriority(cOperator);
-		}
-
-		//~ Static methods -----------------------------------------------------
-
-		/***************************************
-		 * Returns the priority for a certain operator character.
-		 *
-		 * @param  cOperator The operator character
-		 *
-		 * @return The operation priority
-		 *
-		 * @throws IllegalArgumentException If the operator character is unknown
-		 */
-		static int getOperatorPriority(char cOperator)
-		{
-			switch (cOperator)
-			{
-				case '-':
-				case '+':
-					return 1;
-
-				case '/':
-				case '*':
-					return 2;
-
-				default:
-					throw new IllegalArgumentException("Unknown operator: " +
-													   cOperator);
-			}
+			this.eCalculation = eCalculation;
+			this.rLeftValue   = rLeftValue;
 		}
 
 		//~ Methods ------------------------------------------------------------
@@ -575,24 +623,7 @@ public class Calculator extends Composite implements EWTEventHandler
 		 */
 		BigDecimal execute(BigDecimal rRightValue)
 		{
-			switch (cOperator)
-			{
-				case '/':
-					return rLeftValue.divide(rRightValue);
-
-				case '*':
-					return rLeftValue.multiply(rRightValue);
-
-				case '-':
-					return rLeftValue.subtract(rRightValue);
-
-				case '+':
-					return rLeftValue.add(rRightValue);
-
-				default:
-					throw new IllegalStateException("Undefined operation: " +
-													cOperator);
-			}
+			return eCalculation.apply(rLeftValue, rRightValue);
 		}
 
 		/***************************************
@@ -612,7 +643,169 @@ public class Calculator extends Composite implements EWTEventHandler
 		 */
 		final int getPriority()
 		{
-			return nPriority;
+			return eCalculation.nPriority;
+		}
+	}
+
+	/********************************************************************
+	 * Encapsulates the current calculator state.
+	 *
+	 * @author eso
+	 */
+	class CalculatorState
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private BigDecimal dCurrentValue = BigDecimal.ZERO;
+		private BigDecimal dMemoryValue  = BigDecimal.ZERO;
+		private BigDecimal aInputDigit   = BigDecimal.ONE;
+
+		private boolean bFractionInput;
+		private boolean bEnterNewValue;
+
+		private Stack<Operation> aOperationsStack = new Stack<Operation>();
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * Adds a new operation to the stack.
+		 *
+		 * @param eCalculation The calculation to be performed by the operation.
+		 */
+		void addOperation(BinaryCalculation eCalculation)
+		{
+			dCurrentValue =
+				executeOperations(dCurrentValue, eCalculation.getPriority());
+
+			Operation aOperation = new Operation(eCalculation, dCurrentValue);
+
+			aOperationsStack.push(aOperation);
+
+			update(true);
+		}
+
+		/***************************************
+		 * Removes one digit from the current input.
+		 */
+		void backOneDigit()
+		{
+			if (!bEnterNewValue)
+			{
+				if (bFractionInput)
+				{
+					if (aInputDigit.compareTo(BigDecimal.ONE) < 0)
+					{
+						aInputDigit   = aInputDigit.multiply(BigDecimal.TEN);
+						dCurrentValue =
+							dCurrentValue.divide(aInputDigit,
+												 RoundingMode.HALF_UP);
+						dCurrentValue = dCurrentValue.multiply(aInputDigit);
+					}
+					else
+					{
+						bFractionInput = false;
+					}
+				}
+				else
+				{
+					dCurrentValue =
+						dCurrentValue.divide(BigDecimal.TEN,
+											 RoundingMode.FLOOR);
+				}
+			}
+
+			update(false);
+		}
+
+		/***************************************
+		 * Calculates the current operations stack and resets for the input of a
+		 * new value.
+		 */
+		void calculate()
+		{
+			executeOperations(dCurrentValue, 0);
+			update(true);
+		}
+
+		/***************************************
+		 * Clears the complete operations stack and displayed values (but not
+		 * the memory).
+		 */
+		void clearAll()
+		{
+			aOperationsStack.removeAllElements();
+			clearEntry();
+		}
+
+		/***************************************
+		 * Clears the currently entered value.
+		 */
+		void clearEntry()
+		{
+			dCurrentValue = BigDecimal.ZERO;
+			update(true);
+		}
+
+		/***************************************
+		 * Executes the topmost operations on the operation stack that have a
+		 * certain minimum priority, starting with the given right value and
+		 * returning the resulting value.
+		 *
+		 * @param  dRightValue  The right value to calculate with
+		 * @param  nMinPriority The minimum priority an operation must have
+		 *
+		 * @return
+		 */
+		BigDecimal executeOperations(BigDecimal dRightValue, int nMinPriority)
+		{
+			while (!aOperationsStack.isEmpty() &&
+				   aOperationsStack.peek().getPriority() >= nMinPriority)
+			{
+				dRightValue = aOperationsStack.pop().execute(dRightValue);
+			}
+
+			update(true);
+
+			return dRightValue;
+		}
+
+		/***************************************
+		 * Performs the input of a single digit.
+		 *
+		 * @param nDigit The digit value
+		 */
+		void input(int nDigit)
+		{
+			BigDecimal aDigit = new BigDecimal(nDigit);
+
+			if (bEnterNewValue)
+			{
+				dCurrentValue  = BigDecimal.ZERO;
+				bEnterNewValue = false;
+			}
+
+			if (bFractionInput)
+			{
+				aInputDigit   = aInputDigit.divide(BigDecimal.TEN);
+				dCurrentValue = dCurrentValue.add(aInputDigit.multiply(aDigit));
+			}
+			else
+			{
+				dCurrentValue =
+					dCurrentValue.multiply(BigDecimal.TEN).add(aDigit);
+			}
+
+			update(false);
+		}
+
+		/***************************************
+		 * Updates this state to perform the input of fraction digits.
+		 */
+		void startFractionInput()
+		{
+			bFractionInput = true;
+
+			update(false);
 		}
 	}
 }

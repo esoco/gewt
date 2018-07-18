@@ -19,6 +19,10 @@ package de.esoco.ewt.layout;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
+import de.esoco.lib.property.HasCssName;
+import de.esoco.lib.property.PropertyName;
+
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
@@ -41,13 +45,13 @@ public abstract class GenericLayout
 	 * method is only intended to be used internally by the GEWT framework.
 	 *
 	 * @param  rContainer The GEWT container to create the widget for
-	 * @param  rStyle     The style of the container widget
+	 * @param  rStyleData The style of the container widget
 	 *
 	 * @return A new widget container
 	 */
 	public abstract HasWidgets createLayoutContainer(
 		Container rContainer,
-		StyleData rStyle);
+		StyleData rStyleData);
 
 	/***************************************
 	 * Adds a certain widget to a widget container according to this layout and
@@ -59,13 +63,13 @@ public abstract class GenericLayout
 	 *
 	 * @param rContainer The container to add the widget to
 	 * @param rWidget    The widget to add
-	 * @param rStyle     The style defining the layout position of the widget
+	 * @param rStyleData The style defining the layout position of the widget
 	 * @param nIndex     The index to add the widget add (if supported by the
 	 *                   implementation) or -1 to add as the last widget
 	 */
 	public void addWidget(HasWidgets rContainer,
 						  Widget	 rWidget,
-						  StyleData  rStyle,
+						  StyleData  rStyleData,
 						  int		 nIndex)
 	{
 		if (nIndex >= 0 && rContainer instanceof InsertPanel)
@@ -112,21 +116,75 @@ public abstract class GenericLayout
 	}
 
 	/***************************************
+	 * Sets a string property on an element style if it is not NULL.
+	 * @param sProperty The property name
+	 * @param rStyle    The element style
+	 * @param sValue    The property value
+	 */
+	protected void setStyleProperty(String sProperty,
+									Style  rStyle,
+									String sValue)
+	{
+		if (sValue != null)
+		{
+			rStyle.setProperty(sProperty, sValue);
+		}
+	}
+
+	/***************************************
+	 * Sets a CSS name property on an element style if it is not NULL.
+	 * @param sProperty The property name
+	 * @param rStyle    The element style
+	 * @param rValue    The property value
+	 */
+	protected void setStyleProperty(String	   sProperty,
+									Style	   rStyle,
+									HasCssName rValue)
+	{
+		if (rValue != null)
+		{
+			rStyle.setProperty(sProperty, rValue.getCssName());
+		}
+	}
+
+	/***************************************
+	 * Sets a style property from a component style property if it exists.
+	 *
+	 * @param rProperty  The property to get from the component style
+	 * @param rStyleData The component style
+	 * @param sProperty  The name of the target property
+	 * @param rStyle     The target style
+	 */
+	protected void setStyleProperty(PropertyName<?> rProperty,
+									StyleData		rStyleData,
+									String			sProperty,
+									Style			rStyle)
+	{
+		Object rValue = rStyleData.getProperty(rProperty, null);
+
+		if (rValue != null)
+		{
+			setStyleProperty(sProperty, rStyle, rValue.toString());
+		}
+	}
+
+	/***************************************
 	 * Method for table-based subclasses to set the cell alignment according to
 	 * a style data object.
 	 *
-	 * @param rStyle         The style data
+	 * @param rStyleData     The style data
 	 * @param rCellFormatter The cell formatter of the table
 	 * @param nRow           The row of the cell
 	 * @param nCol           The column of the cell
 	 */
-	void setCellAlignment(StyleData		rStyle,
+	void setCellAlignment(StyleData		rStyleData,
 						  CellFormatter rCellFormatter,
 						  int			nRow,
 						  int			nCol)
 	{
-		HorizontalAlignmentConstant rHAlign = rStyle.mapHorizontalAlignment();
-		VerticalAlignmentConstant   rVAlign = rStyle.mapVerticalAlignment();
+		HorizontalAlignmentConstant rHAlign =
+			rStyleData.mapHorizontalAlignment();
+		VerticalAlignmentConstant   rVAlign = rStyleData.mapVerticalAlignment();
 
 		if (rHAlign != null)
 		{

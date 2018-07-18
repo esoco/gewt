@@ -207,7 +207,7 @@ public class TableGridLayout extends GenericLayout
 		Container rContainer,
 		StyleData rContainerStyle)
 	{
-		FlexTable aContainer = new GridLayoutTable();
+		FlexTable aContainer = new LayoutTable();
 
 		aContainer.setCellSpacing(nGap);
 
@@ -361,12 +361,12 @@ public class TableGridLayout extends GenericLayout
 	//~ Inner Classes ----------------------------------------------------------
 
 	/********************************************************************
-	 * Internal implementation of the grid layout container.
+	 * Internal implementation of the layout container.
 	 *
 	 * @author eso
 	 */
-	static class GridLayoutTable extends FlexTable implements RequiresResize,
-															  ProvidesResize
+	static class LayoutTable extends FlexTable implements RequiresResize,
+														  ProvidesResize
 	{
 		//~ Methods ------------------------------------------------------------
 

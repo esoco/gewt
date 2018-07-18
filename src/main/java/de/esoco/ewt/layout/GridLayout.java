@@ -16,20 +16,14 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.ContentAlignment;
-import de.esoco.lib.property.Fluent;
-import de.esoco.lib.property.HasCssName;
 import de.esoco.lib.property.Orientation;
 import de.esoco.lib.property.PropertyName;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.LayoutProperties.COLUMN;
 import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
@@ -47,7 +41,7 @@ import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
  *
  * @author eso
  */
-public class GridLayout extends GenericLayout implements Fluent<GridLayout>
+public class GridLayout extends FluentCssLayout<GridLayout>
 {
 	//~ Instance fields --------------------------------------------------------
 
@@ -82,42 +76,6 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	}
 
 	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addWidget(HasWidgets rContainer,
-						  Widget	 rWidget,
-						  StyleData  rStyleData,
-						  int		 nIndex)
-	{
-		super.addWidget(rContainer, rWidget, rStyleData, nIndex);
-
-		String sGridArea = rStyleData.getProperty(LAYOUT_AREA, null);
-		Style  rStyle    = rWidget.getElement().getStyle();
-
-		if (sGridArea != null)
-		{
-			setGridProperty(rStyle, "gridArea", sGridArea);
-		}
-		else
-		{
-			applyGridSize(rStyle, "gridRow", rStyleData, ROW, ROW_SPAN);
-			applyGridSize(rStyle,
-						  "gridColumn",
-						  rStyleData,
-						  COLUMN,
-						  COLUMN_SPAN);
-		}
-
-		setGridProperty(rStyle,
-						"justifySelf",
-						rStyleData.getProperty(HORIZONTAL_ALIGN, null));
-		setGridProperty(rStyle,
-						"alignSelf",
-						rStyleData.getProperty(VERTICAL_ALIGN, null));
-	}
 
 	/***************************************
 	 * Sets the template areas that define the grid layout
@@ -205,50 +163,6 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	}
 
 	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public HasWidgets createLayoutContainer(
-		Container rContainer,
-		StyleData rStyleData)
-	{
-		FlowPanel aPanel = new FlowPanel();
-		Style     rStyle = aPanel.getElement().getStyle();
-
-		rStyle.setProperty("display", bInline ? "inline-grid" : "grid");
-
-		setGridProperty(rStyle, "gridRowGap", sRowGap);
-		setGridProperty(rStyle, "gridColGap", sColGap);
-
-		setGridProperty(rStyle, "gridTemplateAreas", sTemplateAreas);
-		setGridProperty(rStyle, "gridTemplateRows", sRowTemplate);
-		setGridProperty(rStyle, "gridTemplateColumns", sColTemplate);
-
-		setGridProperty(rStyle, "gridAutoRows", sAutoRows);
-		setGridProperty(rStyle, "gridAutoColumns", sAutoCols);
-
-		setGridProperty(rStyle, "justifyItems", eHorizontalItemAlignment);
-		setGridProperty(rStyle, "alignItems", eVerticalItemAlignment);
-		setGridProperty(rStyle, "justifyContent", eHorizontalGridAlignment);
-		setGridProperty(rStyle, "alignContent", eVerticalGridAlignment);
-
-		if (eFlowDirection != null)
-		{
-			String sAutoFlow =
-				eFlowDirection == Orientation.HORIZONTAL ? "row" : "column";
-
-			if (bDenseFlow)
-			{
-				sAutoFlow += " dense";
-			}
-
-			setGridProperty(rStyle, "gridAutoFlow", sAutoFlow);
-		}
-
-		return aPanel;
-	}
-
-	/***************************************
 	 * Sets the gap between rows and columns.
 	 *
 	 * @param  sGap The gap as a valid HTML unit
@@ -270,7 +184,7 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout hAlignGrid(ContentAlignment eAlignment)
+	public GridLayout hAlign(ContentAlignment eAlignment)
 	{
 		return _with(() -> eHorizontalGridAlignment = eAlignment);
 	}
@@ -288,7 +202,7 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	}
 
 	/***************************************
-	 * Sets the grid style to inline rendering (display = 'inline-grid').
+	 * Enables inline rendering (display = 'inline-grid').
 	 *
 	 * @return This instance for fluent invocation
 	 */
@@ -328,7 +242,7 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public GridLayout vAlignGrid(ContentAlignment eAlignment)
+	public GridLayout vAlign(ContentAlignment eAlignment)
 	{
 		return _with(() -> eVerticalGridAlignment = eAlignment);
 	}
@@ -343,6 +257,69 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 	public GridLayout vAlignItems(Alignment eAlignment)
 	{
 		return _with(() -> eVerticalItemAlignment = eAlignment);
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void applyLayoutStyle(StyleData rStyleData, Style rStyle)
+	{
+		rStyle.setProperty("display", bInline ? "inline-grid" : "grid");
+
+		setStyleProperty("gridRowGap", rStyle, sRowGap);
+		setStyleProperty("gridColGap", rStyle, sColGap);
+
+		setStyleProperty("gridTemplateAreas", rStyle, sTemplateAreas);
+		setStyleProperty("gridTemplateRows", rStyle, sRowTemplate);
+		setStyleProperty("gridTemplateColumns", rStyle, sColTemplate);
+
+		setStyleProperty("gridAutoRows", rStyle, sAutoRows);
+		setStyleProperty("gridAutoColumns", rStyle, sAutoCols);
+
+		setStyleProperty("justifyItems", rStyle, eHorizontalItemAlignment);
+		setStyleProperty("alignItems", rStyle, eVerticalItemAlignment);
+		setStyleProperty("justifyContent", rStyle, eHorizontalGridAlignment);
+		setStyleProperty("alignContent", rStyle, eVerticalGridAlignment);
+
+		if (eFlowDirection != null)
+		{
+			String sAutoFlow =
+				eFlowDirection == Orientation.HORIZONTAL ? "row" : "column";
+
+			if (bDenseFlow)
+			{
+				sAutoFlow += " dense";
+			}
+
+			setStyleProperty("gridAutoFlow", rStyle, sAutoFlow);
+		}
+	}
+
+	/***************************************
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void applyWidgetStyle(StyleData rStyleData, Style rStyle)
+	{
+		String sGridArea = rStyleData.getProperty(LAYOUT_AREA, null);
+
+		if (sGridArea != null)
+		{
+			setStyleProperty("gridArea", rStyle, sGridArea);
+		}
+		else
+		{
+			applyGridSize(rStyle, "gridRow", rStyleData, ROW, ROW_SPAN);
+			applyGridSize(rStyle,
+						  "gridColumn",
+						  rStyleData,
+						  COLUMN,
+						  COLUMN_SPAN);
+		}
+
+		setStyleProperty(HORIZONTAL_ALIGN, rStyleData, "justifySelf", rStyle);
+		setStyleProperty(VERTICAL_ALIGN, rStyleData, "alignSelf", rStyle);
 	}
 
 	/***************************************
@@ -376,38 +353,6 @@ public class GridLayout extends GenericLayout implements Fluent<GridLayout>
 		if (nPosition >= 0)
 		{
 			rStyle.setProperty(sCssProperty, nPosition + " / span " + nSpan);
-		}
-	}
-
-	/***************************************
-	 * Sets a string property on an element style.
-	 *
-	 * @param rStyle    The element style
-	 * @param sProperty The property name
-	 * @param sValue    The property value
-	 */
-	private void setGridProperty(Style rStyle, String sProperty, String sValue)
-	{
-		if (sValue != null)
-		{
-			rStyle.setProperty(sProperty, sValue);
-		}
-	}
-
-	/***************************************
-	 * Sets a CSS name property on an element style.
-	 *
-	 * @param rStyle    The element style
-	 * @param sProperty The property name
-	 * @param rValue    The property value
-	 */
-	private void setGridProperty(Style		rStyle,
-								 String		sProperty,
-								 HasCssName rValue)
-	{
-		if (rValue != null)
-		{
-			rStyle.setProperty(sProperty, rValue.getCssName());
 		}
 	}
 }

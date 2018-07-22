@@ -25,13 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import static de.esoco.lib.property.StateProperties.FOCUSABLE;
 
 
 /********************************************************************
@@ -273,10 +270,6 @@ public abstract class Container extends Component
 	protected IsWidget createWidget(StyleData rStyle)
 	{
 		rHasWidgets = rLayout.createLayoutContainer(this, rStyle);
-
-		if (rStyle.hasFlag(FOCUSABLE) && !(rHasWidgets instanceof Focusable))
-		{
-		}
 
 		return (IsWidget) rHasWidgets;
 	}

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import static de.esoco.lib.property.StateProperties.FOCUSABLE;
 
 
 /********************************************************************
@@ -270,6 +273,10 @@ public abstract class Container extends Component
 	protected IsWidget createWidget(StyleData rStyle)
 	{
 		rHasWidgets = rLayout.createLayoutContainer(this, rStyle);
+
+		if (rStyle.hasFlag(FOCUSABLE) && !(rHasWidgets instanceof Focusable))
+		{
+		}
 
 		return (IsWidget) rHasWidgets;
 	}

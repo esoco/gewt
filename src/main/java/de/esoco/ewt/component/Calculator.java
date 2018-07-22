@@ -16,12 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
+import de.esoco.ewt.EWT;
 import de.esoco.ewt.build.ContainerBuilder;
-import de.esoco.ewt.event.EWTEvent;
-import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.event.EwtEvent;
 import de.esoco.ewt.event.KeyCode;
-import de.esoco.ewt.layout.FillLayout;
+import de.esoco.ewt.event.ModifierKeys;
 import de.esoco.ewt.layout.GridLayout;
 
 import de.esoco.lib.datatype.Pair;
@@ -30,6 +30,8 @@ import de.esoco.lib.math.MathUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -39,6 +41,11 @@ import static de.esoco.ewt.style.StyleData.DEFAULT;
 
 import static de.esoco.lib.property.LayoutProperties.COLUMN;
 import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
+import static de.esoco.lib.property.LayoutProperties.LAYOUT_AREA;
+
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
+import static java.math.BigDecimal.ZERO;
 
 
 /********************************************************************
@@ -47,7 +54,7 @@ import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
  *
  * @author eso
  */
-public class Calculator extends Composite implements EWTEventHandler
+public class Calculator extends Composite
 {
 	//~ Enums ------------------------------------------------------------------
 
@@ -56,16 +63,20 @@ public class Calculator extends Composite implements EWTEventHandler
 	 */
 	enum CalculatorAction implements CalculatorFunction
 	{
-		BACK("⌫", CalculatorState::backOneDigit),
-		CLEAR_ALL("C", CalculatorState::clearAll),
-		CLEAR_ENTRY("CE", CalculatorState::clearEntry),
-		DOT(".", CalculatorState::startFractionInput),
-		EQUALS("=", CalculatorState::calculate);
+		BACK("⌫", CalculatorState::backOneDigit, KeyCode.BACKSPACE),
+		CLEAR_ALL("C", CalculatorState::clearAll, KeyCode.ESCAPE),
+		CLEAR_ENTRY("CE",
+					CalculatorState::clearEntry,
+					ModifierKeys.SHIFT,
+					KeyCode.BACKSPACE),
+		DOT(".", CalculatorState::startFractionInput, KeyCode.PERIOD),
+		EQUALS("=", CalculatorState::calculate, KeyCode.EQUALS);
 
 		//~ Instance fields ----------------------------------------------------
 
 		private final String				    sSymbol;
 		private final Consumer<CalculatorState> fPerformAction;
+		private Pair<ModifierKeys, KeyCode>     aKey;
 
 		//~ Constructors -------------------------------------------------------
 
@@ -74,13 +85,32 @@ public class Calculator extends Composite implements EWTEventHandler
 		 *
 		 * @param sSymbol        The action symbol
 		 * @param fPerformAction The function to perform this action
+		 * @param eKeyCode       The key code for this action
 		 */
-		private CalculatorAction(
-			String					  sSymbol,
-			Consumer<CalculatorState> fPerformAction)
+		private CalculatorAction(String					   sSymbol,
+								 Consumer<CalculatorState> fPerformAction,
+								 KeyCode				   eKeyCode)
+		{
+			this(sSymbol, fPerformAction, ModifierKeys.NONE, eKeyCode);
+		}
+
+		/***************************************
+		 * Creates a new instance.
+		 *
+		 * @param sSymbol        The action symbol
+		 * @param fPerformAction The function to perform this action
+		 * @param rModifiers     The modifier keys for the key code
+		 * @param eKeyCode       The key code for this action
+		 */
+		private CalculatorAction(String					   sSymbol,
+								 Consumer<CalculatorState> fPerformAction,
+								 ModifierKeys			   rModifiers,
+								 KeyCode				   eKeyCode)
 		{
 			this.sSymbol	    = sSymbol;
 			this.fPerformAction = fPerformAction;
+
+			aKey = key(rModifiers, eKeyCode);
 		}
 
 		//~ Methods ------------------------------------------------------------
@@ -92,6 +122,15 @@ public class Calculator extends Composite implements EWTEventHandler
 		public void accept(CalculatorState rState)
 		{
 			fPerformAction.accept(rState);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Pair<ModifierKeys, KeyCode> getKey()
+		{
+			return aKey;
 		}
 
 		/***************************************
@@ -111,15 +150,21 @@ public class Calculator extends Composite implements EWTEventHandler
 		implements CalculatorFunction,
 				   BiFunction<BigDecimal, BigDecimal, BigDecimal>
 	{
-		ADD("+", 1, BigDecimal::add), SUBTRACT("-", 1, BigDecimal::subtract),
-		MULTIPLY("×", 1, BigDecimal::multiply),
-		DIVIDE("÷", 1, BigDecimal::divide),
-		PERCENT("%", 1, (d1, d2) -> d1.multiply(d2).divide(MathUtil.HUNDRED));
+		ADD("+", 1, '+', BigDecimal::add),
+		SUBTRACT("-", 1, '-', BigDecimal::subtract),
+		MULTIPLY("×", 2, '*', BigDecimal::multiply),
+		DIVIDE("÷", 2, '/', BigDecimal::divide),
+		PERCENT("%",
+				1,
+				'%',
+				(d1, d2) -> d1.multiply(d2).divide(MathUtil.HUNDRED));
 
 		//~ Instance fields ----------------------------------------------------
 
 		private final String sSymbol;
 		private final int    nPriority;
+
+		private Pair<ModifierKeys, KeyCode> aKey;
 
 		private final BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc;
 
@@ -131,16 +176,20 @@ public class Calculator extends Composite implements EWTEventHandler
 		 * @param sSymbol   The function symbol
 		 * @param nPriority The priority of this calculation in relation to
 		 *                  other calculations
+		 * @param cKey      The character of the key to invoke this function
 		 * @param fCalc     The calculation function
 		 */
 		private BinaryCalculation(
 			String										   sSymbol,
 			int											   nPriority,
+			char										   cKey,
 			BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc)
 		{
 			this.sSymbol   = sSymbol;
-			this.fCalc     = fCalc;
 			this.nPriority = nPriority;
+			this.fCalc     = fCalc;
+
+			aKey = key(KeyCode.forChar(cKey));
 		}
 
 		//~ Methods ------------------------------------------------------------
@@ -161,6 +210,15 @@ public class Calculator extends Composite implements EWTEventHandler
 		public BigDecimal apply(BigDecimal dLeft, BigDecimal dRight)
 		{
 			return fCalc.apply(dLeft, dRight);
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Pair<ModifierKeys, KeyCode> getKey()
+		{
+			return aKey;
 		}
 
 		/***************************************
@@ -189,7 +247,7 @@ public class Calculator extends Composite implements EWTEventHandler
 	enum UnaryCalculation implements CalculatorFunction,
 									 Function<BigDecimal, BigDecimal>
 	{
-		INVERT("¹/x", BigDecimal.ONE::divide), SIGN("±", BigDecimal::negate),
+		INVERT("¹/x", ONE::divide), SIGN("±", BigDecimal::negate),
 		SQUARE("x²", d -> d.multiply(d)), SQUARE_ROOT("√", MathUtil::sqrt);
 
 		//~ Instance fields ----------------------------------------------------
@@ -255,7 +313,7 @@ public class Calculator extends Composite implements EWTEventHandler
 							  BigDecimal, Pair<BigDecimal, BigDecimal>>
 	{
 		MEMORY_EXCHANCE("MX", (v, m) -> Pair.of(m, v)),
-		MEMORY_CLEAR("MC", (v, m) -> Pair.of(v, BigDecimal.ZERO)),
+		MEMORY_CLEAR("MC", (v, m) -> Pair.of(v, ZERO)),
 		MEMORY_RECALL("MR", (v, m) -> Pair.of(m, m)),
 		MEMORY_STORE("MS", (v, m) -> Pair.of(v, v)),
 		MEMORY_ADD("M+", (v, m) -> Pair.of(v, m.add(v))),
@@ -295,8 +353,7 @@ public class Calculator extends Composite implements EWTEventHandler
 			Pair<BigDecimal, BigDecimal> aResult =
 				fMemory.apply(rState.dCurrentValue, rState.dMemoryValue);
 
-			rState.dCurrentValue = aResult.first();
-			rState.dMemoryValue  = aResult.second();
+			rState.updateValues(aResult.first(), aResult.second());
 		}
 
 		/***************************************
@@ -348,10 +405,13 @@ public class Calculator extends Composite implements EWTEventHandler
 
 	//~ Instance fields --------------------------------------------------------
 
-	private TextField aDisplay;
-	private Label     aMemoryLabel;
+	private CalculatorState   aState   = new CalculatorState();
+	private CalculatorDisplay aDisplay;
 
-	private CalculatorState aState = new CalculatorState();
+	private Map<Pair<ModifierKeys, KeyCode>, CalculatorFunction> aFunctionKeys =
+		new HashMap<>();
+
+	private boolean bKeyHandled = false;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -360,10 +420,7 @@ public class Calculator extends Composite implements EWTEventHandler
 	 */
 	public Calculator()
 	{
-		super(new GridLayout().columns("repeat(4, 1fr)")
-			  .rows("repeat(8, 1fr)")
-			  .colGap("6px")
-			  .rowGap("6px"));
+		super(new GridLayout().columns("repeat(4, 1fr)").gaps("0.5rem"), true);
 	}
 
 	//~ Static methods ---------------------------------------------------------
@@ -393,22 +450,6 @@ public class Calculator extends Composite implements EWTEventHandler
 	}
 
 	/***************************************
-	 * Handles all button events.
-	 *
-	 * @param rEvent The button event
-	 */
-	@Override
-	public void handleEvent(EWTEvent rEvent)
-	{
-		if (rEvent.getType() == EventType.KEY_PRESSED)
-		{
-			if (rEvent.getKeyCode() != KeyCode.NONE)
-			{
-			}
-		}
-	}
-
-	/***************************************
 	 * Sets the value of this calculator.
 	 *
 	 * @param dValue The new value
@@ -427,25 +468,20 @@ public class Calculator extends Composite implements EWTEventHandler
 	@Override
 	protected void build(ContainerBuilder<?> rBuilder)
 	{
-		int nGap = 3;
+		addStyleName(EWT.CSS.ewtCalculator());
 
-		rBuilder =
-			rBuilder.addPanel(DEFAULT.set(COLUMN, 1).set(COLUMN_SPAN, 4),
-							  new FillLayout(nGap));
+		addEventListener(EventType.KEY_TYPED, this::handleKey);
+		addEventListener(EventType.KEY_RELEASED, this::handleKey);
 
-		aDisplay     = rBuilder.addTextField(DEFAULT, "0.");
-		aMemoryLabel = rBuilder.addLabel(DEFAULT, "", null);
-
-		aDisplay.setEditable(true);
-		aDisplay.addEventListener(EventType.KEY_PRESSED, this);
-
-		rBuilder = rBuilder.getParent();
+		aDisplay =
+			rBuilder.addComponent(new CalculatorDisplay(),
+								  DEFAULT.set(COLUMN, 1).set(COLUMN_SPAN, 4));
 
 		for (CalculatorFunction[] rRow : STANDARD_LAYOUT)
 		{
 			for (CalculatorFunction rFunction : rRow)
 			{
-				addButtons(rBuilder, rFunction);
+				addFunctionButton(rBuilder, rFunction);
 			}
 		}
 
@@ -458,40 +494,44 @@ public class Calculator extends Composite implements EWTEventHandler
 	 * @param rBuilder  The container builder
 	 * @param rFunction rLabels The button labels
 	 */
-	void addButtons(ContainerBuilder<?> rBuilder, CalculatorFunction rFunction)
+	void addFunctionButton(
+		ContainerBuilder<?> rBuilder,
+		CalculatorFunction  rFunction)
 	{
-		Button aButton =
-			rBuilder.addButton(DEFAULT, rFunction.getSymbol(), null);
+		Button aButton = rBuilder.addButton(DEFAULT, rFunction.getSymbol());
 
-		aButton.addEventListener(EventType.ACTION, this);
-		aButton.addEventListener(EventType.KEY_PRESSED, this);
+		aButton.addEventListener(EventType.ACTION,
+								 e -> rFunction.accept(aState));
+
+		aFunctionKeys.put(rFunction.getKey(), rFunction);
 	}
 
 	/***************************************
-	 * Returns the function associated with a certain key code.
+	 * Handles all keyboard input events.
 	 *
-	 * @param  rEvent The event containing the key code
-	 *
-	 * @return The function string for the event's key code
+	 * @param rEvent The keyboard event
 	 */
-	CalculatorFunction getKeyFunction(EWTEvent rEvent)
+	void handleKey(EwtEvent rEvent)
 	{
-		CalculatorFunction rFunction = null;
+		if (!bKeyHandled)
+		{
+			Pair<ModifierKeys, KeyCode> aKey =
+				Pair.of(rEvent.getModifiers(), rEvent.getKeyCode());
 
-		if (rEvent.getKeyCode() == KeyCode.STAR)
-		{
-			rFunction = CalculatorAction.DOT;
-		}
-		else if (rEvent.getKeyCode() == KeyCode.POUND)
-		{
-			rFunction = CalculatorAction.BACK;
+			CalculatorFunction rFunction = aFunctionKeys.get(aKey);
+
+			if (rFunction != null)
+			{
+				rFunction.accept(aState);
+				bKeyHandled = (rEvent.getType() == EventType.KEY_TYPED);
+
+				EWT.log("Handled %s: %s", rEvent, aKey);
+			}
 		}
 		else
 		{
-//			rFunction = "" + rEvent.getKeyCode().getChar();
+			bKeyHandled = false;
 		}
-
-		return rFunction;
 	}
 
 	/***************************************
@@ -503,22 +543,18 @@ public class Calculator extends Composite implements EWTEventHandler
 	{
 		if (bReset)
 		{
-			aState.aInputDigit    = BigDecimal.ONE;
+			aState.aInputDigit    = ONE;
 			aState.bFractionInput = false;
 			aState.bEnterNewValue = true;
 		}
 
-		if (BigDecimal.ZERO.equals(aState.dCurrentValue))
+		if (ZERO.equals(aState.dCurrentValue))
 		{
 			// remove a possible negative sign on a zero value
-			aState.dCurrentValue = BigDecimal.ZERO;
+			aState.dCurrentValue = ZERO;
 		}
 
-		aDisplay.setText(aState.dCurrentValue.toString());
-		aMemoryLabel.setText(BigDecimal.ZERO.equals(aState.dMemoryValue) ? ""
-																		 : "M");
-		aMemoryLabel.repaint();
-		aDisplay.repaint();
+		aDisplay.update(aState);
 	}
 
 	//~ Inner Interfaces -------------------------------------------------------
@@ -530,14 +566,60 @@ public class Calculator extends Composite implements EWTEventHandler
 	 */
 	static interface CalculatorFunction extends Consumer<CalculatorState>
 	{
+		//~ Static fields/initializers -----------------------------------------
+
+		/** Default value of {@link #getKey()}. */
+		public static final Pair<ModifierKeys, KeyCode> NO_KEY =
+			Pair.of(ModifierKeys.NONE, KeyCode.NONE);
+
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * Returns the symbol string for this function.
+		 * Returns the key combination that can be pressed to invoke this
+		 * function. The default implementation returns {@link #NO_KEY}.
+		 *
+		 * @return The function key code
+		 */
+		default Pair<ModifierKeys, KeyCode> getKey()
+		{
+			return NO_KEY;
+		}
+
+		/***************************************
+		 * The symbol string to be displayed for this function.
 		 *
 		 * @return The symbol string
 		 */
 		String getSymbol();
+
+		/***************************************
+		 * A helper method for implementations that returns a key definition for
+		 * a single key that needs to be pressed without modifiers.
+		 *
+		 * @param  rKey The key code
+		 *
+		 * @return The key combination pair
+		 */
+		default Pair<ModifierKeys, KeyCode> key(KeyCode rKey)
+		{
+			return key(ModifierKeys.NONE, rKey);
+		}
+
+		/***************************************
+		 * A helper method for implementations that returns a key definition for
+		 * key combinations.
+		 *
+		 * @param  rModifiers The modifier keys
+		 * @param  rKey       The key code
+		 *
+		 * @return The key combination pair
+		 */
+		default Pair<ModifierKeys, KeyCode> key(
+			ModifierKeys rModifiers,
+			KeyCode		 rKey)
+		{
+			return Pair.of(rModifiers, rKey);
+		}
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -551,7 +633,8 @@ public class Calculator extends Composite implements EWTEventHandler
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private final char cDigit;
+		private final char						  cDigit;
+		private final Pair<ModifierKeys, KeyCode> aKey;
 
 		//~ Constructors -------------------------------------------------------
 
@@ -563,6 +646,7 @@ public class Calculator extends Composite implements EWTEventHandler
 		public CalculatorDigit(char cDigit)
 		{
 			this.cDigit = cDigit;
+			aKey	    = key(KeyCode.forChar(cDigit));
 		}
 
 		//~ Methods ------------------------------------------------------------
@@ -580,9 +664,90 @@ public class Calculator extends Composite implements EWTEventHandler
 		 * {@inheritDoc}
 		 */
 		@Override
+		public Pair<ModifierKeys, KeyCode> getKey()
+		{
+			return aKey;
+		}
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
 		public String getSymbol()
 		{
 			return Character.toString(cDigit);
+		}
+	}
+
+	/********************************************************************
+	 * A composite that contains the components of the calculator display.
+	 *
+	 * @author eso
+	 */
+	static class CalculatorDisplay extends Composite
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private Label aOperationsChain;
+		private Label aMemoryIndicator;
+		private Label aValue;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		protected CalculatorDisplay()
+		{
+			super(new GridLayout().columns("auto 1fr")
+				  .areas("'operation operation''state value'")
+				  .colGap("6px"),
+				  false);
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void build(ContainerBuilder<?> rBuilder)
+		{
+			aOperationsChain =
+				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "operation")
+								  .css("minHeight", "2em")
+								  .css("background", "#def"),
+								  "");
+			aMemoryIndicator =
+				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "state")
+								  .css("minWidth", "2em")
+								  .css("background", "#fed")
+								  .css("textAlign", "center"),
+								  "");
+			aValue			 =
+				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "value")
+								  .css("fontSize", "250%")
+								  .css("textAlign", "right"),
+								  "");
+		}
+
+		/***************************************
+		 * Updates the display based on the given state.
+		 *
+		 * @param rState The state to update from
+		 */
+		void update(CalculatorState rState)
+		{
+			StringBuilder aOperations = new StringBuilder();
+
+			for (Operation rOperation : rState.aOperationsStack)
+			{
+				aOperations.append(rOperation);
+			}
+
+			aOperationsChain.setText(aOperations.toString());
+			aMemoryIndicator.setText(rState.dMemoryValue == ZERO ? "" : "M");
+			aValue.setText(rState.dCurrentValue.toString());
 		}
 	}
 
@@ -612,6 +777,15 @@ public class Calculator extends Composite implements EWTEventHandler
 		}
 
 		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String toString()
+		{
+			return rLeftValue.toString() + " " + eCalculation.getSymbol() + " ";
+		}
 
 		/***************************************
 		 * Executes this operation with a right value and returns the result.
@@ -656,9 +830,9 @@ public class Calculator extends Composite implements EWTEventHandler
 	{
 		//~ Instance fields ----------------------------------------------------
 
-		private BigDecimal dCurrentValue = BigDecimal.ZERO;
-		private BigDecimal dMemoryValue  = BigDecimal.ZERO;
-		private BigDecimal aInputDigit   = BigDecimal.ONE;
+		private BigDecimal dCurrentValue = ZERO;
+		private BigDecimal dMemoryValue  = ZERO;
+		private BigDecimal aInputDigit   = ONE;
 
 		private boolean bFractionInput;
 		private boolean bEnterNewValue;
@@ -693,9 +867,9 @@ public class Calculator extends Composite implements EWTEventHandler
 			{
 				if (bFractionInput)
 				{
-					if (aInputDigit.compareTo(BigDecimal.ONE) < 0)
+					if (aInputDigit.compareTo(ONE) < 0)
 					{
-						aInputDigit   = aInputDigit.multiply(BigDecimal.TEN);
+						aInputDigit   = aInputDigit.multiply(TEN);
 						dCurrentValue =
 							dCurrentValue.divide(aInputDigit,
 												 RoundingMode.HALF_UP);
@@ -709,8 +883,7 @@ public class Calculator extends Composite implements EWTEventHandler
 				else
 				{
 					dCurrentValue =
-						dCurrentValue.divide(BigDecimal.TEN,
-											 RoundingMode.FLOOR);
+						dCurrentValue.divide(TEN, RoundingMode.FLOOR);
 				}
 			}
 
@@ -723,7 +896,7 @@ public class Calculator extends Composite implements EWTEventHandler
 		 */
 		void calculate()
 		{
-			executeOperations(dCurrentValue, 0);
+			dCurrentValue = executeOperations(dCurrentValue, 0);
 			update(true);
 		}
 
@@ -742,7 +915,7 @@ public class Calculator extends Composite implements EWTEventHandler
 		 */
 		void clearEntry()
 		{
-			dCurrentValue = BigDecimal.ZERO;
+			dCurrentValue = ZERO;
 			update(true);
 		}
 
@@ -780,19 +953,18 @@ public class Calculator extends Composite implements EWTEventHandler
 
 			if (bEnterNewValue)
 			{
-				dCurrentValue  = BigDecimal.ZERO;
+				dCurrentValue  = ZERO;
 				bEnterNewValue = false;
 			}
 
 			if (bFractionInput)
 			{
-				aInputDigit   = aInputDigit.divide(BigDecimal.TEN);
+				aInputDigit   = aInputDigit.divide(TEN);
 				dCurrentValue = dCurrentValue.add(aInputDigit.multiply(aDigit));
 			}
 			else
 			{
-				dCurrentValue =
-					dCurrentValue.multiply(BigDecimal.TEN).add(aDigit);
+				dCurrentValue = dCurrentValue.multiply(TEN).add(aDigit);
 			}
 
 			update(false);
@@ -806,6 +978,20 @@ public class Calculator extends Composite implements EWTEventHandler
 			bFractionInput = true;
 
 			update(false);
+		}
+
+		/***************************************
+		 * Updates the current and memory values.
+		 *
+		 * @param dCurrent The new current value
+		 * @param dMemory  The new memory value
+		 */
+		void updateValues(BigDecimal dCurrent, BigDecimal dMemory)
+		{
+			dCurrentValue = dCurrent;
+			dMemoryValue  = dMemory;
+
+			update(true);
 		}
 	}
 }

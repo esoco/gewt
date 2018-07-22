@@ -24,8 +24,8 @@ import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.DialogView;
 import de.esoco.ewt.component.MainView;
 import de.esoco.ewt.component.View;
-import de.esoco.ewt.event.EWTEvent;
-import de.esoco.ewt.event.EWTEventHandler;
+import de.esoco.ewt.event.EwtEvent;
+import de.esoco.ewt.event.EwtEventHandler;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Icon;
 import de.esoco.ewt.graphics.Image;
@@ -71,7 +71,7 @@ public class UserInterfaceContext
 	//~ Instance fields --------------------------------------------------------
 
 	private HandlerRegistration   rGlobalKeyHandlerRegistration;
-	private List<EWTEventHandler> aGlobalKeyListeners;
+	private List<EwtEventHandler> aGlobalKeyListeners;
 	private Resource			  rResource;
 
 	//~ Constructors -----------------------------------------------------------
@@ -207,7 +207,7 @@ public class UserInterfaceContext
 	 *
 	 * @param rListener The key listener to register
 	 */
-	public void addGlobalKeyListener(EWTEventHandler rListener)
+	public void addGlobalKeyListener(EwtEventHandler rListener)
 	{
 		if (rGlobalKeyHandlerRegistration == null)
 		{
@@ -217,7 +217,7 @@ public class UserInterfaceContext
 
 		if (aGlobalKeyListeners == null)
 		{
-			aGlobalKeyListeners = new ArrayList<EWTEventHandler>();
+			aGlobalKeyListeners = new ArrayList<EwtEventHandler>();
 		}
 
 		aGlobalKeyListeners.add(rListener);
@@ -559,7 +559,7 @@ public class UserInterfaceContext
 	 *
 	 * @param rListener The key listener to remove
 	 */
-	public void removeGlobalKeyListener(EWTEventHandler rListener)
+	public void removeGlobalKeyListener(EwtEventHandler rListener)
 	{
 		if (aGlobalKeyListeners != null)
 		{
@@ -665,8 +665,8 @@ public class UserInterfaceContext
 				{
 					rPreviewEvent.consume();
 
-					EWTEvent rEwtEvent =
-						EWTEvent.getEvent(UserInterfaceContext.this,
+					EwtEvent rEwtEvent =
+						EwtEvent.getEvent(UserInterfaceContext.this,
 										  null,
 										  EventType.KEY_TYPED,
 										  rEvent);
@@ -688,7 +688,7 @@ public class UserInterfaceContext
 		{
 			//~ Instance fields ------------------------------------------------
 
-			private final EWTEvent rEwtEvent;
+			private final EwtEvent rEwtEvent;
 
 			//~ Constructors ---------------------------------------------------
 
@@ -697,7 +697,7 @@ public class UserInterfaceContext
 			 *
 			 * @param rEwtEvent The EWT event to send
 			 */
-			private NotifyGlobalKeyListeners(EWTEvent rEwtEvent)
+			private NotifyGlobalKeyListeners(EwtEvent rEwtEvent)
 			{
 				this.rEwtEvent = rEwtEvent;
 			}
@@ -710,7 +710,7 @@ public class UserInterfaceContext
 			@Override
 			public void execute()
 			{
-				for (EWTEventHandler rListener : aGlobalKeyListeners)
+				for (EwtEventHandler rListener : aGlobalKeyListeners)
 				{
 					rListener.handleEvent(rEwtEvent);
 				}

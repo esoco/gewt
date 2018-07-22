@@ -18,9 +18,9 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.event.EWTEvent;
-import de.esoco.ewt.event.EWTEventHandler;
 import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.event.EwtEvent;
+import de.esoco.ewt.event.EwtEventHandler;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.ImageRef;
 import de.esoco.ewt.impl.gwt.EventMulticaster;
@@ -36,7 +36,6 @@ import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.Color;
 import de.esoco.lib.property.HasId;
 import de.esoco.lib.property.TextAttribute;
-import de.esoco.lib.property.UserInterfaceProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -102,6 +101,7 @@ import com.google.gwt.user.client.ui.Widget;
 import static de.esoco.lib.property.ContentProperties.ELEMENT_ID;
 import static de.esoco.lib.property.StateProperties.ACTION_EVENT_ON_ACTIVATION_ONLY;
 import static de.esoco.lib.property.StateProperties.NO_EVENT_PROPAGATION;
+import static de.esoco.lib.property.StyleProperties.CSS_STYLES;
 
 
 /********************************************************************
@@ -278,7 +278,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public void addEventListener(
 		EventType		rEventType,
-		EWTEventHandler rListener)
+		EwtEventHandler rListener)
 	{
 		if (aEventDispatcher == null)
 		{
@@ -589,7 +589,7 @@ public abstract class Component implements HasId<String>
 	 */
 	public void removeEventListener(
 		EventType		rEventType,
-		EWTEventHandler rListener)
+		EwtEventHandler rListener)
 	{
 		if (aEventDispatcher != null)
 		{
@@ -856,9 +856,9 @@ public abstract class Component implements HasId<String>
 	 * factory returned by {@link EWT#getWidgetFactory(Component)}. Subclasses
 	 * that override this method or layouts that need information about this
 	 * component's hierarchy can invoke {@link #getParent()} to access the
-	 * parent container. But this component hasn't yet been added to the parent
-	 * at this point. The method {@link #getContext()} can also be invoked to
-	 * access the {@link UserInterfaceContext}.
+	 * parent container but should be aware that this component hasn't yet been
+	 * added to the parent at this point. The method {@link #getContext()} can
+	 * also be invoked to access the {@link UserInterfaceContext}.
 	 *
 	 * @param  rStyle The component style
 	 *
@@ -938,7 +938,7 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @return The event listener for the given type or NULL for none
 	 */
-	EWTEventHandler getEventListener(EventType eEventType)
+	EwtEventHandler getEventListener(EventType eEventType)
 	{
 		if (aEventDispatcher != null)
 		{
@@ -1000,11 +1000,11 @@ public abstract class Component implements HasId<String>
 							Object		rElement,
 							NativeEvent rNativeEvent)
 	{
-		EWTEventHandler rHandler = getEventListener(rEventType);
+		EwtEventHandler rHandler = getEventListener(rEventType);
 
 		if (rHandler != null)
 		{
-			rHandler.handleEvent(EWTEvent.getEvent(this,
+			rHandler.handleEvent(EwtEvent.getEvent(this,
 												   rElement,
 												   rEventType,
 												   rNativeEvent));
@@ -1149,7 +1149,7 @@ public abstract class Component implements HasId<String>
 	private void applyCssStyles(StyleData rStyle)
 	{
 		final Map<String, String> rCssStyles =
-			rStyle.getProperty(UserInterfaceProperties.CSS_STYLES, null);
+			rStyle.getProperty(CSS_STYLES, null);
 
 		if (rCssStyles != null)
 		{
@@ -1240,7 +1240,7 @@ public abstract class Component implements HasId<String>
 
 		private boolean bActionEventOnActivationOnly = false;
 
-		private Map<EventType, EWTEventHandler> aEventHandlers =
+		private Map<EventType, EwtEventHandler> aEventHandlers =
 			new HashMap<>(1);
 
 		private Map<EventType, HandlerRegistration> aHandlerRegistrations =
@@ -1535,7 +1535,7 @@ public abstract class Component implements HasId<String>
 		 */
 		protected void setupEventDispatching(Widget			 rWidget,
 											 EventType		 eEventType,
-											 EWTEventHandler rHandler)
+											 EwtEventHandler rHandler)
 		{
 			aEventHandlers.put(eEventType,
 							   EventMulticaster.add(aEventHandlers.get(eEventType),
@@ -1562,7 +1562,7 @@ public abstract class Component implements HasId<String>
 		 *
 		 * @return The event handler for the given type or NULL for none
 		 */
-		EWTEventHandler getEventHandler(EventType eEventType)
+		EwtEventHandler getEventHandler(EventType eEventType)
 		{
 			return aEventHandlers.get(eEventType);
 		}
@@ -1576,10 +1576,10 @@ public abstract class Component implements HasId<String>
 		 */
 		void stopEventDispatching(
 			EventType		eEventType,
-			EWTEventHandler rHandler)
+			EwtEventHandler rHandler)
 		{
 			{
-				EWTEventHandler rHandlerChain = getEventHandler(eEventType);
+				EwtEventHandler rHandlerChain = getEventHandler(eEventType);
 
 				if (rHandlerChain != null)
 				{

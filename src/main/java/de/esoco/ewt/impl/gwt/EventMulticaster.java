@@ -16,8 +16,8 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.event.EWTEvent;
-import de.esoco.ewt.event.EWTEventHandler;
+import de.esoco.ewt.event.EwtEvent;
+import de.esoco.ewt.event.EwtEventHandler;
 
 
 /********************************************************************
@@ -27,12 +27,12 @@ import de.esoco.ewt.event.EWTEventHandler;
  *
  * @author eso
  */
-public class EventMulticaster implements EWTEventHandler
+public class EventMulticaster implements EwtEventHandler
 {
 	//~ Instance fields --------------------------------------------------------
 
-	private EWTEventHandler rFirst;
-	private EWTEventHandler rSecond;
+	private EwtEventHandler rFirst;
+	private EwtEventHandler rSecond;
 
 	//~ Constructors -----------------------------------------------------------
 
@@ -42,7 +42,7 @@ public class EventMulticaster implements EWTEventHandler
 	 * @param rFirst  The first listener of this multicaster
 	 * @param rSecond The second listener of this multicaster
 	 */
-	public EventMulticaster(EWTEventHandler rFirst, EWTEventHandler rSecond)
+	public EventMulticaster(EwtEventHandler rFirst, EwtEventHandler rSecond)
 	{
 		this.rFirst  = rFirst;
 		this.rSecond = rSecond;
@@ -60,9 +60,9 @@ public class EventMulticaster implements EWTEventHandler
 	 *
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	public static EWTEventHandler add(
-		EWTEventHandler rFirst,
-		EWTEventHandler rSecond)
+	public static EwtEventHandler add(
+		EwtEventHandler rFirst,
+		EwtEventHandler rSecond)
 	{
 		if (rFirst == null)
 		{
@@ -87,9 +87,9 @@ public class EventMulticaster implements EWTEventHandler
 	 *
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	public static EWTEventHandler remove(
-		EWTEventHandler rListener,
-		EWTEventHandler rToRemove)
+	public static EwtEventHandler remove(
+		EwtEventHandler rListener,
+		EwtEventHandler rToRemove)
 	{
 		if (rListener == rToRemove || rListener == null)
 		{
@@ -108,10 +108,10 @@ public class EventMulticaster implements EWTEventHandler
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * @see EWTEventHandler#handleEvent(EWTEvent)
+	 * @see EwtEventHandler#handleEvent(EwtEvent)
 	 */
 	@Override
-	public void handleEvent(EWTEvent rEvent)
+	public void handleEvent(EwtEvent rEvent)
 	{
 		rFirst.handleEvent(rEvent);
 		rSecond.handleEvent(rEvent);
@@ -126,7 +126,7 @@ public class EventMulticaster implements EWTEventHandler
 	 *
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	protected EWTEventHandler remove(EWTEventHandler rToRemove)
+	protected EwtEventHandler remove(EwtEventHandler rToRemove)
 	{
 		if (rFirst == rToRemove)
 		{
@@ -138,8 +138,8 @@ public class EventMulticaster implements EWTEventHandler
 			return rFirst;
 		}
 
-		EWTEventHandler rRemoveFirst  = remove(rFirst, rToRemove);
-		EWTEventHandler rRemoveSecond = remove(rSecond, rToRemove);
+		EwtEventHandler rRemoveFirst  = remove(rFirst, rToRemove);
+		EwtEventHandler rRemoveSecond = remove(rSecond, rToRemove);
 
 		if (rRemoveFirst != rFirst || rRemoveSecond != rSecond)
 		{

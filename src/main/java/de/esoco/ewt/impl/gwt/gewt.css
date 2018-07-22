@@ -16,12 +16,13 @@
 @external .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker;
 @external .ewt-Chart, .ewt-NoChartDataLabel  .ewt-TreeNode;
 @external .ewt-Header, .ewt-Toolbar, .ewt-SortIndicator, .ewt-Resizer;
-@external .ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect;
+@external .ewt-NavButtons, .ewt-Filter,  .ewt-NoSelect, .ewt-Calculator;
 .ewt-EdgeLayout, .ewt-ContentPanel, .ewt-MainView, .ewt-ChildView,
 	.ewt-DialogView, .ewt-DialogTitle, .ewt-MessageBox, .ewt-MessageLabel,
 	.ewt-MessageIcon, .ewt-Icon, .ewt-ImageLabel, .ewt-Tooltip, .ewt-TimePicker,
 	.ewt-Chart, .ewt-NoChartDataLabel, .ewt-TreeNode, .ewt-Header, .ewt-Toolbar,
-	.ewt-SortIndicator, .ewt-Resizer, .ewt-NavButtons, .ewt-Filter, .ewt-NoSelect {
+	.ewt-SortIndicator, .ewt-Resizer, .ewt-NavButtons, .ewt-Filter, .ewt-NoSelect,
+	.ewt-Calculator {
 	
 }
 
@@ -54,11 +55,12 @@
 	
 }
 
-@external .ewt-CssGridPanel, .ewt-FlexboxPanel;
-.ewt-CssGridPanel {
+@external .ewt-GridLayout;
+.ewt-GridLayout {
 	display: grid;
 }
 
-.ewt-FlexboxPanel {
-	display: flex;	
+@external .ewt-FlexLayout;
+.ewt-FlexLayout {
+	display: flex;
 }

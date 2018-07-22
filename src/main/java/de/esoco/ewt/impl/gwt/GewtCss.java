@@ -26,6 +26,9 @@ public interface GewtCss extends CssResource {
   @ClassName("ewt-Selected")
   String ewtSelected();
   
+  @ClassName("ewt-Calculator")
+  String ewtCalculator();
+
   @ClassName("ewt-Chart")
   String ewtChart();
   
@@ -164,11 +167,11 @@ public interface GewtCss extends CssResource {
   @ClassName("ewt-ContentPanel")
   String ewtContentPanel();
 
-  @ClassName("ewt-FlexboxPanel")
-  String ewtFlexboxPanel();
+  @ClassName("ewt-FlexLayout")
+  String ewtFlexLayout();
   
-  @ClassName("ewt-CssGridPanel")
-  String ewtCssGridPanel();
+  @ClassName("ewt-GridLayout")
+  String ewtGridLayout();
 
   // GWT DatePicker styles for reference from extended classes
   String datePickerMonth();

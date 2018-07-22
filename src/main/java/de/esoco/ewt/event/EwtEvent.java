@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package de.esoco.ewt.event;
 
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
 
 
 /********************************************************************
@@ -29,7 +28,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
  *
  * @author eso
  */
-public final class EWTEvent
+public final class EwtEvent
 {
 	//~ Instance fields --------------------------------------------------------
 
@@ -52,7 +51,7 @@ public final class EWTEvent
 	 * @param rType        The event type
 	 * @param rNativeEvent The native event that occurred
 	 */
-	private EWTEvent(Object		 rSource,
+	private EwtEvent(Object		 rSource,
 					 Object		 rElement,
 					 EventType   rType,
 					 NativeEvent rNativeEvent)
@@ -76,12 +75,12 @@ public final class EWTEvent
 	 *
 	 * @return An event instance containing the given parameters
 	 */
-	public static EWTEvent getEvent(Object		rSource,
+	public static EwtEvent getEvent(Object		rSource,
 									Object		rElement,
 									EventType   rType,
 									NativeEvent rNativeEvent)
 	{
-		return new EWTEvent(rSource, rElement, rType, rNativeEvent);
+		return new EwtEvent(rSource, rElement, rType, rNativeEvent);
 	}
 
 	/***************************************
@@ -93,69 +92,27 @@ public final class EWTEvent
 	 */
 	public static KeyCode mapGwtKeyCode(NativeEvent rEvent)
 	{
-		int nGwtKeyCode = rEvent.getKeyCode();
+		char    cChar    = (char) rEvent.getCharCode();
+		KeyCode eKeyCode = null;
 
-		switch (nGwtKeyCode)
+		if (cChar != 0)
 		{
-			case KeyCodes.KEY_SHIFT:
-				return KeyCode.SHIFT;
-
-			case KeyCodes.KEY_ALT:
-				return KeyCode.ALT;
-
-			case KeyCodes.KEY_CTRL:
-				return KeyCode.CONTROL;
-
-			case KeyCodes.KEY_BACKSPACE:
-				return KeyCode.BACKSPACE;
-
-			case KeyCodes.KEY_DELETE:
-				return KeyCode.DELETE;
-
-			case KeyCodes.KEY_DOWN:
-				return KeyCode.DOWN;
-
-			case KeyCodes.KEY_END:
-				return KeyCode.END;
-
-			case KeyCodes.KEY_ENTER:
-				return KeyCode.ENTER;
-
-			case KeyCodes.KEY_ESCAPE:
-				return KeyCode.ESCAPE;
-
-			case KeyCodes.KEY_HOME:
-				return KeyCode.HOME;
-
-			case KeyCodes.KEY_LEFT:
-				return KeyCode.LEFT;
-
-			case KeyCodes.KEY_PAGEDOWN:
-				return KeyCode.PAGE_DOWN;
-
-			case KeyCodes.KEY_PAGEUP:
-				return KeyCode.PAGE_UP;
-
-			case KeyCodes.KEY_RIGHT:
-				return KeyCode.RIGHT;
-
-			case KeyCodes.KEY_TAB:
-				return KeyCode.TAB;
-
-			case KeyCodes.KEY_UP:
-				return KeyCode.UP;
-
-			default:
-
-				KeyCode eKeyCode = KeyCode.forCode(nGwtKeyCode);
-
-				if (eKeyCode == null)
-				{
-					eKeyCode = KeyCode.forChar((char) nGwtKeyCode);
-				}
-
-				return eKeyCode;
+			eKeyCode = KeyCode.forChar(cChar);
 		}
+
+		if (eKeyCode == null)
+		{
+			int nKeyCode = rEvent.getKeyCode();
+
+			eKeyCode = KeyCode.forCode(nKeyCode);
+
+			if (eKeyCode == null)
+			{
+				eKeyCode = KeyCode.forCode((char) nKeyCode);
+			}
+		}
+
+		return eKeyCode;
 	}
 
 	/***************************************

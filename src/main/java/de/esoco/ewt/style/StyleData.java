@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
+
+import static de.esoco.lib.property.StyleProperties.CSS_STYLES;
 
 
 /********************************************************************
@@ -216,6 +218,43 @@ public class StyleData extends AbstractStringProperties
 										  int nAlignSize)
 	{
 		return eVAlign.calcAlignedPosition(nStart, nFullSize, nAlignSize);
+	}
+
+	/***************************************
+	 * Sets a CSS style property.
+	 *
+	 * @param  sCssProperty The name of the CSS property
+	 * @param  sValue       The value of the CSS property or NULL to clear
+	 *
+	 * @return A new style data instance with the modified CSS property
+	 */
+	@SuppressWarnings("unchecked")
+	public final StyleData css(String sCssProperty, String sValue)
+	{
+		StyleData aCopy = new StyleData(this);
+
+		Map<String, String> rCssStyles = aCopy.getProperty(CSS_STYLES, null);
+
+		if (rCssStyles == null && sValue != null)
+		{
+			rCssStyles = new HashMap<>();
+		}
+
+		if (rCssStyles != null)
+		{
+			if (sValue != null)
+			{
+				rCssStyles.put(sCssProperty, sValue);
+			}
+			else
+			{
+				rCssStyles.remove(sCssProperty);
+			}
+		}
+
+		aCopy.setProperty(CSS_STYLES, rCssStyles);
+
+		return aCopy;
 	}
 
 	/***************************************

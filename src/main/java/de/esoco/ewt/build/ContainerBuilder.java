@@ -99,7 +99,17 @@ public class ContainerBuilder<C extends Container>
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Creates a new {@link Button}.
+	 * Adds a text-only button.
+	 *
+	 * @see #addButton(StyleData, String, Object)
+	 */
+	public Button addButton(StyleData rStyle, String sText)
+	{
+		return addButton(rStyle, sText, null);
+	}
+
+	/***************************************
+	 * Adds a new {@link Button} instance.
 	 *
 	 * @param  rStyle The style data
 	 * @param  sText  The button text
@@ -252,6 +262,16 @@ public class ContainerBuilder<C extends Container>
 		addComponent(aComponent, rStyle, sButtonText, null);
 
 		return aComponent;
+	}
+
+	/***************************************
+	 * Adds a text-only label.
+	 *
+	 * @see #addLabel(StyleData, String, Object)
+	 */
+	public Label addLabel(StyleData rStyle, String sText)
+	{
+		return addLabel(rStyle, sText, null);
 	}
 
 	/***************************************

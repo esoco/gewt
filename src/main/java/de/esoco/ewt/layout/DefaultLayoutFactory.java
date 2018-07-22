@@ -125,11 +125,11 @@ public class DefaultLayoutFactory implements LayoutFactory
 				break;
 
 			case FLEX:
-				aLayout = new CssStyleLayout(EWT.CSS.ewtFlexboxPanel());
+				aLayout = new CssStyleLayout(EWT.CSS.ewtFlexLayout());
 				break;
 
 			case CSS_GRID:
-				aLayout = new CssStyleLayout(EWT.CSS.ewtCssGridPanel());
+				aLayout = new CssStyleLayout(EWT.CSS.ewtGridLayout());
 				break;
 
 			case LIST:

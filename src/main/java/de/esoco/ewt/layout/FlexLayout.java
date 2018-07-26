@@ -192,6 +192,18 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	 * flex layout flow. The secondary axis runs in the other direction,
 	 * perpendicular to the main axis.
 	 *
+	 * @see #direction(Orientation, boolean)
+	 */
+	public FlexLayout direction(Orientation eDirection)
+	{
+		return direction(eDirection, false);
+	}
+
+	/***************************************
+	 * Sets the direction of the item flow. This defines the main axis of the
+	 * flex layout flow. The secondary axis runs in the other direction,
+	 * perpendicular to the main axis.
+	 *
 	 * @param  eDirection The flow direction
 	 * @param  bReverse   TRUE to reverse the flow direction
 	 *

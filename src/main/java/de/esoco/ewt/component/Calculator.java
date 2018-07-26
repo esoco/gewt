@@ -22,6 +22,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.EwtEvent;
 import de.esoco.ewt.event.KeyCode;
 import de.esoco.ewt.event.ModifierKeys;
+import de.esoco.ewt.layout.FlexLayout;
 import de.esoco.ewt.layout.GridLayout;
 
 import de.esoco.lib.datatype.Pair;
@@ -42,6 +43,7 @@ import static de.esoco.ewt.style.StyleData.DEFAULT;
 import static de.esoco.lib.property.LayoutProperties.COLUMN;
 import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
 import static de.esoco.lib.property.LayoutProperties.LAYOUT_AREA;
+import static de.esoco.lib.property.Orientation.VERTICAL;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
@@ -70,7 +72,7 @@ public class Calculator extends Composite
 					ModifierKeys.SHIFT,
 					KeyCode.BACKSPACE),
 		DOT(".", CalculatorState::startFractionInput, KeyCode.PERIOD),
-		EQUALS("=", CalculatorState::calculate, KeyCode.EQUALS);
+		EQUALS("=", CalculatorState::calculate, KeyCode.ENTER);
 
 		//~ Instance fields ----------------------------------------------------
 
@@ -153,11 +155,40 @@ public class Calculator extends Composite
 		ADD("+", 1, '+', BigDecimal::add),
 		SUBTRACT("-", 1, '-', BigDecimal::subtract),
 		MULTIPLY("×", 2, '*', BigDecimal::multiply),
-		DIVIDE("÷", 2, '/', BigDecimal::divide),
+		DIVIDE("÷", 2, '/', (d1, d2) -> d1.divide(d2, 16, RoundingMode.HALF_UP)),
+		MODULO("Mod", 2, '~', (d1, d2) -> d1.remainder(d2)),
+		AND("And",
+			2,
+			'&',
+			(d1, d2) ->
+			new BigDecimal(d1.toBigInteger()
+						   .and(d2.toBigInteger()))),
+		OR("Or",
+		   1,
+		   '|',
+		   (d1, d2) -> new BigDecimal(d1.toBigInteger().or(d2.toBigInteger()))),
+		XOR("Xor",
+			1,
+			'^',
+			(d1, d2) ->
+			new BigDecimal(d1.toBigInteger()
+						   .xor(d2.toBigInteger()))),
 		PERCENT("%",
 				1,
 				'%',
-				(d1, d2) -> d1.multiply(d2).divide(MathUtil.HUNDRED));
+				(d1, d2) -> d1.multiply(d2).divide(MathUtil.HUNDRED)),
+		LEFT_SHIFT("<<",
+				   1,
+				   '<',
+				   (d1, d2) ->
+				   new BigDecimal(d1.toBigInteger()
+								  .shiftLeft(d2.intValue()))),
+		RIGHT_SHIFT(">>",
+					1,
+					'>',
+					(d1, d2) ->
+					new BigDecimal(d1.toBigInteger()
+								   .shiftRight(d2.intValue())));
 
 		//~ Instance fields ----------------------------------------------------
 
@@ -244,11 +275,12 @@ public class Calculator extends Composite
 	/********************************************************************
 	 * Enumeration of calculator actions.
 	 */
-	enum UnaryCalculation implements CalculatorFunction,
-									 Function<BigDecimal, BigDecimal>
+	enum UnaryCalculation implements CalculatorFunction
 	{
-		INVERT("¹/x", ONE::divide), SIGN("±", BigDecimal::negate),
-		SQUARE("x²", d -> d.multiply(d)), SQUARE_ROOT("√", MathUtil::sqrt);
+		INVERT("¹/x", d -> ONE.divide(d, 16, RoundingMode.HALF_UP)),
+		SIGN("±", BigDecimal::negate), SQUARE("x²", d -> d.multiply(d)),
+		SQUARE_ROOT("√", MathUtil::sqrt),
+		NOT("Not", d -> new BigDecimal(d.toBigInteger().not()));
 
 		//~ Instance fields ----------------------------------------------------
 
@@ -279,16 +311,8 @@ public class Calculator extends Composite
 		@Override
 		public void accept(CalculatorState rState)
 		{
-			rState.dCurrentValue = fCalc.apply(rState.dCurrentValue);
-		}
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		public BigDecimal apply(BigDecimal dValue)
-		{
-			return fCalc.apply(dValue);
+			rState.updateValues(fCalc.apply(rState.dCurrentValue),
+								rState.dMemoryValue);
 		}
 
 		/***************************************
@@ -379,7 +403,10 @@ public class Calculator extends Composite
 
 	//~ Static fields/initializers ---------------------------------------------
 
-	private static CalculatorFunction[][] STANDARD_LAYOUT =
+	private static final GridLayout STANDARD_LAYOUT =
+		new GridLayout().columns("repeat(4, 1fr)").gaps("0.5rem");
+
+	private static CalculatorFunction[][] STANDARD_KEYS =
 		new CalculatorFunction[][]
 		{
 			{
@@ -403,6 +430,42 @@ public class Calculator extends Composite
 			}
 		};
 
+	private static final GridLayout DEVELOPER_LAYOUT =
+		new GridLayout().columns("repeat(6, 1fr)").gaps("0.5rem");
+
+	private static CalculatorFunction[][] DEVELOPER_KEYS =
+		new CalculatorFunction[][]
+		{
+			{
+				MemoryFunction.MEMORY_CLEAR, MemoryFunction.MEMORY_STORE,
+				MemoryFunction.MEMORY_RECALL, MemoryFunction.MEMORY_EXCHANCE
+			},
+			{
+				BinaryCalculation.PERCENT, UnaryCalculation.SQUARE_ROOT,
+				UnaryCalculation.SQUARE, UnaryCalculation.INVERT
+			},
+			{
+				CalculatorAction.CLEAR_ALL, CalculatorAction.CLEAR_ENTRY,
+				CalculatorAction.BACK, BinaryCalculation.DIVIDE
+			},
+			{
+				digit('E'), digit('F'), digit('7'), digit('8'), digit('9'),
+				BinaryCalculation.MULTIPLY
+			},
+			{
+				digit('C'), digit('D'), digit('4'), digit('5'), digit('6'),
+				BinaryCalculation.SUBTRACT
+			},
+			{
+				digit('A'), digit('B'), digit('1'), digit('2'), digit('3'),
+				BinaryCalculation.ADD
+			},
+			{
+				UnaryCalculation.SIGN, digit('0'), CalculatorAction.DOT,
+				CalculatorAction.EQUALS
+			}
+		};
+
 	//~ Instance fields --------------------------------------------------------
 
 	private CalculatorState   aState   = new CalculatorState();
@@ -420,7 +483,7 @@ public class Calculator extends Composite
 	 */
 	public Calculator()
 	{
-		super(new GridLayout().columns("repeat(4, 1fr)").gaps("0.5rem"), true);
+		super(STANDARD_LAYOUT, true);
 	}
 
 	//~ Static methods ---------------------------------------------------------
@@ -477,7 +540,7 @@ public class Calculator extends Composite
 			rBuilder.addComponent(new CalculatorDisplay(),
 								  DEFAULT.set(COLUMN, 1).set(COLUMN_SPAN, 4));
 
-		for (CalculatorFunction[] rRow : STANDARD_LAYOUT)
+		for (CalculatorFunction[] rRow : STANDARD_KEYS)
 		{
 			for (CalculatorFunction rFunction : rRow)
 			{
@@ -513,7 +576,9 @@ public class Calculator extends Composite
 	 */
 	void handleKey(EwtEvent rEvent)
 	{
-		if (!bKeyHandled)
+		EventType eEventType = rEvent.getType();
+
+		if (!bKeyHandled || eEventType == EventType.KEY_TYPED)
 		{
 			Pair<ModifierKeys, KeyCode> aKey =
 				Pair.of(rEvent.getModifiers(), rEvent.getKeyCode());
@@ -523,9 +588,7 @@ public class Calculator extends Composite
 			if (rFunction != null)
 			{
 				rFunction.accept(aState);
-				bKeyHandled = (rEvent.getType() == EventType.KEY_TYPED);
-
-				EWT.log("Handled %s: %s", rEvent, aKey);
+				bKeyHandled = (eEventType == EventType.KEY_TYPED);
 			}
 		}
 		else
@@ -543,7 +606,7 @@ public class Calculator extends Composite
 	{
 		if (bReset)
 		{
-			aState.aInputDigit    = ONE;
+			aState.dInputDigit    = ONE;
 			aState.bFractionInput = false;
 			aState.bEnterNewValue = true;
 		}
@@ -690,7 +753,10 @@ public class Calculator extends Composite
 
 		private Label aOperationsChain;
 		private Label aMemoryIndicator;
+
 		private Label aValue;
+		private Label aHexValue;
+		private Label aBinaryValue;
 
 		//~ Constructors -------------------------------------------------------
 
@@ -724,10 +790,23 @@ public class Calculator extends Composite
 								  .css("background", "#fed")
 								  .css("textAlign", "center"),
 								  "");
-			aValue			 =
-				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "value")
-								  .css("fontSize", "250%")
-								  .css("textAlign", "right"),
+
+			rBuilder =
+				rBuilder.addPanel(DEFAULT.set(LAYOUT_AREA, "value"),
+								  new FlexLayout().direction(VERTICAL));
+
+			aValue		 =
+				rBuilder.addLabel(DEFAULT.css("fontSize", "250%")
+								  .css("textAlign", "right")
+								  .css("fontFamily", "Fira Code, monospace"),
+								  "");
+			aHexValue    =
+				rBuilder.addLabel(DEFAULT.css("textAlign", "right")
+								  .css("fontFamily", "Fira Code, monospace"),
+								  "");
+			aBinaryValue =
+				rBuilder.addLabel(DEFAULT.css("textAlign", "right")
+								  .css("fontFamily", "Fira Code, monospace"),
 								  "");
 		}
 
@@ -748,6 +827,9 @@ public class Calculator extends Composite
 			aOperationsChain.setText(aOperations.toString());
 			aMemoryIndicator.setText(rState.dMemoryValue == ZERO ? "" : "M");
 			aValue.setText(rState.dCurrentValue.toString());
+			aHexValue.setText(rState.dCurrentValue.toBigInteger().toString(16));
+			aBinaryValue.setText(rState.dCurrentValue.toBigInteger()
+								 .toString(2));
 		}
 	}
 
@@ -832,7 +914,7 @@ public class Calculator extends Composite
 
 		private BigDecimal dCurrentValue = ZERO;
 		private BigDecimal dMemoryValue  = ZERO;
-		private BigDecimal aInputDigit   = ONE;
+		private BigDecimal dInputDigit   = ONE;
 
 		private boolean bFractionInput;
 		private boolean bEnterNewValue;
@@ -867,17 +949,20 @@ public class Calculator extends Composite
 			{
 				if (bFractionInput)
 				{
-					if (aInputDigit.compareTo(ONE) < 0)
+					int nScale = dCurrentValue.scale();
+
+					if (nScale > 0)
 					{
-						aInputDigit   = aInputDigit.multiply(TEN);
+						dInputDigit   = dInputDigit.multiply(TEN);
 						dCurrentValue =
-							dCurrentValue.divide(aInputDigit,
-												 RoundingMode.HALF_UP);
-						dCurrentValue = dCurrentValue.multiply(aInputDigit);
+							dCurrentValue.setScale(--nScale,
+												   RoundingMode.FLOOR);
 					}
-					else
+
+					if (nScale == 0)
 					{
 						bFractionInput = false;
+						dInputDigit    = ONE;
 					}
 				}
 				else
@@ -959,8 +1044,8 @@ public class Calculator extends Composite
 
 			if (bFractionInput)
 			{
-				aInputDigit   = aInputDigit.divide(TEN);
-				dCurrentValue = dCurrentValue.add(aInputDigit.multiply(aDigit));
+				dInputDigit   = dInputDigit.divide(TEN);
+				dCurrentValue = dCurrentValue.add(dInputDigit.multiply(aDigit));
 			}
 			else
 			{

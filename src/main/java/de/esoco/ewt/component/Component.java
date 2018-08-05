@@ -45,6 +45,7 @@ import java.util.function.BiConsumer;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -768,7 +769,7 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Sets the size of the component.
+	 * Sets the size of this component.
 	 *
 	 * @param w The width
 	 * @param h The height
@@ -779,8 +780,8 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Sets the text of the component's tool-tip. If the string contains a
-	 * resource key it will be expanded.
+	 * Sets the text of the tool-tip. If the string contains a resource key it
+	 * will be expanded.
 	 *
 	 * @param sText The new tool tip text or NULL for no tool-tip
 	 */
@@ -791,9 +792,31 @@ public abstract class Component implements HasId<String>
 	}
 
 	/***************************************
-	 * Set the component's visibility.
+	 * Set the visibility of this component. This will only affect the display
+	 * of the component but not it's rendering in the parent container's layout.
+	 * To prevent the rendering completely {@link #setVisible(boolean)} should
+	 * be used instead.
 	 *
 	 * @param bVisible TRUE if visible
+	 */
+	public void setVisibility(boolean bVisible)
+	{
+		Style	   rWidgetStyle = getWidget().getElement().getStyle();
+		Visibility eVisibility  =
+			bVisible ? Visibility.VISIBLE : Visibility.HIDDEN;
+
+		if (!eVisibility.getCssName().equals(rWidgetStyle.getVisibility()))
+		{
+			rWidgetStyle.setVisibility(eVisibility);
+		}
+	}
+
+	/***************************************
+	 * Set the component's display status that also affects layout of the parent
+	 * container. To only affect the rendering of the component itself the
+	 * method {@link #setVisibility(boolean)} can be used instead.
+	 *
+	 * @param bVisible bRender TRUE to display the component, FALSE to hide it
 	 */
 	public void setVisible(boolean bVisible)
 	{

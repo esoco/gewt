@@ -801,11 +801,15 @@ public abstract class Component implements HasId<String>
 	 */
 	public void setVisibility(boolean bVisible)
 	{
-		Style	   rWidgetStyle = getWidget().getElement().getStyle();
-		Visibility eVisibility  =
+		Style  rWidgetStyle		  = getWidget().getElement().getStyle();
+		String sCurrentVisibility = rWidgetStyle.getVisibility();
+
+		Visibility eVisibility =
 			bVisible ? Visibility.VISIBLE : Visibility.HIDDEN;
 
-		if (!eVisibility.getCssName().equals(rWidgetStyle.getVisibility()))
+		if (eVisibility == Visibility.VISIBLE &&
+			!sCurrentVisibility.equals("") ||
+			!eVisibility.getCssName().equals(sCurrentVisibility))
 		{
 			rWidgetStyle.setVisibility(eVisibility);
 		}

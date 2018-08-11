@@ -75,22 +75,66 @@ public class GridLayout extends FluentCssLayout<GridLayout>
 	{
 	}
 
+	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * A factory method to create a new uninitialized instance.
+	 *
+	 * @return The new grid layout
+	 */
+	public static GridLayout grid()
+	{
+		return new GridLayout();
+	}
+
+	/***************************************
+	 * A factory method to create a new instance with certain column
+	 * definitions.
+	 *
+	 * @param  sColumns The column definitions (@see {@link #columns(String)})
+	 *
+	 * @return The new grid layout
+	 */
+	public static GridLayout grid(String sColumns)
+	{
+		return new GridLayout().columns(sColumns);
+	}
+
+	/***************************************
+	 * A factory method to create a new instance with certain row and column
+	 * definitions.
+	 *
+	 * @param  sRows    The row definitions (@see {@link #rows(String)})
+	 * @param  sColumns The column definitions (@see {@link #columns(String)})
+	 *
+	 * @return The new grid layout
+	 */
+	public static GridLayout grid(String sRows, String sColumns)
+	{
+		return new GridLayout().rows(sRows).columns(sColumns);
+	}
+
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * Sets the template areas that define the grid layout
-	 * ('grid-template-areas'). This value typically consists of multiple
-	 * strings, each defining a row of the grid template. This can be achieved
-	 * to surround these row strings by single quotes (') in the argument
-	 * string.
+	 * Sets the template areas property that define the grid layout
+	 * ('grid-template-areas'). The argument strings each define a row of the
+	 * grid template.
 	 *
-	 * @param  sAreas The grid template area definition
+	 * @param  aAreas The template areas for the grid rows
 	 *
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout areas(String sAreas)
+	public final GridLayout areas(String... aAreas)
 	{
-		return _with(() -> sTemplateAreas = sAreas);
+		StringBuilder aAreasDefinition = new StringBuilder();
+
+		for (String sArea : aAreas)
+		{
+			aAreasDefinition.append('\'').append(sArea).append('\'');
+		}
+
+		return _with(() -> sTemplateAreas = aAreasDefinition.toString());
 	}
 
 	/***************************************

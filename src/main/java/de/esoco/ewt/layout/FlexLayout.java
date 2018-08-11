@@ -150,6 +150,30 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	{
 	}
 
+	//~ Static methods ---------------------------------------------------------
+
+	/***************************************
+	 * A factory method to create a new instance with a horizontal layout
+	 * direction for fluent invocations.
+	 *
+	 * @return The new flex layout
+	 */
+	public static FlexLayout flexHorizontal()
+	{
+		return new FlexLayout();
+	}
+
+	/***************************************
+	 * A factory method to create a new instance with a vertical layout
+	 * direction for fluent invocations.
+	 *
+	 * @return The new flex layout
+	 */
+	public static FlexLayout flexVertical()
+	{
+		return new FlexLayout().direction(Orientation.VERTICAL);
+	}
+
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************

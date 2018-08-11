@@ -88,6 +88,7 @@ public abstract class Composite extends Component
 		if (bFocusable)
 		{
 			rWidget = new FocusPanel(rWidget);
+			aContentPanel.addStyleName("CompositeContent");
 		}
 
 		return rWidget;

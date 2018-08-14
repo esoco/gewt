@@ -39,9 +39,6 @@ public enum StyleFlag
 	/** Text or sub-elements may wrap or not wrap */
 	WRAP, NO_WRAP,
 
-	/** Vertical orientation (if not set: horizontal) */
-	VERTICAL,
-
 	/** Enables multi-selection for components that support item selection */
 	MULTISELECT,
 

@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.impl.gwt.GwtProgressBar;
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
-import de.esoco.ewt.style.StyleFlag;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -34,13 +33,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  * <ul>
  *   <li>{@link EventType#VALUE_CHANGED VALUE_CHANGED}: when the progress bar
  *     value has changed</li>
- * </ul>
- *
- * <p>Supported style flags:</p>
- *
- * <ul>
- *   <li>{@link StyleFlag#VERTICAL VERTICAL}: (currently not supported in GEWT)
- *     for a vertical progress bar (default is horizontal)</li>
  * </ul>
  *
  * @author eso

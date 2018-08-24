@@ -108,7 +108,7 @@ public final class EwtEvent
 
 			if (eKeyCode == null)
 			{
-				eKeyCode = KeyCode.forCode((char) nKeyCode);
+				eKeyCode = KeyCode.forChar((char) nKeyCode);
 			}
 		}
 

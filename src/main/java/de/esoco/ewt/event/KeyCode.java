@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2015 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,6 +71,8 @@ public enum KeyCode
 	F1(112), F2(113), F3(114), F4(115), F5(116), F6(117), F7(118), F8(119),
 	F9(120), F10(121), F11(122), F12(123), F13(124), F14(125), F15(126);
 
+	//~ Static fields/initializers ---------------------------------------------
+
 	/** A set containing all function key codes */
 	public static final EnumSet<KeyCode> FUNCTION_KEYS =
 		EnumSet.of(F1,
@@ -98,27 +100,31 @@ public enum KeyCode
 	{
 		// Initialization of reverse lookup maps
 
-		for (KeyCode rKeyCode : KeyCode.values())
+		for (KeyCode eKeyCode : KeyCode.values())
 		{
-			if (rKeyCode.cKeyChar != 0)
+			if (eKeyCode.cKeyChar != 0)
 			{
-				Object o = KEYCHAR_MAP.put(rKeyCode.cKeyChar, rKeyCode);
+				Object o = KEYCHAR_MAP.put(eKeyCode.cKeyChar, eKeyCode);
 
 				assert o == null : "Duplicate mapping of char " +
-					   rKeyCode.cKeyChar + " in " + o + " & " + rKeyCode;
+					   eKeyCode.cKeyChar + " in " + o + " & " + eKeyCode;
 			}
-			else if (rKeyCode.nKeyCode != 0)
+			else if (eKeyCode.nKeyCode != 0)
 			{
-				Object o = KEYCODE_MAP.put(rKeyCode.nKeyCode, rKeyCode);
+				Object o = KEYCODE_MAP.put(eKeyCode.nKeyCode, eKeyCode);
 
 				assert o == null : "Duplicate mapping of code " +
-					   rKeyCode.cKeyChar + " in " + o + " & " + rKeyCode;
+					   eKeyCode.nKeyCode + " in " + o + " & " + eKeyCode;
 			}
 		}
 	}
 
+	//~ Instance fields --------------------------------------------------------
+
 	private final int  nKeyCode;
 	private final char cKeyChar;
+
+	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
 	 * Creates a new instance that is not associated with a printable character.
@@ -142,6 +148,8 @@ public enum KeyCode
 		cKeyChar = cKey;
 		nKeyCode = 0;
 	}
+
+	//~ Static methods ---------------------------------------------------------
 
 	/***************************************
 	 * Allows to retrieve the KeyCode instance that is associated with a certain
@@ -187,6 +195,8 @@ public enum KeyCode
 	{
 		return rKeyCode.getChar();
 	}
+
+	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * Returns the (printable) character value that is associated with this key
@@ -240,7 +250,8 @@ public enum KeyCode
 		}
 		else
 		{
-			sb.append('$').append("Key")
+			sb.append('$')
+			  .append("Key")
 			  .append(TextConvert.capitalizedIdentifier(name()));
 		}
 

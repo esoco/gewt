@@ -220,6 +220,29 @@ public class EWT
 	}
 
 	/***************************************
+	 * Places a text string in the system clipboard.
+	 *
+	 * @param sText The text string
+	 */
+	public static native void copyTextToClipboard(String sText) /*-{
+		var textArea = document.createElement("textarea");
+
+		textArea.style.opacity = 0;
+		textArea.value = sText;
+
+		document.body.appendChild(textArea);
+
+		textArea.select();
+
+		try {
+			var successful = document.execCommand('copy');
+		} catch (err) {
+			console.log('Copy failed: ' + err);
+		}
+		document.body.removeChild(textArea);
+	}-*/;
+
+	/***************************************
 	 * Creates a new user interface context.
 	 *
 	 * @param  rResource The context resource or NULL for none

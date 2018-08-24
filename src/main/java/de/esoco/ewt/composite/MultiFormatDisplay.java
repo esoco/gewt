@@ -173,7 +173,7 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	@SafeVarargs
 	public MultiFormatDisplay(F... rModes)
 	{
-		super(grid("auto 1fr"), false);
+		super(grid("auto 1fr"));
 
 		this.aFormats = rModes;
 	}
@@ -188,6 +188,16 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	public F getActiveFormat()
 	{
 		return aFormats[nActiveFormat];
+	}
+
+	/***************************************
+	 * Returns the string value that of the currently active format.
+	 *
+	 * @return The string value for the active format
+	 */
+	public String getActiveValue()
+	{
+		return aValueLabels[nActiveFormat].getText();
 	}
 
 	/***************************************

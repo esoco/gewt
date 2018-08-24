@@ -16,57 +16,43 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.layout.GenericLayout;
 import de.esoco.ewt.style.StyleData;
 
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /********************************************************************
- * Base class for components that are composed from a combination of other
- * components.
+ * A composite that can receive the input focus.
  *
  * @author eso
  */
-public abstract class Composite extends Component
+public abstract class FocusableComposite extends Composite
 {
-	//~ Instance fields --------------------------------------------------------
-
-	private Panel aContentPanel = new Panel();
-
 	//~ Constructors -----------------------------------------------------------
 
 	/***************************************
-	 * Creates a new instance with a certain layout.
+	 * Creates a new instance.
 	 *
-	 * @param rLayout The layout of the composite container
+	 * @param rLayout The composite layout
 	 */
-	protected Composite(GenericLayout rLayout)
+	protected FocusableComposite(GenericLayout rLayout)
 	{
-		aContentPanel.setLayout(rLayout);
+		super(rLayout);
 	}
 
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
-	 * {@inheritDoc}
+	 * Requests that the component gets the input focus.
 	 */
-	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
+	public void requestFocus()
 	{
-		super.initWidget(rParent, rStyle);
-
-		build(new ContainerBuilder<Panel>(aContentPanel));
+		((Focusable) getWidget()).setFocus(true);
 	}
-
-	/***************************************
-	 * Must be implemented by subclasses to build their content with the given
-	 * builder.
-	 *
-	 * @param rBuilder The builder to add the content components with
-	 */
-	protected abstract void build(ContainerBuilder<?> rBuilder);
 
 	/***************************************
 	 * {@inheritDoc}
@@ -74,10 +60,6 @@ public abstract class Composite extends Component
 	@Override
 	protected IsWidget createWidget(StyleData rStyle)
 	{
-		aContentPanel.initWidget(getParent(), rStyle);
-
-		aContentPanel.addStyleName("CompositeContent");
-
-		return aContentPanel.getWidget();
+		return new FocusPanel((Widget) super.createWidget(rStyle));
 	}
 }

@@ -20,6 +20,7 @@ import de.esoco.ewt.EWT;
 import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.component.Button;
 import de.esoco.ewt.component.Composite;
+import de.esoco.ewt.component.FocusableComposite;
 import de.esoco.ewt.component.Label;
 import de.esoco.ewt.composite.MultiFormatDisplay.NumberDisplayFormat;
 import de.esoco.ewt.event.EventType;
@@ -62,7 +63,7 @@ import static java.math.BigDecimal.ZERO;
  *
  * @author eso
  */
-public class Calculator extends Composite
+public class Calculator extends FocusableComposite
 {
 	//~ Enums ------------------------------------------------------------------
 
@@ -502,7 +503,7 @@ public class Calculator extends Composite
 	 */
 	public Calculator()
 	{
-		super(STANDARD_LAYOUT, true);
+		super(STANDARD_LAYOUT);
 	}
 
 	//~ Static methods ---------------------------------------------------------
@@ -605,7 +606,17 @@ public class Calculator extends Composite
 	{
 		EventType eEventType = rEvent.getType();
 
-		if (!bKeyHandled || eEventType == EventType.KEY_TYPED)
+		if (rEvent.getModifiers() == ModifierKeys.CTRL)
+		{
+			if (rEvent.getKeyCode() == KeyCode.C)
+			{
+				EWT.copyTextToClipboard(aDisplay.aValue.getActiveValue());
+				requestFocus();
+			}
+
+			bKeyHandled = true;
+		}
+		else if (!bKeyHandled || eEventType == EventType.KEY_TYPED)
 		{
 			Pair<ModifierKeys, KeyCode> aKey =
 				Pair.of(rEvent.getModifiers(), rEvent.getKeyCode());
@@ -791,8 +802,7 @@ public class Calculator extends Composite
 		protected CalculatorDisplay()
 		{
 			super(grid("auto 1fr").areas("operations operations",
-										 "state value"),
-				  false);
+										 "state value"));
 		}
 
 		//~ Methods ------------------------------------------------------------

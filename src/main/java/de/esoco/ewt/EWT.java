@@ -221,9 +221,10 @@ public class EWT
 
 	/***************************************
 	 * Places a text string in the system clipboard. This requires that the
-	 * input focus is moved to a hidden component. It is recommended that
-	 * invoking code resets the focus to the previously active input component
-	 * after this method returns.
+	 * input focus is moved to a hidden component. As there is no reliable way
+	 * to find the previously focused element it is recommended that invoking
+	 * code resets the focus to the previously active input component after this
+	 * method returns.
 	 *
 	 * @param sText The text string
 	 */

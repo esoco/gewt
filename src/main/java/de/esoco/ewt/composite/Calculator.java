@@ -22,6 +22,7 @@ import de.esoco.ewt.component.Button;
 import de.esoco.ewt.component.Composite;
 import de.esoco.ewt.component.FocusableComposite;
 import de.esoco.ewt.component.Label;
+import de.esoco.ewt.component.Panel;
 import de.esoco.ewt.composite.MultiFormatDisplay.NumberDisplayFormat;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.EwtEvent;
@@ -45,6 +46,7 @@ import java.util.function.Function;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 
+import static de.esoco.ewt.layout.FlexLayout.flexHorizontal;
 import static de.esoco.ewt.layout.GridLayout.grid;
 import static de.esoco.ewt.style.StyleData.DEFAULT;
 
@@ -450,43 +452,44 @@ public class Calculator extends FocusableComposite
 			}
 		};
 
-	private static final GridLayout DEVELOPER_LAYOUT =
-		grid().columns("repeat(6, 1fr)");
-
-	private static CalculatorFunction[][] DEVELOPER_KEYS =
-		new CalculatorFunction[][]
-		{
-			{
-				MemoryFunction.MEMORY_CLEAR, MemoryFunction.MEMORY_STORE,
-				MemoryFunction.MEMORY_RECALL, MemoryFunction.MEMORY_EXCHANCE
-			},
-			{
-				BinaryCalculation.PERCENT, UnaryCalculation.SQUARE_ROOT,
-				UnaryCalculation.SQUARE, UnaryCalculation.INVERT
-			},
-			{
-				CalculatorAction.CLEAR_ALL, CalculatorAction.CLEAR_ENTRY,
-				CalculatorAction.BACK, BinaryCalculation.DIVIDE
-			},
-			{
-				digit('E'), digit('F'), digit('7'), digit('8'), digit('9'),
-				BinaryCalculation.MULTIPLY
-			},
-			{
-				digit('C'), digit('D'), digit('4'), digit('5'), digit('6'),
-				BinaryCalculation.SUBTRACT
-			},
-			{
-				digit('A'), digit('B'), digit('1'), digit('2'), digit('3'),
-				BinaryCalculation.ADD
-			},
-			{
-				UnaryCalculation.SIGN, digit('0'),
-				CalculatorAction.FRACTION_INPUT, CalculatorAction.EQUALS
-			}
-		};
-
 	//~ Instance fields --------------------------------------------------------
+
+//	private static final GridLayout DEVELOPER_LAYOUT =
+//		grid().columns("repeat(6, 1fr)");
+//
+//	private static CalculatorFunction[][] DEVELOPER_KEYS =
+//		new CalculatorFunction[][]
+//		{
+//			{
+//				MemoryFunction.MEMORY_CLEAR, MemoryFunction.MEMORY_STORE,
+//				MemoryFunction.MEMORY_RECALL, MemoryFunction.MEMORY_EXCHANCE
+//			},
+//			{
+//				BinaryCalculation.PERCENT, UnaryCalculation.SQUARE_ROOT,
+//				UnaryCalculation.SQUARE, UnaryCalculation.INVERT
+//			},
+//			{
+//				CalculatorAction.CLEAR_ALL, CalculatorAction.CLEAR_ENTRY,
+//				CalculatorAction.BACK, BinaryCalculation.DIVIDE
+//			},
+//			{
+//				digit('E'), digit('F'), digit('7'), digit('8'), digit('9'),
+//				BinaryCalculation.MULTIPLY
+//			},
+//			{
+//				digit('C'), digit('D'), digit('4'), digit('5'), digit('6'),
+//				BinaryCalculation.SUBTRACT
+//			},
+//			{
+//				digit('A'), digit('B'), digit('1'), digit('2'), digit('3'),
+//				BinaryCalculation.ADD
+//			},
+//			{
+//				UnaryCalculation.SIGN, digit('0'),
+//				CalculatorAction.FRACTION_INPUT, CalculatorAction.EQUALS
+//			}
+//		};
+//
 
 	private CalculatorState   aState   = new CalculatorState();
 	private CalculatorDisplay aDisplay;
@@ -598,6 +601,16 @@ public class Calculator extends FocusableComposite
 	}
 
 	/***************************************
+	 * Copies the current value as a string in the active display format to the
+	 * system clipboard.
+	 */
+	void copyCurrentValueToClipboard()
+	{
+		EWT.copyTextToClipboard(aDisplay.aValue.getActiveValue());
+		requestFocus();
+	}
+
+	/***************************************
 	 * Handles all keyboard input events.
 	 *
 	 * @param rEvent The keyboard event
@@ -610,8 +623,7 @@ public class Calculator extends FocusableComposite
 		{
 			if (rEvent.getKeyCode() == KeyCode.C)
 			{
-				EWT.copyTextToClipboard(aDisplay.aValue.getActiveValue());
-				requestFocus();
+				copyCurrentValueToClipboard();
 			}
 
 			bKeyHandled = true;
@@ -781,77 +793,6 @@ public class Calculator extends FocusableComposite
 	}
 
 	/********************************************************************
-	 * A composite that contains the components of the calculator display.
-	 *
-	 * @author eso
-	 */
-	static class CalculatorDisplay extends Composite
-	{
-		//~ Instance fields ----------------------------------------------------
-
-		private Label aOperationsChain;
-		private Label aStateIndicator;
-
-		private MultiFormatDisplay<BigDecimal, NumberDisplayFormat> aValue;
-
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
-		 * Creates a new instance.
-		 */
-		protected CalculatorDisplay()
-		{
-			super(grid("auto 1fr").areas("operations operations",
-										 "state value"));
-		}
-
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void build(ContainerBuilder<?> rBuilder)
-		{
-			addStyleName("CalculatorDisplay");
-
-			aOperationsChain =
-				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "operations"), "");
-			aStateIndicator  =
-				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "state"), "");
-
-			aOperationsChain.addStyleName("calcOps");
-			aStateIndicator.addStyleName("calcState");
-
-			aValue =
-				new MultiFormatDisplay<>(NumberDisplayFormat.DECIMAL,
-										 NumberDisplayFormat.HEXADECIMAL,
-										 NumberDisplayFormat.BINARY);
-			rBuilder.addComponent(aValue, DEFAULT);
-			aValue.addStyleName("CalculatorValue");
-		}
-
-		/***************************************
-		 * Updates the display based on the given state.
-		 *
-		 * @param rState The state to update from
-		 */
-		void update(CalculatorState rState)
-		{
-			StringBuilder aOperations = new StringBuilder();
-
-			for (Operation rOperation : rState.aOperationsStack)
-			{
-				aOperations.append(rOperation);
-			}
-
-			aOperationsChain.setText(aOperations.toString());
-			aStateIndicator.setText(rState.dMemoryValue == ZERO ? "" : "M");
-			aValue.update(rState.dCurrentValue);
-		}
-	}
-
-	/********************************************************************
 	 * Inner class to encapsulate a mathematical operation.
 	 */
 	static class Operation
@@ -918,6 +859,84 @@ public class Calculator extends FocusableComposite
 		final int getPriority()
 		{
 			return eCalculation.nPriority;
+		}
+	}
+
+	/********************************************************************
+	 * A composite that contains the components of the calculator display.
+	 *
+	 * @author eso
+	 */
+	class CalculatorDisplay extends Composite
+	{
+		//~ Instance fields ----------------------------------------------------
+
+		private Label aOperationsChain;
+		private Label aStateIndicator;
+
+		private MultiFormatDisplay<BigDecimal, NumberDisplayFormat> aValue;
+
+		//~ Constructors -------------------------------------------------------
+
+		/***************************************
+		 * Creates a new instance.
+		 */
+		protected CalculatorDisplay()
+		{
+			super(grid("auto 1fr").areas("operations operations",
+										 "state value"));
+		}
+
+		//~ Methods ------------------------------------------------------------
+
+		/***************************************
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void build(ContainerBuilder<?> rBuilder)
+		{
+			addStyleName("CalculatorDisplay");
+
+			ContainerBuilder<Panel> aOperationsBuilder =
+				rBuilder.addPanel(DEFAULT.set(LAYOUT_AREA, "operations"),
+								  flexHorizontal());
+
+			aOperationsChain = aOperationsBuilder.addLabel(DEFAULT, "");
+			aOperationsBuilder.addButton(DEFAULT, "@$CalcCopyButton")
+							  .addEventListener(EventType.ACTION,
+												e -> copyCurrentValueToClipboard());
+			aStateIndicator =
+				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "state"), "");
+
+			aOperationsChain.setWidth("100%");
+			aOperationsChain.addStyleName("calcOps");
+			aStateIndicator.addStyleName("calcState");
+
+			aValue =
+				new MultiFormatDisplay<>(NumberDisplayFormat.DECIMAL,
+										 NumberDisplayFormat.HEXADECIMAL,
+										 NumberDisplayFormat.BINARY);
+			rBuilder.addComponent(aValue, DEFAULT);
+			aValue.addStyleName("CalculatorValue");
+		}
+
+		/***************************************
+		 * Updates the display based on the given state.
+		 *
+		 * @param rState The state to update from
+		 */
+		void update(CalculatorState rState)
+		{
+			StringBuilder aOperations = new StringBuilder();
+
+			for (Operation rOperation : rState.aOperationsStack)
+			{
+				aOperations.append(rOperation);
+			}
+
+			aOperationsChain.setText(aOperations.toString());
+			aStateIndicator.setText(rState.dMemoryValue == ZERO ? "" : "M");
+			aValue.update(rState.dCurrentValue);
 		}
 	}
 

@@ -76,7 +76,7 @@ public abstract class EWTEntryPoint implements EntryPoint
 	/***************************************
 	 * Replaced with {@link #getImageResources()}.
 	 *
-	 * @return
+	 * @return     The image map
 	 *
 	 * @deprecated
 	 */
@@ -89,7 +89,7 @@ public abstract class EWTEntryPoint implements EntryPoint
 	/***************************************
 	 * Replaced with {@link #getStringResources()}.
 	 *
-	 * @return
+	 * @return     The image map
 	 *
 	 * @deprecated
 	 */

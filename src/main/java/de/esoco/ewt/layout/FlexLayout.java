@@ -30,8 +30,8 @@ import static de.esoco.lib.property.LayoutProperties.ORDER;
 
 /********************************************************************
  * A CSS flex layout implementation. It provides fluent builder methods like
- * {@link #rowGap(String)} that can be invoked successively to set optional grid
- * properties.
+ * {@link #direction(Orientation)} that can be invoked successively to set
+ * optional grid properties.
  *
  * @author eso
  */
@@ -193,7 +193,8 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	{
 		if (eAlignment == ContentAlignment.SPACE_EVENLY)
 		{
-			throw new IllegalArgumentException("SPACE_EVENLY alignment is not supported for the secondary layout axis");
+			throw new IllegalArgumentException(
+				"SPACE_EVENLY alignment is not supported for the secondary layout axis");
 		}
 
 		return _with(() -> eAlignContent = eAlignment);
@@ -235,11 +236,12 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	 */
 	public FlexLayout direction(Orientation eDirection, boolean bReverse)
 	{
-		return _with(() ->
-		 			{
-		 				this.eDirection = eDirection;
-		 				this.bReverse   = bReverse;
-					 });
+		return _with(
+			() ->
+			{
+				this.eDirection = eDirection;
+				this.bReverse   = bReverse;
+			});
 	}
 
 	/***************************************
@@ -268,7 +270,8 @@ public class FlexLayout extends FluentCssLayout<FlexLayout>
 	{
 		if (eAlignment == ContentAlignment.STRETCH)
 		{
-			throw new IllegalArgumentException("STRETCH alignment is not supported for the main layout axis");
+			throw new IllegalArgumentException(
+				"STRETCH alignment is not supported for the main layout axis");
 		}
 
 		return _with(() -> eJustifyContent = eAlignment);

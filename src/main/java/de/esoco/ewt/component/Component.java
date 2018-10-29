@@ -226,12 +226,14 @@ public abstract class Component implements HasId<String>
 			}
 
 			aPanel.setCellHorizontalAlignment(rGwtImage, eHorizontalAlignment);
-			aPanel.setCellVerticalAlignment(rGwtImage,
-											HasVerticalAlignment.ALIGN_MIDDLE);
+			aPanel.setCellVerticalAlignment(
+				rGwtImage,
+				HasVerticalAlignment.ALIGN_MIDDLE);
 			aHtml.setWidth("100%");
 			aPanel.setCellHorizontalAlignment(aHtml, eHorizontalAlignment);
-			aPanel.setCellVerticalAlignment(aHtml,
-											HasVerticalAlignment.ALIGN_MIDDLE);
+			aPanel.setCellVerticalAlignment(
+				aHtml,
+				HasVerticalAlignment.ALIGN_MIDDLE);
 
 			if (sWidth != null)
 			{
@@ -286,9 +288,10 @@ public abstract class Component implements HasId<String>
 			aEventDispatcher = createEventDispatcher();
 		}
 
-		aEventDispatcher.setupEventDispatching(getWidget(),
-											   rEventType,
-											   rListener);
+		aEventDispatcher.setupEventDispatching(
+			getWidget(),
+			rEventType,
+			rListener);
 	}
 
 	/***************************************
@@ -542,7 +545,7 @@ public abstract class Component implements HasId<String>
 
 	/***************************************
 	 * Internal method to create and initialize the GWT widget of this instance
-	 * with the widget factory from {@link EWT#getWidgetFactory(Component)}.
+	 * with the widget factory from {@link EWT#getWidgetFactory(Class)}.
 	 *
 	 * @param  rParent The parent container of the widget
 	 * @param  rStyle  The style data of this instance
@@ -880,8 +883,8 @@ public abstract class Component implements HasId<String>
 
 	/***************************************
 	 * Creates the GWT widget for this instance with the corresponding widget
-	 * factory returned by {@link EWT#getWidgetFactory(Component)}. Subclasses
-	 * that override this method or layouts that need information about this
+	 * factory returned by {@link EWT#getWidgetFactory(Class)}. Subclasses that
+	 * override this method or layouts that need information about this
 	 * component's hierarchy can invoke {@link #getParent()} to access the
 	 * parent container but should be aware that this component hasn't yet been
 	 * added to the parent at this point. The method {@link #getContext()} can
@@ -901,8 +904,9 @@ public abstract class Component implements HasId<String>
 		}
 		else
 		{
-			throw new IllegalStateException("No widget factory for " +
-											getClass());
+			throw new IllegalStateException(
+				"No widget factory for " +
+				getClass());
 		}
 	}
 
@@ -1031,10 +1035,8 @@ public abstract class Component implements HasId<String>
 
 		if (rHandler != null)
 		{
-			rHandler.handleEvent(EwtEvent.getEvent(this,
-												   rElement,
-												   rEventType,
-												   rNativeEvent));
+			rHandler.handleEvent(
+				EwtEvent.getEvent(this, rElement, rEventType, rNativeEvent));
 		}
 	}
 
@@ -1142,7 +1144,8 @@ public abstract class Component implements HasId<String>
 
 			if (rAlignment != null)
 			{
-				((HasHorizontalAlignment) rWidget).setHorizontalAlignment(rAlignment);
+				((HasHorizontalAlignment) rWidget).setHorizontalAlignment(
+					rAlignment);
 			}
 		}
 		else if (rWidget instanceof TextBoxBase)
@@ -1162,7 +1165,8 @@ public abstract class Component implements HasId<String>
 
 			if (rAlignment != null)
 			{
-				((HasVerticalAlignment) rWidget).setVerticalAlignment(rAlignment);
+				((HasVerticalAlignment) rWidget).setVerticalAlignment(
+					rAlignment);
 			}
 		}
 	}
@@ -1186,7 +1190,8 @@ public abstract class Component implements HasId<String>
 			}
 			else
 			{
-				getWidget().addAttachHandler(new Handler()
+				getWidget().addAttachHandler(
+					new Handler()
 					{
 						@Override
 						public void onAttachOrDetach(AttachEvent rEvent)
@@ -1254,14 +1259,19 @@ public abstract class Component implements HasId<String>
 	 *
 	 * @author eso
 	 */
-	class ComponentEventDispatcher implements ClickHandler, DoubleClickHandler,
-											  KeyDownHandler, KeyUpHandler,
-											  KeyPressHandler, FocusHandler,
-											  BlurHandler, MouseDownHandler,
-											  MouseUpHandler, MouseMoveHandler,
-											  MouseOutHandler, MouseOverHandler,
-											  MouseWheelHandler,
-											  ValueChangeHandler<Object>
+	public class ComponentEventDispatcher implements ClickHandler,
+													 DoubleClickHandler,
+													 KeyDownHandler,
+													 KeyUpHandler,
+													 KeyPressHandler,
+													 FocusHandler, BlurHandler,
+													 MouseDownHandler,
+													 MouseUpHandler,
+													 MouseMoveHandler,
+													 MouseOutHandler,
+													 MouseOverHandler,
+													 MouseWheelHandler,
+													 ValueChangeHandler<Object>
 	{
 		//~ Instance fields ----------------------------------------------------
 
@@ -1564,9 +1574,9 @@ public abstract class Component implements HasId<String>
 											 EventType		 eEventType,
 											 EwtEventHandler rHandler)
 		{
-			aEventHandlers.put(eEventType,
-							   EventMulticaster.add(aEventHandlers.get(eEventType),
-													rHandler));
+			aEventHandlers.put(
+				eEventType,
+				EventMulticaster.add(aEventHandlers.get(eEventType), rHandler));
 
 			if (aHandlerRegistrations.get(eEventType) == null)
 			{

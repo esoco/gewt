@@ -381,8 +381,9 @@ public class EWT
 
 		if (t > nThreshold)
 		{
-			GWT.log(t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 +
-					": " + sInfo + " " + sName);
+			GWT.log(
+				t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 +
+				": " + sInfo + " " + sName);
 		}
 	}
 
@@ -424,9 +425,10 @@ public class EWT
 		rProfiledCode.run();
 
 		t = System.currentTimeMillis() - t;
-		EWT.log("[TIME] %s: %ss",
-				sDescription,
-				t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10);
+		EWT.log(
+			"[TIME] %s: %ss",
+			sDescription,
+			t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10);
 	}
 
 	/***************************************
@@ -469,9 +471,10 @@ public class EWT
 			sUrl = GWT.getModuleBaseURL() + sUrl;
 		}
 
-		Window.open(sUrl,
-					sName != null ? sName : "",
-					sFeatures != null ? sFeatures : "");
+		Window.open(
+			sUrl,
+			sName != null ? sName : "",
+			sFeatures != null ? sFeatures : "");
 	}
 
 	/***************************************
@@ -482,63 +485,82 @@ public class EWT
 	 */
 	public static void registerDefaultWidgetFactories(boolean bReplaceExisting)
 	{
-		registerWidgetFactory(Button.class,
-							  new ButtonWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(Calendar.class,
-							  new CalendarWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(CheckBox.class,
-							  new CheckBoxWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(ComboBox.class,
-							  new ComboBoxWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(DateField.class,
-							  new DateFieldWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(FileChooser.class,
-							  new FileChooserWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(Label.class,
-							  new LabelWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(List.class,
-							  new ListControlWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(ListBox.class,
-							  new ListControlWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(ProgressBar.class,
-							  new ProgressBarWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(RadioButton.class,
-							  new RadioButtonWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(Spinner.class,
-							  new SpinnerWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(Table.class,
-							  new TableControlWidgetFactory(false),
-							  bReplaceExisting);
-		registerWidgetFactory(TextArea.class,
-							  new TextAreaWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(TextField.class,
-							  new TextFieldWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(ToggleButton.class,
-							  new ToggleButtonWidgetFactory<>(),
-							  bReplaceExisting);
-		registerWidgetFactory(Tree.class,
-							  new TreeWidgetFactory(),
-							  bReplaceExisting);
-		registerWidgetFactory(TreeTable.class,
-							  new TableControlWidgetFactory(true),
-							  bReplaceExisting);
-		registerWidgetFactory(Website.class,
-							  new WebsiteWidgetFactory(),
-							  bReplaceExisting);
+		registerWidgetFactory(
+			Button.class,
+			new ButtonWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Calendar.class,
+			new CalendarWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			CheckBox.class,
+			new CheckBoxWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			ComboBox.class,
+			new ComboBoxWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			DateField.class,
+			new DateFieldWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			FileChooser.class,
+			new FileChooserWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Label.class,
+			new LabelWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			List.class,
+			new ListControlWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			ListBox.class,
+			new ListControlWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			ProgressBar.class,
+			new ProgressBarWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			RadioButton.class,
+			new RadioButtonWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Spinner.class,
+			new SpinnerWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Table.class,
+			new TableControlWidgetFactory(false),
+			bReplaceExisting);
+		registerWidgetFactory(
+			TextArea.class,
+			new TextAreaWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			TextField.class,
+			new TextFieldWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			ToggleButton.class,
+			new ToggleButtonWidgetFactory<>(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Tree.class,
+			new TreeWidgetFactory(),
+			bReplaceExisting);
+		registerWidgetFactory(
+			TreeTable.class,
+			new TableControlWidgetFactory(true),
+			bReplaceExisting);
+		registerWidgetFactory(
+			Website.class,
+			new WebsiteWidgetFactory(),
+			bReplaceExisting);
 	}
 
 	/***************************************
@@ -549,7 +571,7 @@ public class EWT
 	 * @param bReplaceExisting TRUE to replace an existing mapping with the
 	 *                         given factory, FALSE to keep the current factory
 	 *
-	 * @see   #getWidgetFactory(Component)
+	 * @see   #getWidgetFactory(Class)
 	 */
 	public static void registerWidgetFactory(
 		Class<? extends Component> rComponentClass,
@@ -588,7 +610,8 @@ public class EWT
 		RequestBuilder aRequestBuilder =
 			new RequestBuilder(RequestBuilder.GET, sUrl);
 
-		aRequestBuilder.setCallback(new RequestCallback()
+		aRequestBuilder.setCallback(
+			new RequestCallback()
 			{
 				@Override
 				public void onResponseReceived(

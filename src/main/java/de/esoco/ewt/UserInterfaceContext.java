@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import de.esoco.ewt.component.Component;
 import de.esoco.ewt.component.DialogView;
 import de.esoco.ewt.component.MainView;
 import de.esoco.ewt.component.View;
+import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.event.EwtEvent;
 import de.esoco.ewt.event.EwtEventHandler;
-import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.graphics.Icon;
 import de.esoco.ewt.graphics.Image;
 import de.esoco.ewt.graphics.ImageRef;
@@ -310,9 +310,10 @@ public class UserInterfaceContext
 
 				if (rImage == null)
 				{
-					GWT.log("No image for " +
-							(sImage.charAt(0) == '$' ? sImage.substring(1)
-													 : sImage));
+					GWT.log(
+						"No image for " +
+						(sImage.charAt(0) == '$' ? sImage.substring(1)
+												 : sImage));
 				}
 			}
 		}
@@ -375,25 +376,27 @@ public class UserInterfaceContext
 		{
 			// delay positioning until all children are attached
 			Scheduler.get()
-					 .scheduleDeferred(new ScheduledCommand()
-				{
-					@Override
-					public void execute()
-					{
-						Widget rViewWidget = rView.getWidget();
+					 .scheduleDeferred(
+		 				new ScheduledCommand()
+		 				{
+		 					@Override
+		 					public void execute()
+		 					{
+		 						Widget rViewWidget = rView.getWidget();
 
-						rView.setVisible(true);
+		 						rView.setVisible(true);
 
-						if (rViewWidget instanceof PopupPanel)
-						{
-							setPopupBounds((PopupPanel) rViewWidget,
-										   x,
-										   y,
-										   rOrigin,
-										   bCheckBounds);
-						}
-					}
-				});
+		 						if (rViewWidget instanceof PopupPanel)
+		 						{
+		 							setPopupBounds(
+		 								(PopupPanel) rViewWidget,
+		 								x,
+		 								y,
+		 								rOrigin,
+		 								bCheckBounds);
+		 						}
+		 					}
+		 				});
 		}
 	}
 
@@ -410,21 +413,22 @@ public class UserInterfaceContext
 		{
 			// delay centering until all children are attached
 			Scheduler.get()
-					 .scheduleDeferred(new ScheduledCommand()
-				{
-					@Override
-					public void execute()
-					{
-						Widget rViewWidget = rView.getWidget();
+					 .scheduleDeferred(
+		 				new ScheduledCommand()
+		 				{
+		 					@Override
+		 					public void execute()
+		 					{
+		 						Widget rViewWidget = rView.getWidget();
 
-						rView.setVisible(true);
+		 						rView.setVisible(true);
 
-						if (rViewWidget instanceof PopupPanel)
-						{
-							((PopupPanel) rView.getWidget()).center();
-						}
-					}
-				});
+		 						if (rViewWidget instanceof PopupPanel)
+		 						{
+		 							((PopupPanel) rView.getWidget()).center();
+		 						}
+		 					}
+		 				});
 		}
 	}
 
@@ -509,7 +513,7 @@ public class UserInterfaceContext
 	 * case that the resource string contains a message pattern that can be
 	 * formatted. The placeholders in the pattern will then be replaced with the
 	 * values from the format argument list. The format for the message string
-	 * must be that of the {@link java.text.MessageFormat} class. If the format
+	 * must be that of the {@code java.text.MessageFormat} class. If the format
 	 * argument list is empty or NULL, the string will not be formatted at all.
 	 *
 	 * <p>If assertions are enabled (i.e. during development) this method will
@@ -596,14 +600,15 @@ public class UserInterfaceContext
 	public void runLater(final Runnable rRunnable)
 	{
 		Scheduler.get()
-				 .scheduleDeferred(new ScheduledCommand()
-			{
-				@Override
-				public void execute()
-				{
-					rRunnable.run();
-				}
-			});
+				 .scheduleDeferred(
+		 			new ScheduledCommand()
+		 			{
+		 				@Override
+		 				public void execute()
+		 				{
+		 					rRunnable.run();
+		 				}
+		 			});
 	}
 
 	/***************************************
@@ -666,13 +671,15 @@ public class UserInterfaceContext
 					rPreviewEvent.consume();
 
 					EwtEvent rEwtEvent =
-						EwtEvent.getEvent(UserInterfaceContext.this,
-										  null,
-										  EventType.KEY_TYPED,
-										  rEvent);
+						EwtEvent.getEvent(
+							UserInterfaceContext.this,
+							null,
+							EventType.KEY_TYPED,
+							rEvent);
 
 					Scheduler.get()
-							 .scheduleDeferred(new NotifyGlobalKeyListeners(rEwtEvent));
+							 .scheduleDeferred(
+		 						new NotifyGlobalKeyListeners(rEwtEvent));
 				}
 			}
 		}

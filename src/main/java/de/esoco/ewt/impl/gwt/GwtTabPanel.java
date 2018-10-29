@@ -1,12 +1,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2016 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
-// Licensed under the Apache License, Version 3.0 (the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//	  http://www.apache.org/licenses/LICENSE-3.0
+//	  http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -68,8 +68,6 @@ public class GwtTabPanel extends TabLayoutPanel
 	 *
 	 * @param fBarHeight The tab bar height
 	 * @param eBarUnit   The unit of the tab bar height
-	 *
-	 * @see   TabLayoutPanel#TabLayoutPanel(double, Unit)
 	 */
 	public GwtTabPanel(double fBarHeight, Unit eBarUnit)
 	{
@@ -220,7 +218,8 @@ public class GwtTabPanel extends TabLayoutPanel
 		if (rWindowResizeHandler == null)
 		{
 			rWindowResizeHandler =
-				Window.addResizeHandler(new ResizeHandler()
+				Window.addResizeHandler(
+					new ResizeHandler()
 					{
 						@Override
 						public void onResize(ResizeEvent rEvent)
@@ -257,27 +256,30 @@ public class GwtTabPanel extends TabLayoutPanel
 		// Defer size calculations until sizes are available, when calculating
 		// immediately after add(), all size methods return zero
 		Scheduler.get()
-				 .scheduleDeferred(new ScheduledCommand()
-			{
-				@Override
-				public void execute()
-				{
-					showScrollButtons(isTabScrollingNecessary());
+				 .scheduleDeferred(
+		 			new ScheduledCommand()
+		 			{
+		 				@Override
+		 				public void execute()
+		 				{
+		 					showScrollButtons(isTabScrollingNecessary());
 
-					if (rScrollToTab != null)
-					{
-						Scheduler.get()
-								 .scheduleDeferred(new ScheduledCommand()
-							{
-								@Override
-								public void execute()
-								{
-									scrollTo(rScrollToTab);
-								}
-							});
-					}
-				}
-			});
+		 					if (rScrollToTab != null)
+		 					{
+		 						Scheduler
+									 .get()
+									 .scheduleDeferred(
+			 							new ScheduledCommand()
+			 							{
+			 								@Override
+			 								public void execute()
+			 								{
+			 									scrollTo(rScrollToTab);
+			 								}
+			 							});
+		 					}
+		 				}
+		 			});
 	}
 
 	/***************************************
@@ -350,11 +352,12 @@ public class GwtTabPanel extends TabLayoutPanel
 			int nTabBarWidth = getRightOfWidget(getLastTab());
 
 			rTabBar.getElement().getStyle().setLeft(0, Unit.PX);
-			rMainPanel.setWidgetLeftWidth(rTabBar,
-										  0,
-										  Unit.PX,
-										  nTabBarWidth,
-										  Unit.PX);
+			rMainPanel.setWidgetLeftWidth(
+				rTabBar,
+				0,
+				Unit.PX,
+				nTabBarWidth,
+				Unit.PX);
 		}
 
 		if (bShow)
@@ -363,16 +366,18 @@ public class GwtTabPanel extends TabLayoutPanel
 			int nTabBarWidth    = nMainPanelWidth - nButtonWidth * 2;
 			int nRightButtonX   = nMainPanelWidth - nButtonWidth;
 
-			rMainPanel.setWidgetLeftWidth(rScrollRightButton,
-										  nRightButtonX,
-										  Unit.PX,
-										  nButtonWidth,
-										  Unit.PX);
-			rMainPanel.setWidgetLeftWidth(rTabBar,
-										  nButtonWidth,
-										  Unit.PX,
-										  nTabBarWidth,
-										  Unit.PX);
+			rMainPanel.setWidgetLeftWidth(
+				rScrollRightButton,
+				nRightButtonX,
+				Unit.PX,
+				nButtonWidth,
+				Unit.PX);
+			rMainPanel.setWidgetLeftWidth(
+				rTabBar,
+				nButtonWidth,
+				Unit.PX,
+				nTabBarWidth,
+				Unit.PX);
 		}
 
 		rScrollRightButton.setVisible(bShow);
@@ -440,26 +445,30 @@ public class GwtTabPanel extends TabLayoutPanel
 		rScrollLeftButton.setVisible(false);
 		rScrollRightButton.setVisible(false);
 
-		rMainPanel.setWidgetLeftWidth(rScrollLeftButton,
-									  0,
-									  Unit.PX,
-									  nButtonWidth,
-									  Unit.PX);
-		rMainPanel.setWidgetTopHeight(rScrollLeftButton,
-									  6,
-									  Unit.PX,
-									  rScrollLeftButton.getHeight(),
-									  Unit.PX);
-		rMainPanel.setWidgetLeftWidth(rScrollRightButton,
-									  0,
-									  Unit.PX,
-									  nButtonWidth,
-									  Unit.PX);
-		rMainPanel.setWidgetTopHeight(rScrollRightButton,
-									  6,
-									  Unit.PX,
-									  rScrollRightButton.getHeight(),
-									  Unit.PX);
+		rMainPanel.setWidgetLeftWidth(
+			rScrollLeftButton,
+			0,
+			Unit.PX,
+			nButtonWidth,
+			Unit.PX);
+		rMainPanel.setWidgetTopHeight(
+			rScrollLeftButton,
+			6,
+			Unit.PX,
+			rScrollLeftButton.getHeight(),
+			Unit.PX);
+		rMainPanel.setWidgetLeftWidth(
+			rScrollRightButton,
+			0,
+			Unit.PX,
+			nButtonWidth,
+			Unit.PX);
+		rMainPanel.setWidgetTopHeight(
+			rScrollRightButton,
+			6,
+			Unit.PX,
+			rScrollRightButton.getHeight(),
+			Unit.PX);
 	}
 
 	/***************************************
@@ -501,7 +510,8 @@ public class GwtTabPanel extends TabLayoutPanel
 				}
 			};
 
-		rScrollButton.addMouseDownHandler(new MouseDownHandler()
+		rScrollButton.addMouseDownHandler(
+			new MouseDownHandler()
 			{
 				@Override
 				public void onMouseDown(MouseDownEvent rEvent)
@@ -510,7 +520,8 @@ public class GwtTabPanel extends TabLayoutPanel
 				}
 			});
 
-		rScrollButton.addMouseUpHandler(new MouseUpHandler()
+		rScrollButton.addMouseUpHandler(
+			new MouseUpHandler()
 			{
 				@Override
 				public void onMouseUp(MouseUpEvent rEvent)
@@ -519,7 +530,8 @@ public class GwtTabPanel extends TabLayoutPanel
 				}
 			});
 
-		rScrollButton.addMouseOutHandler(new MouseOutHandler()
+		rScrollButton.addMouseOutHandler(
+			new MouseOutHandler()
 			{
 				@Override
 				public void onMouseOut(MouseOutEvent rEvent)
@@ -528,14 +540,16 @@ public class GwtTabPanel extends TabLayoutPanel
 				}
 			});
 
-		rScrollButton.addDoubleClickHandler(new DoubleClickHandler()
+		rScrollButton.addDoubleClickHandler(
+			new DoubleClickHandler()
 			{
 				@Override
 				public void onDoubleClick(DoubleClickEvent rEvent)
 				{
 					aTimer.cancel();
-					scrollTo(rEvent.getSource() == rScrollLeftButton
-							 ? rTabBar.getWidget(0) : getLastTab());
+					scrollTo(
+						rEvent.getSource() == rScrollLeftButton
+						? rTabBar.getWidget(0) : getLastTab());
 				}
 			});
 	}

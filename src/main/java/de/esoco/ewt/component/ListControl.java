@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -248,67 +248,67 @@ public abstract class ListControl extends Control implements SingleSelection,
 		//~ Methods ------------------------------------------------------------
 
 		/***************************************
-		 * @see ListBox#addItem(String)
+		 * @see com.google.gwt.user.client.ui.ListBox#addItem(String)
 		 */
 		public void addItem(String sItem);
 
 		/***************************************
-		 * @see ListBox#clear()
+		 * @see com.google.gwt.user.client.ui.ListBox#clear()
 		 */
 		public void clear();
 
 		/***************************************
-		 * @see ListBox#getItemCount()
+		 * @see com.google.gwt.user.client.ui.ListBox#getItemCount()
 		 */
 		public int getItemCount();
 
 		/***************************************
-		 * @see ListBox#getItemText(int)
+		 * @see com.google.gwt.user.client.ui.ListBox#getItemText(int)
 		 */
 		public String getItemText(int nIndex);
 
 		/***************************************
-		 * @see ListBox#getSelectedIndex()
+		 * @see com.google.gwt.user.client.ui.ListBox#getSelectedIndex()
 		 */
 		public int getSelectedIndex();
 
 		/***************************************
-		 * @see ListBox#getVisibleItemCount()
+		 * @see com.google.gwt.user.client.ui.ListBox#getVisibleItemCount()
 		 */
 		public int getVisibleItemCount();
 
 		/***************************************
-		 * @see ListBox#insertItem(String, int)
+		 * @see com.google.gwt.user.client.ui.ListBox#insertItem(String, int)
 		 */
 		public void insertItem(String sItem, int nIndex);
 
 		/***************************************
-		 * @see ListBox#isItemSelected(int)
+		 * @see com.google.gwt.user.client.ui.ListBox#isItemSelected(int)
 		 */
 		public boolean isItemSelected(int nIndex);
 
 		/***************************************
-		 * @see ListBox#removeItem(int)
+		 * @see com.google.gwt.user.client.ui.ListBox#removeItem(int)
 		 */
 		public void removeItem(int nIndex);
 
 		/***************************************
-		 * @see ListBox#setItemSelected(int, boolean)
+		 * @see com.google.gwt.user.client.ui.ListBox#setItemSelected(int, boolean)
 		 */
 		public void setItemSelected(int nIndex, boolean bSelected);
 
 		/***************************************
-		 * @see ListBox#setMultipleSelect(boolean)
+		 * @see com.google.gwt.user.client.ui.ListBox#setMultipleSelect(boolean)
 		 */
 		public void setMultipleSelect(boolean bHasMultiSelect);
 
 		/***************************************
-		 * @see ListBox#setSelectedIndex(int)
+		 * @see com.google.gwt.user.client.ui.ListBox#setSelectedIndex(int)
 		 */
 		public void setSelectedIndex(int nIndex);
 
 		/***************************************
-		 * @see ListBox#setVisibleItemCount(int)
+		 * @see com.google.gwt.user.client.ui.ListBox#setVisibleItemCount(int)
 		 */
 		public void setVisibleItemCount(int nCount);
 	}

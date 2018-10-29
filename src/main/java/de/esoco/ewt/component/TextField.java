@@ -18,8 +18,8 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.impl.gwt.WidgetFactory;
 import de.esoco.ewt.style.StyleData;
-import de.esoco.ewt.style.StyleFlag;
 
+import de.esoco.lib.property.StyleProperties;
 import de.esoco.lib.property.TextFieldStyle;
 
 import com.google.gwt.core.client.Scheduler;
@@ -36,10 +36,11 @@ import static de.esoco.lib.property.StyleProperties.TEXT_FIELD_STYLE;
 /********************************************************************
  * A text component subclass that allows single-line text input.
  *
- * <p>Supported style flags:</p>
+ * <p>Supported styles:</p>
  *
  * <ul>
- *   <li>{@link StyleFlag#PASSWORD PASSWORD}: for hidden password input</li>
+ *   <li>{@link StyleProperties#TEXT_FIELD_STYLE}: A rendering style from {@link
+ *     TextFieldStyle}.</li>
  * </ul>
  *
  * @author eso
@@ -152,15 +153,17 @@ public class TextField extends TextControl
 			{
 				case Event.ONPASTE:
 					Scheduler.get()
-							 .scheduleDeferred(new ScheduledCommand()
-						{
-							@Override
-							public void execute()
-							{
-								ValueChangeEvent.fire(GwtPasswordBox.this,
-													  getText());
-							}
-						});
+							 .scheduleDeferred(
+		 						new ScheduledCommand()
+		 						{
+		 							@Override
+		 							public void execute()
+		 							{
+		 								ValueChangeEvent.fire(
+		 									GwtPasswordBox.this,
+		 									getText());
+		 							}
+		 						});
 
 
 					break;
@@ -199,15 +202,17 @@ public class TextField extends TextControl
 			{
 				case Event.ONPASTE:
 					Scheduler.get()
-							 .scheduleDeferred(new ScheduledCommand()
-						{
-							@Override
-							public void execute()
-							{
-								ValueChangeEvent.fire(GwtTextField.this,
-													  getText());
-							}
-						});
+							 .scheduleDeferred(
+		 						new ScheduledCommand()
+		 						{
+		 							@Override
+		 							public void execute()
+		 							{
+		 								ValueChangeEvent.fire(
+		 									GwtTextField.this,
+		 									getText());
+		 							}
+		 						});
 
 
 					break;

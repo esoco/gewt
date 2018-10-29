@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2018 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
 
+import de.esoco.ewt.UserInterfaceContext;
+
 import com.google.gwt.resources.client.ImageResource;
 
 
 /********************************************************************
  * An image implementation that contains some kind of reference to the actual
  * image data or file. For platform compatibility image instances should not be
- * created by invoking the constructor but by using the factory method {@link
- * UserInterfaceContext#createImage(Object)}.
+ * created by invoking the constructor of this class but by using the factory
+ * method {@link UserInterfaceContext#createImage(Object)}.
  *
  * @author eso
  */
@@ -54,8 +56,8 @@ public class ImageRef implements Image
 		if (rImageDefinition instanceof ImageResource)
 		{
 			rGwtImage =
-				new com.google.gwt.user.client.ui.Image((ImageResource)
-														rImageDefinition);
+				new com.google.gwt.user.client.ui.Image(
+					(ImageResource) rImageDefinition);
 		}
 		else if (rImageDefinition instanceof
 				 com.google.gwt.user.client.ui.Image)
@@ -65,13 +67,14 @@ public class ImageRef implements Image
 		else if (rImageDefinition instanceof String)
 		{
 			rGwtImage =
-				new com.google.gwt.user.client.ui.Image((String)
-														rImageDefinition);
+				new com.google.gwt.user.client.ui.Image(
+					(String) rImageDefinition);
 		}
 		else
 		{
-			throw new IllegalArgumentException("Invalid image parameter: " +
-											   rImageDefinition);
+			throw new IllegalArgumentException(
+				"Invalid image parameter: " +
+				rImageDefinition);
 		}
 	}
 

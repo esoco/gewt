@@ -14,45 +14,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-package de.esoco.ewt.js;
+package de.esoco.ewt.js.event;
 
 import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+
+import de.esoco.ewt.js.JsObject;
 
 
 /********************************************************************
- * JSInterop wrapper for <a
- * href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">
- * Object</a>.
+ * JsType declaration for <a
+ * href="https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent">
+ * MessageEvent</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, name = "Object", namespace = JsPackage.GLOBAL)
-public class JsObject
+@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
+public class MessageEvent extends Event
 {
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames">
-	 *      Object.getOwnPropertyNames</a>
-	 */
-	public static native String[] getOwnPropertyNames(Object rObject);
-
 	//~ Methods ----------------------------------------------------------------
 
 	/***************************************
 	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty">
-	 *      Object.hasOwnProperty</a>
+	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/data">
+	 *      MessageEvent.data</a>
 	 */
-	public native boolean hasOwnProperty(String sName);
-
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString">
-	 *      Object.toString</a>
-	 */
-	@Override
-	public native String toString();
+	@JsProperty
+	public native JsObject getData();
 }

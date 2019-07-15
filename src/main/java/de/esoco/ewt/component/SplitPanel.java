@@ -1,6 +1,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // This file is a part of the 'gewt' project.
-// Copyright 2017 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
+// Copyright 2019 Elmar Sonnenschein, esoco GmbH, Flensburg, Germany
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import static de.esoco.lib.property.StyleProperties.SPLITTER_SIZE;
+
 
 /********************************************************************
  * A panel that contains two components that are separated by a draggable
@@ -50,8 +52,9 @@ public class SplitPanel extends FixedLayoutPanel
 	 */
 	public SplitPanel(Container rParent, StyleData rStyle)
 	{
-		super(EWT.getLayoutFactory()
-			  .createLayout(rParent, rStyle, LayoutType.SPLIT));
+		super(
+			EWT.getLayoutFactory()
+			.createLayout(rParent, rStyle, LayoutType.SPLIT));
 	}
 
 	//~ Methods ----------------------------------------------------------------
@@ -62,9 +65,10 @@ public class SplitPanel extends FixedLayoutPanel
 	@Override
 	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
 	{
-		((SplitPanelLayout) getLayout()).addWidget(rContainer,
-												   rWidget,
-												   rStyleData);
+		((SplitPanelLayout) getLayout()).addWidget(
+			rContainer,
+			rWidget,
+			rStyleData);
 	}
 
 	//~ Inner Classes ----------------------------------------------------------
@@ -101,10 +105,11 @@ public class SplitPanel extends FixedLayoutPanel
 				rWidget.setWidth("100%");
 			}
 
-			if (!DockLayout.addDockLayoutPanelWidget(rWidget,
-													 rSplitLayoutPanel,
-													 rStyleData,
-													 true))
+			if (!DockLayout.addDockLayoutPanelWidget(
+					rWidget,
+					rSplitLayoutPanel,
+					rStyleData,
+					true))
 			{
 				rSplitLayoutPanel.setWidgetToggleDisplayAllowed(rWidget, true);
 			}
@@ -118,7 +123,8 @@ public class SplitPanel extends FixedLayoutPanel
 			Container rContainer,
 			StyleData rStyle)
 		{
-			return new SplitLayoutPanel(5);
+			return new SplitLayoutPanel(
+				rStyle.getIntProperty(SPLITTER_SIZE, 5));
 		}
 	}
 }

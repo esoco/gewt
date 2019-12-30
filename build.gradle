@@ -24,7 +24,7 @@ configurations.all {
 			if (targetProject != null) {
 				dependency.useTarget (targetProject, "prefer local project")
 				if (name.startsWith("compile")) // only log once
-					println "$project.name using local project $targetProject as dependency"
+                    println "$project.name using local $targetProject as dependency"
 			}
 		}
 	}
@@ -110,3 +110,9 @@ bintray {
 	    }
     }
 }
+
+buildscript {
+	repositories { jcenter() }
+	dependencies { classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+' }
+}
+apply from: 'publish.gradle'

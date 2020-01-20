@@ -1,7 +1,7 @@
 # The gewt project
 
-Travis build status:  
-[![Build Status](https://www.travis-ci.org/esoco/gewt.svg?branch=master)](https://www.travis-ci.org/esoco/gewt)
+[![](https://github.com/esoco/gewt/workflows/Java%20CI/badge.svg)](https://github.com/esoco/gewt/actions)
+[![Download](https://api.bintray.com/packages/esoco/sdack/gewt/images/download.svg)](https://bintray.com/esoco/sdack/gewt/_latestVersion)
 
 This project contains the GEWT library which provides a generic user interface abstraction that wraps the open source Google Web Toolkit (GWT) for the actual user interface implementation. GEWT has the same API as EWT, a Java desktop user interface framework. GEWT makes it possible to build platform-independent user interfaces. Another important aspect of (G)EWT is that it provides a very simple and unified API for user interface implementations, freeing the developer from the need to handle the similar but differently implemented concepts of the UI toolkits.
 

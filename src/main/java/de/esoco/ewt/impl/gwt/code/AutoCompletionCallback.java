@@ -16,17 +16,15 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.code;
 
-/********************************************************************
+/**
  * TODO: DOCUMENT ME!
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
- *         Research Group, Date: 18/03/2014
+ * Research Group, Date: 18/03/2014
  */
-public interface AutoCompletionCallback
-{
-	//~ Methods ----------------------------------------------------------------
+public interface AutoCompletionCallback {
 
-	/***************************************
+	/**
 	 * A callback that can be used to inform the editor that an auto-completion
 	 * result is ready.
 	 *

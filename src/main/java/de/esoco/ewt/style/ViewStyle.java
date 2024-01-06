@@ -19,22 +19,20 @@ package de.esoco.ewt.style;
 import java.util.Collection;
 import java.util.EnumSet;
 
-
-/********************************************************************
+/**
  * Instances of this class describe the appearance of views. It also contains
  * several predefined constants for standard view styles.
  *
  * @author eso
  */
-public class ViewStyle
-{
-	//~ Enums ------------------------------------------------------------------
+public class ViewStyle {
 
-	/********************************************************************
+	/**
 	 * Enumeration of the available view style flags.
 	 *
 	 * <ul>
-	 *   <li>{@link #FULL_SIZE}: a view that fills the available area. Typically
+	 *   <li>{@link #FULL_SIZE}: a view that fills the available area.
+	 *   Typically
 	 *     used for the main view of an application.</li>
 	 *   <li>{@link #MODAL}: a modal window on top of other content that needs
 	 *     to be dismissed before the underlying UI can be accessed.</li>
@@ -44,20 +42,26 @@ public class ViewStyle
 	 *     available area.</li>
 	 * </ul>
 	 */
-	public enum Flag { FULL_SIZE, MODAL, AUTO_HIDE, BOTTOM }
+	public enum Flag {FULL_SIZE, MODAL, AUTO_HIDE, BOTTOM}
 
-	//~ Static fields/initializers ---------------------------------------------
-
-	/** Constant for the default view style */
+	/**
+	 * Constant for the default view style
+	 */
 	public static final ViewStyle DEFAULT = new ViewStyle();
 
-	/** Constant for the default view style */
+	/**
+	 * Constant for the default view style
+	 */
 	public static final ViewStyle FULL_SIZE = new ViewStyle(Flag.FULL_SIZE);
 
-	/** Constant for modal views */
+	/**
+	 * Constant for modal views
+	 */
 	public static final ViewStyle MODAL = new ViewStyle(Flag.MODAL);
 
-	/** Constant for view that hide automatically if the user clicks outside. */
+	/**
+	 * Constant for view that hide automatically if the user clicks outside.
+	 */
 	public static final ViewStyle AUTO_HIDE = new ViewStyle(Flag.AUTO_HIDE);
 
 	/**
@@ -67,52 +71,39 @@ public class ViewStyle
 	public static final ViewStyle MODAL_AUTO_HIDE =
 		new ViewStyle(Flag.MODAL, Flag.AUTO_HIDE);
 
-	//~ Instance fields --------------------------------------------------------
-
 	private EnumSet<Flag> aFlags = EnumSet.noneOf(Flag.class);
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Internal constructor that creates an instance which contains certain
 	 * flags.
 	 *
 	 * @param rFlags The flags the new instance shall contain
 	 */
-	private ViewStyle(Flag... rFlags)
-	{
-		if (rFlags != null)
-		{
-			for (Flag rFlag : rFlags)
-			{
+	private ViewStyle(Flag... rFlags) {
+		if (rFlags != null) {
+			for (Flag rFlag : rFlags) {
 				aFlags.add(rFlag);
 			}
 		}
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Checks if a certain style flag is set in this instance.
 	 *
-	 * @param  rFlag The flag to check
-	 *
+	 * @param rFlag The flag to check
 	 * @return TRUE if the flag is set
 	 */
-	public boolean hasFlag(Flag rFlag)
-	{
+	public boolean hasFlag(Flag rFlag) {
 		return aFlags.contains(rFlag);
 	}
 
-	/***************************************
+	/**
 	 * Creates a copy of this instance that has additional flags set.
 	 *
-	 * @param  rAdditionalFlags The additional flags to set
-	 *
+	 * @param rAdditionalFlags The additional flags to set
 	 * @return The new instance
 	 */
-	public ViewStyle withFlags(Flag... rAdditionalFlags)
-	{
+	public ViewStyle withFlags(Flag... rAdditionalFlags) {
 		ViewStyle aViewStyle = new ViewStyle(rAdditionalFlags);
 
 		aViewStyle.aFlags.addAll(aFlags);
@@ -120,15 +111,13 @@ public class ViewStyle
 		return aViewStyle;
 	}
 
-	/***************************************
+	/**
 	 * Creates a copy of this instance that has additional flags set.
 	 *
-	 * @param  rAdditionalFlags The additional flags to set
-	 *
+	 * @param rAdditionalFlags The additional flags to set
 	 * @return The new instance
 	 */
-	public ViewStyle withFlags(Collection<Flag> rAdditionalFlags)
-	{
+	public ViewStyle withFlags(Collection<Flag> rAdditionalFlags) {
 		ViewStyle aViewStyle = new ViewStyle();
 
 		aViewStyle.aFlags.addAll(aFlags);

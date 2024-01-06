@@ -35,136 +35,120 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * Base class for components that contain a list of strings. This control cannot
  * be instantiated directly but is a base class for list-based controls like
  * {@link List}.
  *
  * @author eso
  */
-public abstract class ListControl extends Control implements SingleSelection,
-															 MultiSelection
-{
-	//~ Methods ----------------------------------------------------------------
+public abstract class ListControl extends Control
+	implements SingleSelection, MultiSelection {
 
-	/***************************************
+	/**
 	 * Adds a new item to the end of the list.
 	 *
 	 * @param sItem The item text
 	 */
-	public void add(String sItem)
-	{
+	public void add(String sItem) {
 		getGwtListBox().addItem(getContext().expandResource(sItem));
 	}
 
-	/***************************************
+	/**
 	 * Adds a new item at a certain position in the list.
 	 *
 	 * @param sItem  sText The item text
 	 * @param nIndex The position to insert the item after
 	 */
-	public void add(String sItem, int nIndex)
-	{
+	public void add(String sItem, int nIndex) {
 		getGwtListBox().insertItem(getContext().expandResource(sItem), nIndex);
 	}
 
-	/***************************************
+	/**
 	 * Returns the text of a particular item.
 	 *
-	 * @param  nIndex The position of the item
-	 *
+	 * @param nIndex The position of the item
 	 * @return The item text
 	 */
-	public String getItem(int nIndex)
-	{
+	public String getItem(int nIndex) {
 		return getGwtListBox().getItemText(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * Returns the number of items in the list.
 	 *
 	 * @return The item count
 	 */
-	public int getItemCount()
-	{
+	public int getItemCount() {
 		return getGwtListBox().getItemCount();
 	}
 
-	/***************************************
+	/**
 	 * Convenience method to returns the currently selected list item.
 	 *
 	 * @return The currently selected item or NULL for none
 	 */
-	public String getSelectedItem()
-	{
+	public String getSelectedItem() {
 		int nIndex = getSelectionIndex();
 
 		return nIndex >= 0 ? getItem(nIndex) : null;
 	}
 
-	/***************************************
+	/**
 	 * Returns the index of the (first) selected list item.
 	 *
 	 * @return The selection index
 	 */
 	@Override
-	public int getSelectionIndex()
-	{
+	public int getSelectionIndex() {
 		return getGwtListBox().getSelectedIndex();
 	}
 
-	/***************************************
+	/**
 	 * Returns the indices of the currently selected values.
 	 *
 	 * @return The selection indices
 	 */
 	@Override
-	public int[] getSelectionIndices()
-	{
+	public int[] getSelectionIndices() {
 		IsListControlWidget rListBox = getGwtListBox();
 
-		int   nItemCount = rListBox.getItemCount();
-		int[] aIndices   = new int[nItemCount];
-		int   nIndex     = 0;
+		int nItemCount = rListBox.getItemCount();
+		int[] aIndices = new int[nItemCount];
+		int nIndex = 0;
 
-		for (int i = 0; i < nItemCount; i++)
-		{
-			if (rListBox.isItemSelected(i))
-			{
+		for (int i = 0; i < nItemCount; i++) {
+			if (rListBox.isItemSelected(i)) {
 				aIndices[nIndex++] = i;
 			}
 		}
 
 		int[] aResult = new int[nIndex];
 
-		for (int i = 0; i < nIndex; i++)
-		{
+		for (int i = 0; i < nIndex; i++) {
 			aResult[i] = aIndices[i];
 		}
 
 		return aResult;
 	}
 
-	/***************************************
+	/**
 	 * Removes a certain item from the list.
 	 *
 	 * @param nIndex The position of the item to be removed
 	 */
-	public void remove(int nIndex)
-	{
+	public void remove(int nIndex) {
 		getGwtListBox().removeItem(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * Removes all items from the list.
 	 */
-	public void removeAll()
-	{
+	public void removeAll() {
 		getGwtListBox().clear();
 	}
 
-	/***************************************
+	/**
 	 * Sets the index of the currently selected list element. For subclasses
 	 * that allow complete deselection an index value of -1 will deselect all
 	 * elements.
@@ -172,255 +156,222 @@ public abstract class ListControl extends Control implements SingleSelection,
 	 * @param nIndex The index of the new selected element or -1 for none
 	 */
 	@Override
-	public void setSelection(int nIndex)
-	{
+	public void setSelection(int nIndex) {
 		getGwtListBox().setSelectedIndex(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * Selects the elements with the indices contained in the argument array.
 	 *
 	 * @param rIndices An array with the indices of the elements to select
 	 */
 	@Override
-	public void setSelection(int[] rIndices)
-	{
+	public void setSelection(int[] rIndices) {
 		IsListControlWidget rListBox = getGwtListBox();
 
 		setSelection(-1);
 
-		for (int nIndex : rIndices)
-		{
-			if (nIndex < rListBox.getItemCount())
-			{
+		for (int nIndex : rIndices) {
+			if (nIndex < rListBox.getItemCount()) {
 				rListBox.setItemSelected(nIndex, true);
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Selects all elements within the given range.
 	 *
 	 * @param nStart The start index (inclusive)
 	 * @param nEnd   The end index (inclusive)
 	 */
 	@Override
-	public void setSelection(int nStart, int nEnd)
-	{
+	public void setSelection(int nStart, int nEnd) {
 		IsListControlWidget rListBox = getGwtListBox();
 
 		setSelection(-1);
 
-		for (int i = nStart; i <= nEnd; i++)
-		{
+		for (int i = nStart; i <= nEnd; i++) {
 			rListBox.setItemSelected(i, true);
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Component#createEventDispatcher()
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new ListEventDispatcher();
 	}
 
-	/***************************************
+	/**
 	 * Returns the GWT {@link ListBox} instance of this component.
 	 *
 	 * @return The GWT list box
 	 */
-	IsListControlWidget getGwtListBox()
-	{
+	IsListControlWidget getGwtListBox() {
 		return (IsListControlWidget) getWidget();
 	}
 
-	//~ Inner Interfaces -------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Contains the required methods for list widgets.
 	 *
 	 * @author eso
 	 */
-	public static interface IsListControlWidget extends IsWidget, Focusable
-	{
-		//~ Methods ------------------------------------------------------------
+	public static interface IsListControlWidget extends IsWidget, Focusable {
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#addItem(String)
 		 */
 		public void addItem(String sItem);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#clear()
 		 */
 		public void clear();
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getItemCount()
 		 */
 		public int getItemCount();
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getItemText(int)
 		 */
 		public String getItemText(int nIndex);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getSelectedIndex()
 		 */
 		public int getSelectedIndex();
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getVisibleItemCount()
 		 */
 		public int getVisibleItemCount();
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#insertItem(String, int)
 		 */
 		public void insertItem(String sItem, int nIndex);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#isItemSelected(int)
 		 */
 		public boolean isItemSelected(int nIndex);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#removeItem(int)
 		 */
 		public void removeItem(int nIndex);
 
-		/***************************************
-		 * @see com.google.gwt.user.client.ui.ListBox#setItemSelected(int, boolean)
+		/**
+		 * @see com.google.gwt.user.client.ui.ListBox#setItemSelected(int,
+		 * boolean)
 		 */
 		public void setItemSelected(int nIndex, boolean bSelected);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setMultipleSelect(boolean)
 		 */
 		public void setMultipleSelect(boolean bHasMultiSelect);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setSelectedIndex(int)
 		 */
 		public void setSelectedIndex(int nIndex);
 
-		/***************************************
+		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setVisibleItemCount(int)
 		 */
 		public void setVisibleItemCount(int nCount);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
-	 * A subclass of {@link ListBox} that implements the {@link
-	 * IsListControlWidget} interface.
+	/**
+	 * A subclass of {@link ListBox} that implements the
+	 * {@link IsListControlWidget} interface.
 	 *
 	 * @author eso
 	 */
 	public static class GwtListBox extends ListBox
-		implements IsListControlWidget
-	{
+		implements IsListControlWidget {
 	}
 
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class ListControlWidgetFactory
-		implements WidgetFactory<IsListControlWidget>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<IsListControlWidget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public IsListControlWidget createWidget(
-			Component rComponent,
-			StyleData rStyle)
-		{
+		public IsListControlWidget createWidget(Component rComponent,
+			StyleData rStyle) {
 			return new GwtListBox();
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Dispatcher for list-specific events.
 	 *
 	 * @author eso
 	 */
 	class ListEventDispatcher extends ComponentEventDispatcher
-		implements ChangeHandler
-	{
-		//~ Methods ------------------------------------------------------------
+		implements ChangeHandler {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onChange(ChangeEvent rEvent)
-		{
+		public void onChange(ChangeEvent rEvent) {
 			notifyEventHandler(EventType.SELECTION, rEvent);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent)
-		{
+		public void onClick(ClickEvent rEvent) {
 			// remove default click handling to prevent action events
 			// on selection
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<Object> rEvent)
-		{
-			if (hasHandlerFor(EventType.SELECTION))
-			{
+		public void onValueChange(ValueChangeEvent<Object> rEvent) {
+			if (hasHandlerFor(EventType.SELECTION)) {
 				notifyEventHandler(EventType.SELECTION, rEvent);
-			}
-			else
-			{
+			} else {
 				super.onValueChange(rEvent);
 			}
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			HandlerRegistration rHandler = null;
 
-			if (eEventType == EventType.SELECTION)
-			{
-				if (rWidget instanceof HasChangeHandlers)
-				{
+			if (eEventType == EventType.SELECTION) {
+				if (rWidget instanceof HasChangeHandlers) {
 					rHandler =
 						((HasChangeHandlers) rWidget).addChangeHandler(this);
-				}
-				else if (rWidget instanceof HasValueChangeHandlers)
-				{
+				} else if (rWidget instanceof HasValueChangeHandlers) {
 					rHandler =
-						((HasValueChangeHandlers<Object>) rWidget)
-						.addValueChangeHandler(this);
+						((HasValueChangeHandlers<Object>) rWidget).addValueChangeHandler(
+							this);
 				}
 			}
 
-			if (rHandler == null)
-			{
+			if (rHandler == null) {
 				rHandler = super.initEventDispatching(rWidget, eEventType);
 			}
 

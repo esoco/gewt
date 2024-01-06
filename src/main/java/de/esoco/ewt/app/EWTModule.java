@@ -19,8 +19,7 @@ package de.esoco.ewt.app;
 import de.esoco.ewt.UserInterfaceContext;
 import de.esoco.ewt.component.View;
 
-
-/********************************************************************
+/**
  * An EWT module is the part of an EWT application that contains the user
  * interface code. The intention behind this is that the module code should be
  * as independent from a particular EWT platform as possible. This makes it
@@ -31,16 +30,15 @@ import de.esoco.ewt.component.View;
  *
  * <p>Implementing an EWT application typically means to providing at least two
  * classes: an application class containing the bootstrap and platform-specific
- * code and a module that contains the platform-independent user interface code.
+ * code and a module that contains the platform-independent user interface
+ * code.
  * </p>
  *
  * @author eso
  */
-public interface EWTModule
-{
-	//~ Methods ----------------------------------------------------------------
+public interface EWTModule {
 
-	/***************************************
+	/**
 	 * This method must be implemented by subclasses to create and return the
 	 * module's main view. If required by the platform this method will be
 	 * invoked on the user interface thread so the implementation doesn't need
@@ -59,13 +57,12 @@ public interface EWTModule
 	 * <p>If the module view cannot be created for some reason this method
 	 * should throw a RuntimeException. It must not return NULL.</p>
 	 *
-	 * @param  rContext The user interface context to create the view in
-	 *
+	 * @param rContext The user interface context to create the view in
 	 * @return The module's main view
 	 */
 	public View createModuleView(UserInterfaceContext rContext);
 
-	/***************************************
+	/**
 	 * This method will be invoked by the EWT framework to display a view
 	 * previously created by {@link #createModuleView(UserInterfaceContext)}.
 	 * Typically it should prepare the view by invoking {@link View#pack()} and

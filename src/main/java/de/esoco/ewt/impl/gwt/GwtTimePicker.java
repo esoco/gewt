@@ -39,55 +39,47 @@ import com.google.gwt.user.client.ui.ValueBox;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
-
-/********************************************************************
+/**
  * A composite that combines a {@link DatePicker} widget with input fields for
  * time input.
  *
  * @author eso
  */
 public class GwtTimePicker extends Composite
-	implements HasValueChangeHandlers<Integer>, ValueChangeHandler<Integer>
-{
-	//~ Static fields/initializers ---------------------------------------------
+	implements HasValueChangeHandlers<Integer>, ValueChangeHandler<Integer> {
 
 	private static final GewtResources RES = GewtResources.INSTANCE;
-	private static final GewtCss	   CSS = RES.css();
 
-	//~ Instance fields --------------------------------------------------------
+	private static final GewtCss CSS = RES.css();
 
-	Image			   aClockImage;
+	Image aClockImage;
+
 	private GwtSpinner aHoursField;
+
 	private GwtSpinner aMinutesField;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
-	 *
-	 * @param rContext
 	 */
-	public GwtTimePicker(UserInterfaceContext rContext)
-	{
-		HorizontalPanel aTimePanel  = new HorizontalPanel();
-		Image		    aClockImage = new Image(RES.imClock());
-		Label		    aSeparator  = new Label(":");
+	public GwtTimePicker(UserInterfaceContext rContext) {
+		HorizontalPanel aTimePanel = new HorizontalPanel();
+		Image aClockImage = new Image(RES.imClock());
+		Label aSeparator = new Label(":");
 
-		aHoursField   = new GwtSpinner(0, 23, 1, new TimeValueBox());
+		aHoursField = new GwtSpinner(0, 23, 1, new TimeValueBox());
 		aMinutesField = new GwtSpinner(0, 59, 5, new TimeValueBox());
 
 		aClockImage.setTitle(rContext.expandResource("$ttGewtDatePickerTime"));
 		aHoursField.setTitle(rContext.expandResource("$ttGewtDatePickerHour"));
-		aMinutesField.setTitle(rContext.expandResource("$ttGewtDatePickerMinute"));
+		aMinutesField.setTitle(
+			rContext.expandResource("$ttGewtDatePickerMinute"));
 
-		aClockImage.addDoubleClickHandler(new DoubleClickHandler()
-			{
-				@Override
-				public void onDoubleClick(DoubleClickEvent rEvent)
-				{
-					setTime(new Date());
-				}
-			});
+		aClockImage.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent rEvent) {
+				setTime(new Date());
+			}
+		});
 
 		aHoursField.addValueChangeHandler(this);
 		aMinutesField.addValueChangeHandler(this);
@@ -97,9 +89,9 @@ public class GwtTimePicker extends Composite
 		aTimePanel.add(aSeparator);
 		aTimePanel.add(aMinutesField);
 		aTimePanel.setCellVerticalAlignment(aClockImage,
-											HorizontalPanel.ALIGN_MIDDLE);
+			HorizontalPanel.ALIGN_MIDDLE);
 		aTimePanel.setCellVerticalAlignment(aSeparator,
-											HorizontalPanel.ALIGN_MIDDLE);
+			HorizontalPanel.ALIGN_MIDDLE);
 
 		initWidget(aTimePanel);
 
@@ -107,31 +99,25 @@ public class GwtTimePicker extends Composite
 		setStylePrimaryName(CSS.ewtTimePicker());
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<Integer> rHandler)
-	{
+		ValueChangeHandler<Integer> rHandler) {
 		return addHandler(rHandler, ValueChangeEvent.getType());
 	}
 
-	/***************************************
+	/**
 	 * Returns the currently displayed time with the calendar date of the date
 	 * parameter.
 	 *
-	 * @param  rDate The calendar date to apply the time to
-	 *
+	 * @param rDate The calendar date to apply the time to
 	 * @return A new date object with the combined date and time
 	 */
 	@SuppressWarnings("deprecation")
-	public Date applyTime(Date rDate)
-	{
-		if (rDate != null)
-		{
+	public Date applyTime(Date rDate) {
+		if (rDate != null) {
 			rDate = CalendarUtil.copyDate(rDate);
 			rDate.setHours(aHoursField.getValue());
 			rDate.setMinutes(aMinutesField.getValue());
@@ -140,31 +126,27 @@ public class GwtTimePicker extends Composite
 		return rDate;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onValueChange(ValueChangeEvent<Integer> rEvent)
-	{
+	public void onValueChange(ValueChangeEvent<Integer> rEvent) {
 		ValueChangeEvent.fire(this, rEvent.getValue());
 	}
 
-	/***************************************
+	/**
 	 * Sets the time of this widget to the time of the given date object.
 	 *
-	 * @param  rDate The new time
-	 *
+	 * @param rDate The new time
 	 * @return The modified date
 	 */
 	@SuppressWarnings("deprecation")
-	public Date setTime(Date rDate)
-	{
-		int nHours   = 0;
+	public Date setTime(Date rDate) {
+		int nHours = 0;
 		int nMinutes = 0;
 
-		if (rDate != null)
-		{
-			nHours   = rDate.getHours();
+		if (rDate != null) {
+			nHours = rDate.getHours();
 			nMinutes = rDate.getMinutes();
 		}
 
@@ -174,40 +156,30 @@ public class GwtTimePicker extends Composite
 		return rDate;
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * An integer value box with a custom number format.
 	 *
 	 * @author eso
 	 */
-	static class TimeValueBox extends ValueBox<Integer>
-	{
-		//~ Static fields/initializers -----------------------------------------
+	static class TimeValueBox extends ValueBox<Integer> {
 
 		private static final NumberFormat VALUE_FORMAT =
 			NumberFormat.getFormat("00");
 
 		private static final Renderer<Integer> RENDERER =
-			new AbstractRenderer<Integer>()
-			{
+			new AbstractRenderer<Integer>() {
 				@Override
-				public String render(Integer rValue)
-				{
+				public String render(Integer rValue) {
 					return rValue != null ? VALUE_FORMAT.format(rValue) : "";
 				}
 			};
 
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		public TimeValueBox()
-		{
-			super(Document.get().createTextInputElement(),
-				  RENDERER,
-				  IntegerParser.instance());
+		public TimeValueBox() {
+			super(Document.get().createTextInputElement(), RENDERER,
+				IntegerParser.instance());
 		}
 	}
 }

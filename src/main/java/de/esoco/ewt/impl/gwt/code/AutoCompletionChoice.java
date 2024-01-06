@@ -20,15 +20,13 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-/********************************************************************
+/**
  * TODO: DOCUMENT ME!
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
- *         Research Group, Date: 18/03/2014
+ * Research Group, Date: 18/03/2014
  */
-public class AutoCompletionChoice implements Serializable, IsSerializable
-{
+public class AutoCompletionChoice implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 
 	private String sText;
@@ -41,7 +39,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable
 
 	private EditorPosition rReplaceTextTo;
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param sText            TODO: DOCUMENT ME!
@@ -50,120 +48,107 @@ public class AutoCompletionChoice implements Serializable, IsSerializable
 	 * @param rReplaceTextFrom TODO: DOCUMENT ME!
 	 * @param rReplaceTextTo   TODO: DOCUMENT ME!
 	 */
-	public AutoCompletionChoice(String		   sText,
-								String		   sDisplayText,
-								String		   sCssClassName,
-								EditorPosition rReplaceTextFrom,
-								EditorPosition rReplaceTextTo)
-	{
-		this.sText			  = sText;
-		this.sDisplayText     = sDisplayText;
-		this.sCssClassName    = sCssClassName;
+	public AutoCompletionChoice(String sText, String sDisplayText,
+		String sCssClassName, EditorPosition rReplaceTextFrom,
+		EditorPosition rReplaceTextTo) {
+		this.sText = sText;
+		this.sDisplayText = sDisplayText;
+		this.sCssClassName = sCssClassName;
 		this.rReplaceTextFrom = rReplaceTextFrom;
-		this.rReplaceTextTo   = rReplaceTextTo;
+		this.rReplaceTextTo = rReplaceTextTo;
 	}
 
-	/***************************************
+	/**
 	 * For serialization purposes only
 	 */
-	AutoCompletionChoice()
-	{
+	AutoCompletionChoice() {
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this)
-		{
+	public boolean equals(Object o) {
+		if (o == this) {
 			return true;
 		}
 
-		if (!(o instanceof AutoCompletionChoice))
-		{
+		if (!(o instanceof AutoCompletionChoice)) {
 			return false;
 		}
 
 		AutoCompletionChoice other = (AutoCompletionChoice) o;
 
 		return this.sText.equals(other.sText) &&
-			   this.sDisplayText.equals(other.sDisplayText) &&
-			   this.sCssClassName.equals(other.sCssClassName) &&
-			   this.rReplaceTextFrom.equals(other.rReplaceTextFrom) &&
-			   this.rReplaceTextTo.equals(other.rReplaceTextTo);
+			this.sDisplayText.equals(other.sDisplayText) &&
+			this.sCssClassName.equals(other.sCssClassName) &&
+			this.rReplaceTextFrom.equals(other.rReplaceTextFrom) &&
+			this.rReplaceTextTo.equals(other.rReplaceTextTo);
 	}
 
-	/***************************************
+	/**
 	 * Returns the css class name.
 	 *
 	 * @return The css class name
 	 */
-	public String getCssClassName()
-	{
+	public String getCssClassName() {
 		return sCssClassName;
 	}
 
-	/***************************************
+	/**
 	 * Returns the display text.
 	 *
 	 * @return The display text
 	 */
-	public String getDisplayText()
-	{
+	public String getDisplayText() {
 		return sDisplayText;
 	}
 
-	/***************************************
+	/**
 	 * Returns the replace text from.
 	 *
 	 * @return The replace text from
 	 */
-	public EditorPosition getReplaceTextFrom()
-	{
+	public EditorPosition getReplaceTextFrom() {
 		return rReplaceTextFrom;
 	}
 
-	/***************************************
+	/**
 	 * Returns the replace text to.
 	 *
 	 * @return The replace text to
 	 */
-	public EditorPosition getReplaceTextTo()
-	{
+	public EditorPosition getReplaceTextTo() {
 		return rReplaceTextTo;
 	}
 
-	/***************************************
+	/**
 	 * Returns the text.
 	 *
 	 * @return The text
 	 */
-	public String getText()
-	{
+	public String getText() {
 		return sText;
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return "AutoCompletionChoice".hashCode() + sText.hashCode() +
-			   sDisplayText.hashCode() + sCssClassName.hashCode() +
-			   rReplaceTextFrom.hashCode() + rReplaceTextTo.hashCode();
+			sDisplayText.hashCode() + sCssClassName.hashCode() +
+			rReplaceTextFrom.hashCode() + rReplaceTextTo.hashCode();
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getSimpleName();
-//				Objects.toStringHelper("AutoCompletionChoice").add("text", sText)
+//				Objects.toStringHelper("AutoCompletionChoice").add("text",
+//				sText)
 //					  .add("displayText", sDisplayText)
 //					  .add("cssClassName", sCssClassName)
 //					  .add("replaceFrom", rReplaceTextFrom)

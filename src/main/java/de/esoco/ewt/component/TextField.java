@@ -32,8 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 import static de.esoco.lib.property.StyleProperties.TEXT_FIELD_STYLE;
 
-
-/********************************************************************
+/**
  * A text component subclass that allows single-line text input.
  *
  * <p>Supported styles:</p>
@@ -45,75 +44,62 @@ import static de.esoco.lib.property.StyleProperties.TEXT_FIELD_STYLE;
  *
  * @author eso
  */
-public class TextField extends TextControl
-{
-	//~ Methods ----------------------------------------------------------------
+public class TextField extends TextControl {
 
-	/***************************************
-	 * Returns the currently selected text. The returned string will be empty if
+	/**
+	 * Returns the currently selected text. The returned string will be
+	 * empty if
 	 * no selection exists.
 	 *
 	 * @return The selected text
 	 */
-	public String getSelectedText()
-	{
+	public String getSelectedText() {
 		return getTextBox().getSelectedText();
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns)
-	{
+	public void setColumns(int nColumns) {
 		getTextBox().setVisibleLength(nColumns);
 	}
 
-	/***************************************
+	/**
 	 * Sets the selection of the text. A length of zero will remove the
 	 * selection.
 	 *
-	 * @param  nStart  The start of the selection
-	 * @param  nLength The length of the selection
-	 *
+	 * @param nStart  The start of the selection
+	 * @param nLength The length of the selection
 	 * @throws IndexOutOfBoundsException If the given selection doesn't fit the
 	 *                                   current text
 	 */
-	public void setSelection(int nStart, int nLength)
-	{
+	public void setSelection(int nStart, int nLength) {
 		getTextBox().setSelectionRange(nStart, nLength);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class TextFieldWidgetFactory<W extends IsTextControlWidget>
-		implements WidgetFactory<W>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<W> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
+		public W createWidget(Component rComponent, StyleData rStyle) {
 			TextFieldStyle eStyle =
 				rStyle.getProperty(TEXT_FIELD_STYLE, TextFieldStyle.DEFAULT);
 
 			IsTextControlWidget aTextBox;
 
-			if (eStyle == TextFieldStyle.PASSWORD)
-			{
+			if (eStyle == TextFieldStyle.PASSWORD) {
 				aTextBox = new GwtPasswordBox();
-			}
-			else
-			{
+			} else {
 				aTextBox = new GwtTextField();
 			}
 
@@ -121,99 +107,73 @@ public class TextField extends TextControl
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A text area subclass that propagates the on paste event.
 	 *
 	 * @author eso
 	 */
 	static class GwtPasswordBox extends PasswordTextBox
-		implements IsTextControlWidget
-	{
-		//~ Constructors -------------------------------------------------------
+		implements IsTextControlWidget {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		GwtPasswordBox()
-		{
+		GwtPasswordBox() {
 			sinkEvents(Event.ONPASTE);
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onBrowserEvent(Event rEvent)
-		{
+		public void onBrowserEvent(Event rEvent) {
 			super.onBrowserEvent(rEvent);
 
-			switch (DOM.eventGetType(rEvent))
-			{
+			switch (DOM.eventGetType(rEvent)) {
 				case Event.ONPASTE:
-					Scheduler.get()
-							 .scheduleDeferred(
-		 						new ScheduledCommand()
-		 						{
-		 							@Override
-		 							public void execute()
-		 							{
-		 								ValueChangeEvent.fire(
-		 									GwtPasswordBox.this,
-		 									getText());
-		 							}
-		 						});
-
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							ValueChangeEvent.fire(GwtPasswordBox.this,
+								getText());
+						}
+					});
 
 					break;
 			}
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A text area subclass that propagates the on paste event.
 	 *
 	 * @author eso
 	 */
-	static class GwtTextField extends TextBox implements IsTextControlWidget
-	{
-		//~ Constructors -------------------------------------------------------
+	static class GwtTextField extends TextBox implements IsTextControlWidget {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		GwtTextField()
-		{
+		GwtTextField() {
 			sinkEvents(Event.ONPASTE);
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onBrowserEvent(Event rEvent)
-		{
+		public void onBrowserEvent(Event rEvent) {
 			super.onBrowserEvent(rEvent);
 
-			switch (DOM.eventGetType(rEvent))
-			{
+			switch (DOM.eventGetType(rEvent)) {
 				case Event.ONPASTE:
-					Scheduler.get()
-							 .scheduleDeferred(
-		 						new ScheduledCommand()
-		 						{
-		 							@Override
-		 							public void execute()
-		 							{
-		 								ValueChangeEvent.fire(
-		 									GwtTextField.this,
-		 									getText());
-		 							}
-		 						});
-
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							ValueChangeEvent.fire(GwtTextField.this,
+								getText());
+						}
+					});
 
 					break;
 			}

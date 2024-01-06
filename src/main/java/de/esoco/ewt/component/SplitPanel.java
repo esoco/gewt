@@ -30,8 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.StyleProperties.SPLITTER_SIZE;
 
-
-/********************************************************************
+/**
  * A panel that contains two components that are separated by a draggable
  * separator that allows to dynamically distribute the area available to the
  * child components. The alignment values in the {@link StyleData} objects of
@@ -40,89 +39,68 @@ import static de.esoco.lib.property.StyleProperties.SPLITTER_SIZE;
  *
  * @author eso
  */
-public class SplitPanel extends FixedLayoutPanel
-{
-	//~ Constructors -----------------------------------------------------------
+public class SplitPanel extends FixedLayoutPanel {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rParent The parent container
 	 * @param rStyle  The panel style
 	 */
-	public SplitPanel(Container rParent, StyleData rStyle)
-	{
-		super(
-			EWT.getLayoutFactory()
+	public SplitPanel(Container rParent, StyleData rStyle) {
+		super(EWT
+			.getLayoutFactory()
 			.createLayout(rParent, rStyle, LayoutType.SPLIT));
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	void addWidget(HasWidgets rContainer, Widget rWidget, StyleData rStyleData)
-	{
-		((SplitPanelLayout) getLayout()).addWidget(
-			rContainer,
-			rWidget,
+	void addWidget(HasWidgets rContainer, Widget rWidget,
+		StyleData rStyleData) {
+		((SplitPanelLayout) getLayout()).addWidget(rContainer, rWidget,
 			rStyleData);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	public static class SplitPanelLayout extends GenericLayout
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class SplitPanelLayout extends GenericLayout {
 
-		/***************************************
+		/**
 		 * Implements the adding of widgets to the layout container widget.
 		 *
 		 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
 		 */
-		public void addWidget(HasWidgets rContainer,
-							  Widget	 rWidget,
-							  StyleData  rStyleData)
-		{
+		public void addWidget(HasWidgets rContainer, Widget rWidget,
+			StyleData rStyleData) {
 			SplitLayoutPanel rSplitLayoutPanel = (SplitLayoutPanel) rContainer;
 
 			Alignment eVerticalAlign = rStyleData.getVerticalAlignment();
 
 			if (eVerticalAlign == Alignment.BEGIN ||
-				eVerticalAlign == Alignment.END)
-			{
+				eVerticalAlign == Alignment.END) {
 				rWidget.setHeight("100%");
-			}
-			else
-			{
+			} else {
 				rWidget.setWidth("100%");
 			}
 
-			if (!DockLayout.addDockLayoutPanelWidget(
-					rWidget,
-					rSplitLayoutPanel,
-					rStyleData,
-					true))
-			{
+			if (!DockLayout.addDockLayoutPanelWidget(rWidget,
+				rSplitLayoutPanel,
+				rStyleData, true)) {
 				rSplitLayoutPanel.setWidgetToggleDisplayAllowed(rWidget, true);
 			}
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(
-			Container rContainer,
-			StyleData rStyle)
-		{
+		public HasWidgets createLayoutContainer(Container rContainer,
+			StyleData rStyle) {
 			return new SplitLayoutPanel(
 				rStyle.getIntProperty(SPLITTER_SIZE, 5));
 		}

@@ -22,33 +22,25 @@ import de.esoco.ewt.style.StyleData;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Panel;
 
-
-/********************************************************************
+/**
  * A layout that arranges components in an input form.
  *
  * @author eso
  */
-public class FormLayout extends TwoLayerLayout
-{
-	//~ Constructors -----------------------------------------------------------
+public class FormLayout extends TwoLayerLayout {
 
-	/***************************************
+	/**
 	 * Creates a new instance that is based on a GWT {@link FormPanel}.
 	 */
-	public FormLayout()
-	{
+	public FormLayout() {
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Panel createLayoutWidget(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	protected Panel createLayoutWidget(Container rContainer,
+		StyleData rContainerStyle) {
 		return new FormPanel();
 	}
 }

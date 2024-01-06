@@ -16,27 +16,35 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
 
-/********************************************************************
+/**
  * The interface for GEWT images.
  *
  * @author eso
  */
-public interface Image
-{
-	//~ Static fields/initializers ---------------------------------------------
+public interface Image {
 
-	/** The separator between image prefix and image name */
+	/**
+	 * The separator between image prefix and image name
+	 */
 	public static final char IMAGE_PREFIX_SEPARATOR = ':';
 
-	/** A prefix for base64 encoded image data */
+	/**
+	 * A prefix for base64 encoded image data
+	 */
 	public static final char IMAGE_DATA_PREFIX = 'd';
 
-	/** A prefix for an image file name */
+	/**
+	 * A prefix for an image file name
+	 */
 	public static final char IMAGE_FILE_PREFIX = 'f';
 
-	/** A prefix for an icon image */
+	/**
+	 * A prefix for an icon image
+	 */
 	public static final char IMAGE_ICON_PREFIX = 'i';
 
-	/** A MINE type declaration for a base64 encoded PNG image. */
+	/**
+	 * A MINE type declaration for a base64 encoded PNG image.
+	 */
 	public static final String BASE64_PNG_IMAGE_DATA_TYPE = "image/png;base64";
 }

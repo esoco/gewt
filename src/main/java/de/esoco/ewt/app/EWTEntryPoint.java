@@ -30,23 +30,19 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
 import com.google.gwt.resources.client.ImageResource;
 
-
-/********************************************************************
+/**
  * The base class for GEWT applications.
  *
  * @author eso
  */
-public abstract class EWTEntryPoint implements EntryPoint
-{
-	//~ Methods ----------------------------------------------------------------
+public abstract class EWTEntryPoint implements EntryPoint {
 
-	/***************************************
+	/**
 	 * Creates a new user interface context for GWT and invokes the method
 	 * {@link EWTModule#showModuleView(UserInterfaceContext, View)} with it.
 	 */
 	@Override
-	public void onModuleLoad()
-	{
+	public void onModuleLoad() {
 		EWT.CSS.ensureInjected();
 
 		EWTModule rModule = getApplicationModule();
@@ -62,10 +58,22 @@ public abstract class EWTEntryPoint implements EntryPoint
 		rModule.showModuleView(rContext, rModuleView);
 	}
 
-	/***************************************
+	/**
+	 * Replaced with {@link #getImageResources()}.
+	 *
+	 * @return The image map
+	 * @deprecated
+	 */
+	@Deprecated
+	protected Map<String, ImageResource> getApplicationImages() {
+		return new HashMap<>();
+	}
+
+	/**
 	 * Must be implemented by subclasses to return the application module that
 	 * creates and manages the user interface of this GEWT entry point. This
-	 * method will only be invoked once. Therefore the implementation may create
+	 * method will only be invoked once. Therefore the implementation may
+	 * create
 	 * the module instance on the fly if it doesn't need to keep a reference to
 	 * it.
 	 *
@@ -73,53 +81,36 @@ public abstract class EWTEntryPoint implements EntryPoint
 	 */
 	protected abstract EWTModule getApplicationModule();
 
-	/***************************************
-	 * Replaced with {@link #getImageResources()}.
-	 *
-	 * @return     The image map
-	 *
-	 * @deprecated
-	 */
-	@Deprecated
-	protected Map<String, ImageResource> getApplicationImages()
-	{
-		return new HashMap<>();
-	}
-
-	/***************************************
+	/**
 	 * Replaced with {@link #getStringResources()}.
 	 *
-	 * @return     The image map
-	 *
+	 * @return The image map
 	 * @deprecated
 	 */
 	@Deprecated
-	protected ConstantsWithLookup[] getApplicationStrings()
-	{
+	protected ConstantsWithLookup[] getApplicationStrings() {
 		return new ConstantsWithLookup[0];
 	}
 
-	/***************************************
+	/**
 	 * Returns a mapping from resource identifiers to image resources. The
 	 * default implementation returns an empty map that can be modified by
 	 * subclasses.
 	 *
 	 * @return The image resources for this application
 	 */
-	protected Map<String, ImageResource> getImageResources()
-	{
+	protected Map<String, ImageResource> getImageResources() {
 		return getApplicationImages();
 	}
 
-	/***************************************
+	/**
 	 * Returns a list of {@link ConstantsWithLookup} instances with the
 	 * application's resource string. The default implementation returns an
 	 * empty list that can be modified by subclasses.
 	 *
 	 * @return The resource strings for this application
 	 */
-	protected List<ConstantsWithLookup> getStringResources()
-	{
+	protected List<ConstantsWithLookup> getStringResources() {
 		return new ArrayList<>(Arrays.asList(getApplicationStrings()));
 	}
 }

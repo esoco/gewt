@@ -9,14 +9,12 @@ import de.esoco.ewt.js.event.EventTarget;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/Node">Node</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class Node extends EventTarget
-{
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Node extends EventTarget {
 }

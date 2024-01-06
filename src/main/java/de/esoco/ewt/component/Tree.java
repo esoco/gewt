@@ -30,85 +30,76 @@ import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A tree component.
  *
  * @author eso
  */
-public class Tree extends Control
-{
-	//~ Methods ----------------------------------------------------------------
+public class Tree extends Control {
 
-	/***************************************
-	 * Returns the currently selected elements of this tree. The return value is
-	 * an array of all elements in the tree model that have been selected. If no
+	/**
+	 * Returns the currently selected elements of this tree. The return
+	 * value is
+	 * an array of all elements in the tree model that have been selected.
+	 * If no
 	 * selection exists it will be empty.
 	 *
 	 * @return The selected model elements
 	 */
-	public Object[] getSelection()
-	{
+	public Object[] getSelection() {
 		TreeItem rItem =
-			((com.google.gwt.user.client.ui.Tree) getWidget())
-			.getSelectedItem();
+			((com.google.gwt.user.client.ui.Tree) getWidget()).getSelectedItem();
 
-		if (rItem != null)
-		{
+		if (rItem != null) {
 			return new Object[] { rItem.getUserObject() };
-		}
-		else
-		{
+		} else {
 			return new Object[] {};
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the data model of the tree. The data elements of the model will be
 	 * displayed as the top level items of the tree hierarchy. Model elements
-	 * that also implement the interface DataModel will be displayed as nodes of
+	 * that also implement the interface DataModel will be displayed as
+	 * nodes of
 	 * the tree with their elements as sub-nodes. Elements that don't have
 	 * children or elements that don't implement DataModel will be shown as
 	 * leafs with no further children.
 	 *
 	 * @param rDataModel A data model that contains the root items of the tree
 	 */
-	public void setData(DataModel<?> rDataModel)
-	{
+	public void setData(DataModel<?> rDataModel) {
 		com.google.gwt.user.client.ui.Tree rTree =
 			(com.google.gwt.user.client.ui.Tree) getWidget();
 
 		rTree.clear();
 
-		for (int i = 0; i < rDataModel.getElementCount(); i++)
-		{
+		for (int i = 0; i < rDataModel.getElementCount(); i++) {
 			Object rElement = rDataModel.getElement(i);
 
 			rTree.addItem(createTreeItem(rElement));
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Control#createEventDispatcher()
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new TreeEventDispatcher();
 	}
 
-	/***************************************
+	/**
 	 * Internal method to create a new tree item that corresponds to the
-	 * contents of the given data element. If the data element is an instance of
+	 * contents of the given data element. If the data element is an
+	 * instance of
 	 * {@link DataModel} it's data elements will be added recursively as child
 	 * items of the returned tree item.
 	 *
-	 * @param  rElement The data element to create the tree item for
-	 *
+	 * @param rElement The data element to create the tree item for
 	 * @return A new tree item, containing child items as necessary
 	 */
-	private TreeItem createTreeItem(Object rElement)
-	{
+	private TreeItem createTreeItem(Object rElement) {
 		SafeHtml aHtml =
 			SimpleHtmlSanitizer.getInstance().sanitize(rElement.toString());
 
@@ -116,12 +107,10 @@ public class Tree extends Control
 
 		aTreeItem.setUserObject(rElement);
 
-		if (rElement instanceof DataModel<?>)
-		{
+		if (rElement instanceof DataModel<?>) {
 			DataModel<?> rChildren = (DataModel<?>) rElement;
 
-			for (int i = 0; i < rChildren.getElementCount(); i++)
-			{
+			for (int i = 0; i < rChildren.getElementCount(); i++) {
 				aTreeItem.addItem(createTreeItem(rChildren.getElement(i)));
 			}
 		}
@@ -129,62 +118,49 @@ public class Tree extends Control
 		return aTreeItem;
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class TreeWidgetFactory implements WidgetFactory<Widget>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class TreeWidgetFactory implements WidgetFactory<Widget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
-		{
+		public Widget createWidget(Component rComponent, StyleData rStyle) {
 			return new com.google.gwt.user.client.ui.Tree();
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Dispatcher for tree-specific events.
 	 *
 	 * @author eso
 	 */
 	class TreeEventDispatcher extends ComponentEventDispatcher
-		implements SelectionHandler<TreeItem>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements SelectionHandler<TreeItem> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onSelection(SelectionEvent<TreeItem> rEvent)
-		{
+		public void onSelection(SelectionEvent<TreeItem> rEvent) {
 			notifyEventHandler(EventType.SELECTION);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.SELECTION &&
-				rWidget instanceof com.google.gwt.user.client.ui.Tree)
-			{
-				return ((com.google.gwt.user.client.ui.Tree) rWidget)
-					   .addSelectionHandler(this);
-			}
-			else
-			{
+				rWidget instanceof com.google.gwt.user.client.ui.Tree) {
+				return ((com.google.gwt.user.client.ui.Tree) rWidget).addSelectionHandler(
+					this);
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

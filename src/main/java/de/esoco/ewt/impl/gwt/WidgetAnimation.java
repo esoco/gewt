@@ -21,79 +21,61 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * Implementation of several GWT widget animations.
  *
  * @author eso
  */
-public class WidgetAnimation extends Animation
-{
-	/********************************************************************
+public class WidgetAnimation extends Animation {
+	/**
 	 * Enumeration of the available animation types.
 	 */
-	public enum AnimationType
-	{
-		FADE_IN
-		{
+	public enum AnimationType {
+		FADE_IN {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				rElement.getStyle().setOpacity(fProgress);
 			}
-		},
-		FADE_OUT
-		{
+		}, FADE_OUT {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				rElement.getStyle().setOpacity(1.0d - fProgress);
 			}
-		},
-		VERTICAL_SHRINK
-		{
+		}, VERTICAL_SHRINK {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				double fHeight = rElement.getOffsetHeight();
 
-				rElement.getStyle()
-						.setHeight(fHeight * (1.0d - fProgress), Unit.PX);
+				rElement
+					.getStyle()
+					.setHeight(fHeight * (1.0d - fProgress), Unit.PX);
 			}
-		},
-		VERTICAL_GROW
-		{
+		}, VERTICAL_GROW {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				double fHeight = rElement.getOffsetHeight();
 
 				rElement.getStyle().setHeight(fHeight * fProgress, Unit.PX);
 			}
-		},
-		HORIZONTAL_SHRINK
-		{
+		}, HORIZONTAL_SHRINK {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				double fWidth = rElement.getOffsetWidth();
 
-				rElement.getStyle()
-						.setHeight(fWidth * (1.0d - fProgress), Unit.PX);
+				rElement
+					.getStyle()
+					.setHeight(fWidth * (1.0d - fProgress), Unit.PX);
 			}
-		},
-		HORIZONTAL_GROW
-		{
+		}, HORIZONTAL_GROW {
 			@Override
-			void animate(Element rElement, double fProgress)
-			{
+			void animate(Element rElement, double fProgress) {
 				double fWidth = rElement.getOffsetWidth();
 
 				rElement.getStyle().setHeight(fWidth * fProgress, Unit.PX);
 			}
 		};
 
-		/***************************************
+		/**
 		 * Animates a certain element with this animation type.
 		 *
 		 * @param rElement  The element to animate
@@ -102,49 +84,46 @@ public class WidgetAnimation extends Animation
 		abstract void animate(Element rElement, double fProgress);
 	}
 
-	private final Widget				  rWidget;
+	private final Widget rWidget;
+
 	private WidgetAnimation.AnimationType eCurrentType;
 
-	/***************************************
+	/**
 	 * Creates a new instance for a certain element.
 	 *
 	 * @param rWidget rElement The element
 	 */
-	public WidgetAnimation(Widget rWidget)
-	{
+	public WidgetAnimation(Widget rWidget) {
 		this.rWidget = rWidget;
 	}
 
-	/***************************************
+	/**
 	 * Returns the widget of this animation.
 	 *
 	 * @return The widget
 	 */
-	public final Widget getWidget()
-	{
+	public final Widget getWidget() {
 		return rWidget;
 	}
 
-	/***************************************
+	/**
 	 * Performs a certain animation for the element of this instance.
 	 *
 	 * @param eType     The animation type
 	 * @param nDuration The duration of the animation in milliseconds
 	 */
-	public void perform(WidgetAnimation.AnimationType eType, int nDuration)
-	{
+	public void perform(WidgetAnimation.AnimationType eType, int nDuration) {
 		this.eCurrentType = eType;
 
 		cancel();
 		run(nDuration);
 	}
 
-	/***************************************
+	/**
 	 * @see Animation#onUpdate(double)
 	 */
 	@Override
-	protected void onUpdate(double fProgress)
-	{
+	protected void onUpdate(double fProgress) {
 		eCurrentType.animate(rWidget.getElement(), fProgress);
 	}
 }

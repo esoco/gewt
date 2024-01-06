@@ -22,69 +22,60 @@ import jsinterop.annotations.JsType;
 
 import de.esoco.ewt.js.JsObject;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget">
  * EventTarget</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class EventTarget extends JsObject
-{
-	//~ Methods ----------------------------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class EventTarget extends JsObject {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener">
-	 *      EventTarget.addEventListener()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/EventTarget/addEventListener">
+	 * EventTarget.addEventListener()</a>
 	 */
-	public native void addEventListener(
-		String				 sType,
+	public native void addEventListener(String sType,
 		EventListener<Event> fListener);
 
-	/***************************************
+	/**
 	 * Adds an event listener for an enumerated event type.
 	 *
 	 * @param eType     The event type
 	 * @param fListener The listener to add
 	 */
 	@JsOverlay
-	public final void addEventListener(
-		Event.Type			 eType,
-		EventListener<Event> fListener)
-	{
+	public final void addEventListener(Event.Type eType,
+		EventListener<Event> fListener) {
 		addEventListener(eType.toTypeString(), fListener);
 	}
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent">
-	 *      EventTarget.dispatchEvent()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/EventTarget/dispatchEvent">
+	 * EventTarget.dispatchEvent()</a>
 	 */
 	public native void dispatchEvent(Event rEvent);
 
-	/***************************************
+	/**
 	 * Removes an event listener for an enumerated event type.
 	 *
 	 * @param eType     The event type
 	 * @param fListener The listener to remove
 	 */
 	@JsOverlay
-	public final void removeEventListener(
-		Event.Type			 eType,
-		EventListener<Event> fListener)
-	{
+	public final void removeEventListener(Event.Type eType,
+		EventListener<Event> fListener) {
 		removeEventListener(eType.toTypeString(), fListener);
 	}
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener">
-	 *      EventTarget.removeEventListener()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/EventTarget/removeEventListener">
+	 * EventTarget.removeEventListener()</a>
 	 */
-	public native void removeEventListener(
-		String				 sType,
+	public native void removeEventListener(String sType,
 		EventListener<Event> fListener);
 }

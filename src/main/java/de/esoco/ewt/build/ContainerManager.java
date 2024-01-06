@@ -19,8 +19,7 @@ package de.esoco.ewt.build;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.style.StyleData;
 
-
-/********************************************************************
+/**
  * An abstract container builder subclass that can be used to implement the
  * management of EWT containers. Other than {@link ContainerBuilder} this class
  * is intended to be subclassed to create wrappers for the management of
@@ -29,40 +28,35 @@ import de.esoco.ewt.style.StyleData;
  * @author eso
  */
 public abstract class ContainerManager<C extends Container>
-	extends ContainerBuilder<C>
-{
-	//~ Instance fields --------------------------------------------------------
+	extends ContainerBuilder<C> {
 
 	private StyleData rBaseStyle;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance that manages a certain container type.
 	 */
-	public ContainerManager()
-	{
+	public ContainerManager() {
 		super(null);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Builds a child container manager in the container of this instance by
 	 * invoking it's {@link #buildIn(ContainerBuilder, StyleData)} method.
 	 *
 	 * @param rChildManager The child container manager to build
-	 * @param rStyle        The style data for the appearance and positioning of
+	 * @param rStyle        The style data for the appearance and
+	 *                         positioning of
 	 *                      the new child container
 	 */
-	public final void build(ContainerManager<?> rChildManager, StyleData rStyle)
-	{
+	public final void build(ContainerManager<?> rChildManager,
+		StyleData rStyle) {
 		rChildManager.buildIn(this, rStyle);
 	}
 
-	/***************************************
+	/**
 	 * Builds a new panel in the container of the given container builder.
-	 * Invokes the methods {@link #createContainer(ContainerBuilder, StyleData)}
+	 * Invokes the methods
+	 * {@link #createContainer(ContainerBuilder, StyleData)}
 	 * and {@link #addComponents()}. The {@link StyleData} parameter must
 	 * contain the necessary layout constraints for the placements of the new
 	 * container in the parent.
@@ -72,8 +66,7 @@ public abstract class ContainerManager<C extends Container>
 	 * @param rStyle         The style data for the appearance and positioning
 	 *                       of the new container
 	 */
-	public void buildIn(ContainerBuilder<?> rParentBuilder, StyleData rStyle)
-	{
+	public void buildIn(ContainerBuilder<?> rParentBuilder, StyleData rStyle) {
 		rBaseStyle = rStyle;
 
 		ContainerBuilder<C> aBuilder = createContainer(rParentBuilder, rStyle);
@@ -84,51 +77,46 @@ public abstract class ContainerManager<C extends Container>
 		addComponents();
 	}
 
-	/***************************************
+	/**
 	 * Returns the style data with which this this instance has been created.
 	 *
 	 * @return The base style data
 	 */
-	public final StyleData getBaseStyle()
-	{
+	public final StyleData getBaseStyle() {
 		return rBaseStyle;
 	}
 
-	/***************************************
+	/**
 	 * Re-builds the UI of this instance by clearing the managed container and
 	 * invoking {@link #addComponents()}.
 	 */
-	public void rebuild()
-	{
+	public void rebuild() {
 		getContainer().clear();
 		addComponents();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getSimpleName() + "[" + getContainer() + "]";
 	}
 
-	/***************************************
+	/**
 	 * Must be implemented by subclasses to add the components in the container
 	 * by invoking the corresponding add methods in this instance.
 	 */
 	protected abstract void addComponents();
 
-	/***************************************
+	/**
 	 * Must be implemented by subclasses to create a new container of the
 	 * managed type with the given parent container builder.
 	 *
-	 * @param  rBuilder   The container builder to build the panel with
-	 * @param  rStyleData The style data for the new panel
-	 *
+	 * @param rBuilder   The container builder to build the panel with
+	 * @param rStyleData The style data for the new panel
 	 * @return The builder of the new container
 	 */
 	protected abstract ContainerBuilder<C> createContainer(
-		ContainerBuilder<?> rBuilder,
-		StyleData			rStyleData);
+		ContainerBuilder<?> rBuilder, StyleData rStyleData);
 }

@@ -28,33 +28,40 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 
-
-/********************************************************************
+/**
  * A widget that represents a tree node.
  *
  * @author eso
  */
 class TreeNode extends Composite
-	implements ClickHandler, Callback<RemoteDataModel<DataModel<?>>>
-{
+	implements ClickHandler, Callback<RemoteDataModel<DataModel<?>>> {
 	private final GwtTable rTable;
+
 	private final TreeNode rParent;
+
 	private final TreeNode rPrevious;
 
 	private int nIndex;
+
 	private int nLevel;
+
 	private int nDirectChildren;
+
 	private int nVisibleChildren = 0;
 
 	private DataModel<?> rRowModel;
-	private boolean		 bExpanded = false;
-	private boolean		 bChanging = false;
 
-	private HTML  aSpacing     = new HTML("&nbsp;");
+	private boolean bExpanded = false;
+
+	private boolean bChanging = false;
+
+	private HTML aSpacing = new HTML("&nbsp;");
+
 	private Image aNodeControl = new Image(GwtTable.RES.imTreeLeaf());
-	private HTML  aCellText    = new HTML("");
 
-	/***************************************
+	private HTML aCellText = new HTML("");
+
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rTable    The table this node belongs to
@@ -62,10 +69,9 @@ class TreeNode extends Composite
 	 * @param rPrevious The previous cell in the same level or NULL for the
 	 *                  first cell
 	 */
-	TreeNode(GwtTable rTable, TreeNode rParent, TreeNode rPrevious)
-	{
-		this.rTable    = rTable;
-		this.rParent   = rParent;
+	TreeNode(GwtTable rTable, TreeNode rParent, TreeNode rPrevious) {
+		this.rTable = rTable;
+		this.rParent = rParent;
 		this.rPrevious = rPrevious;
 
 		nIndex = rPrevious != null ? rPrevious.nIndex + 1 : 0;
@@ -87,158 +93,138 @@ class TreeNode extends Composite
 		initWidget(aPanel);
 	}
 
-	/***************************************
+	/**
 	 * Returns the count of this node's direct child nodes.
 	 *
 	 * @return The count of direct children
 	 */
-	public final int getDirectChildren()
-	{
+	public final int getDirectChildren() {
 		return nDirectChildren;
 	}
 
-	/***************************************
+	/**
 	 * Returns the parent of this node.
 	 *
 	 * @return The parent node
 	 */
-	public final TreeNode getParentNode()
-	{
+	public final TreeNode getParentNode() {
 		return rParent;
 	}
 
-	/***************************************
+	/**
 	 * Returns the row data model of this node.
 	 *
 	 * @return The row data model
 	 */
-	public final DataModel<?> getRowModel()
-	{
+	public final DataModel<?> getRowModel() {
 		return rRowModel;
 	}
 
-	/***************************************
+	/**
 	 * Returns the count of this node's visible child nodes.
 	 *
 	 * @return The count of visible children
 	 */
-	public final int getVisibleChildren()
-	{
+	public final int getVisibleChildren() {
 		return nVisibleChildren;
 	}
 
-	/***************************************
+	/**
 	 * Checks whether this node is expanded or not.
 	 *
 	 * @return TRUE if this node is currently expanded
 	 */
-	public final boolean isExpanded()
-	{
+	public final boolean isExpanded() {
 		return bExpanded;
 	}
 
-	/***************************************
+	/**
 	 * Handles clicks on node images.
 	 *
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent)
-	{
+	public void onClick(ClickEvent rEvent) {
 		rEvent.stopPropagation();
 
-		if (!bChanging)
-		{
-			if (bExpanded)
-			{
+		if (!bChanging) {
+			if (bExpanded) {
 				rTable.collapseNode(this);
-			}
-			else
-			{
+			} else {
 				bChanging = true;
 				rTable.expandNode(this);
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Handles an error on a query of node children.
 	 *
 	 * @see Callback#onError(Throwable)
 	 */
 	@Override
-	public void onError(Throwable e)
-	{
+	public void onError(Throwable e) {
 		bChanging = false;
 		rTable.onError(e);
 	}
 
-	/***************************************
+	/**
 	 * Handles the successful query of node children.
 	 *
 	 * @see Callback#onSuccess(Object)
 	 */
 	@Override
-	public void onSuccess(RemoteDataModel<DataModel<?>> rChildModels)
-	{
+	public void onSuccess(RemoteDataModel<DataModel<?>> rChildModels) {
 		rTable.hideBusyIndicator();
 		rTable.addChildRows(this, rChildModels);
 	}
 
-	/***************************************
+	/**
 	 * Recursively calculates the absolute index of a certain tree cell with
 	 * consideration of it's hierarchy. This takes into account whether parent
 	 * and previous cells are expanded or collapsed.
 	 *
 	 * @return The absolute index of the cell
 	 */
-	int getAbsoluteIndex()
-	{
+	int getAbsoluteIndex() {
 		int nResult;
 
-		if (rPrevious != null)
-		{
-			nResult =  rPrevious.getAbsoluteIndex() + 1;
+		if (rPrevious != null) {
+			nResult = rPrevious.getAbsoluteIndex() + 1;
 			nResult += rPrevious.nVisibleChildren;
-		}
-		else if (rParent != null)
-		{
+		} else if (rParent != null) {
 			nResult = rParent.getAbsoluteIndex() + 1;
-		}
-		else
-		{
+		} else {
 			nResult = 0;
 		}
 
 		return nResult;
 	}
 
-	/***************************************
+	/**
 	 * Updates the hierarchical parameters of this node.
 	 *
 	 * @param bExpanded TRUE to expand the node, FALSE to collapse
 	 */
-	void setExpanded(boolean bExpanded)
-	{
+	void setExpanded(boolean bExpanded) {
 		updateVisibleChildren(bExpanded ? nDirectChildren : -nVisibleChildren);
-		aNodeControl.setResource(bExpanded ? GwtTable.RES.imTreeCollapse()
-										   : GwtTable.RES.imTreeExpand());
+		aNodeControl.setResource(bExpanded ?
+		                         GwtTable.RES.imTreeCollapse() :
+		                         GwtTable.RES.imTreeExpand());
 		this.bExpanded = bExpanded;
-		bChanging	   = false;
+		bChanging = false;
 	}
 
-	/***************************************
+	/**
 	 * Updates this cell with the given values.
 	 *
 	 * @param rRow  The data model of the row represented by this cell
 	 * @param sText The new text for the cell
 	 */
-	void update(DataModel<?> rRow, String sText)
-	{
+	void update(DataModel<?> rRow, String sText) {
 		rRowModel = rRow;
 
-		if (rRow instanceof HierarchicalDataModel<?>)
-		{
+		if (rRow instanceof HierarchicalDataModel<?>) {
 			DataModel<? extends DataModel<?>> rChildren =
 				((HierarchicalDataModel<?>) rRow).getChildModels();
 
@@ -251,23 +237,22 @@ class TreeNode extends Composite
 		aCellText.setHTML("&nbsp;" + (sText != null ? sText : ""));
 		aSpacing.setWidth(nSpacing + "em");
 
-		aNodeControl.setResource(nDirectChildren > 0
-								 ? GwtTable.RES.imTreeExpand()
-								 : GwtTable.RES.imTreeLeaf());
+		aNodeControl.setResource(nDirectChildren > 0 ?
+		                         GwtTable.RES.imTreeExpand() :
+		                         GwtTable.RES.imTreeLeaf());
 	}
 
-	/***************************************
-	 * Recursively modifies the number of visible children of this node and it's
+	/**
+	 * Recursively modifies the number of visible children of this node and
+	 * it's
 	 * parents.
 	 *
 	 * @param nChange The number of children that has changed
 	 */
-	void updateVisibleChildren(int nChange)
-	{
+	void updateVisibleChildren(int nChange) {
 		nVisibleChildren += nChange;
 
-		if (rParent != null)
-		{
+		if (rParent != null) {
 			rParent.updateVisibleChildren(nChange);
 		}
 	}

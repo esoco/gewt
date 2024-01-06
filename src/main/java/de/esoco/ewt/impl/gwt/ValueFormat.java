@@ -16,89 +16,71 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-/********************************************************************
+/**
  * A simple format interface that defines how to convert values objects into
  * strings.
  *
  * @author eso
  */
-public interface ValueFormat
-{
-	//~ Static fields/initializers ---------------------------------------------
+public interface ValueFormat {
 
-	/** Invokes {@link Object#toString()} on input objects. */
-	public static final ValueFormat TO_STRING =
-		new ValueFormat()
-		{
-			@Override
-			public String format(Object rValue)
-			{
-				return rValue.toString();
-			}
-		};
+	/**
+	 * Invokes {@link Object#toString()} on input objects.
+	 */
+	public static final ValueFormat TO_STRING = new ValueFormat() {
+		@Override
+		public String format(Object rValue) {
+			return rValue.toString();
+		}
+	};
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Formats a value object into a string.
 	 *
-	 * @param  rValue The value
-	 *
+	 * @param rValue The value
 	 * @return A string representing the value
 	 */
 	public String format(Object rValue);
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A format that converts objects with the {@link Object#toString()} method
 	 * but also limits the length of the string.
 	 *
 	 * @author eso
 	 */
-	public static class StringLengthFormat implements ValueFormat
-	{
-		//~ Instance fields ----------------------------------------------------
+	public static class StringLengthFormat implements ValueFormat {
 
 		private final int nMaxLength;
 
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param nMaxLength The maximum length for strings.
 		 */
-		public StringLengthFormat(int nMaxLength)
-		{
+		public StringLengthFormat(int nMaxLength) {
 			this.nMaxLength = nMaxLength;
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * @see ValueFormat#format(Object)
 		 */
 		@Override
-		public String format(Object rValue)
-		{
+		public String format(Object rValue) {
 			String sResult = rValue.toString();
 
-			if (sResult.length() > nMaxLength)
-			{
+			if (sResult.length() > nMaxLength) {
 				sResult = sResult.substring(0, nMaxLength - 1) + '\u2026';
 			}
 
 			return sResult;
 		}
 
-		/***************************************
+		/**
 		 * Returns the maximum length of string formatted by this instance.
 		 *
 		 * @return The maximum string length
 		 */
-		public final int getMaxLength()
-		{
+		public final int getMaxLength() {
 			return nMaxLength;
 		}
 	}

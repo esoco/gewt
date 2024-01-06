@@ -20,48 +20,43 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-
-/********************************************************************
- * Generically typed JSInterop wrapper for <a
- * href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">
- * Promise</a>.
+/**
+ * Generically typed JSInterop wrapper for <a href="https://developer.mozilla
+ * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise"> Promise</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class Promise<T>
-{
-	//~ Methods ----------------------------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Promise<T> {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch">
-	 *      Promise.catch()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch">
+	 * Promise.catch()</a>
 	 */
 	@JsMethod(name = "catch")
 	public native Promise<T> doCatch(JsConsumer<Object> fOnReject);
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally">
-	 *      Promise.finally()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally">
+	 * Promise.finally()</a>
 	 */
 	@JsMethod(name = "finally")
 	public native Promise<T> doFinally(JsRunnable fOnResolve);
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
-	 *      Promise.then()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
+	 * Promise.then()</a>
 	 */
 	public native Promise<T> then(JsConsumer<T> fOnResolve);
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
-	 *      Promise.then()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
+	 * Promise.then()</a>
 	 */
-	public native Promise<T> then(
-		JsConsumer<T>	   fOnResolve,
+	public native Promise<T> then(JsConsumer<T> fOnResolve,
 		JsConsumer<Object> fOnReject);
 }

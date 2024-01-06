@@ -30,194 +30,162 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A view that is a child of the {@link MainView}.
  *
  * @author eso
  */
-public class ChildView extends View
-{
-	//~ Constructors -----------------------------------------------------------
+public class ChildView extends View {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rParent The parent view
 	 * @param rStyle  The style of the child view
 	 */
-	public ChildView(View rParent, ViewStyle rStyle)
-	{
+	public ChildView(View rParent, ViewStyle rStyle) {
 		this(rParent,
-			 EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
-			 rStyle);
+			EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
+			rStyle);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rParent     The parent view
 	 * @param rViewWidget The widget for this view
 	 * @param rStyle      The style of the child view
 	 */
-	ChildView(View rParent, IsChildViewWidget rViewWidget, ViewStyle rStyle)
-	{
+	ChildView(View rParent, IsChildViewWidget rViewWidget, ViewStyle rStyle) {
 		super(rParent.getContext(), rViewWidget, rStyle);
 
 		getWidget().addStyleName(EWT.CSS.ewtChildView());
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isVisible()
-	{
+	public boolean isVisible() {
 		return getChildViewWidget().isShown();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisible(boolean bVisible)
-	{
+	public void setVisible(boolean bVisible) {
 		IsChildViewWidget rPanel = getChildViewWidget();
 
-		if (bVisible)
-		{
+		if (bVisible) {
 			rPanel.show();
-		}
-		else
-		{
+		} else {
 			rPanel.hide();
 		}
 	}
 
-	/***************************************
+	/**
 	 * Internal method to return the GWT {@link PopupPanel} of this instance.
 	 *
 	 * @return The popup panel
 	 */
-	protected IsChildViewWidget getChildViewWidget()
-	{
+	protected IsChildViewWidget getChildViewWidget() {
 		return (IsChildViewWidget) getWidget();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new ChildViewEventDispatcher();
 	}
 
-	//~ Inner Interfaces -------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The interface to be implemented by child view widgets.
 	 *
 	 * @author eso
 	 */
-	public static interface IsChildViewWidget extends IsWidget, HasWidgets
-	{
-		//~ Methods ------------------------------------------------------------
+	public static interface IsChildViewWidget extends IsWidget, HasWidgets {
 
-		/***************************************
+		/**
 		 * Hides the child view.
 		 */
 		public void hide();
 
-		/***************************************
+		/**
 		 * Checks whether the child view is currently displayed.
 		 *
 		 * @return TRUE if the child view is displayed
 		 */
 		public boolean isShown();
 
-		/***************************************
+		/**
 		 * Sets the view title.
 		 *
 		 * @param sTitle The title text
 		 */
 		public void setViewTitle(String sTitle);
 
-		/***************************************
+		/**
 		 * Shows the child view.
 		 */
 		public void show();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Interface and implementation of a factory for the main panel of a child
-	 * view. Can be overridden by subclasses that define different display types
+	 * view. Can be overridden by subclasses that define different display
+	 * types
 	 * for child views.
 	 *
 	 * @author eso
 	 */
-	public static class ChildViewFactory
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class ChildViewFactory {
 
-		/***************************************
+		/**
 		 * Creates a GWT child view implementation.
 		 *
-		 * @param  rParent The parent of the new child view
-		 * @param  rStyle  The child view style
-		 *
+		 * @param rParent The parent of the new child view
+		 * @param rStyle  The child view style
 		 * @return The child view widget
 		 */
-		public IsChildViewWidget createChildViewWidget(
-			View	  rParent,
-			ViewStyle rStyle)
-		{
+		public IsChildViewWidget createChildViewWidget(View rParent,
+			ViewStyle rStyle) {
 			boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
-			boolean bModal    = rStyle.hasFlag(ViewStyle.Flag.MODAL);
+			boolean bModal = rStyle.hasFlag(ViewStyle.Flag.MODAL);
 
 			return new GwtChildView(bAutoHide, bModal);
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Dispatcher for view events.
 	 *
 	 * @author eso
 	 */
 	class ChildViewEventDispatcher extends ComponentEventDispatcher
-		implements CloseHandler<Widget>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements CloseHandler<Widget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClose(CloseEvent<Widget> rEvent)
-		{
+		public void onClose(CloseEvent<Widget> rEvent) {
 			notifyEventHandler(EventType.VIEW_CLOSING);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.VIEW_CLOSING &&
-				rWidget instanceof HasCloseHandlers)
-			{
+				rWidget instanceof HasCloseHandlers) {
 				return ((HasCloseHandlers) rWidget).addCloseHandler(this);
-			}
-			else
-			{
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

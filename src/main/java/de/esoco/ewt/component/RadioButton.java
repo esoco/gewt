@@ -18,23 +18,19 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.style.StyleData;
 
-
-/********************************************************************
+/**
  * A radio button component that allows only one button in the same container to
  * be selected at the same time.
  *
  * @author eso
  */
-public class RadioButton extends CheckBox
-{
-	//~ Methods ----------------------------------------------------------------
+public class RadioButton extends CheckBox {
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		String sId = rParent.getId();
@@ -42,26 +38,20 @@ public class RadioButton extends CheckBox
 		((com.google.gwt.user.client.ui.RadioButton) getWidget()).setName(sId);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class RadioButtonWidgetFactory
-		extends CheckBoxWidgetFactory<com.google.gwt.user.client.ui.RadioButton>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class RadioButtonWidgetFactory extends
+		CheckBoxWidgetFactory<com.google.gwt.user.client.ui.RadioButton> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		public com.google.gwt.user.client.ui.RadioButton createWidget(
-			Component rComponent,
-			StyleData rStyle)
-		{
+			Component rComponent, StyleData rStyle) {
 			return new com.google.gwt.user.client.ui.RadioButton("");
 		}
 	}

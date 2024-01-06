@@ -18,8 +18,7 @@ package de.esoco.ewt.layout;
 
 import de.esoco.ewt.component.Container;
 
-
-/********************************************************************
+/**
  * An interface for the mapping of EWT layouts to other layout instances after
  * their creation. EWT extensions can use this to replace default layouts with
  * their own instances. This should be used if a {@link LayoutFactory} is not
@@ -27,43 +26,34 @@ import de.esoco.ewt.component.Container;
  *
  * @author eso
  */
-public interface LayoutMapper
-{
-	//~ Methods ----------------------------------------------------------------
+public interface LayoutMapper {
 
-	/***************************************
+	/**
 	 * Checks whether the given layout for a particular target container should
 	 * be mapped to a different layout instance and returns that if applicable.
 	 *
-	 * @param  rContainer The target container for the layout
-	 * @param  rLayout    The original layout for the container
-	 *
+	 * @param rContainer The target container for the layout
+	 * @param rLayout    The original layout for the container
 	 * @return Either a new (mapped) layout instance or the original layout if
-	 *         no mapping is necessary
+	 * no mapping is necessary
 	 */
-	public GenericLayout mapLayout(Container	 rContainer,
-								   GenericLayout rLayout);
+	public GenericLayout mapLayout(Container rContainer,
+		GenericLayout rLayout);
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A default layout mapper implementation that always returns the original
 	 * layout.
 	 *
 	 * @author eso
 	 */
-	public static class IdentityLayoutMapper implements LayoutMapper
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class IdentityLayoutMapper implements LayoutMapper {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GenericLayout mapLayout(
-			Container	  rContainer,
-			GenericLayout rLayout)
-		{
+		public GenericLayout mapLayout(Container rContainer,
+			GenericLayout rLayout) {
 			return rLayout;
 		}
 	}

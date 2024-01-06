@@ -28,8 +28,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A control that allows the user to select a file for server-side processing.
  * If the control action is performed the file will be uploaded to the server.
  * The following event types are supported:
@@ -41,110 +40,91 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class FileChooser extends Control implements TextAttribute
-{
-	//~ Instance fields --------------------------------------------------------
+public class FileChooser extends Control implements TextAttribute {
 
 	private String sAction;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param sAction The action to be performed when a file is selected
 	 */
-	public FileChooser(String sAction)
-	{
+	public FileChooser(String sAction) {
 		this.sAction = sAction;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Returns the name of the selected file. May be NULL if nothing has been
 	 * selected yet. A VALUE_CHANGED event will occur if the selection changes.
 	 *
 	 * @return The filename
 	 */
-	public String getFilename()
-	{
+	public String getFilename() {
 		return getGwtFileChooser().getFilename();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return getGwtFileChooser().getText();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		getGwtFileChooser().setAction(sAction);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setText(String sText)
-	{
+	public void setText(String sText) {
 		getGwtFileChooser().setText(getContext().expandResource(sText));
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new FileChooserEventDispatcher();
 	}
 
-	/***************************************
+	/**
 	 * Returns the GWT file chooser of this instance.
 	 *
 	 * @return The GWT file chooser
 	 */
-	private GwtFileChooser getGwtFileChooser()
-	{
+	private GwtFileChooser getGwtFileChooser() {
 		return (GwtFileChooser) getWidget();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class FileChooserWidgetFactory
-		implements WidgetFactory<GwtFileChooser>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<GwtFileChooser> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GwtFileChooser createWidget(
-			Component rComponent,
-			StyleData rStyle)
-		{
+		public GwtFileChooser createWidget(Component rComponent,
+			StyleData rStyle) {
 			return new GwtFileChooser();
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Extended event dispatcher that converts the {@link SubmitCompleteEvent}
 	 * of the underlying GWT widget's form panel to {@link EventType#ACTION}
 	 * events.
@@ -152,35 +132,28 @@ public class FileChooser extends Control implements TextAttribute
 	 * @author eso
 	 */
 	class FileChooserEventDispatcher extends ComponentEventDispatcher
-		implements SubmitCompleteHandler
-	{
-		//~ Methods ------------------------------------------------------------
+		implements SubmitCompleteHandler {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onSubmitComplete(SubmitCompleteEvent rEvent)
-		{
+		public void onSubmitComplete(SubmitCompleteEvent rEvent) {
 			notifyEventHandler(EventType.ACTION);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.ACTION &&
-				rWidget instanceof GwtFileChooser)
-			{
-				return ((GwtFileChooser) rWidget).getFormPanel()
-												 .addSubmitCompleteHandler(this);
-			}
-			else
-			{
+				rWidget instanceof GwtFileChooser) {
+				return ((GwtFileChooser) rWidget)
+					.getFormPanel()
+					.addSubmitCompleteHandler(this);
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

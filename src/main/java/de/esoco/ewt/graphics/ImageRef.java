@@ -20,8 +20,7 @@ import de.esoco.ewt.UserInterfaceContext;
 
 import com.google.gwt.resources.client.ImageResource;
 
-
-/********************************************************************
+/**
  * An image implementation that contains some kind of reference to the actual
  * image data or file. For platform compatibility image instances should not be
  * created by invoking the constructor of this class but by using the factory
@@ -29,94 +28,71 @@ import com.google.gwt.resources.client.ImageResource;
  *
  * @author eso
  */
-public class ImageRef implements Image
-{
-	//~ Instance fields --------------------------------------------------------
+public class ImageRef implements Image {
 
 	private Object rImageDefinition;
 
 	private com.google.gwt.user.client.ui.Image rGwtImage;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance from an arbitrary image object. The supported
 	 * argument types are either a {@link String} with the image name or one of
 	 * the GEWT-specific types {@link com.google.gwt.user.client.ui.Image} or
 	 * {@link ImageResource}.
 	 *
-	 * @param  rImageDefinition The image object
-	 *
+	 * @param rImageDefinition The image object
 	 * @throws IllegalArgumentException If the argument type is not supported
 	 */
-	public ImageRef(Object rImageDefinition)
-	{
+	public ImageRef(Object rImageDefinition) {
 		this.rImageDefinition = rImageDefinition;
 
-		if (rImageDefinition instanceof ImageResource)
-		{
-			rGwtImage =
-				new com.google.gwt.user.client.ui.Image(
-					(ImageResource) rImageDefinition);
-		}
-		else if (rImageDefinition instanceof
-				 com.google.gwt.user.client.ui.Image)
-		{
+		if (rImageDefinition instanceof ImageResource) {
+			rGwtImage = new com.google.gwt.user.client.ui.Image(
+				(ImageResource) rImageDefinition);
+		} else if (rImageDefinition instanceof com.google.gwt.user.client.ui.Image) {
 			rGwtImage = (com.google.gwt.user.client.ui.Image) rImageDefinition;
-		}
-		else if (rImageDefinition instanceof String)
-		{
-			rGwtImage =
-				new com.google.gwt.user.client.ui.Image(
-					(String) rImageDefinition);
-		}
-		else
-		{
+		} else if (rImageDefinition instanceof String) {
+			rGwtImage = new com.google.gwt.user.client.ui.Image(
+				(String) rImageDefinition);
+		} else {
 			throw new IllegalArgumentException(
-				"Invalid image parameter: " +
-				rImageDefinition);
+				"Invalid image parameter: " + rImageDefinition);
 		}
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Returns the internal GWT image.
 	 *
 	 * @return The GWT image
 	 */
-	public com.google.gwt.user.client.ui.Image getGwtImage()
-	{
+	public com.google.gwt.user.client.ui.Image getGwtImage() {
 		return rGwtImage;
 	}
 
-	/***************************************
+	/**
 	 * Returns the image height.
 	 *
 	 * @return The height in pixels
 	 */
-	public int getHeight()
-	{
+	public int getHeight() {
 		return rGwtImage.getHeight();
 	}
 
-	/***************************************
+	/**
 	 * Returns the original input value this instance has been created from.
 	 *
 	 * @return The image definition value
 	 */
-	public Object getImageDefinition()
-	{
+	public Object getImageDefinition() {
 		return rImageDefinition;
 	}
 
-	/***************************************
+	/**
 	 * Returns the image width.
 	 *
 	 * @return The width in pixels
 	 */
-	public int getWidth()
-	{
+	public int getWidth() {
 		return rGwtImage.getWidth();
 	}
 }

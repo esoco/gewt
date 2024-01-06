@@ -31,27 +31,23 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A button subclass that implements a selectable checkbox.
  *
  * @author eso
  */
-public class CheckBox extends SelectableButton
-{
-	//~ Methods ----------------------------------------------------------------
+public class CheckBox extends SelectableButton {
 
-	/***************************************
+	/**
 	 * @see SelectableButton#isSelected()
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public boolean isSelected()
-	{
+	public boolean isSelected() {
 		return ((HasValue<Boolean>) getWidget()).getValue().booleanValue();
 	}
 
-	/***************************************
+	/**
 	 * Sets the selected state of this button (if supported by the underlying
 	 * GWT widget).
 	 *
@@ -59,98 +55,80 @@ public class CheckBox extends SelectableButton
 	 */
 	@Override
 	@SuppressWarnings({ "boxing", "unchecked" })
-	public void setSelected(boolean bSelected)
-	{
+	public void setSelected(boolean bSelected) {
 		((HasValue<Boolean>) getWidget()).setValue(bSelected);
 	}
 
-	/***************************************
+	/**
 	 * @see Component#createEventDispatcher()
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new CheckBoxEventDispatcher();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class CheckBoxWidgetFactory<W extends Widget & Focusable & HasHTML & HasValue<Boolean>>
-		extends ButtonWidgetFactory<W>
-	{
-		//~ Methods ------------------------------------------------------------
+		extends ButtonWidgetFactory<W> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
+		public W createWidget(Component rComponent, StyleData rStyle) {
 			return (W) new com.google.gwt.user.client.ui.CheckBox();
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Dispatcher for list-specific events.
 	 *
 	 * @author eso
 	 */
-	class CheckBoxEventDispatcher extends ComponentEventDispatcher
-	{
-		//~ Methods ------------------------------------------------------------
+	class CheckBoxEventDispatcher extends ComponentEventDispatcher {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent)
-		{
+		public void onClick(ClickEvent rEvent) {
 			StyleData rStyle = getStyle();
 
 			if (rStyle != null &&
-				rStyle.hasFlag(StateProperties.NO_EVENT_PROPAGATION))
-			{
+				rStyle.hasFlag(StateProperties.NO_EVENT_PROPAGATION)) {
 				rEvent.stopPropagation();
 			}
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<Object> rEvent)
-		{
+		public void onValueChange(ValueChangeEvent<Object> rEvent) {
 			notifyEventHandler(EventType.ACTION);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.ACTION &&
-				rWidget instanceof HasValueChangeHandlers<?>)
-			{
-				if (rWidget instanceof HasClickHandlers)
-				{
+				rWidget instanceof HasValueChangeHandlers<?>) {
+				if (rWidget instanceof HasClickHandlers) {
 					((HasClickHandlers) rWidget).addClickHandler(this);
 				}
 
-				return ((HasValueChangeHandlers<Object>) rWidget)
-					   .addValueChangeHandler(this);
-			}
-			else
-			{
+				return ((HasValueChangeHandlers<Object>) rWidget).addValueChangeHandler(
+					this);
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

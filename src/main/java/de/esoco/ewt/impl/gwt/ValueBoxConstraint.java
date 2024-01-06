@@ -20,90 +20,78 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 
-
-/********************************************************************
+/**
  * An event handler implementation that imposes a regular expression constraint
  * on widgets that are derived from {@link ValueBoxBase}. The input of any value
  * that doesn't match the regular expression will be prevented.
  *
  * @author eso
  */
-public abstract class ValueBoxConstraint implements KeyPressHandler
-{
-	/***************************************
+public abstract class ValueBoxConstraint implements KeyPressHandler {
+	/**
 	 * @see KeyPressHandler#onKeyPress(KeyPressEvent)
 	 */
 	@Override
-	public void onKeyPress(KeyPressEvent rEvent)
-	{
-		ValueBoxBase<?> rValueBox  = (ValueBoxBase<?>) rEvent.getSource();
-		String		    sText	   = rValueBox.getText();
-		char		    cInput     = rEvent.getCharCode();
-		int			    nCursor    = rValueBox.getCursorPos();
-		int			    nSelection = rValueBox.getSelectionLength();
+	public void onKeyPress(KeyPressEvent rEvent) {
+		ValueBoxBase<?> rValueBox = (ValueBoxBase<?>) rEvent.getSource();
+		String sText = rValueBox.getText();
+		char cInput = rEvent.getCharCode();
+		int nCursor = rValueBox.getCursorPos();
+		int nSelection = rValueBox.getSelectionLength();
 
-		if (cInput != 0)
-		{
-			String sNewText =
-				sText.substring(0, nCursor) + cInput +
+		if (cInput != 0) {
+			String sNewText = sText.substring(0, nCursor) + cInput +
 				sText.substring(nCursor + nSelection);
 
-			if (!isValid(sNewText))
-			{
+			if (!isValid(sNewText)) {
 				rValueBox.cancelKey();
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Checks whether a new text string is valid according to this constraint.
 	 *
-	 * @param  sNewText The new text to validate
-	 *
+	 * @param sNewText The new text to validate
 	 * @return TRUE if the given text is valid, FALSE if not
 	 */
 	protected abstract boolean isValid(String sNewText);
 
-	/********************************************************************
+	/**
 	 * A constraint implementation that validates values by checking them
 	 * against minimum and maximum integer values.
 	 *
 	 * @author eso
 	 */
-	public static class IntRangeConstraint extends ValueBoxConstraint
-	{
+	public static class IntRangeConstraint extends ValueBoxConstraint {
 		private final int nMinimumValue;
+
 		private final int nMaximumValue;
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param nMin The minimum value
 		 * @param nMax The maximum value
 		 */
-		public IntRangeConstraint(int nMin, int nMax)
-		{
+		public IntRangeConstraint(int nMin, int nMax) {
 			nMinimumValue = nMin;
 			nMaximumValue = nMax;
 		}
 
-		/***************************************
+		/**
 		 * @see ValueBoxConstraint#isValid(String)
 		 */
 		@Override
-		protected boolean isValid(String sNewText)
-		{
+		protected boolean isValid(String sNewText) {
 			boolean bValid = false;
 
-			try
-			{
+			try {
 				int nNewValue = Integer.parseInt(sNewText);
 
 				bValid =
 					nNewValue >= nMinimumValue && nNewValue <= nMaximumValue;
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				// continue and return FALSE
 			}
 
@@ -111,36 +99,32 @@ public abstract class ValueBoxConstraint implements KeyPressHandler
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A constraint implementation that validates values by applying a regular
 	 * expression.
 	 *
 	 * @author eso
 	 */
-	public static class RegExConstraint extends ValueBoxConstraint
-	{
+	public static class RegExConstraint extends ValueBoxConstraint {
 		private final String sConstraintRegEx;
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param sRegEx The regular expression of the constraint
 		 */
-		public RegExConstraint(String sRegEx)
-		{
+		public RegExConstraint(String sRegEx) {
 			sConstraintRegEx = sRegEx;
 		}
 
-		/***************************************
+		/**
 		 * Returns the valid.
 		 *
-		 * @param  sNewText The valid
-		 *
+		 * @param sNewText The valid
 		 * @return The valid
 		 */
 		@Override
-		protected boolean isValid(String sNewText)
-		{
+		protected boolean isValid(String sNewText) {
 			return sNewText.matches(sConstraintRegEx);
 		}
 	}

@@ -19,26 +19,21 @@ package de.esoco.ewt.component;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * Controls are components that can have the input focus and generate events
  * from user interaction.
  *
  * @author eso
  */
-public abstract class Control extends Component
-{
-	//~ Methods ----------------------------------------------------------------
+public abstract class Control extends Component {
 
-	/***************************************
+	/**
 	 * Requests that the component gets the input focus.
 	 */
-	public void requestFocus()
-	{
+	public void requestFocus() {
 		Widget rWidget = getWidget();
 
-		if (rWidget instanceof Focusable)
-		{
+		if (rWidget instanceof Focusable) {
 			((Focusable) rWidget).setFocus(true);
 		}
 	}

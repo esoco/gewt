@@ -18,8 +18,7 @@ package de.esoco.ewt.component;
 
 import de.esoco.ewt.layout.GenericLayout;
 
-
-/********************************************************************
+/**
  * A base class for panels that have a fixed layout that cannot be changed after
  * creation. The layout of this instance must be set as a constructor argument.
  * The method {@link #setLayout(GenericLayout)} is overridden to thrown an
@@ -27,31 +26,26 @@ import de.esoco.ewt.layout.GenericLayout;
  *
  * @author eso
  */
-public abstract class FixedLayoutPanel extends Panel
-{
-	//~ Constructors -----------------------------------------------------------
+public abstract class FixedLayoutPanel extends Panel {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rLayout The fixed layout for this instance
 	 */
-	public FixedLayoutPanel(GenericLayout rLayout)
-	{
+	public FixedLayoutPanel(GenericLayout rLayout) {
 		super.setLayout(rLayout);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Overridden to throw an exception as the fixed layout is defined by the
 	 * constructor.
 	 *
 	 * @see Panel#setLayout(GenericLayout)
 	 */
 	@Override
-	public void setLayout(GenericLayout rLayout)
-	{
-		throw new UnsupportedOperationException("Layout must be set through constructor");
+	public void setLayout(GenericLayout rLayout) {
+		throw new UnsupportedOperationException(
+			"Layout must be set through constructor");
 	}
 }

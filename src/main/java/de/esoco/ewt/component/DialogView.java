@@ -21,56 +21,46 @@ import de.esoco.ewt.style.ViewStyle;
 
 import com.google.gwt.user.client.ui.PopupPanel;
 
-
-/********************************************************************
+/**
  * A child view subclass that represents dialogs.
  *
  * @author eso
  */
-public class DialogView extends ChildView
-{
-	//~ Constructors -----------------------------------------------------------
+public class DialogView extends ChildView {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rParent rContext The parent view
 	 * @param rStyle  The style of the dialog
 	 */
-	public DialogView(View rParent, ViewStyle rStyle)
-	{
+	public DialogView(View rParent, ViewStyle rStyle) {
 		super(rParent,
-			  EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
-			  rStyle);
+			EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
+			rStyle);
 
 		getWidget().addStyleName(EWT.CSS.ewtDialogView());
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Sets the dialog title.
 	 *
 	 * @param sTitle The new title
 	 */
 	@Override
-	public void setTitle(String sTitle)
-	{
+	public void setTitle(String sTitle) {
 		getChildViewWidget().setViewTitle(getContext().expandResource(sTitle));
 	}
 
-	/***************************************
+	/**
 	 * @see Component#setVisible(boolean)
 	 */
 	@Override
-	public void setVisible(boolean bVisible)
-	{
-		if (bVisible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL))
-		{
+	public void setVisible(boolean bVisible) {
+		if (bVisible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL)) {
 			IsChildViewWidget rPanel = getChildViewWidget();
 
-			if (rPanel instanceof PopupPanel)
-			{
+			if (rPanel instanceof PopupPanel) {
 				((PopupPanel) rPanel).setGlassEnabled(true);
 			}
 		}

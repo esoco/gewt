@@ -45,8 +45,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A GWT implementation of a field that allows to select and optionally edit
  * tags (short string labels).
  *
@@ -54,24 +53,20 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class GwtTagField extends Composite
 	implements Focusable, HasEnabled, KeyDownHandler, ClickHandler,
-			   SelectionHandler<Suggestion>, HasValueChangeHandlers<Set<String>>
-{
-	//~ Instance fields --------------------------------------------------------
+	SelectionHandler<Suggestion>, HasValueChangeHandlers<Set<String>> {
 
-	private final FlowPanel  aMainPanel;
+	private final FlowPanel aMainPanel;
+
 	private final SuggestBox aTagInput;
 
 	private Set<String> aDeletedTags;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	public GwtTagField()
-	{
+	public GwtTagField() {
 		aMainPanel = new FlowPanel();
-		aTagInput  = new SuggestBox(new MultiWordSuggestOracle());
+		aTagInput = new SuggestBox(new MultiWordSuggestOracle());
 
 		initWidget(aMainPanel);
 
@@ -86,88 +81,75 @@ public class GwtTagField extends Composite
 		aMainPanel.add(aTagInput);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Adds a tag string.
 	 *
 	 * @param sTag The tag to add
 	 */
-	public void addTag(String sTag)
-	{
+	public void addTag(String sTag) {
 		TagDisplay aTagDisplay = new TagDisplay(sTag);
 
 		aMainPanel.insert(aTagDisplay, aMainPanel.getWidgetCount() - 1);
 	}
 
-	/***************************************
+	/**
 	 * Adds multiple tag strings.
 	 *
 	 * @param rTags rValues The tags to add
 	 */
-	public void addTags(Collection<String> rTags)
-	{
-		for (String sTag : rTags)
-		{
+	public void addTags(Collection<String> rTags) {
+		for (String sTag : rTags) {
 			addTag(sTag);
 		}
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<Set<String>> rHandler)
-	{
+		ValueChangeHandler<Set<String>> rHandler) {
 		return addHandler(rHandler, ValueChangeEvent.getType());
 	}
 
-	/***************************************
+	/**
 	 * Removes all tags.
 	 */
-	public void clearTags()
-	{
-		while (aMainPanel.getWidgetCount() > 1)
-		{
+	public void clearTags() {
+		while (aMainPanel.getWidgetCount() > 1) {
 			aMainPanel.remove(0);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Returns the {@link SuggestBox} used by this instance.
 	 *
 	 * @return The suggest box of this instance
 	 */
-	public final SuggestBox getSuggestBox()
-	{
+	public final SuggestBox getSuggestBox() {
 		return aTagInput;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getTabIndex()
-	{
+	public int getTabIndex() {
 		return aTagInput.getTabIndex();
 	}
 
-	/***************************************
+	/**
 	 * Returns a set containing the currently selected tags in the order in
 	 * which they are displayed.
 	 *
 	 * @return A set of the current tag strings
 	 */
-	public Set<String> getTags()
-	{
+	public Set<String> getTags() {
 		Set<String> aTags =
 			new LinkedHashSet<>(aMainPanel.getWidgetCount() - 1);
 
-		for (Widget rChild : aMainPanel)
-		{
-			if (rChild instanceof TagDisplay)
-			{
+		for (Widget rChild : aMainPanel) {
+			if (rChild instanceof TagDisplay) {
 				aTags.add(((TagDisplay) rChild).getText());
 			}
 		}
@@ -175,62 +157,49 @@ public class GwtTagField extends Composite
 		return aTags;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return aTagInput.isEnabled();
 	}
 
-	/***************************************
+	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent)
-	{
+	public void onClick(ClickEvent rEvent) {
 		aTagInput.getValueBox().setFocus(true);
 
-		if (rEvent.getSource() == this)
-		{
+		if (rEvent.getSource() == this) {
 			setTagsSelected(false);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Handles the enter and backspace keys to add or remove the last tag.
 	 *
 	 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent rEvent)
-	{
-		if (aTagInput.isEnabled())
-		{
+	public void onKeyDown(KeyDownEvent rEvent) {
+		if (aTagInput.isEnabled()) {
 			String sInput = aTagInput.getValue();
 
-			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-			{
+			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 				addTagFromInput(sInput);
-			}
-			else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE &&
-					 sInput.equals("") &&
-					 aMainPanel.getWidgetCount() > 1)
-			{
+			} else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE &&
+				sInput.equals("") && aMainPanel.getWidgetCount() > 1) {
 				Widget rTag =
 					aMainPanel.getWidget(aMainPanel.getWidgetCount() - 2);
 
 				deleteTag((TagDisplay) rTag);
-			}
-			else if (rEvent.isControlKeyDown() &&
-					 rEvent.getNativeKeyCode() == KeyCodes.KEY_Z)
-			{
+			} else if (rEvent.isControlKeyDown() &&
+				rEvent.getNativeKeyCode() == KeyCodes.KEY_Z) {
 				// undo delete
-				if (aDeletedTags != null)
-				{
-					for (String sTag : aDeletedTags)
-					{
+				if (aDeletedTags != null) {
+					for (String sTag : aDeletedTags) {
 						addTag(sTag);
 					}
 
@@ -241,29 +210,25 @@ public class GwtTagField extends Composite
 		}
 	}
 
-	/***************************************
+	/**
 	 * Adds a new tag when a suggested value has been selected.
 	 *
 	 * @see SelectionHandler#onSelection(SelectionEvent)
 	 */
 	@Override
-	public void onSelection(SelectionEvent<Suggestion> rEvent)
-	{
+	public void onSelection(SelectionEvent<Suggestion> rEvent) {
 		addTagFromInput(rEvent.getSelectedItem().getReplacementString());
 	}
 
-	/***************************************
+	/**
 	 * Removes a tag.
 	 *
 	 * @param sTag The name of the tag to remove
 	 */
-	public void removeTag(String sTag)
-	{
-		for (Widget rChild : aMainPanel)
-		{
+	public void removeTag(String sTag) {
+		for (Widget rChild : aMainPanel) {
 			if (rChild instanceof TagDisplay &&
-				sTag.equals(((TagDisplay) rChild).getText()))
-			{
+				sTag.equals(((TagDisplay) rChild).getText())) {
 				aMainPanel.remove(rChild);
 
 				break;
@@ -271,90 +236,77 @@ public class GwtTagField extends Composite
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Focusable#setAccessKey(char)
 	 */
 	@Override
-	public void setAccessKey(char cKey)
-	{
+	public void setAccessKey(char cKey) {
 		aTagInput.setAccessKey(cKey);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled)
-	{
+	public void setEnabled(boolean bEnabled) {
 		aTagInput.setEnabled(bEnabled);
 
-		if (bEnabled)
-		{
+		if (bEnabled) {
 			removeStyleDependentName("disabled");
-		}
-		else
-		{
+		} else {
 			addStyleDependentName("disabled");
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused)
-	{
+	public void setFocus(boolean bFocused) {
 		aTagInput.setFocus(bFocused);
 	}
 
-	/***************************************
+	/**
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex)
-	{
+	public void setTabIndex(int nIndex) {
 		aTagInput.setTabIndex(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * Deletes all selected tags.
 	 */
-	void deleteSelectedTags()
-	{
+	void deleteSelectedTags() {
 		Set<Widget> aDeletedTagDisplays = new HashSet<>();
 
 		aDeletedTags = new HashSet<>();
 
-		for (Widget rChild : aMainPanel)
-		{
-			if (rChild instanceof TagDisplay)
-			{
+		for (Widget rChild : aMainPanel) {
+			if (rChild instanceof TagDisplay) {
 				TagDisplay rTagDisplay = (TagDisplay) rChild;
 
-				if (rTagDisplay.isSelected())
-				{
+				if (rTagDisplay.isSelected()) {
 					aDeletedTagDisplays.add(rChild);
 					aDeletedTags.add(((TagDisplay) rChild).getText());
 				}
 			}
 		}
 
-		for (Widget rChild : aDeletedTagDisplays)
-		{
+		for (Widget rChild : aDeletedTagDisplays) {
 			aMainPanel.remove(rChild);
 		}
 
 		ValueChangeEvent.fire(this, getTags());
 	}
 
-	/***************************************
+	/**
 	 * Deletes a tag widget from this instance after querying the user for
 	 * confirmation.
 	 *
 	 * @param rTagDisplay The tag widget to delete
 	 */
-	void deleteTag(TagDisplay rTagDisplay)
-	{
+	void deleteTag(TagDisplay rTagDisplay) {
 		aDeletedTags = new HashSet<>();
 		aDeletedTags.add(rTagDisplay.getText());
 
@@ -362,60 +314,49 @@ public class GwtTagField extends Composite
 		ValueChangeEvent.fire(this, getTags());
 	}
 
-	/***************************************
+	/**
 	 * Sets the selected state for all tags.
 	 *
 	 * @param bSelected The new selected state
 	 */
-	void setTagsSelected(boolean bSelected)
-	{
-		for (Widget rChild : aMainPanel)
-		{
-			if (rChild instanceof TagDisplay)
-			{
+	void setTagsSelected(boolean bSelected) {
+		for (Widget rChild : aMainPanel) {
+			if (rChild instanceof TagDisplay) {
 				((TagDisplay) rChild).setSelected(bSelected);
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Internal method to add a tag from an input value.
 	 *
 	 * @param sInput The input value
 	 */
-	private void addTagFromInput(String sInput)
-	{
-		if (sInput.length() > 0)
-		{
+	private void addTagFromInput(String sInput) {
+		if (sInput.length() > 0) {
 			addTag(sInput);
 			aTagInput.setValue("");
 			ValueChangeEvent.fire(this, getTags());
 		}
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A display widget for a single tag.
 	 *
 	 * @author eso
 	 */
-	private class TagDisplay extends Grid implements ClickHandler
-	{
-		//~ Instance fields ----------------------------------------------------
+	private class TagDisplay extends Grid implements ClickHandler {
 
-		private Label   rDeleteWidget;
+		private Label rDeleteWidget;
+
 		private boolean bSelected;
 
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Creates a new instance with a certain tag text
 		 *
 		 * @param sText The tag text
 		 */
-		public TagDisplay(String sText)
-		{
+		public TagDisplay(String sText) {
 			super(1, 2);
 
 			rDeleteWidget = new Label();
@@ -427,47 +368,36 @@ public class GwtTagField extends Composite
 			addClickHandler(this);
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Returns the text that is displayed.
 		 *
 		 * @return The displayed text
 		 */
-		public String getText()
-		{
+		public String getText() {
 			return getText(0, 0);
 		}
 
-		/***************************************
+		/**
 		 * Returns the selected state of this instance.
 		 *
 		 * @return The selected state
 		 */
-		public final boolean isSelected()
-		{
+		public final boolean isSelected() {
 			return bSelected;
 		}
 
-		/***************************************
+		/**
 		 * @see ClickHandler#onClick(ClickEvent)
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent)
-		{
-			if (aTagInput.isEnabled())
-			{
-				if (bSelected)
-				{
-					if (getCellForEvent(rEvent).getCellIndex() == 1)
-					{
+		public void onClick(ClickEvent rEvent) {
+			if (aTagInput.isEnabled()) {
+				if (bSelected) {
+					if (getCellForEvent(rEvent).getCellIndex() == 1) {
 						deleteSelectedTags();
 					}
-				}
-				else
-				{
-					if (!rEvent.isControlKeyDown())
-					{
+				} else {
+					if (!rEvent.isControlKeyDown()) {
 						setTagsSelected(false);
 					}
 
@@ -479,22 +409,18 @@ public class GwtTagField extends Composite
 			rEvent.stopPropagation();
 		}
 
-		/***************************************
+		/**
 		 * Sets the selected.
 		 *
 		 * @param bSelected The new selected
 		 */
-		void setSelected(boolean bSelected)
-		{
+		void setSelected(boolean bSelected) {
 			this.bSelected = bSelected;
 
-			if (bSelected)
-			{
+			if (bSelected) {
 				rDeleteWidget.setText("\u00D7"); // multiplication sign '×'
 				addStyleDependentName("selected");
-			}
-			else
-			{
+			} else {
 				rDeleteWidget.setText("");
 				removeStyleDependentName("selected");
 			}

@@ -21,8 +21,7 @@ import de.esoco.ewt.style.StyleData;
 
 import de.esoco.lib.property.LayoutType;
 
-
-/********************************************************************
+/**
  * A factory interface that creates container layouts. EWT extensions can use
  * this to replace default layouts with their own instances. Some layouts may
  * require initialization and can therefore only be replaced after they have
@@ -31,23 +30,19 @@ import de.esoco.lib.property.LayoutType;
  *
  * @author eso
  */
-public interface LayoutFactory
-{
-	//~ Methods ----------------------------------------------------------------
+public interface LayoutFactory {
 
-	/***************************************
+	/**
 	 * Checks whether the given layout for a particular target container should
 	 * be mapped to a different layout instance and returns that if applicable.
 	 *
-	 * @param  rParentContainer The parent of the container for which the layout
-	 *                          is created
-	 * @param  rContainerStyle  rContainer The target container for the layout
-	 * @param  eLayout          The original layout for the container
-	 *
+	 * @param rParentContainer The parent of the container for which the layout
+	 *                         is created
+	 * @param rContainerStyle  rContainer The target container for the layout
+	 * @param eLayout          The original layout for the container
 	 * @return Either a new (mapped) layout instance or the original layout if
-	 *         no mapping is necessary
+	 * no mapping is necessary
 	 */
 	public GenericLayout createLayout(Container rParentContainer,
-									  StyleData rContainerStyle,
-									  LayoutType    eLayout);
+		StyleData rContainerStyle, LayoutType eLayout);
 }

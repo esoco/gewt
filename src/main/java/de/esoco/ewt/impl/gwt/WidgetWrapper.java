@@ -19,8 +19,7 @@ package de.esoco.ewt.impl.gwt;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A wrapper for widget instances that can be extended to implement additional
  * interface methods that provide functionality that is not available directly
  * in the original widget. The Wrapper only wraps implementations of the
@@ -29,42 +28,33 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class WidgetWrapper<W extends Widget> implements IsWidget
-{
-	//~ Instance fields --------------------------------------------------------
+public class WidgetWrapper<W extends Widget> implements IsWidget {
 
 	private W rWidget;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rWidget The widget to be wrapped by this instance
 	 */
-	public WidgetWrapper(W rWidget)
-	{
+	public WidgetWrapper(W rWidget) {
 		this.rWidget = rWidget;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Widget asWidget()
-	{
+	public Widget asWidget() {
 		return rWidget;
 	}
 
-	/***************************************
+	/**
 	 * Returns the wrapped GWT widget.
 	 *
 	 * @return The wrapped widget
 	 */
-	protected final W getWidget()
-	{
+	protected final W getWidget() {
 		return rWidget;
 	}
 }

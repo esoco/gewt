@@ -22,128 +22,109 @@ import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A component that allows to enter or modify integer values.
  *
  * @author eso
  */
-public class Spinner extends Control
-{
-	//~ Instance fields --------------------------------------------------------
+public class Spinner extends Control {
 
 	private GwtSpinner aGwtSpinner;
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Returns the increment for value modifications.
 	 *
 	 * @return The increment value
 	 */
-	public final int getIncrement()
-	{
+	public final int getIncrement() {
 		return aGwtSpinner.getIncrement();
 	}
 
-	/***************************************
+	/**
 	 * Returns the maximum value.
 	 *
 	 * @return The maximum value
 	 */
-	public final int getMaximum()
-	{
+	public final int getMaximum() {
 		return aGwtSpinner.getMaximum();
 	}
 
-	/***************************************
+	/**
 	 * Returns the minimum value.
 	 *
 	 * @return The minimum value
 	 */
-	public final int getMinimum()
-	{
+	public final int getMinimum() {
 		return aGwtSpinner.getMinimum();
 	}
 
-	/***************************************
+	/**
 	 * Returns the current value.
 	 *
 	 * @return The current value
 	 */
-	public final int getValue()
-	{
+	public final int getValue() {
 		return aGwtSpinner.getValue();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		aGwtSpinner = (GwtSpinner) getWidget();
 	}
 
-	/***************************************
+	/**
 	 * Sets the increment for value modifications.
 	 *
 	 * @param nIncrement The increment value
 	 */
-	public final void setIncrement(int nIncrement)
-	{
+	public final void setIncrement(int nIncrement) {
 		aGwtSpinner.setIncrement(nIncrement);
 	}
 
-	/***************************************
+	/**
 	 * Sets the maximum value.
 	 *
 	 * @param nMaximum The maximum value
 	 */
-	public final void setMaximum(int nMaximum)
-	{
+	public final void setMaximum(int nMaximum) {
 		aGwtSpinner.setMaximum(nMaximum);
 	}
 
-	/***************************************
+	/**
 	 * Sets the minimum value.
 	 *
 	 * @param nMinimum The minimum value
 	 */
-	public final void setMinimum(int nMinimum)
-	{
+	public final void setMinimum(int nMinimum) {
 		aGwtSpinner.setMinimum(nMinimum);
 	}
 
-	/***************************************
+	/**
 	 * Sets the value of this component.
 	 *
 	 * @param nValue The value
 	 */
-	public final void setValue(int nValue)
-	{
+	public final void setValue(int nValue) {
 		aGwtSpinner.setValue(nValue);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class SpinnerWidgetFactory implements WidgetFactory<Widget>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class SpinnerWidgetFactory implements WidgetFactory<Widget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
-		{
+		public Widget createWidget(Component rComponent, StyleData rStyle) {
 			return new GwtSpinner(0, 100, 1);
 		}
 	}

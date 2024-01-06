@@ -20,29 +20,26 @@ import de.esoco.ewt.event.EventType;
 
 import com.google.gwt.dom.client.NativeEvent;
 
-
-/********************************************************************
+/**
  * An internal interface to be used by GWT widget implementations to dispatch
  * GEWT events.
  *
  * @author eso
  */
-public interface GewtEventDispatcher
-{
-	//~ Methods ----------------------------------------------------------------
+public interface GewtEventDispatcher {
 
-	/***************************************
+	/**
 	 * Dispatches an event without a native event.
 	 *
 	 * @param rEventType The event type
 	 */
-	default public void dispatchEvent(EventType rEventType)
-	{
+	default public void dispatchEvent(EventType rEventType) {
 		dispatchEvent(rEventType, null);
 	}
 
-	/***************************************
-	 * Dispatches an event of a certain type to the registered listeners. If the
+	/**
+	 * Dispatches an event of a certain type to the registered listeners. If
+	 * the
 	 * native event argument is NULL because no native GWT event is available
 	 * only a simple event notification will be dispatched.
 	 *

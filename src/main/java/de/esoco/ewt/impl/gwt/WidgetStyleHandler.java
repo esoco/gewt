@@ -19,18 +19,15 @@ package de.esoco.ewt.impl.gwt;
 import de.esoco.ewt.component.Component;
 import de.esoco.ewt.style.StyleData;
 
-
-/********************************************************************
+/**
  * An interface for the global handling of widget style updates. Registered with
  * {@link Component#setWidgetStyleHandler(WidgetStyleHandler)}.
  *
  * @author eso
  */
-public interface WidgetStyleHandler
-{
-	//~ Methods ----------------------------------------------------------------
+public interface WidgetStyleHandler {
 
-	/***************************************
+	/**
 	 * Will be invoked to apply a new style to a component widget.
 	 *
 	 * @param rComponent rWidget The component

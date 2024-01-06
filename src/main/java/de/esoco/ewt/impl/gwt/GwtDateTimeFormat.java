@@ -34,103 +34,113 @@ import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.TIME_LO
 import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.TIME_MEDIUM;
 import static com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat.TIME_SHORT;
 
-
-/********************************************************************
+/**
  * A format
  *
  * @author eso
  */
-public class GwtDateTimeFormat implements ValueFormat
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class GwtDateTimeFormat implements ValueFormat {
 
-	/** {@link PredefinedFormat#DATE_TIME_SHORT} */
+	/**
+	 * {@link PredefinedFormat#DATE_TIME_SHORT}
+	 */
 	public static final ValueFormat SHORT_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_SHORT));
 
-	/** {@link PredefinedFormat#DATE_SHORT} */
+	/**
+	 * {@link PredefinedFormat#DATE_SHORT}
+	 */
 	public static final ValueFormat SHORT_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_SHORT));
 
-	/** {@link PredefinedFormat#TIME_SHORT} */
+	/**
+	 * {@link PredefinedFormat#TIME_SHORT}
+	 */
 	public static final ValueFormat SHORT_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_SHORT));
 
-	/** {@link PredefinedFormat#DATE_TIME_MEDIUM} */
+	/**
+	 * {@link PredefinedFormat#DATE_TIME_MEDIUM}
+	 */
 	public static final ValueFormat MEDIUM_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_MEDIUM));
 
-	/** {@link PredefinedFormat#DATE_MEDIUM} */
+	/**
+	 * {@link PredefinedFormat#DATE_MEDIUM}
+	 */
 	public static final ValueFormat MEDIUM_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_MEDIUM));
 
-	/** {@link PredefinedFormat#TIME_MEDIUM} */
+	/**
+	 * {@link PredefinedFormat#TIME_MEDIUM}
+	 */
 	public static final ValueFormat MEDIUM_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_MEDIUM));
 
-	/** {@link PredefinedFormat#DATE_TIME_LONG} */
+	/**
+	 * {@link PredefinedFormat#DATE_TIME_LONG}
+	 */
 	public static final ValueFormat LONG_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_LONG));
 
-	/** {@link PredefinedFormat#DATE_LONG} */
+	/**
+	 * {@link PredefinedFormat#DATE_LONG}
+	 */
 	public static final ValueFormat LONG_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_LONG));
 
-	/** {@link PredefinedFormat#TIME_LONG} */
+	/**
+	 * {@link PredefinedFormat#TIME_LONG}
+	 */
 	public static final ValueFormat LONG_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_LONG));
 
-	/** {@link PredefinedFormat#DATE_TIME_FULL} */
+	/**
+	 * {@link PredefinedFormat#DATE_TIME_FULL}
+	 */
 	public static final ValueFormat FULL_DATE_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_TIME_FULL));
 
-	/** {@link PredefinedFormat#DATE_FULL} */
+	/**
+	 * {@link PredefinedFormat#DATE_FULL}
+	 */
 	public static final ValueFormat FULL_DATE =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(DATE_FULL));
 
-	/** {@link PredefinedFormat#TIME_FULL} */
+	/**
+	 * {@link PredefinedFormat#TIME_FULL}
+	 */
 	public static final ValueFormat FULL_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_FULL));
 
-	//~ Instance fields --------------------------------------------------------
-
 	private DateTimeFormat rFormat;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rFormat The GWT date time format to use
 	 */
-	public GwtDateTimeFormat(DateTimeFormat rFormat)
-	{
+	public GwtDateTimeFormat(DateTimeFormat rFormat) {
 		this.rFormat = rFormat;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Formats the input object with the {@link DateTimeFormat} of this
 	 * instance. . Unsupported input values (including NULL) will cause an
 	 * exception.
 	 *
-	 * @param  rValue Either a date object or a string that must contain the
-	 *                long value of the date to format
-	 *
+	 * @param rValue Either a date object or a string that must contain the
+	 *                  long
+	 *               value of the date to format
 	 * @return The string representation of the date value
 	 */
 	@Override
-	public String format(Object rValue)
-	{
+	public String format(Object rValue) {
 		Date rDate;
 
-		if (rValue instanceof String)
-		{
+		if (rValue instanceof String) {
 			rDate = new Date(Long.parseLong((String) rValue));
-		}
-		else
-		{
+		} else {
 			rDate = (Date) rValue;
 		}
 

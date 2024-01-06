@@ -10,54 +10,47 @@ import jsinterop.annotations.JsType;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 
-
-/********************************************************************
+/**
  * JSInterop wrapper for the <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API">main
  * object of the WebCrypto API</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL, name = "crypto")
-public class Crypto
-{
-	//~ Static fields/initializers ---------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "crypto")
+public class Crypto {
 
-	/** Property for access to the {@link SubtleCrypto} instance. */
+	/**
+	 * Property for access to the {@link SubtleCrypto} instance.
+	 */
 	public static SubtleCrypto subtle;
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * JSInterop wrapper for the <a
 	 * href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto">
 	 * SuptleCrypto object of the WebCrypto API</a>.
 	 *
 	 * @author eso
 	 */
-	@JsType(isNative  = true, namespace = "Crypto")
-	public static class SubtleCrypto
-	{
-		//~ Methods ------------------------------------------------------------
+	@JsType(isNative = true, namespace = "Crypto")
+	public static class SubtleCrypto {
 
-		/***************************************
-		 * @see <a
-		 *      href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">
-		 *      SubtleCrypto.digest()</a>
+		/**
+		 * @see <a href="https://developer.mozilla
+		 * .org/en-US/docs/Web/API/SubtleCrypto/digest">
+		 * SubtleCrypto.digest()</a>
 		 */
 		@SuppressWarnings("unusable-by-js")
-		public native Promise<ArrayBuffer> digest(
-			String		sAlgorithm,
+		public native Promise<ArrayBuffer> digest(String sAlgorithm,
 			ArrayBuffer rBuffer);
 
-		/***************************************
-		 * @see <a
-		 *      href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest">
-		 *      SubtleCrypto.digest()</a>
+		/**
+		 * @see <a href="https://developer.mozilla
+		 * .org/en-US/docs/Web/API/SubtleCrypto/digest">
+		 * SubtleCrypto.digest()</a>
 		 */
 		@SuppressWarnings("unusable-by-js")
-		public native Promise<ArrayBuffer> digest(
-			String			sAlgorithm,
+		public native Promise<ArrayBuffer> digest(String sAlgorithm,
 			ArrayBufferView rBuffer);
 	}
 }

@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.event;
 
-/********************************************************************
+/**
  * An enumeration of all GEWT event types for which event listeners can be
  * registered on components. Focus and pointer events are supported by all
  * components. Which other event types are supported can be found out from the
@@ -24,8 +24,7 @@ package de.esoco.ewt.event;
  *
  * @author eso
  */
-public enum EventType
-{
+public enum EventType {
 	ACTION, SELECTION, VALUE_CHANGED,
 
 	// --- Focus events ---------------

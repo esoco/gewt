@@ -23,8 +23,7 @@ import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-
-/********************************************************************
+/**
  * A component that displays a horizontal or vertical bar representing an
  * integer value.
  *
@@ -37,127 +36,114 @@ import com.google.gwt.user.client.ui.IsWidget;
  *
  * @author eso
  */
-public class ProgressBar extends Component
-{
-	//~ Methods ----------------------------------------------------------------
+public class ProgressBar extends Component {
 
-	/***************************************
+	/**
 	 * Returns the maximum value.
 	 *
 	 * @return The maximum value
 	 */
-	public int getMaximum()
-	{
+	public int getMaximum() {
 		return getBarWidget().getMaximum();
 	}
 
-	/***************************************
+	/**
 	 * Returns the minimum value.
 	 *
 	 * @return The minimum value
 	 */
-	public int getMinimum()
-	{
+	public int getMinimum() {
 		return getBarWidget().getMinimum();
 	}
 
-	/***************************************
+	/**
 	 * Returns the current value.
 	 *
 	 * @return The current integer value
 	 */
-	public int getValue()
-	{
+	public int getValue() {
 		return getBarWidget().getProgress();
 	}
 
-	/***************************************
+	/**
 	 * Sets the maximum value.
 	 *
 	 * @param nValue The new maximum value
 	 */
-	public void setMaximum(int nValue)
-	{
+	public void setMaximum(int nValue) {
 		getBarWidget().setMaximum(nValue);
 	}
 
-	/***************************************
+	/**
 	 * Sets the minimum value.
 	 *
 	 * @param nValue The new minimum value
 	 */
-	public void setMinimum(int nValue)
-	{
+	public void setMinimum(int nValue) {
 		getBarWidget().setMinimum(nValue);
 	}
 
-	/***************************************
+	/**
 	 * Sets the integer value.
 	 *
 	 * @param nValue The new integer value
 	 */
-	public void setValue(int nValue)
-	{
+	public void setValue(int nValue) {
 		getBarWidget().setProgress(nValue);
 	}
 
-	/***************************************
+	/**
 	 * Returns the bar widget.
 	 *
 	 * @return The bar widget
 	 */
-	private IsProgressBarWidget getBarWidget()
-	{
+	private IsProgressBarWidget getBarWidget() {
 		return (IsProgressBarWidget) getWidget();
 	}
 
-	//~ Inner Interfaces -------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The interface of progress bar widgets
 	 *
 	 * @author eso
 	 */
-	public static interface IsProgressBarWidget extends IsWidget
-	{
-		//~ Methods ------------------------------------------------------------
+	public static interface IsProgressBarWidget extends IsWidget {
 
-		/***************************************
+		/**
 		 * Returns the maximum.
 		 *
 		 * @return The maximum
 		 */
 		public int getMaximum();
 
-		/***************************************
+		/**
 		 * Returns the minimum.
 		 *
 		 * @return The minimum
 		 */
 		public int getMinimum();
 
-		/***************************************
+		/**
 		 * Returns the current progress value.
 		 *
 		 * @return The progress
 		 */
 		public int getProgress();
 
-		/***************************************
+		/**
 		 * Sets the maximum.
 		 *
 		 * @param nMaximum The new maximum
 		 */
 		public void setMaximum(int nMaximum);
 
-		/***************************************
+		/**
 		 * Sets the minimum.
 		 *
 		 * @param nMinimum The new minimum
 		 */
 		public void setMinimum(int nMinimum);
 
-		/***************************************
+		/**
 		 * Sets the current progress value.
 		 *
 		 * @param nProgress The new progress value
@@ -165,26 +151,20 @@ public class ProgressBar extends Component
 		public void setProgress(int nProgress);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class ProgressBarWidgetFactory
-		implements WidgetFactory<IsProgressBarWidget>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<IsProgressBarWidget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public IsProgressBarWidget createWidget(
-			Component rComponent,
-			StyleData rStyle)
-		{
+		public IsProgressBarWidget createWidget(Component rComponent,
+			StyleData rStyle) {
 			return new GwtProgressBar();
 		}
 	}

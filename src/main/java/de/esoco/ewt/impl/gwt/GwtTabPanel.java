@@ -39,38 +39,32 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A {@link TabLayoutPanel} that shows scroll buttons for the tabs if necessary.
- * Based on <a
- * href="http://devnotesblog.wordpress.com/2010/06/17/scrollable-gwt-tablayoutpanel/">
- * this web article</a>.
+ * Based on <a href="http://devnotesblog.wordpress
+ * .com/2010/06/17/scrollable-gwt-tablayoutpanel/"> this web article</a>.
  */
-public class GwtTabPanel extends TabLayoutPanel
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class GwtTabPanel extends TabLayoutPanel {
 
 	private static final int DEFAULT_SCROLL_WIDTH = 20;
 
-	//~ Instance fields --------------------------------------------------------
-
 	private LayoutPanel rMainPanel;
-	private FlowPanel   rTabBar;
-	private Image	    rScrollLeftButton;
-	private Image	    rScrollRightButton;
+
+	private FlowPanel rTabBar;
+
+	private Image rScrollLeftButton;
+
+	private Image rScrollRightButton;
 
 	private HandlerRegistration rWindowResizeHandler;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param fBarHeight The tab bar height
 	 * @param eBarUnit   The unit of the tab bar height
 	 */
-	public GwtTabPanel(double fBarHeight, Unit eBarUnit)
-	{
+	public GwtTabPanel(double fBarHeight, Unit eBarUnit) {
 		super(fBarHeight, eBarUnit);
 
 		// The main widget wrapped by this composite, which is a LayoutPanel
@@ -78,10 +72,8 @@ public class GwtTabPanel extends TabLayoutPanel
 		rMainPanel = (LayoutPanel) getWidget();
 
 		// Find the tab bar, which is the first flow panel in the LayoutPanel
-		for (Widget rWidget : rMainPanel)
-		{
-			if (rWidget instanceof FlowPanel)
-			{
+		for (Widget rWidget : rMainPanel) {
+			if (rWidget instanceof FlowPanel) {
 				rTabBar = (FlowPanel) rWidget;
 
 				break;
@@ -91,71 +83,58 @@ public class GwtTabPanel extends TabLayoutPanel
 		initScrollButtons();
 	}
 
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Parses a position value from the CSS left value of a DOM element's style.
+	/**
+	 * Parses a position value from the CSS left value of a DOM element's
+	 * style.
 	 *
-	 * @param  rElement The DOM element
-	 *
+	 * @param rElement The DOM element
 	 * @return The position integer value
 	 */
-	private static int parsePosition(Element rElement)
-	{
-		String sCssLeft  = rElement.getStyle().getLeft();
-		int    nPosition;
+	private static int parsePosition(Element rElement) {
+		String sCssLeft = rElement.getStyle().getLeft();
+		int nPosition;
 
-		try
-		{
-			for (int i = 0; i < sCssLeft.length(); i++)
-			{
+		try {
+			for (int i = 0; i < sCssLeft.length(); i++) {
 				char c = sCssLeft.charAt(i);
 
-				if (c != '-' && !(c >= '0' && c <= '9'))
-				{
+				if (c != '-' && !(c >= '0' && c <= '9')) {
 					sCssLeft = sCssLeft.substring(0, i);
 				}
 			}
 
 			nPosition = Integer.parseInt(sCssLeft);
-		}
-		catch (NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			nPosition = 0;
 		}
 
 		return nPosition;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * @see TabLayoutPanel#insert(Widget, Widget, int)
 	 */
 	@Override
-	public void insert(final Widget rWidget, Widget rTab, int nBeforeIndex)
-	{
+	public void insert(final Widget rWidget, Widget rTab, int nBeforeIndex) {
 		super.insert(rWidget, rTab, nBeforeIndex);
 
 		checkShowScrollButtons(rWidget.getParent());
 	}
 
-	/***************************************
+	/**
 	 * Queries the tab bar visibility.
 	 *
 	 * @return TRUE if the tab bar is currently visible
 	 */
-	public boolean isTabBarVisible()
-	{
+	public boolean isTabBarVisible() {
 		return rTabBar.isVisible();
 	}
 
-	/***************************************
+	/**
 	 * @see TabLayoutPanel#remove(Widget)
 	 */
 	@Override
-	public boolean remove(Widget rWidget)
-	{
+	public boolean remove(Widget rWidget) {
 		boolean bRemoved = super.remove(rWidget);
 
 		checkShowScrollButtons(null);
@@ -163,173 +142,144 @@ public class GwtTabPanel extends TabLayoutPanel
 		return bRemoved;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void selectTab(int nIndex, boolean bFireEvents)
-	{
+	public void selectTab(int nIndex, boolean bFireEvents) {
 		super.selectTab(nIndex, bFireEvents);
 
-		if (nIndex >= 0 && nIndex < getWidgetCount())
-		{
+		if (nIndex >= 0 && nIndex < getWidgetCount()) {
 			scrollTo(getTabWidget(nIndex).getParent());
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the tab bar visibility.
 	 *
 	 * @param bVisible TRUE to make the tab bar visible
 	 */
-	public void setTabBarVisible(boolean bVisible)
-	{
+	public void setTabBarVisible(boolean bVisible) {
 		rTabBar.setVisible(bVisible);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTabHTML(int rIndex, String rHtml)
-	{
+	public void setTabHTML(int rIndex, String rHtml) {
 		super.setTabHTML(rIndex, rHtml);
 		checkShowScrollButtons(null);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTabText(int rIndex, String rText)
-	{
+	public void setTabText(int rIndex, String rText) {
 		super.setTabText(rIndex, rText);
 		checkShowScrollButtons(null);
 	}
 
-	/***************************************
+	/**
 	 * @see TabLayoutPanel#onLoad()
 	 */
 	@Override
-	protected void onLoad()
-	{
+	protected void onLoad() {
 		super.onLoad();
 
-		if (rWindowResizeHandler == null)
-		{
+		if (rWindowResizeHandler == null) {
 			rWindowResizeHandler =
-				Window.addResizeHandler(
-					new ResizeHandler()
-					{
-						@Override
-						public void onResize(ResizeEvent rEvent)
-						{
-							checkShowScrollButtons(null);
-						}
-					});
+				Window.addResizeHandler(new ResizeHandler() {
+				@Override
+				public void onResize(ResizeEvent rEvent) {
+					checkShowScrollButtons(null);
+				}
+			});
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see TabLayoutPanel#onUnload()
 	 */
 	@Override
-	protected void onUnload()
-	{
+	protected void onUnload() {
 		super.onUnload();
 
-		if (rWindowResizeHandler != null)
-		{
+		if (rWindowResizeHandler != null) {
 			rWindowResizeHandler.removeHandler();
 			rWindowResizeHandler = null;
 		}
 	}
 
-	/***************************************
+	/**
 	 * Checks whether the scroll buttons should be visible.
 	 *
 	 * @param rScrollToTab An optional tab widget to scroll to when scroll
 	 *                     buttons are shown or NULL for none
 	 */
-	void checkShowScrollButtons(final Widget rScrollToTab)
-	{
+	void checkShowScrollButtons(final Widget rScrollToTab) {
 		// Defer size calculations until sizes are available, when calculating
 		// immediately after add(), all size methods return zero
-		Scheduler.get()
-				 .scheduleDeferred(
-		 			new ScheduledCommand()
-		 			{
-		 				@Override
-		 				public void execute()
-		 				{
-		 					showScrollButtons(isTabScrollingNecessary());
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				showScrollButtons(isTabScrollingNecessary());
 
-		 					if (rScrollToTab != null)
-		 					{
-		 						Scheduler
-									 .get()
-									 .scheduleDeferred(
-			 							new ScheduledCommand()
-			 							{
-			 								@Override
-			 								public void execute()
-			 								{
-			 									scrollTo(rScrollToTab);
-			 								}
-			 							});
-		 					}
-		 				}
-		 			});
+				if (rScrollToTab != null) {
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							scrollTo(rScrollToTab);
+						}
+					});
+				}
+			}
+		});
 	}
 
-	/***************************************
+	/**
 	 * Scrolls the tab bar a certain amount.
 	 *
 	 * @param nDiff The difference of the X coordinate to scroll to
 	 */
-	void scrollTabBar(final int nDiff)
-	{
-		if (isTabScrollingNecessary() && nDiff != 0)
-		{
+	void scrollTabBar(final int nDiff) {
+		if (isTabScrollingNecessary() && nDiff != 0) {
 			Widget rLastTab = getLastTab();
-			int    nNewLeft = parsePosition(rTabBar.getElement()) + nDiff;
+			int nNewLeft = parsePosition(rTabBar.getElement()) + nDiff;
 
 			int nRight = getRightOfWidget(rLastTab);
 			int nWidth = getTabBarWidth();
 
-			// Prevent scrolling the last tab too far away form the right border,
+			// Prevent scrolling the last tab too far away form the right
+			// border,
 			// or the first tab further than the left border position
 			if (nNewLeft <= 0 &&
-				(nWidth - nNewLeft < (nRight + DEFAULT_SCROLL_WIDTH)))
-			{
+				(nWidth - nNewLeft < (nRight + DEFAULT_SCROLL_WIDTH))) {
 				rTabBar.getElement().getStyle().setLeft(nNewLeft, Unit.PX);
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Scrolls to a certain tab bar widget.
 	 *
 	 * @param rTab The widget to scroll to
 	 */
-	void scrollTo(Widget rTab)
-	{
-		if (isTabScrollingNecessary())
-		{
-			int nTabBarLeft  = parsePosition(rTabBar.getElement());
+	void scrollTo(Widget rTab) {
+		if (isTabScrollingNecessary()) {
+			int nTabBarLeft = parsePosition(rTabBar.getElement());
 			int nTabBarWidth = getTabBarWidth();
-			int nWidgetLeft  = rTab.getElement().getOffsetLeft() + nTabBarLeft;
+			int nWidgetLeft = rTab.getElement().getOffsetLeft() + nTabBarLeft;
 			int nWidgetRight = getRightOfWidget(rTab) + nTabBarLeft;
-			int nScrollDiff  = 0;
+			int nScrollDiff = 0;
 
-			if (nWidgetRight > nTabBarWidth)
-			{
-				nScrollDiff =  nTabBarWidth - nWidgetRight;
+			if (nWidgetRight > nTabBarWidth) {
+				nScrollDiff = nTabBarWidth - nWidgetRight;
 				nWidgetLeft += nScrollDiff;
 			}
 
-			if (nWidgetLeft < 0)
-			{
+			if (nWidgetLeft < 0) {
 				nScrollDiff = -nWidgetLeft;
 			}
 
@@ -337,103 +287,82 @@ public class GwtTabPanel extends TabLayoutPanel
 		}
 	}
 
-	/***************************************
+	/**
 	 * Shows or hides the tab scroll buttons.
 	 *
 	 * @param bShow The new visibility of the scroll buttons
 	 */
-	void showScrollButtons(boolean bShow)
-	{
-		boolean bVisible     = rScrollRightButton.isVisible();
-		int     nButtonWidth = rScrollRightButton.getWidth();
+	void showScrollButtons(boolean bShow) {
+		boolean bVisible = rScrollRightButton.isVisible();
+		int nButtonWidth = rScrollRightButton.getWidth();
 
-		if (bVisible && !bShow)
-		{
+		if (bVisible && !bShow) {
 			int nTabBarWidth = getRightOfWidget(getLastTab());
 
 			rTabBar.getElement().getStyle().setLeft(0, Unit.PX);
-			rMainPanel.setWidgetLeftWidth(
-				rTabBar,
-				0,
-				Unit.PX,
-				nTabBarWidth,
+			rMainPanel.setWidgetLeftWidth(rTabBar, 0, Unit.PX, nTabBarWidth,
 				Unit.PX);
 		}
 
-		if (bShow)
-		{
+		if (bShow) {
 			int nMainPanelWidth = rMainPanel.getOffsetWidth();
-			int nTabBarWidth    = nMainPanelWidth - nButtonWidth * 2;
-			int nRightButtonX   = nMainPanelWidth - nButtonWidth;
+			int nTabBarWidth = nMainPanelWidth - nButtonWidth * 2;
+			int nRightButtonX = nMainPanelWidth - nButtonWidth;
 
-			rMainPanel.setWidgetLeftWidth(
-				rScrollRightButton,
-				nRightButtonX,
-				Unit.PX,
-				nButtonWidth,
-				Unit.PX);
-			rMainPanel.setWidgetLeftWidth(
-				rTabBar,
-				nButtonWidth,
-				Unit.PX,
-				nTabBarWidth,
-				Unit.PX);
+			rMainPanel.setWidgetLeftWidth(rScrollRightButton, nRightButtonX,
+				Unit.PX, nButtonWidth, Unit.PX);
+			rMainPanel.setWidgetLeftWidth(rTabBar, nButtonWidth, Unit.PX,
+				nTabBarWidth, Unit.PX);
 		}
 
 		rScrollRightButton.setVisible(bShow);
 		rScrollLeftButton.setVisible(bShow);
 	}
 
-	/***************************************
+	/**
 	 * Returns the last tab in the tab bar.
 	 *
 	 * @return The last tab or NULL for none
 	 */
-	private Widget getLastTab()
-	{
+	private Widget getLastTab() {
 		Widget rLastTab = null;
 
-		if (rTabBar.getWidgetCount() != 0)
-		{
+		if (rTabBar.getWidgetCount() != 0) {
 			rLastTab = rTabBar.getWidget(rTabBar.getWidgetCount() - 1);
 		}
 
 		return rLastTab;
 	}
 
-	/***************************************
+	/**
 	 * Returns the integer coordinate of the right side of a widget relative to
 	 * it's parent.
 	 *
-	 * @param  rWidget The widget to calculate the right coordinate of
-	 *
+	 * @param rWidget The widget to calculate the right coordinate of
 	 * @return The right coordinate of the widget
 	 */
-	private int getRightOfWidget(Widget rWidget)
-	{
+	private int getRightOfWidget(Widget rWidget) {
 		Element rElement = rWidget.getElement();
 
 		return rElement.getOffsetLeft() + rElement.getOffsetWidth();
 	}
 
-	/***************************************
+	/**
 	 * Returns the tab bar width.
 	 *
 	 * @return The tab bar width
 	 */
-	private int getTabBarWidth()
-	{
+	private int getTabBarWidth() {
 //		return rTabBar.getElement().getParentElement().getClientWidth();
 		return rMainPanel.getOffsetWidth() -
-			   2 * rScrollLeftButton.getOffsetWidth();
+			2 * rScrollLeftButton.getOffsetWidth();
 	}
 
-	/***************************************
+	/**
 	 * Create and attach the scroll button images with a click handler
 	 */
-	private void initScrollButtons()
-	{
-		rScrollLeftButton  = new Image(GewtResources.INSTANCE.imLeft());
+	private void initScrollButtons() {
+		rScrollLeftButton = new Image(GewtResources.INSTANCE.imLeft());
 		rScrollRightButton = new Image(GewtResources.INSTANCE.imRight());
 
 		int nButtonWidth = rScrollLeftButton.getWidth();
@@ -445,46 +374,28 @@ public class GwtTabPanel extends TabLayoutPanel
 		rScrollLeftButton.setVisible(false);
 		rScrollRightButton.setVisible(false);
 
-		rMainPanel.setWidgetLeftWidth(
-			rScrollLeftButton,
-			0,
-			Unit.PX,
-			nButtonWidth,
-			Unit.PX);
-		rMainPanel.setWidgetTopHeight(
-			rScrollLeftButton,
-			6,
-			Unit.PX,
-			rScrollLeftButton.getHeight(),
-			Unit.PX);
-		rMainPanel.setWidgetLeftWidth(
-			rScrollRightButton,
-			0,
-			Unit.PX,
-			nButtonWidth,
-			Unit.PX);
-		rMainPanel.setWidgetTopHeight(
-			rScrollRightButton,
-			6,
-			Unit.PX,
-			rScrollRightButton.getHeight(),
-			Unit.PX);
+		rMainPanel.setWidgetLeftWidth(rScrollLeftButton, 0, Unit.PX,
+			nButtonWidth, Unit.PX);
+		rMainPanel.setWidgetTopHeight(rScrollLeftButton, 6, Unit.PX,
+			rScrollLeftButton.getHeight(), Unit.PX);
+		rMainPanel.setWidgetLeftWidth(rScrollRightButton, 0, Unit.PX,
+			nButtonWidth, Unit.PX);
+		rMainPanel.setWidgetTopHeight(rScrollRightButton, 6, Unit.PX,
+			rScrollRightButton.getHeight(), Unit.PX);
 	}
 
-	/***************************************
+	/**
 	 * Returns whether scrolling of the tabs is necessary.
 	 *
 	 * @return TRUE if tabs scrolling is necessary
 	 */
-	private boolean isTabScrollingNecessary()
-	{
-		Widget  rLastTab   = getLastTab();
+	private boolean isTabScrollingNecessary() {
+		Widget rLastTab = getLastTab();
 		boolean bNecessary = false;
 
-		if (rLastTab != null)
-		{
+		if (rLastTab != null) {
 			int nLastTabRight = getRightOfWidget(rLastTab);
-			int nMaxWidth     = rMainPanel.getOffsetWidth();
+			int nMaxWidth = rMainPanel.getOffsetWidth();
 
 			bNecessary = nLastTabRight > nMaxWidth;
 		}
@@ -492,65 +403,49 @@ public class GwtTabPanel extends TabLayoutPanel
 		return bNecessary;
 	}
 
-	/***************************************
+	/**
 	 * Creates the event handlers for a tab bar scroll button.
 	 *
 	 * @param rScrollButton The scroll button
 	 * @param nDiff         The scroll amount
 	 */
-	private void setScrollEventHandlers(Image rScrollButton, final int nDiff)
-	{
-		final Timer aTimer =
-			new Timer()
-			{
-				@Override
-				public void run()
-				{
-					scrollTabBar(nDiff);
-				}
-			};
+	private void setScrollEventHandlers(Image rScrollButton, final int nDiff) {
+		final Timer aTimer = new Timer() {
+			@Override
+			public void run() {
+				scrollTabBar(nDiff);
+			}
+		};
 
-		rScrollButton.addMouseDownHandler(
-			new MouseDownHandler()
-			{
-				@Override
-				public void onMouseDown(MouseDownEvent rEvent)
-				{
-					aTimer.scheduleRepeating(100);
-				}
-			});
+		rScrollButton.addMouseDownHandler(new MouseDownHandler() {
+			@Override
+			public void onMouseDown(MouseDownEvent rEvent) {
+				aTimer.scheduleRepeating(100);
+			}
+		});
 
-		rScrollButton.addMouseUpHandler(
-			new MouseUpHandler()
-			{
-				@Override
-				public void onMouseUp(MouseUpEvent rEvent)
-				{
-					aTimer.cancel();
-				}
-			});
+		rScrollButton.addMouseUpHandler(new MouseUpHandler() {
+			@Override
+			public void onMouseUp(MouseUpEvent rEvent) {
+				aTimer.cancel();
+			}
+		});
 
-		rScrollButton.addMouseOutHandler(
-			new MouseOutHandler()
-			{
-				@Override
-				public void onMouseOut(MouseOutEvent rEvent)
-				{
-					aTimer.cancel();
-				}
-			});
+		rScrollButton.addMouseOutHandler(new MouseOutHandler() {
+			@Override
+			public void onMouseOut(MouseOutEvent rEvent) {
+				aTimer.cancel();
+			}
+		});
 
-		rScrollButton.addDoubleClickHandler(
-			new DoubleClickHandler()
-			{
-				@Override
-				public void onDoubleClick(DoubleClickEvent rEvent)
-				{
-					aTimer.cancel();
-					scrollTo(
-						rEvent.getSource() == rScrollLeftButton
-						? rTabBar.getWidget(0) : getLastTab());
-				}
-			});
+		rScrollButton.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent rEvent) {
+				aTimer.cancel();
+				scrollTo(rEvent.getSource() == rScrollLeftButton ?
+				         rTabBar.getWidget(0) :
+				         getLastTab());
+			}
+		});
 	}
 }

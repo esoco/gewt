@@ -20,40 +20,31 @@ import de.esoco.ewt.geometry.Rectangle;
 
 import com.google.gwt.user.client.Window;
 
-
-/********************************************************************
+/**
  * Interface for screen devices.
  *
  * @author eso
  */
-public class Screen
-{
-	//~ Methods ----------------------------------------------------------------
+public class Screen {
 
-	/***************************************
+	/**
 	 * Returns the bounding rectangle of this device.
 	 *
 	 * @return The bounding rectangle
 	 */
-	public Rectangle getBounds()
-	{
-		return new Rectangle(0,
-							 0,
-							 Window.getClientWidth(),
-							 Window.getClientHeight());
+	public Rectangle getBounds() {
+		return new Rectangle(0, 0, Window.getClientWidth(),
+			Window.getClientHeight());
 	}
 
-	/***************************************
+	/**
 	 * Returns the rectangle of the area that is available to a client on this
 	 * device. This may be the same or smaller than the bounding rectangle.
 	 *
 	 * @return The rectangle of the client area
 	 */
-	public Rectangle getClientArea()
-	{
-		return new Rectangle(0,
-							 0,
-							 Window.getClientWidth(),
-							 Window.getClientHeight());
+	public Rectangle getClientArea() {
+		return new Rectangle(0, 0, Window.getClientWidth(),
+			Window.getClientHeight());
 	}
 }

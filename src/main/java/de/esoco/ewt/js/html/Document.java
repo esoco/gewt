@@ -9,23 +9,20 @@ import de.esoco.ewt.js.event.EventTarget;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/Document">
  * Document</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class Document extends Node
-{
-	//~ Methods ----------------------------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Document extends Node {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById">
-	 *      Document.getElementById()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/Document/getElementById">
+	 * Document.getElementById()</a>
 	 */
 	public native EventTarget getElementById(String sId);
 }

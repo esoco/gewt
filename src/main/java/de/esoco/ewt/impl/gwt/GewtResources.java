@@ -22,23 +22,20 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-
-/********************************************************************
+/**
  * A client bundle containing the resources used by GEWT.
  *
  * @author eso
  */
-public interface GewtResources extends ClientBundle
-{
-	//~ Static fields/initializers ---------------------------------------------
+public interface GewtResources extends ClientBundle {
 
-	/** The singleton instance of this interface. */
+	/**
+	 * The singleton instance of this interface.
+	 */
 	public static final GewtResources INSTANCE =
 		GWT.create(GewtResources.class);
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * The GEWT CSS resource.
 	 *
 	 * @return The GEWT CSS resource
@@ -46,7 +43,7 @@ public interface GewtResources extends ClientBundle
 	@Source("gewt.css")
 	GewtCss css();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -54,7 +51,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/add.png")
 	ImageResource imAdd();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -62,7 +59,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowDown.png")
 	ImageResource imArrowDown();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -70,7 +67,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowDownDisabled.png")
 	ImageResource imArrowDownDisabled();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -78,7 +75,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowDownHover.png")
 	ImageResource imArrowDownHover();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -86,7 +83,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowDownPressed.png")
 	ImageResource imArrowDownPressed();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -94,7 +91,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowUp.png")
 	ImageResource imArrowUp();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -102,7 +99,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowUpDisabled.png")
 	ImageResource imArrowUpDisabled();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -110,7 +107,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowUpHover.png")
 	ImageResource imArrowUpHover();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -118,7 +115,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/arrowUpPressed.png")
 	ImageResource imArrowUpPressed();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -126,7 +123,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/back.png")
 	ImageResource imBack();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -134,7 +131,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/busy.gif")
 	ImageResource imBusy();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -142,7 +139,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/cancel.png")
 	ImageResource imCancel();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -150,7 +147,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/clearSelection.png")
 	ImageResource imClearSelection();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -158,7 +155,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/clock.png")
 	ImageResource imClock();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -166,7 +163,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/download.png")
 	ImageResource imDownload();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -174,7 +171,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/filter.png")
 	ImageResource imFilter();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -182,7 +179,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/forward.png")
 	ImageResource imForward();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -190,7 +187,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/left.png")
 	ImageResource imLeft();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -198,7 +195,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/left-xl.png")
 	ImageResource imLeftXL();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -206,7 +203,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/less.png")
 	ImageResource imLess();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -214,7 +211,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/lock.png")
 	ImageResource imLock();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -222,7 +219,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/more.png")
 	ImageResource imMore();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -230,7 +227,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/ok.png")
 	ImageResource imOk();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -238,7 +235,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/right.png")
 	ImageResource imRight();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -246,7 +243,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/right-xl.png")
 	ImageResource imRightXL();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -254,7 +251,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/sortAscending.png")
 	ImageResource imSortAscending();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -262,7 +259,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/sortDescending.png")
 	ImageResource imSortDescending();
 
-	/***************************************
+	/**
 	 * Image for CSS.
 	 *
 	 * @return Image
@@ -271,7 +268,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/tableBack.png")
 	ImageResource imTableBack();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -279,7 +276,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/today.png")
 	ImageResource imToday();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -287,7 +284,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/treeOpen.gif")
 	ImageResource imTreeCollapse();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -295,7 +292,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/treeClosed.gif")
 	ImageResource imTreeExpand();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image
@@ -303,7 +300,7 @@ public interface GewtResources extends ClientBundle
 	@Source("img/treeLeaf.gif")
 	ImageResource imTreeLeaf();
 
-	/***************************************
+	/**
 	 * Image.
 	 *
 	 * @return Image

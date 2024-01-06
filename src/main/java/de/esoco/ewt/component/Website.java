@@ -24,57 +24,47 @@ import de.esoco.lib.property.TextAttribute;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A component that displays a website with a certain URL. The URL of the
  * component can be queried in text format through the implemented methods of
  * the {@link TextAttribute} interface.
  *
  * @author eso
  */
-public class Website extends Component implements TextAttribute
-{
-	//~ Methods ----------------------------------------------------------------
+public class Website extends Component implements TextAttribute {
 
-	/***************************************
+	/**
 	 * Returns the URL that is display by this component.
 	 *
 	 * @return The URL
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return ((Frame) getWidget()).getUrl();
 	}
 
-	/***************************************
+	/**
 	 * Sets the URL that is display by this component.
 	 *
 	 * @param sUrl The URL
 	 */
 	@Override
-	public void setText(String sUrl)
-	{
+	public void setText(String sUrl) {
 		((Frame) getWidget()).setUrl(sUrl);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class WebsiteWidgetFactory implements WidgetFactory<Widget>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class WebsiteWidgetFactory implements WidgetFactory<Widget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
-		{
+		public Widget createWidget(Component rComponent, StyleData rStyle) {
 			return new Frame();
 		}
 	}

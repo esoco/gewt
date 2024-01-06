@@ -7,8 +7,7 @@ package de.esoco.ewt.js;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 
-
-/********************************************************************
+/**
  * Interface of a JavaScript supplying function. As JavaScript is untyped there
  * is no notion of "void" types. Therefore this interface provides a default
  * implementation of a JavaScript unary function and an abstract supplying
@@ -18,24 +17,20 @@ import jsinterop.annotations.JsOverlay;
  */
 @FunctionalInterface
 @JsFunction
-public interface JsSupplier<T>
-{
-	//~ Methods ----------------------------------------------------------------
+public interface JsSupplier<T> {
 
-	/***************************************
+	/**
 	 * Default JavaScript function method that ignores the input.
 	 *
-	 * @param  rValue The value to consume
-	 *
+	 * @param rValue The value to consume
 	 * @return Always NULL
 	 */
 	@JsOverlay
-	default T apply(Object rValue)
-	{
+	default T apply(Object rValue) {
 		return get();
 	}
 
-	/***************************************
+	/**
 	 * The supplying method to implement.
 	 *
 	 * @return The supplied value

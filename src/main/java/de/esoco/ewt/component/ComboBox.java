@@ -37,8 +37,7 @@ import com.google.gwt.user.client.ui.SuggestBox.DefaultSuggestionDisplay;
 import com.google.gwt.user.client.ui.SuggestBox.SuggestionDisplay;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A combo box component that has an editable text field and a popup menu with a
  * list of values to choose from. If an instance is initialized with the style
  * flag {@link StyleFlag#MULTISELECT} it will allow to enter and edit multiple
@@ -48,24 +47,19 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public class ComboBox extends TextControl implements KeyDownHandler,
-													 DoubleClickHandler
-{
-	//~ Instance fields --------------------------------------------------------
+public class ComboBox extends TextControl
+	implements KeyDownHandler, DoubleClickHandler {
 
 	private Set<String> aDefaultSuggestions = new LinkedHashSet<String>();
 
 	private boolean bMultiselect;
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Adds a choice to the drop-down list.
 	 *
 	 * @param sValue The choice value to add
 	 */
-	public void addChoice(String sValue)
-	{
+	public void addChoice(String sValue) {
 		MultiWordSuggestOracle rOracle = getSuggestOracle();
 
 		aDefaultSuggestions.add(sValue);
@@ -73,13 +67,12 @@ public class ComboBox extends TextControl implements KeyDownHandler,
 		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
 	}
 
-	/***************************************
+	/**
 	 * Adds multiple choices to the drop-down list.
 	 *
 	 * @param rValues The choice values to add
 	 */
-	public void addChoices(Collection<String> rValues)
-	{
+	public void addChoices(Collection<String> rValues) {
 		MultiWordSuggestOracle rOracle = getSuggestOracle();
 
 		aDefaultSuggestions.addAll(rValues);
@@ -87,47 +80,38 @@ public class ComboBox extends TextControl implements KeyDownHandler,
 		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
 	}
 
-	/***************************************
+	/**
 	 * Adds a value string to a multiselection instance or sets the text in
 	 * single selection.
 	 *
 	 * @param sValue The value to add
 	 */
-	public void addValue(String sValue)
-	{
-		if (bMultiselect)
-		{
+	public void addValue(String sValue) {
+		if (bMultiselect) {
 			((GwtTagField) getWidget()).addTag(sValue);
-		}
-		else
-		{
+		} else {
 			setText(sValue);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Adds multiple values to a multiselection instance or sets the text in
 	 * single selection.
 	 *
 	 * @param rValues The values to add
 	 */
-	public void addValues(Collection<String> rValues)
-	{
-		if (bMultiselect)
-		{
+	public void addValues(Collection<String> rValues) {
+		if (bMultiselect) {
 			((GwtTagField) getWidget()).addTags(rValues);
-		}
-		else
-		{
+		} else {
 			setText(rValues.toString());
 		}
 	}
 
-	/***************************************
+	/**
 	 * Removes all choices from the drop-down list.
 	 */
-	public void clearChoices()
-	{
+	public void clearChoices() {
 		MultiWordSuggestOracle rOracle = getSuggestOracle();
 
 		aDefaultSuggestions.clear();
@@ -135,38 +119,30 @@ public class ComboBox extends TextControl implements KeyDownHandler,
 		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
 	}
 
-	/***************************************
+	/**
 	 * Clears all values in a multiselection instance or the text in single
 	 * selection.
 	 */
-	public void clearValues()
-	{
-		if (bMultiselect)
-		{
+	public void clearValues() {
+		if (bMultiselect) {
 			((GwtTagField) getWidget()).clearTags();
-		}
-		else
-		{
+		} else {
 			setText("");
 		}
 	}
 
-	/***************************************
+	/**
 	 * Returns a set of the currently selected values of a multiselection
 	 * instance or the text in single selection.
 	 *
 	 * @return The values
 	 */
-	public Set<String> getValues()
-	{
+	public Set<String> getValues() {
 		Set<String> rValues;
 
-		if (bMultiselect)
-		{
+		if (bMultiselect) {
 			rValues = ((GwtTagField) getWidget()).getTags();
-		}
-		else
-		{
+		} else {
 			rValues = new LinkedHashSet<>();
 			rValues.add(getText());
 		}
@@ -174,12 +150,11 @@ public class ComboBox extends TextControl implements KeyDownHandler,
 		return rValues;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
@@ -190,124 +165,104 @@ public class ComboBox extends TextControl implements KeyDownHandler,
 		rTextBox.addDoubleClickHandler(this);
 	}
 
-	/***************************************
+	/**
 	 * @see DoubleClickHandler#onDoubleClick(DoubleClickEvent)
 	 */
 	@Override
-	public void onDoubleClick(DoubleClickEvent rEvent)
-	{
+	public void onDoubleClick(DoubleClickEvent rEvent) {
 		getSuggestBox().showSuggestionList();
 	}
 
-	/***************************************
+	/**
 	 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent rEvent)
-	{
+	public void onKeyDown(KeyDownEvent rEvent) {
 		SuggestionDisplay rDisplay = getSuggestBox().getSuggestionDisplay();
 
-		if (rDisplay instanceof DefaultSuggestionDisplay)
-		{
+		if (rDisplay instanceof DefaultSuggestionDisplay) {
 			DefaultSuggestionDisplay rDefaultDisplay =
 				(DefaultSuggestionDisplay) rDisplay;
 
-			if (rEvent.isDownArrow() || rEvent.isUpArrow())
-			{
-				if (!rDefaultDisplay.isSuggestionListShowing())
-				{
+			if (rEvent.isDownArrow() || rEvent.isUpArrow()) {
+				if (!rDefaultDisplay.isSuggestionListShowing()) {
 					getSuggestBox().showSuggestionList();
 				}
-			}
-			else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ESCAPE)
-			{
+			} else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
 				rDefaultDisplay.hideSuggestions();
 			}
 		}
 	}
 
-	/***************************************
+	/**
 	 * Removes a value from a multiselection instance. For single selection
 	 * instances this call will be ignored, use the {@link #setText(String)}
 	 * method instead.
 	 *
 	 * @param sValue The value to remove
 	 */
-	public void removeValue(String sValue)
-	{
-		if (bMultiselect)
-		{
+	public void removeValue(String sValue) {
+		if (bMultiselect) {
 			((GwtTagField) getWidget()).removeTag(sValue);
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns)
-	{
+	public void setColumns(int nColumns) {
 		getTextBox().setVisibleLength(nColumns);
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#getTextBox()
 	 */
 	@Override
-	protected IsTextControlWidget getTextBox()
-	{
+	protected IsTextControlWidget getTextBox() {
 		return new ValueBoxWrapper(getSuggestBox().getValueBox());
 	}
 
-	/***************************************
+	/**
 	 * Returns the {@link SuggestBox} instance used by the underlying GWT
 	 * widget.
 	 *
 	 * @return The suggest box
 	 */
-	private SuggestBox getSuggestBox()
-	{
+	private SuggestBox getSuggestBox() {
 		Widget rWidget = getWidget();
 
-		return bMultiselect ? ((GwtTagField) rWidget).getSuggestBox()
-							: (SuggestBox) rWidget;
+		return bMultiselect ?
+		       ((GwtTagField) rWidget).getSuggestBox() :
+		       (SuggestBox) rWidget;
 	}
 
-	/***************************************
+	/**
 	 * Returns the {@link MultiWordSuggestOracle} of this instance.
 	 *
 	 * @return The suggest oracle
 	 */
-	private MultiWordSuggestOracle getSuggestOracle()
-	{
+	private MultiWordSuggestOracle getSuggestOracle() {
 		return (MultiWordSuggestOracle) getSuggestBox().getSuggestOracle();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class ComboBoxWidgetFactory implements WidgetFactory<Widget>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class ComboBoxWidgetFactory implements WidgetFactory<Widget> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle)
-		{
+		public Widget createWidget(Component rComponent, StyleData rStyle) {
 			Widget rWidget;
 
-			if (rStyle.hasFlag(StyleFlag.MULTISELECT))
-			{
+			if (rStyle.hasFlag(StyleFlag.MULTISELECT)) {
 				rWidget = new GwtTagField();
-			}
-			else
-			{
+			} else {
 				rWidget = new SuggestBox(new MultiWordSuggestOracle());
 			}
 

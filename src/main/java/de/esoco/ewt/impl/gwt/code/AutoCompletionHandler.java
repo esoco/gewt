@@ -16,17 +16,15 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.code;
 
-/********************************************************************
+/**
  * TODO: DOCUMENT ME!
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
- *         Research Group, Date: 18/03/2014
+ * Research Group, Date: 18/03/2014
  */
-public interface AutoCompletionHandler
-{
-	//~ Methods ----------------------------------------------------------------
+public interface AutoCompletionHandler {
 
-	/***************************************
+	/**
 	 * Called to get the completions for the specified editor text.
 	 *
 	 * @param sText          The text. Not {@code null}.
@@ -35,11 +33,9 @@ public interface AutoCompletionHandler
 	 * @param nCaretIndex    The caret index with respect to the editor text.
 	 *                       Not {@code null}.
 	 * @param rCallback      A callback that should be used to signal that
-	 *                       auto-completion results are ready. Not {@code
-	 *                       null}.
+	 *                       auto-completion results are ready. Not
+	 *                       {@code null}.
 	 */
-	void getCompletions(String				   sText,
-						EditorPosition		   rCaretPosition,
-						int					   nCaretIndex,
-						AutoCompletionCallback rCallback);
+	void getCompletions(String sText, EditorPosition rCaretPosition,
+		int nCaretIndex, AutoCompletionCallback rCallback);
 }

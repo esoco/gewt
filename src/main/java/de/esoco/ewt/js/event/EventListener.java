@@ -18,8 +18,7 @@ package de.esoco.ewt.js.event;
 
 import jsinterop.annotations.JsFunction;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/EventListener">
  * EventListener</a>.
@@ -28,14 +27,12 @@ import jsinterop.annotations.JsFunction;
  */
 @FunctionalInterface
 @JsFunction
-public interface EventListener<E extends Event>
-{
-	//~ Methods ----------------------------------------------------------------
+public interface EventListener<E extends Event> {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/EventListener/handleEvent">
-	 *      EventListener.handleEvent()</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/EventListener/handleEvent">
+	 * EventListener.handleEvent()</a>
 	 */
 	void handleEvent(E rEvent);
 }

@@ -24,81 +24,64 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-
-/********************************************************************
+/**
  * A flow layout implementation.
  *
  * @author eso
  */
-public class FlowLayout extends GenericLayout
-{
-	//~ Instance fields --------------------------------------------------------
+public class FlowLayout extends GenericLayout {
 
-	private String		  sLayoutStyleName = null;
 	private final Boolean bHorizontal;
 
-	//~ Constructors -----------------------------------------------------------
+	private String sLayoutStyleName = null;
 
-	/***************************************
+	/**
 	 * Creates a new instance that is based on a GWT {@link FlowPanel}.
 	 */
-	public FlowLayout()
-	{
+	public FlowLayout() {
 		bHorizontal = null;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance with an additional layout style name.
 	 *
 	 * @param sStyleName The additional style name
 	 */
-	public FlowLayout(String sStyleName)
-	{
+	public FlowLayout(String sStyleName) {
 		this();
 
 		sLayoutStyleName = sStyleName;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance that is based on a GWT {@link HorizontalPanel} or
 	 * a {@link VerticalPanel}.
 	 *
 	 * @param bHorizontal TRUE for horizontal, FALSE for vertical orientation
 	 */
-	public FlowLayout(boolean bHorizontal)
-	{
+	public FlowLayout(boolean bHorizontal) {
 		this.bHorizontal = Boolean.valueOf(bHorizontal);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	public Panel createLayoutContainer(Container rContainer,
+		StyleData rContainerStyle) {
 		Panel aPanel;
 
-		if (bHorizontal == null)
-		{
+		if (bHorizontal == null) {
 			aPanel = new FlowPanel();
-		}
-		else if (bHorizontal == Boolean.TRUE)
-		{
+		} else if (bHorizontal == Boolean.TRUE) {
 			aPanel = new HorizontalPanel();
-		}
-		else
-		{
+		} else {
 			aPanel = new VerticalPanel();
 		}
 
 		aPanel.addStyleName("ewt-FlowLayout");
 
-		if (sLayoutStyleName != null)
-		{
+		if (sLayoutStyleName != null) {
 			aPanel.addStyleName(sLayoutStyleName);
 		}
 

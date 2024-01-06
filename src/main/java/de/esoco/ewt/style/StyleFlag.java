@@ -18,97 +18,145 @@ package de.esoco.ewt.style;
 
 import de.esoco.ewt.component.TabPanel;
 
-
-/********************************************************************
+/**
  * An enumeration of integer style flags that can be set on a style data
  * instance to control the appearance and/or behavior of a component.
  *
  * @author eso
  */
-public enum StyleFlag
-{
-	/** Default attribute, e.g. for default buttons */
+public enum StyleFlag {
+	/**
+	 * Default attribute, e.g. for default buttons
+	 */
 	DEFAULT,
 
-	/** Signals that a component is not resizable */
+	/**
+	 * Signals that a component is not resizable
+	 */
 	FIXED_SIZE,
 
-	/** Signals that a component is read only/not editable */
+	/**
+	 * Signals that a component is read only/not editable
+	 */
 	READ_ONLY,
 
-	/** Text or sub-elements may wrap or not wrap */
+	/**
+	 * Text or sub-elements may wrap or not wrap
+	 */
 	WRAP, NO_WRAP,
 
-	/** Enables multi-selection for components that support item selection */
+	/**
+	 * Enables multi-selection for components that support item selection
+	 */
 	MULTISELECT,
 
-	/** Allow dragging inside the component (e.g. in ScrollPanels) */
+	/**
+	 * Allow dragging inside the component (e.g. in ScrollPanels)
+	 */
 	DRAGGING,
 
 	//- Render styles ---------------------------
 
-	/** Enables flat appearance (e.g. ToolBars) */
+	/**
+	 * Enables flat appearance (e.g. ToolBars)
+	 */
 	FLAT,
 
-	/** Disables the default border around a component (if supported) */
+	/**
+	 * Disables the default border around a component (if supported)
+	 */
 	NO_BORDER,
 
-	/** Enables a default border around a component (if supported) */
+	/**
+	 * Enables a default border around a component (if supported)
+	 */
 	BORDER,
 
 	//- Border styles ---------------------------
 
-	/** Border style: raised bevel (as used for buttons) */
+	/**
+	 * Border style: raised bevel (as used for buttons)
+	 */
 	BEVEL_RAISED,
 
-	/** Border style: lowered bevel (as used for pressed buttons) */
+	/**
+	 * Border style: lowered bevel (as used for pressed buttons)
+	 */
 	BEVEL_LOWERED,
 
-	/** Border style: etched-out line */
+	/**
+	 * Border style: etched-out line
+	 */
 	ETCHED_OUT,
 
-	/** Border style: etched-in line */
+	/**
+	 * Border style: etched-in line
+	 */
 	ETCHED_IN,
 
 	//- ScrollBar styles ------------------------
 
-	/** Horizontal scrollbar always on */
+	/**
+	 * Horizontal scrollbar always on
+	 */
 	SCROLLBAR_HORIZONTAL_ON,
 
-	/** Horizontal scrollbar always off */
+	/**
+	 * Horizontal scrollbar always off
+	 */
 	SCROLLBAR_HORIZONTAL_OFF,
 
-	/** Vertical scrollbar always on */
+	/**
+	 * Vertical scrollbar always on
+	 */
 	SCROLLBAR_VERTICAL_ON,
 
-	/** Vertical scrollbars always off */
+	/**
+	 * Vertical scrollbars always off
+	 */
 	SCROLLBAR_VERTICAL_OFF,
 
 	//- Rendering alignments ----------
-	/** Horizontally left-aligned */
+	/**
+	 * Horizontally left-aligned
+	 */
 	HORIZONTAL_ALIGN_LEFT,
 
-	/** Horizontally centered */
+	/**
+	 * Horizontally centered
+	 */
 	HORIZONTAL_ALIGN_CENTER,
 
-	/** Horizontally right-aligned */
+	/**
+	 * Horizontally right-aligned
+	 */
 	HORIZONTAL_ALIGN_RIGHT,
 
-	/** Vertically top-aligned */
+	/**
+	 * Vertically top-aligned
+	 */
 	VERTICAL_ALIGN_TOP,
 
-	/** Vertically centered */
+	/**
+	 * Vertically centered
+	 */
 	VERTICAL_ALIGN_CENTER,
 
-	/** Vertically bottom-aligned */
+	/**
+	 * Vertically bottom-aligned
+	 */
 	VERTICAL_ALIGN_BOTTOM,
 
 	//- Component-specific styles ---------------
 
-	/** Renders a label as a hyperlink */
+	/**
+	 * Renders a label as a hyperlink
+	 */
 	HYPERLINK,
 
-	/** A text should be treated as a resource string */
+	/**
+	 * A text should be treated as a resource string
+	 */
 	RESOURCE,
 
 	/**

@@ -28,65 +28,56 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A dock layout that allows to add components on the four sides or in the
  * center. The center component must be added last. This implementation is based
  * on a GWT {@link DockLayoutPanel}.
  *
  * @author eso
  */
-public class DockLayout extends GenericLayout
-{
-	//~ Instance fields --------------------------------------------------------
+public class DockLayout extends GenericLayout {
 
 	private boolean bScrollable;
+
 	private boolean bPixelUnits;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param bPixelUnits TRUE to set border areas in pixels, FALSE to use EM
-	 * @param bScrollable TRUE if the content of the layout should be scrollable
+	 * @param bScrollable TRUE if the content of the layout should be
+	 *                    scrollable
 	 */
-	public DockLayout(boolean bPixelUnits, boolean bScrollable)
-	{
+	public DockLayout(boolean bPixelUnits, boolean bScrollable) {
 		this.bPixelUnits = bPixelUnits;
 		this.bScrollable = bScrollable;
 	}
 
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Internal method to add a widget to a certain {@link DockLayoutPanel}
-	 * instance. The widget position will be determined from it's style data. In
-	 * GWT it is important to add the center widget as the last widget.
+	 * instance. The widget position will be determined from it's style data .
+	 * In GWT it is important to add the center widget as the last widget.
 	 *
-	 * @param  rWidget     The widget to add
-	 * @param  rDockPanel  The target dock layout panel
-	 * @param  rStyleData  The style data of the widget
-	 * @param  bScrollable TRUE if the element widgets should be marked as
-	 *                     scrollable with overflow set to auto
-	 *
-	 * @return TRUE if the added widget was the center widget (and therefore the
-	 *         last widget to be added)
+	 * @param rWidget     The widget to add
+	 * @param rDockPanel  The target dock layout panel
+	 * @param rStyleData  The style data of the widget
+	 * @param bScrollable TRUE if the element widgets should be marked as
+	 *                    scrollable with overflow set to auto
+	 * @return TRUE if the added widget was the center widget (and therefore
+	 * the
+	 * last widget to be added)
 	 */
-	public static boolean addDockLayoutPanelWidget(Widget		   rWidget,
-												   DockLayoutPanel rDockPanel,
-												   StyleData	   rStyleData,
-												   boolean		   bScrollable)
-	{
-		Alignment eVerticalAlign   = rStyleData.getVerticalAlignment();
+	public static boolean addDockLayoutPanelWidget(Widget rWidget,
+		DockLayoutPanel rDockPanel, StyleData rStyleData,
+		boolean bScrollable) {
+		Alignment eVerticalAlign = rStyleData.getVerticalAlignment();
 		Alignment eHorizontalAlign = rStyleData.getHorizontalAlignment();
-		String    sLayoutPosition  = "Center";
-		boolean   bCenterWidget    = false;
+		String sLayoutPosition = "Center";
+		boolean bCenterWidget = false;
 
 		double fHeight = rStyleData.getHeight();
 
-		switch (eVerticalAlign)
-		{
+		switch (eVerticalAlign) {
 			case BEGIN:
 				sLayoutPosition = "Top";
 				rDockPanel.addNorth(rWidget, fHeight);
@@ -103,8 +94,7 @@ public class DockLayout extends GenericLayout
 
 				double fWidth = rStyleData.getWidth();
 
-				switch (eHorizontalAlign)
-				{
+				switch (eHorizontalAlign) {
 					case BEGIN:
 						sLayoutPosition = "Left";
 						rDockPanel.addWest(rWidget, fWidth);
@@ -123,47 +113,42 @@ public class DockLayout extends GenericLayout
 				}
 		}
 
-		rWidget.getElement().getParentElement()
-			   .addClassName("ewt-Layout" + sLayoutPosition);
+		rWidget
+			.getElement()
+			.getParentElement()
+			.addClassName("ewt-Layout" + sLayoutPosition);
 
-		if (bScrollable)
-		{
+		if (bScrollable) {
 			// set parent DIV of center widget to automatic scrollbars
-			rWidget.getElement().getParentElement().getStyle()
-				   .setOverflow(Overflow.AUTO);
+			rWidget
+				.getElement()
+				.getParentElement()
+				.getStyle()
+				.setOverflow(Overflow.AUTO);
 		}
 
 		return bCenterWidget;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Adds the widget with the alignment defined in the style data. Horizontal
 	 * alignment has precedence over vertical alignment.
 	 *
 	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer,
-						  Widget	 rWidget,
-						  StyleData  rStyleData,
-						  int		 nIndex)
-	{
-		addDockLayoutPanelWidget(rWidget,
-								 (DockLayoutPanel) rContainer,
-								 rStyleData,
-								 bScrollable);
+	public void addWidget(HasWidgets rContainer, Widget rWidget,
+		StyleData rStyleData, int nIndex) {
+		addDockLayoutPanelWidget(rWidget, (DockLayoutPanel) rContainer,
+			rStyleData, bScrollable);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	public Panel createLayoutContainer(Container rContainer,
+		StyleData rContainerStyle) {
 		DockLayoutPanel aPanel =
 			new DockLayoutPanel(bPixelUnits ? Unit.PX : Unit.EM);
 

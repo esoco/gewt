@@ -34,8 +34,7 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-
-/********************************************************************
+/**
  * A form-based implementation of a widget that allows the user to select a file
  * for processing.
  *
@@ -43,24 +42,21 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public class GwtFileChooser extends Composite
 	implements Focusable, HasText, HasHTML, HasValueChangeHandlers<String>,
-			   ClickHandler, ChangeHandler
-{
-	//~ Instance fields --------------------------------------------------------
+	ClickHandler, ChangeHandler {
 
 	private FormPanel aFormPanel = new FormPanel();
 
-	private FileUpload aFileUpload   = new FileUpload();
-	private Button     aSubmitButton = new Button();
+	private FileUpload aFileUpload = new FileUpload();
 
-	//~ Constructors -----------------------------------------------------------
+	private Button aSubmitButton = new Button();
 
-	/***************************************
-	 * Creates a new instance. The action argument must be a module-relative URL
+	/**
+	 * Creates a new instance. The action argument must be a module-relative
+	 * URL
 	 * for the submit target of the executed POST request. It will be appended
 	 * to the result of {@link GWT#getModuleBaseURL()}.
 	 */
-	public GwtFileChooser()
-	{
+	public GwtFileChooser() {
 		HorizontalPanel aPanel = new HorizontalPanel();
 
 		aFormPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
@@ -79,71 +75,62 @@ public class GwtFileChooser extends Composite
 		initWidget(aFormPanel);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<String> rHandler)
-	{
+		ValueChangeHandler<String> rHandler) {
 		return addHandler(rHandler, ValueChangeEvent.getType());
 	}
 
-	/***************************************
+	/**
 	 * Returns the name of the selected file.
 	 *
 	 * @return The file name
 	 */
-	public String getFilename()
-	{
+	public String getFilename() {
 		return aFileUpload.getFilename();
 	}
 
-	/***************************************
+	/**
 	 * Returns the form value.
 	 *
 	 * @return The form value
 	 */
-	public final FormPanel getFormPanel()
-	{
+	public final FormPanel getFormPanel() {
 		return aFormPanel;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getHTML()
-	{
+	public String getHTML() {
 		return aSubmitButton.getHTML();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getTabIndex()
-	{
+	public int getTabIndex() {
 		return aSubmitButton.getTabIndex();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return aSubmitButton.getText();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onChange(ChangeEvent rEvent)
-	{
+	public void onChange(ChangeEvent rEvent) {
 		String sFile = aFileUpload.getFilename();
 
 		aSubmitButton.setEnabled(sFile != null && sFile.length() > 0);
@@ -151,68 +138,61 @@ public class GwtFileChooser extends Composite
 		ValueChangeEvent.fire(this, sFile);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent)
-	{
+	public void onClick(ClickEvent rEvent) {
 		aFormPanel.submit();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setAccessKey(char cKey)
-	{
+	public void setAccessKey(char cKey) {
 		aSubmitButton.setAccessKey(cKey);
 	}
 
-	/***************************************
+	/**
 	 * Sets the action name for this instance.
 	 *
 	 * @param sAction The action name
 	 */
-	public void setAction(String sAction)
-	{
+	public void setAction(String sAction) {
 		aFormPanel.setAction(GWT.getModuleBaseURL() + sAction);
 		aFileUpload.setName(sAction);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setFocus(boolean bFocused)
-	{
+	public void setFocus(boolean bFocused) {
 		aSubmitButton.setFocus(bFocused);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setHTML(String sHtml)
-	{
+	public void setHTML(String sHtml) {
 		aSubmitButton.setHTML(sHtml);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTabIndex(int nIndex)
-	{
+	public void setTabIndex(int nIndex) {
 		aSubmitButton.setTabIndex(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setText(String sText)
-	{
+	public void setText(String sText) {
 		aSubmitButton.setText(sText);
 	}
 }

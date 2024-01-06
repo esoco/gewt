@@ -30,30 +30,26 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
 
-
-/********************************************************************
+/**
  * A image subclass that displays different image resources depending on the
  * image state.
  *
  * @author eso
  */
-public class GwtImageButton extends Image implements Focusable, HasEnabled
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class GwtImageButton extends Image implements Focusable, HasEnabled {
 
 	private static final FocusImpl rFocusImpl =
 		FocusImpl.getFocusImplForWidget();
 
-	//~ Instance fields --------------------------------------------------------
-
 	private final ImageResource rDefaultImage;
+
 	private final ImageResource rPressedImage;
+
 	private final ImageResource rHoverImage;
+
 	private final ImageResource rDisabledImage;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rDefaultImage  The default image
@@ -64,144 +60,117 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled
 	 * @param rDisabledImage The image to be displayed if the image is disabled
 	 */
 	public GwtImageButton(ImageResource rDefaultImage,
-						  ImageResource rPressedImage,
-						  ImageResource rHoverImage,
-						  ImageResource rDisabledImage)
-	{
+		ImageResource rPressedImage, ImageResource rHoverImage,
+		ImageResource rDisabledImage) {
 		super(rDefaultImage);
 
-		this.rDefaultImage  = rDefaultImage;
-		this.rPressedImage  = rPressedImage;
-		this.rHoverImage    = rHoverImage;
+		this.rDefaultImage = rDefaultImage;
+		this.rPressedImage = rPressedImage;
+		this.rHoverImage = rHoverImage;
 		this.rDisabledImage = rDisabledImage;
 
-		addMouseDownHandler(new MouseDownHandler()
-			{
-				@Override
-				public void onMouseDown(MouseDownEvent event)
-				{
-					if (isEnabled())
-					{
-						setResource(GwtImageButton.this.rPressedImage);
-					}
+		addMouseDownHandler(new MouseDownHandler() {
+			@Override
+			public void onMouseDown(MouseDownEvent event) {
+				if (isEnabled()) {
+					setResource(GwtImageButton.this.rPressedImage);
 				}
-			});
+			}
+		});
 
-		addMouseOverHandler(new MouseOverHandler()
-			{
-				@Override
-				public void onMouseOver(MouseOverEvent event)
-				{
-					if (isEnabled())
-					{
-						setResource(GwtImageButton.this.rPressedImage);
-					}
+		addMouseOverHandler(new MouseOverHandler() {
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				if (isEnabled()) {
+					setResource(GwtImageButton.this.rPressedImage);
 				}
-			});
+			}
+		});
 
-		addMouseOutHandler(new MouseOutHandler()
-			{
-				@Override
-				public void onMouseOut(MouseOutEvent event)
-				{
-					if (isEnabled())
-					{
-						setResource(GwtImageButton.this.rDefaultImage);
-					}
+		addMouseOutHandler(new MouseOutHandler() {
+			@Override
+			public void onMouseOut(MouseOutEvent event) {
+				if (isEnabled()) {
+					setResource(GwtImageButton.this.rDefaultImage);
 				}
-			});
+			}
+		});
 
-		addMouseUpHandler(new MouseUpHandler()
-			{
-				@Override
-				public void onMouseUp(MouseUpEvent event)
-				{
-					if (isEnabled())
-					{
-						setResource(GwtImageButton.this.rHoverImage);
-					}
+		addMouseUpHandler(new MouseUpHandler() {
+			@Override
+			public void onMouseUp(MouseUpEvent event) {
+				if (isEnabled()) {
+					setResource(GwtImageButton.this.rHoverImage);
 				}
-			});
+			}
+		});
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * @see Focusable#setAccessKey(char )
-	 */
-	@Override
-	public int getTabIndex()
-	{
-		return rFocusImpl.getTabIndex(getElement());
-	}
-
-	/***************************************
-	 * @see HasEnabled#isEnabled()
-	 */
-	@Override
-	public boolean isEnabled()
-	{
-		return !getElement().getPropertyBoolean("disabled");
-	}
-
-	/***************************************
+	/**
 	 * @see Focusable#setAccessKey(char)
 	 */
 	@Override
-	public void setAccessKey(char key)
-	{
+	public int getTabIndex() {
+		return rFocusImpl.getTabIndex(getElement());
+	}
+
+	/**
+	 * @see HasEnabled#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		return !getElement().getPropertyBoolean("disabled");
+	}
+
+	/**
+	 * @see Focusable#setAccessKey(char)
+	 */
+	@Override
+	public void setAccessKey(char key) {
 		getElement().setPropertyString("accessKey", "" + key);
 	}
 
-	/***************************************
+	/**
 	 * @see HasEnabled#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled)
-	{
+	public void setEnabled(boolean bEnabled) {
 		getElement().setPropertyBoolean("disabled", !bEnabled);
 
 		setResource(bEnabled ? rDefaultImage : rDisabledImage);
 	}
 
-	/***************************************
+	/**
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused)
-	{
-		if (bFocused)
-		{
+	public void setFocus(boolean bFocused) {
+		if (bFocused) {
 			rFocusImpl.focus(getElement());
-		}
-		else
-		{
+		} else {
 			rFocusImpl.blur(getElement());
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex)
-	{
+	public void setTabIndex(int nIndex) {
 		rFocusImpl.setTabIndex(getElement(), nIndex);
 	}
 
-	/***************************************
+	/**
 	 * @see Image#onAttach()
 	 */
 	@Override
-	protected void onAttach()
-	{
+	protected void onAttach() {
 		super.onAttach();
 
 		// from FocusWidget
 		int nTabIndex = getTabIndex();
 
-		if (nTabIndex == -1)
-		{
+		if (nTabIndex == -1) {
 			setTabIndex(0);
 		}
 	}

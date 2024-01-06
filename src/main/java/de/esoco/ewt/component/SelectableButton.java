@@ -18,13 +18,11 @@ package de.esoco.ewt.component;
 
 import de.esoco.lib.property.Selectable;
 
-
-/********************************************************************
+/**
  * The base class for buttons that can be selected like radio buttons,
  * checkboxes, or toggle buttons.
  *
  * @author eso
  */
-public abstract class SelectableButton extends Button implements Selectable
-{
+public abstract class SelectableButton extends Button implements Selectable {
 }

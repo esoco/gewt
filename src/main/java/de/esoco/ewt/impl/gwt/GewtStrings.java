@@ -16,16 +16,14 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-/********************************************************************
+/**
  * Interface to represent the constants contained in resource bundle:
  * 'GewtStrings.properties'.
  */
 public interface GewtStrings
-	extends com.google.gwt.i18n.client.ConstantsWithLookup
-{
-	//~ Methods ----------------------------------------------------------------
+	extends com.google.gwt.i18n.client.ConstantsWithLookup {
 
-	/***************************************
+	/**
 	 * Translated "Und".
 	 *
 	 * @return translated "Und"
@@ -34,7 +32,7 @@ public interface GewtStrings
 	@Key("itmTableFilterJoinAnd")
 	String itmTableFilterJoinAnd();
 
-	/***************************************
+	/**
 	 * Translated "Oder".
 	 *
 	 * @return translated "Oder"
@@ -43,7 +41,7 @@ public interface GewtStrings
 	@Key("itmTableFilterJoinOr")
 	String itmTableFilterJoinOr();
 
-	/***************************************
+	/**
 	 * Translated "Keine Daten verfügbar".
 	 *
 	 * @return translated "Keine Daten verfügbar"
@@ -52,7 +50,7 @@ public interface GewtStrings
 	@Key("lblNoEwtChartData")
 	String lblNoEwtChartData();
 
-	/***************************************
+	/**
 	 * Translated "Daten nicht verfügbar".
 	 *
 	 * @return translated "Daten nicht verfügbar"
@@ -61,7 +59,7 @@ public interface GewtStrings
 	@Key("msgTableModelError")
 	String msgTableModelError();
 
-	/***************************************
+	/**
 	 * Translated "Filter anwenden".
 	 *
 	 * @return translated "Filter anwenden"
@@ -70,7 +68,7 @@ public interface GewtStrings
 	@Key("ttApplyTableFilter")
 	String ttApplyTableFilter();
 
-	/***************************************
+	/**
 	 * Translated "Auswahl entfernen".
 	 *
 	 * @return translated "Auswahl entfernen"
@@ -79,7 +77,7 @@ public interface GewtStrings
 	@Key("ttClearSelection")
 	String ttClearSelection();
 
-	/***************************************
+	/**
 	 * Translated "Filter entfernen".
 	 *
 	 * @return translated "Filter entfernen"
@@ -88,7 +86,7 @@ public interface GewtStrings
 	@Key("ttClearTableFilter")
 	String ttClearTableFilter();
 
-	/***************************************
+	/**
 	 * Translated "Tabelleninhalt herunterladen".
 	 *
 	 * @return translated "Tabelleninhalt herunterladen"
@@ -97,7 +95,7 @@ public interface GewtStrings
 	@Key("ttDownloadTableContent")
 	String ttDownloadTableContent();
 
-	/***************************************
+	/**
 	 * Translated "Erste Seite".
 	 *
 	 * @return translated "Erste Seite"
@@ -106,7 +104,7 @@ public interface GewtStrings
 	@Key("ttFirstTablePage")
 	String ttFirstTablePage();
 
-	/***************************************
+	/**
 	 * Translated "Hour".
 	 *
 	 * @return translated "Hour"
@@ -115,7 +113,7 @@ public interface GewtStrings
 	@Key("ttGewtDatePickerHour")
 	String ttGewtDatePickerHour();
 
-	/***************************************
+	/**
 	 * Translated "Minute".
 	 *
 	 * @return translated "Minute"
@@ -124,7 +122,7 @@ public interface GewtStrings
 	@Key("ttGewtDatePickerMinute")
 	String ttGewtDatePickerMinute();
 
-	/***************************************
+	/**
 	 * Translated "Time".
 	 *
 	 * @return translated "Time"
@@ -133,7 +131,7 @@ public interface GewtStrings
 	@Key("ttGewtDatePickerTime")
 	String ttGewtDatePickerTime();
 
-	/***************************************
+	/**
 	 * Translated "Letzte Seite".
 	 *
 	 * @return translated "Letzte Seite"
@@ -142,7 +140,7 @@ public interface GewtStrings
 	@Key("ttLastTablePage")
 	String ttLastTablePage();
 
-	/***************************************
+	/**
 	 * Translated "Tabellenhöhe fest/variabel".
 	 *
 	 * @return translated "Tabellenhöhe fest/variabel"
@@ -151,7 +149,7 @@ public interface GewtStrings
 	@Key("ttLockTableSize")
 	String ttLockTableSize();
 
-	/***************************************
+	/**
 	 * Translated "Nächste Seite".
 	 *
 	 * @return translated "Nächste Seite"
@@ -160,7 +158,7 @@ public interface GewtStrings
 	@Key("ttNextTablePage")
 	String ttNextTablePage();
 
-	/***************************************
+	/**
 	 * Translated "Vorherige Seite".
 	 *
 	 * @return translated "Vorherige Seite"
@@ -169,7 +167,7 @@ public interface GewtStrings
 	@Key("ttPrevTablePage")
 	String ttPrevTablePage();
 
-	/***************************************
+	/**
 	 * Translated "Filterbedingung hinzufügen".
 	 *
 	 * @return translated "Filterbedingung hinzufügen"
@@ -178,7 +176,7 @@ public interface GewtStrings
 	@Key("ttTableFilterAdd")
 	String ttTableFilterAdd();
 
-	/***************************************
+	/**
 	 * Translated "Filter anwenden".
 	 *
 	 * @return translated "Filter anwenden"
@@ -187,7 +185,7 @@ public interface GewtStrings
 	@Key("ttTableFilterApply")
 	String ttTableFilterApply();
 
-	/***************************************
+	/**
 	 * Translated "Filteränderungen verwerfen".
 	 *
 	 * @return translated "Filteränderungen verwerfen"
@@ -196,7 +194,7 @@ public interface GewtStrings
 	@Key("ttTableFilterCancel")
 	String ttTableFilterCancel();
 
-	/***************************************
+	/**
 	 * Translated "Vergleichsoperator für die Filterung".
 	 *
 	 * @return translated "Vergleichsoperator für die Filterung"
@@ -205,7 +203,7 @@ public interface GewtStrings
 	@Key("ttTableFilterComparison")
 	String ttTableFilterComparison();
 
-	/***************************************
+	/**
 	 * Translated "Filterbedingung entfernen".
 	 *
 	 * @return translated "Filterbedingung entfernen"
@@ -214,7 +212,7 @@ public interface GewtStrings
 	@Key("ttTableFilterRemove")
 	String ttTableFilterRemove();
 
-	/***************************************
+	/**
 	 * Translated "Filterkriterium".
 	 *
 	 * @return translated "Filterkriterium"

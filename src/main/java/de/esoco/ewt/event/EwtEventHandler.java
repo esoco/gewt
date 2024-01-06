@@ -16,7 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.event;
 
-/********************************************************************
+/**
  * This is the event handling interface for GEWT. I only consists of one method
  * that will be invoked for all events that the handler instance has been
  * registered for on components and other event-generating objects (like menu
@@ -25,11 +25,9 @@ package de.esoco.ewt.event;
  * @author eso
  */
 @FunctionalInterface
-public interface EwtEventHandler
-{
-	//~ Methods ----------------------------------------------------------------
+public interface EwtEventHandler {
 
-	/***************************************
+	/**
 	 * This method will be invoked to handle events.
 	 *
 	 * @param rEvent The event that occurred

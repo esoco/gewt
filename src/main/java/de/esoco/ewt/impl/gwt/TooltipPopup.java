@@ -26,23 +26,23 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A widget-based tooltip popup.
  *
  * @author eso
- * @see    "http://groups.google.com/group/google-web-toolkit/msg/dcfc19a3534f7715"
+ * @see "http://groups.google.com/group/google-web-toolkit/msg
+ * /dcfc19a3534f7715"
  */
-public class TooltipPopup extends PopupPanel
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class TooltipPopup extends PopupPanel {
 
-	/** The default delay, in milliseconds, */
+	/**
+	 * The default delay, in milliseconds,
+	 */
 	private static final int DEFAULT_SHOW_DELAY = 500;
 
-	//~ Instance fields --------------------------------------------------------
-
-	/** The delay, in milliseconds, to display the tooltip */
+	/**
+	 * The delay, in milliseconds, to display the tooltip
+	 */
 	private int showDelay;
 
 	/**
@@ -50,15 +50,17 @@ public class TooltipPopup extends PopupPanel
 	 */
 	private int hideDelay;
 
-	/** The timer to show the tool tip */
+	/**
+	 * The timer to show the tool tip
+	 */
 	private Timer showTimer;
 
-	/** The timer to hide the tool tip */
+	/**
+	 * The timer to hide the tool tip
+	 */
 	private Timer hideTimer;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new Tool Tip with the default show delay and no auto hiding
 	 *
 	 * @param sender    The widget to create the tool tip for
@@ -68,12 +70,8 @@ public class TooltipPopup extends PopupPanel
 	 * @param useRelTop If true, then use the relative top offset. If not, then
 	 *                  just use the sender's offset height.
 	 */
-	public TooltipPopup(Widget		 sender,
-						int			 relLeft,
-						int			 relTop,
-						final String text,
-						boolean		 useRelTop)
-	{
+	public TooltipPopup(Widget sender, int relLeft, int relTop,
+		final String text, boolean useRelTop) {
 		super(true);
 
 		this.showTimer = null;
@@ -87,14 +85,11 @@ public class TooltipPopup extends PopupPanel
 		add(contents);
 
 		int left = getPageScrollLeft() + sender.getAbsoluteLeft() + relLeft;
-		int top  = getPageScrollTop() + sender.getAbsoluteTop();
+		int top = getPageScrollTop() + sender.getAbsoluteTop();
 
-		if (useRelTop)
-		{
+		if (useRelTop) {
 			top += relTop;
-		}
-		else
-		{
+		} else {
 			top += sender.getOffsetHeight() + 1;
 		}
 
@@ -102,7 +97,7 @@ public class TooltipPopup extends PopupPanel
 		addStyleName(EWT.CSS.ewtTooltip());
 	}
 
-	/***************************************
+	/**
 	 * Creates a new Tool Tip
 	 *
 	 * @param sender    The widget to create the tool tip for
@@ -116,15 +111,9 @@ public class TooltipPopup extends PopupPanel
 	 * @param hideDelay The delay, in milliseconds, before the popup is hidden
 	 * @param styleName The style name to apply to the popup
 	 */
-	public TooltipPopup(Widget		 sender,
-						int			 relLeft,
-						int			 relTop,
-						final String text,
-						boolean		 useRelTop,
-						final int    showDelay,
-						final int    hideDelay,
-						final String styleName)
-	{
+	public TooltipPopup(Widget sender, int relLeft, int relTop,
+		final String text, boolean useRelTop, final int showDelay,
+		final int hideDelay, final String styleName) {
 		this(sender, relLeft, relTop, text, useRelTop);
 
 		this.showDelay = showDelay;
@@ -134,101 +123,83 @@ public class TooltipPopup extends PopupPanel
 		addStyleName(styleName);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * @see PopupPanel#hide()
 	 */
 	@Override
-	public void hide()
-	{
+	public void hide() {
 		super.hide();
 
 		// Cancel the show timer if necessary
-		if (this.showTimer != null)
-		{
+		if (this.showTimer != null) {
 			this.showTimer.cancel();
 		}
 
 		// Cancel the hide timer if necessary
-		if (this.hideTimer != null)
-		{
+		if (this.hideTimer != null) {
 			this.hideTimer.cancel();
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see PopupPanel#show()
 	 */
 	@Override
-	public void show()
-	{
+	public void show() {
 		// Set delay to show if specified
-		if (this.showDelay > 0)
-		{
-			this.showTimer =
-				new Timer()
-				{
-					@Override
-					public void run()
-					{
-						TooltipPopup.this.showTooltip();
-					}
-				};
+		if (this.showDelay > 0) {
+			this.showTimer = new Timer() {
+				@Override
+				public void run() {
+					TooltipPopup.this.showTooltip();
+				}
+			};
 			this.showTimer.schedule(this.showDelay);
 		}
 
 		// Otherwise, show the dialog now
-		else
-		{
+		else {
 			showTooltip();
 		}
 
 		// Set delay to hide if specified
-		if (this.hideDelay > 0)
-		{
-			this.hideTimer =
-				new Timer()
-				{
-					@Override
-					public void run()
-					{
-						TooltipPopup.this.hide();
-					}
-				};
+		if (this.hideDelay > 0) {
+			this.hideTimer = new Timer() {
+				@Override
+				public void run() {
+					TooltipPopup.this.hide();
+				}
+			};
 			this.hideTimer.schedule(this.showDelay + this.hideDelay);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Get the offset for the horizontal scroll
 	 *
 	 * @return The offset
 	 */
-	private int getPageScrollLeft()
-	{
+	private int getPageScrollLeft() {
 		Element rBodyElement = RootPanel.getBodyElement();
 
 		return DOM.getParent(rBodyElement).getAbsoluteLeft();
 	}
 
-	/***************************************
+	/**
 	 * Get the offset for the vertical scroll
 	 *
 	 * @return The offset
 	 */
-	private int getPageScrollTop()
-	{
+	private int getPageScrollTop() {
 		Element rBodyElement = RootPanel.getBodyElement();
 
 		return DOM.getParent(rBodyElement).getAbsoluteTop();
 	}
 
-	/***************************************
+	/**
 	 * Show the tool tip now
 	 */
-	private void showTooltip()
-	{
+	private void showTooltip() {
 		super.show();
 	}
 }

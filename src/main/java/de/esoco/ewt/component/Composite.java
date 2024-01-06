@@ -22,45 +22,36 @@ import de.esoco.ewt.style.StyleData;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-
-/********************************************************************
+/**
  * Base class for components that are composed from a combination of other
  * components.
  *
  * @author eso
  */
-public abstract class Composite extends Component
-{
-	//~ Instance fields --------------------------------------------------------
+public abstract class Composite extends Component {
 
 	private Panel aContentPanel = new Panel();
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance with a certain layout.
 	 *
 	 * @param rLayout The layout of the composite container
 	 */
-	protected Composite(GenericLayout rLayout)
-	{
+	protected Composite(GenericLayout rLayout) {
 		aContentPanel.setLayout(rLayout);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		build(new ContainerBuilder<Panel>(aContentPanel));
 	}
 
-	/***************************************
+	/**
 	 * Must be implemented by subclasses to build their content with the given
 	 * builder.
 	 *
@@ -68,12 +59,11 @@ public abstract class Composite extends Component
 	 */
 	protected abstract void build(ContainerBuilder<?> rBuilder);
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IsWidget createWidget(StyleData rStyle)
-	{
+	protected IsWidget createWidget(StyleData rStyle) {
 		aContentPanel.initWidget(getParent(), rStyle);
 
 		aContentPanel.addStyleName("CompositeContent");

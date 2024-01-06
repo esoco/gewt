@@ -16,109 +16,100 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.geometry;
 
-/********************************************************************
+/**
  * Unmodifiable representation of a 2-dimensional size value.
  *
  * @author eso
  */
-public class Size
-{
-	/** Constant for a size with values 0,0 */
+public class Size {
+	/**
+	 * Constant for a size with values 0,0
+	 */
 	public static final Size ZERO_SIZE = new Size(0, 0);
 
 	private int w;
+
 	private int h;
 
-	/***************************************
+	/**
 	 * Copy constructor.
 	 *
 	 * @param rOther The size to copy
 	 */
-	public Size(Size rOther)
-	{
+	public Size(Size rOther) {
 		this.w = rOther.w;
 		this.h = rOther.h;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new size.
 	 *
 	 * @param w The width
 	 * @param h The height
 	 */
-	public Size(int w, int h)
-	{
+	public Size(int w, int h) {
 		this.w = w;
 		this.h = h;
 	}
 
-	/***************************************
+	/**
 	 * Default constructor for serialization.
 	 */
-	Size()
-	{
+	Size() {
 	}
 
-	/***************************************
+	/**
 	 * Checks if another object is a size with the same dimensions.
 	 *
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object rOther)
-	{
-		if (rOther instanceof Size)
-		{
+	public boolean equals(Object rOther) {
+		if (rOther instanceof Size) {
 			Size o = (Size) rOther;
 
 			return w == o.w && h == o.h;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	/***************************************
+	/**
 	 * Returns the height.
 	 *
 	 * @return The height
 	 */
-	public final int getHeight()
-	{
+	public final int getHeight() {
 		return h;
 	}
 
-	/***************************************
+	/**
 	 * Returns the width.
 	 *
 	 * @return The width
 	 */
-	public final int getWidth()
-	{
+	public final int getWidth() {
 		return w;
 	}
 
-	/***************************************
+	/**
 	 * Calculates the hashcode of this instance.
 	 *
 	 * @see Object#hashCode()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return ((17 + w) * 37) + h;
 	}
 
-	/***************************************
+	/**
 	 * Returns a string representation of this instance. The value is for
 	 * debugging purposes only and should not be used for parsing.
 	 *
 	 * @return A string description of this instance
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Size[" + w + "," + h + "]";
 	}
 }

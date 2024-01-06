@@ -22,33 +22,25 @@ import de.esoco.ewt.style.StyleData;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-
-/********************************************************************
+/**
  * A list layout implementation.
  *
  * @author eso
  */
-public class ListLayout extends GenericLayout
-{
-	//~ Constructors -----------------------------------------------------------
+public class ListLayout extends GenericLayout {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	public ListLayout()
-	{
+	public ListLayout() {
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	public Panel createLayoutContainer(Container rContainer,
+		StyleData rContainerStyle) {
 		Panel aPanel = new VerticalPanel();
 
 		aPanel.addStyleName("ewt-ListLayout");

@@ -24,55 +24,45 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A button component that can be toggled between two visual states.
  *
  * @author eso
  */
-public class ToggleButton extends SelectableButton
-{
-	//~ Methods ----------------------------------------------------------------
+public class ToggleButton extends SelectableButton {
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	@SuppressWarnings({ "unchecked", "boxing" })
-	public boolean isSelected()
-	{
+	public boolean isSelected() {
 		return ((HasValue<Boolean>) getWidget()).getValue();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	@SuppressWarnings({ "unchecked", "boxing" })
-	public void setSelected(boolean bSelected)
-	{
+	public void setSelected(boolean bSelected) {
 		((HasValue<Boolean>) getWidget()).setValue(bSelected);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class ToggleButtonWidgetFactory<W extends Widget & Focusable & HasHTML & HasValue<Boolean>>
-		implements WidgetFactory<W>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<W> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
+		public W createWidget(Component rComponent, StyleData rStyle) {
 			return (W) new com.google.gwt.user.client.ui.ToggleButton();
 		}
 	}

@@ -54,71 +54,60 @@ import de.esoco.lib.property.LayoutType;
 
 import java.util.Date;
 
-
-/********************************************************************
+/**
  * A container builder implementation that provides methods to create components
  * and add them to a container.
  *
  * @author eso
  */
-public class ContainerBuilder<C extends Container>
-{
-	//~ Instance fields --------------------------------------------------------
+public class ContainerBuilder<C extends Container> {
 
-	private C				    rContainer;
+	private C rContainer;
+
 	private ContainerBuilder<?> rParent = null;
 
 	private Label rFormLabel;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance that builds in a certain container.
 	 *
 	 * @param rContainer The container builder
 	 */
-	public ContainerBuilder(C rContainer)
-	{
+	public ContainerBuilder(C rContainer) {
 		this.rContainer = rContainer;
 	}
 
-	/***************************************
+	/**
 	 * Internal constructor to create a new instance with a certain parent
 	 * builder.
 	 *
 	 * @param rContainer The container to build components in
 	 * @param rParent    The parent container builder
 	 */
-	ContainerBuilder(C rContainer, ContainerBuilder<?> rParent)
-	{
+	ContainerBuilder(C rContainer, ContainerBuilder<?> rParent) {
 		this(rContainer);
 
 		this.rParent = rParent;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Adds a text-only button.
 	 *
 	 * @see #addButton(StyleData, String, Object)
 	 */
-	public Button addButton(StyleData rStyle, String sText)
-	{
+	public Button addButton(StyleData rStyle, String sText) {
 		return addButton(rStyle, sText, null);
 	}
 
-	/***************************************
+	/**
 	 * Adds a new {@link Button} instance.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The button text
-	 * @param  rImage The button image or NULL for none
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The button text
+	 * @param rImage The button image or NULL for none
 	 * @return The new component
 	 */
-	public Button addButton(StyleData rStyle, String sText, Object rImage)
-	{
+	public Button addButton(StyleData rStyle, String sText, Object rImage) {
 		Button aComponent = new Button();
 
 		addComponent(aComponent, rStyle, sText, rImage);
@@ -126,16 +115,14 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Calendar} component.
 	 *
-	 * @param  rStyle The style data
-	 * @param  rDate  The initial date of the component
-	 *
+	 * @param rStyle The style data
+	 * @param rDate  The initial date of the component
 	 * @return The new component
 	 */
-	public Calendar addCalendar(StyleData rStyle, Date rDate)
-	{
+	public Calendar addCalendar(StyleData rStyle, Date rDate) {
 		Calendar aComponent = new Calendar();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -144,17 +131,16 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link CheckBox}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The check box text
-	 * @param  rImage The button image or NULL for none
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The check box text
+	 * @param rImage The button image or NULL for none
 	 * @return The new component
 	 */
-	public CheckBox addCheckBox(StyleData rStyle, String sText, Object rImage)
-	{
+	public CheckBox addCheckBox(StyleData rStyle, String sText,
+		Object rImage) {
 		CheckBox aComponent = new CheckBox();
 
 		addComponent(aComponent, rStyle, sText, rImage);
@@ -162,16 +148,14 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link ComboBox}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The initial text of the combo box text field
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The initial text of the combo box text field
 	 * @return The new component
 	 */
-	public ComboBox addComboBox(StyleData rStyle, String sText)
-	{
+	public ComboBox addComboBox(StyleData rStyle, String sText) {
 		ComboBox aComponent = new ComboBox();
 
 		addComponent(aComponent, rStyle, sText, null);
@@ -179,47 +163,43 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Adds a custom {@link Component} component to the container.
 	 *
-	 * @param  rComponent The component to add
-	 * @param  rStyle     The style data
-	 *
+	 * @param rComponent The component to add
+	 * @param rStyle     The style data
 	 * @return The input component, attached to the container
 	 */
-	public <T extends Component> T addComponent(T rComponent, StyleData rStyle)
-	{
+	public <T extends Component> T addComponent(T rComponent,
+		StyleData rStyle) {
 		addComponent(rComponent, rStyle, null, null);
 
 		return rComponent;
 	}
 
-	/***************************************
+	/**
 	 * Adds an instance of a certain {@link Composite} implementation to the
 	 * container.
 	 *
-	 * @param  rComposite The composite to add
-	 * @param  rStyle     The style data
-	 *
+	 * @param rComposite The composite to add
+	 * @param rStyle     The style data
 	 * @return The input composite, attached to the container
 	 */
-	public <T extends Composite> T addComposite(T rComposite, StyleData rStyle)
-	{
+	public <T extends Composite> T addComposite(T rComposite,
+		StyleData rStyle) {
 		addComponent(rComposite, rStyle, null, null);
 
 		return rComposite;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link DateField}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  rDate  The initial date of the component
-	 *
+	 * @param rStyle The style data
+	 * @param rDate  The initial date of the component
 	 * @return The new component
 	 */
-	public DateField addDateField(StyleData rStyle, Date rDate)
-	{
+	public DateField addDateField(StyleData rStyle, Date rDate) {
 		DateField aComponent = new DateField();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -228,15 +208,13 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link DeckPanel}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public ContainerBuilder<DeckPanel> addDeckPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<DeckPanel> addDeckPanel(StyleData rStyle) {
 		DeckPanel aComponent = new DeckPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
@@ -244,19 +222,16 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<DeckPanel>(aComponent, this);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link FileChooser}.
 	 *
-	 * @param  rStyle      The style data
-	 * @param  sAction     The identifying name of the file chooser
-	 * @param  sButtonText The text for the action button of the file chooser
-	 *
+	 * @param rStyle      The style data
+	 * @param sAction     The identifying name of the file chooser
+	 * @param sButtonText The text for the action button of the file chooser
 	 * @return The new component
 	 */
-	public FileChooser addFileChooser(StyleData rStyle,
-									  String    sAction,
-									  String    sButtonText)
-	{
+	public FileChooser addFileChooser(StyleData rStyle, String sAction,
+		String sButtonText) {
 		FileChooser aComponent = new FileChooser(sAction);
 
 		addComponent(aComponent, rStyle, sButtonText, null);
@@ -264,48 +239,42 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Adds a text-only label.
 	 *
 	 * @see #addLabel(StyleData, String, Object)
 	 */
-	public Label addLabel(StyleData rStyle, String sText)
-	{
+	public Label addLabel(StyleData rStyle, String sText) {
 		return addLabel(rStyle, sText, null);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Label}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The label text
-	 * @param  rImage The label image or NULL for none
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The label text
+	 * @param rImage The label image or NULL for none
 	 * @return The new component
 	 */
-	public Label addLabel(StyleData rStyle, String sText, Object rImage)
-	{
+	public Label addLabel(StyleData rStyle, String sText, Object rImage) {
 		Label aLabel = new Label();
 
 		addComponent(aLabel, rStyle, sText, rImage);
 
-		if (aLabel.isFormLabel())
-		{
+		if (aLabel.isFormLabel()) {
 			rFormLabel = aLabel;
 		}
 
 		return aLabel;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link List}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public List addList(StyleData rStyle)
-	{
+	public List addList(StyleData rStyle) {
 		List aComponent = new List();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -313,15 +282,13 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link ListBox}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public ListBox addListBox(StyleData rStyle)
-	{
+	public ListBox addListBox(StyleData rStyle) {
 		ListBox aComponent = new ListBox();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -329,52 +296,45 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a {@link Panel} with a default {@link EdgeLayout} and returns a
 	 * container builder for the new panel.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<Panel> addPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<Panel> addPanel(StyleData rStyle) {
 		return addPanel(rStyle, new EdgeLayout(0));
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Panel} with a layout created through the layout
 	 * factory returned by {@link EWT#getLayoutFactory()} and returns a
 	 * container builder for the new panel.
 	 *
-	 * @param  rStyle  The style data
-	 * @param  eLayout The panel layout
-	 *
+	 * @param rStyle  The style data
+	 * @param eLayout The panel layout
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<Panel> addPanel(
-		StyleData  rStyle,
-		LayoutType eLayout)
-	{
+	public ContainerBuilder<Panel> addPanel(StyleData rStyle,
+		LayoutType eLayout) {
 		GenericLayout aLayout =
 			EWT.getLayoutFactory().createLayout(rContainer, rStyle, eLayout);
 
 		return addPanel(rStyle, aLayout);
 	}
 
-	/***************************************
-	 * Creates a new {@link Panel} with a certain layout and returns a container
+	/**
+	 * Creates a new {@link Panel} with a certain layout and returns a
+	 * container
 	 * builder for the new panel.
 	 *
-	 * @param  rStyle  The style data
-	 * @param  rLayout The panel layout
-	 *
+	 * @param rStyle  The style data
+	 * @param rLayout The panel layout
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<Panel> addPanel(
-		StyleData	  rStyle,
-		GenericLayout rLayout)
-	{
+	public ContainerBuilder<Panel> addPanel(StyleData rStyle,
+		GenericLayout rLayout) {
 		Panel aPanel = new Panel();
 
 		aPanel.setLayout(rLayout);
@@ -384,15 +344,13 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<Panel>(aPanel, this);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link ProgressBar}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public ProgressBar addProgressBar(StyleData rStyle)
-	{
+	public ProgressBar addProgressBar(StyleData rStyle) {
 		ProgressBar aComponent = new ProgressBar();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -400,19 +358,16 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link RadioButton}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The button text
-	 * @param  rImage The button image or NULL for none
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The button text
+	 * @param rImage The button image or NULL for none
 	 * @return The new component
 	 */
-	public RadioButton addRadioButton(StyleData rStyle,
-									  String    sText,
-									  Object    rImage)
-	{
+	public RadioButton addRadioButton(StyleData rStyle, String sText,
+		Object rImage) {
 		RadioButton aComponent = new RadioButton();
 
 		addComponent(aComponent, rStyle, sText, rImage);
@@ -420,7 +375,7 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link ScrollPanel}. In the GWT implementation, scroll
 	 * panels can only contain a single component. Therefore the returned
 	 * container builder must only be used to add a single panel (or other
@@ -428,12 +383,10 @@ public class ContainerBuilder<C extends Container>
 	 * implementations the same pattern must then be applied when creating
 	 * portable code.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<ScrollPanel> addScrollPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<ScrollPanel> addScrollPanel(StyleData rStyle) {
 		ScrollPanel aComponent = new ScrollPanel();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -441,21 +394,17 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<ScrollPanel>(aComponent, this);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Spinner} component.
 	 *
-	 * @param  rStyle     The style data
-	 * @param  nMinimum   The minimum input value
-	 * @param  nMaximum   The maximum input value
-	 * @param  nIncrement The increment or decrement for value modifications
-	 *
+	 * @param rStyle     The style data
+	 * @param nMinimum   The minimum input value
+	 * @param nMaximum   The maximum input value
+	 * @param nIncrement The increment or decrement for value modifications
 	 * @return The new component
 	 */
-	public Spinner addSpinner(StyleData rStyle,
-							  int		nMinimum,
-							  int		nMaximum,
-							  int		nIncrement)
-	{
+	public Spinner addSpinner(StyleData rStyle, int nMinimum, int nMaximum,
+		int nIncrement) {
 		Spinner aSpinner = new Spinner();
 
 		addComponent(aSpinner, rStyle, null, null);
@@ -467,15 +416,13 @@ public class ContainerBuilder<C extends Container>
 		return aSpinner;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link SplitPanel} with a certain layout.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<SplitPanel> addSplitPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<SplitPanel> addSplitPanel(StyleData rStyle) {
 		SplitPanel aComponent = new SplitPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
@@ -483,15 +430,13 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<SplitPanel>(aComponent, this);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link StackPanel} with a certain layout.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return A container builder wrapping the new panel
 	 */
-	public ContainerBuilder<StackPanel> addStackPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<StackPanel> addStackPanel(StyleData rStyle) {
 		StackPanel aComponent = new StackPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
@@ -499,31 +444,13 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<StackPanel>(aComponent, this);
 	}
 
-	/***************************************
-	 * Creates a new {@link Table}.
-	 *
-	 * @param  rStyle The style data
-	 *
-	 * @return The new component
-	 */
-	public Table addTable(StyleData rStyle)
-	{
-		Table aComponent = new Table();
-
-		addComponent(aComponent, rStyle, null, null);
-
-		return aComponent;
-	}
-
-	/***************************************
+	/**
 	 * Creates a new {@link TabPanel}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public ContainerBuilder<TabPanel> addTabPanel(StyleData rStyle)
-	{
+	public ContainerBuilder<TabPanel> addTabPanel(StyleData rStyle) {
 		TabPanel aComponent = new TabPanel(rContainer, rStyle);
 
 		addComponent(aComponent, rStyle, null, null);
@@ -531,16 +458,28 @@ public class ContainerBuilder<C extends Container>
 		return new ContainerBuilder<TabPanel>(aComponent, this);
 	}
 
-	/***************************************
-	 * Creates a new {@link TextArea}.
+	/**
+	 * Creates a new {@link Table}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The initial text
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public TextArea addTextArea(StyleData rStyle, String sText)
-	{
+	public Table addTable(StyleData rStyle) {
+		Table aComponent = new Table();
+
+		addComponent(aComponent, rStyle, null, null);
+
+		return aComponent;
+	}
+
+	/**
+	 * Creates a new {@link TextArea}.
+	 *
+	 * @param rStyle The style data
+	 * @param sText  The initial text
+	 * @return The new component
+	 */
+	public TextArea addTextArea(StyleData rStyle, String sText) {
 		TextArea aComponent = new TextArea();
 
 		addComponent(aComponent, rStyle, sText, null);
@@ -548,16 +487,14 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link TextField}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The initial text
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The initial text
 	 * @return The new component
 	 */
-	public TextField addTextField(StyleData rStyle, String sText)
-	{
+	public TextField addTextField(StyleData rStyle, String sText) {
 		TextField aComponent = new TextField();
 
 		addComponent(aComponent, rStyle, sText, null);
@@ -565,19 +502,16 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link ToggleButton}.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sText  The button text
-	 * @param  rImage The button image or NULL for none
-	 *
+	 * @param rStyle The style data
+	 * @param sText  The button text
+	 * @param rImage The button image or NULL for none
 	 * @return The new component
 	 */
-	public ToggleButton addToggleButton(StyleData rStyle,
-										String    sText,
-										Object    rImage)
-	{
+	public ToggleButton addToggleButton(StyleData rStyle, String sText,
+		Object rImage) {
 		ToggleButton aComponent = new ToggleButton();
 
 		addComponent(aComponent, rStyle, sText, rImage);
@@ -585,15 +519,13 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Tree}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public Tree addTree(StyleData rStyle)
-	{
+	public Tree addTree(StyleData rStyle) {
 		Tree aComponent = new Tree();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -601,15 +533,13 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link TreeTable}.
 	 *
-	 * @param  rStyle The style data
-	 *
+	 * @param rStyle The style data
 	 * @return The new component
 	 */
-	public TreeTable addTreeTable(StyleData rStyle)
-	{
+	public TreeTable addTreeTable(StyleData rStyle) {
 		TreeTable aComponent = new TreeTable();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -617,16 +547,14 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new {@link Website} component.
 	 *
-	 * @param  rStyle The style data
-	 * @param  sUrl   The URL of the website to display
-	 *
+	 * @param rStyle The style data
+	 * @param sUrl   The URL of the website to display
 	 * @return The new component
 	 */
-	public Website addWebsite(StyleData rStyle, String sUrl)
-	{
+	public Website addWebsite(StyleData rStyle, String sUrl) {
 		Website aComponent = new Website();
 
 		addComponent(aComponent, rStyle, null, null);
@@ -635,27 +563,25 @@ public class ContainerBuilder<C extends Container>
 		return aComponent;
 	}
 
-	/***************************************
+	/**
 	 * Returns the container this builder is initialized with.
 	 *
 	 * @return The container of this instance
 	 */
-	public final C getContainer()
-	{
+	public final C getContainer() {
 		return rContainer;
 	}
 
-	/***************************************
+	/**
 	 * Returns the user interface context of this builder's container.
 	 *
 	 * @return The user interface context of the container
 	 */
-	public UserInterfaceContext getContext()
-	{
+	public UserInterfaceContext getContext() {
 		return rContainer.getContext();
 	}
 
-	/***************************************
+	/**
 	 * Returns the parent container builder of this instance. The parent
 	 * reference will only be valid for builders that have been created through
 	 * the respective parent builder. It allows to access the parent builder
@@ -663,51 +589,46 @@ public class ContainerBuilder<C extends Container>
 	 *
 	 * @return The parent builder of this instance or NULL for none
 	 */
-	public ContainerBuilder<?> getParent()
-	{
+	public ContainerBuilder<?> getParent() {
 		return rParent;
 	}
 
-	/***************************************
+	/**
 	 * Convenience method to remove all components from this builder's
 	 * container. See {@link Container#clear()} for details.
 	 */
-	public void removeAllComponents()
-	{
+	public void removeAllComponents() {
 		rContainer.clear();
 	}
 
-	/***************************************
+	/**
 	 * Convenience method to remove a certain component from this builder's
 	 * container. See {@link Container#removeComponent(Component)} for details.
 	 *
 	 * @param rComponent The component to remove
 	 */
-	public void removeComponent(Component rComponent)
-	{
+	public void removeComponent(Component rComponent) {
 		rContainer.removeComponent(rComponent);
 	}
 
-	/***************************************
+	/**
 	 * Convenience method to set the layout on this builder's container.
 	 *
 	 * @param rLayout The new layout of the container
 	 */
-	public void setLayout(GenericLayout rLayout)
-	{
+	public void setLayout(GenericLayout rLayout) {
 		rContainer.setLayout(rLayout);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getSimpleName() + "[" + getContainer() + "]";
 	}
 
-	/***************************************
+	/**
 	 * Internal method to add a component to the container.
 	 *
 	 * @param rComponent The component to add
@@ -715,48 +636,40 @@ public class ContainerBuilder<C extends Container>
 	 * @param sText      The component text or NULL for none
 	 * @param rImage     The component image, image resource key, or NULL
 	 */
-	void addComponent(Component rComponent,
-					  StyleData rStyle,
-					  String    sText,
-					  Object    rImage)
-	{
+	void addComponent(Component rComponent, StyleData rStyle, String sText,
+		Object rImage) {
 		rComponent.initWidget(rContainer, rStyle);
 		rContainer.internalAddComponent(rComponent, rStyle);
 
-		if (sText != null)
-		{
+		if (sText != null) {
 			rComponent.setProperties(sText);
 		}
 
-		if (rImage != null)
-		{
+		if (rImage != null) {
 			rComponent.setProperties(rImage);
 		}
 
-		if (rFormLabel != null)
-		{
+		if (rFormLabel != null) {
 			rFormLabel.setAsLabelFor(rComponent);
 			rFormLabel = null;
 		}
 	}
 
-	/***************************************
+	/**
 	 * Internal method to set the container of this instance.
 	 *
 	 * @param rContainer The new container
 	 */
-	void setContainer(C rContainer)
-	{
+	void setContainer(C rContainer) {
 		this.rContainer = rContainer;
 	}
 
-	/***************************************
+	/**
 	 * Internal method to set the parent builder of this instance.
 	 *
 	 * @param rParent The parent builder
 	 */
-	final void setParent(ContainerBuilder<?> rParent)
-	{
+	final void setParent(ContainerBuilder<?> rParent) {
 		this.rParent = rParent;
 	}
 }

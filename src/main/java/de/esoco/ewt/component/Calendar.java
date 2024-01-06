@@ -25,116 +25,99 @@ import de.esoco.lib.property.DateAttribute;
 
 import java.util.Date;
 
-
-/********************************************************************
+/**
  * A calendar component that allows to display and choose a date value.
  *
  * @author eso
  */
-public class Calendar extends Component implements DateAttribute
-{
-	//~ Methods ----------------------------------------------------------------
+public class Calendar extends Component implements DateAttribute {
 
-	/***************************************
+	/**
 	 * Adds a style name to a certain date.
 	 *
 	 * @param rDate  The date to set the style for
 	 * @param sStyle The style to set
 	 */
-	public void addDateStyle(Date rDate, String sStyle)
-	{
+	public void addDateStyle(Date rDate, String sStyle) {
 		getDatePicker().addStyleToDates(sStyle, rDate);
 	}
 
-	/***************************************
+	/**
 	 * Returns the currently selected date value of this component.
 	 *
 	 * @return The current date value
 	 */
 	@Override
-	public Date getDate()
-	{
+	public Date getDate() {
 		return getDatePicker().getDate();
 	}
 
-	/***************************************
+	/**
 	 * Returns the date of the month that is currently displayed by this
 	 * calendar.
 	 *
 	 * @return The date of the current month
 	 */
-	public Date getMonth()
-	{
+	public Date getMonth() {
 		return getDatePicker().getCurrentMonth();
 	}
 
-	/***************************************
+	/**
 	 * Clears the highlighting of a date.
 	 *
 	 * @param rDate  The date to clear the highlight of
 	 * @param sStyle nType The highlight type
 	 */
-	public void removeDateStyle(Date rDate, String sStyle)
-	{
+	public void removeDateStyle(Date rDate, String sStyle) {
 		getDatePicker().removeStyleFromDates(sStyle, rDate);
 	}
 
-	/***************************************
+	/**
 	 * Sets the date that is highlighted by this component.
 	 *
 	 * @param rDate The new date value or NULL to remove the date highlight
 	 */
 	@Override
-	public void setDate(Date rDate)
-	{
+	public void setDate(Date rDate) {
 		getDatePicker().setDate(rDate);
 	}
 
-	/***************************************
+	/**
 	 * Sets the month to be displayed by this calendar.
 	 *
 	 * @param rDate A date of the new month to be displayed
 	 */
-	public void setMonth(Date rDate)
-	{
-		if (rDate != null)
-		{
+	public void setMonth(Date rDate) {
+		if (rDate != null) {
 			getDatePicker().setCurrentMonth(rDate);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Internal method to return the date widget of this instance.
 	 *
 	 * @return The date widget
 	 */
-	private GwtDatePicker getDatePicker()
-	{
+	private GwtDatePicker getDatePicker() {
 		return (GwtDatePicker) getWidget();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class CalendarWidgetFactory
-		implements WidgetFactory<GwtDatePicker>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<GwtDatePicker> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GwtDatePicker createWidget(
-			Component rComponent,
-			StyleData rStyle)
-		{
+		public GwtDatePicker createWidget(Component rComponent,
+			StyleData rStyle) {
 			return new GwtDatePicker(rComponent.getContext(),
-									 rStyle.hasFlag(StyleFlag.DATE_TIME));
+				rStyle.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}
 }

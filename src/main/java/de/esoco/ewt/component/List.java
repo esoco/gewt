@@ -20,8 +20,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
-
-/********************************************************************
+/**
  * A scrollable list of selectable elements.
  *
  * <p>Supported event types:</p>
@@ -41,39 +40,35 @@ import de.esoco.ewt.style.StyleFlag;
  *
  * @author eso
  */
-public class List extends ListControl
-{
-	//~ Methods ----------------------------------------------------------------
+public class List extends ListControl {
 
-	/***************************************
+	/**
 	 * Returns the number of visible items.
 	 *
 	 * @return The number of visible items
 	 */
-	public int getVisibleItems()
-	{
+	public int getVisibleItems() {
 		return getGwtListBox().getVisibleItemCount();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		getGwtListBox().setVisibleItemCount(10);
-		getGwtListBox().setMultipleSelect(rStyle.hasFlag(StyleFlag.MULTISELECT));
+		getGwtListBox().setMultipleSelect(
+			rStyle.hasFlag(StyleFlag.MULTISELECT));
 	}
 
-	/***************************************
+	/**
 	 * Sets the number of visible items.
 	 *
 	 * @param nItems The number of visible items
 	 */
-	public void setVisibleItems(int nItems)
-	{
+	public void setVisibleItems(int nItems) {
 		getGwtListBox().setVisibleItemCount(nItems);
 	}
 }

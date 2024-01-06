@@ -22,8 +22,7 @@ import de.esoco.ewt.style.StyleData;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * The interface for factories that produce widget instances for a certain GEWT
  * component type. Implementations of the interface method can either return
  * subclasses of {@link Widget} or some kind of widget wrapper that implements
@@ -35,17 +34,14 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public interface WidgetFactory<W extends IsWidget>
-{
-	//~ Methods ----------------------------------------------------------------
+public interface WidgetFactory<W extends IsWidget> {
 
-	/***************************************
+	/**
 	 * Creates a new widget instance for a certain component based on the given
 	 * style.
 	 *
-	 * @param  rComponent The component to create the widget for
-	 * @param  rStyle     The style of the new widget
-	 *
+	 * @param rComponent The component to create the widget for
+	 * @param rStyle     The style of the new widget
 	 * @return The new widget instance
 	 */
 	W createWidget(Component rComponent, StyleData rStyle);

@@ -18,23 +18,21 @@ package de.esoco.ewt.property;
 
 import de.esoco.ewt.graphics.Image;
 
-
-/********************************************************************
+/**
  * Property interface for user interface elements that implement an image
  * attribute.
  *
  * @author eso
  */
-public interface ImageAttribute
-{
-	/***************************************
+public interface ImageAttribute {
+	/**
 	 * Returns the element's image.
 	 *
 	 * @return The image
 	 */
 	public Image getImage();
 
-	/***************************************
+	/**
 	 * Sets the element's image.
 	 *
 	 * @param rImage The new image

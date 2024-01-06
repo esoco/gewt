@@ -24,35 +24,29 @@ import de.esoco.lib.property.StandardProperties;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 
-
-/********************************************************************
+/**
  * A layout that groups components with an optional title/caption. The title
- * must be set in the container's style data with the name {@link
- * StandardProperties#TITLE}.
+ * must be set in the container's style data with the name
+ * {@link StandardProperties#TITLE}.
  *
  * @author eso
  */
-public class GroupLayout extends TwoLayerLayout
-{
-	//~ Methods ----------------------------------------------------------------
+public class GroupLayout extends TwoLayerLayout {
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected HasWidgets createLayoutWidget(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	protected HasWidgets createLayoutWidget(Container rContainer,
+		StyleData rContainerStyle) {
 		CaptionPanel aCaptionPanel = new CaptionPanel();
 
 		String sTitle =
 			rContainerStyle.getProperty(StandardProperties.TITLE, "");
 
-		if (sTitle.length() > 0)
-		{
-			aCaptionPanel.setCaptionText(rContainer.getContext()
-										 .expandResource(sTitle));
+		if (sTitle.length() > 0) {
+			aCaptionPanel.setCaptionText(
+				rContainer.getContext().expandResource(sTitle));
 		}
 
 		return aCaptionPanel;

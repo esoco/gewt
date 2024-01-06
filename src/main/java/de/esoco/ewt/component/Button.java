@@ -39,8 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.StyleProperties.BUTTON_STYLE;
 
-
-/********************************************************************
+/**
  * A button object that sends action events on selection.
  *
  * <p>Supported event types:</p>
@@ -51,85 +50,73 @@ import static de.esoco.lib.property.StyleProperties.BUTTON_STYLE;
  *
  * @author eso
  */
-public class Button extends Control implements TextAttribute, ImageAttribute
-{
-	//~ Instance fields --------------------------------------------------------
+public class Button extends Control implements TextAttribute, ImageAttribute {
 
 	private String sText;
-	private Image  rImage;
+
+	private Image rImage;
 
 	private AlignedPosition rTextPosition = AlignedPosition.RIGHT;
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * @see Control#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle)
-	{
+	public void applyStyle(StyleData rStyle) {
 		super.applyStyle(rStyle);
 
 		rTextPosition = getTextPosition(rStyle);
 	}
 
-	/***************************************
+	/**
 	 * @see ImageAttribute#getImage()
 	 */
 	@Override
-	public Image getImage()
-	{
+	public Image getImage() {
 		return rImage;
 	}
 
-	/***************************************
+	/**
 	 * Returns the button text.
 	 *
 	 * @return The button text
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return sText;
 	}
 
-	/***************************************
+	/**
 	 * @see ImageAttribute#setImage(Image)
 	 */
 	@Override
-	public void setImage(Image rImage)
-	{
+	public void setImage(Image rImage) {
 		this.rImage = rImage;
 
 		HasText rWidget = (HasText) getWidget();
 
-		if (rWidget instanceof ImageAttribute)
-		{
+		if (rWidget instanceof ImageAttribute) {
 			((ImageAttribute) rWidget).setImage(rImage);
-		}
-		else
-		{
+		} else {
 			setButtonImage(rWidget, getText(), rImage, rTextPosition);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the button text.
 	 *
 	 * @param sText The new button text
 	 */
 	@Override
-	public void setText(String sText)
-	{
-		sText	   = getContext().expandResource(sText);
+	public void setText(String sText) {
+		sText = getContext().expandResource(sText);
 		this.sText = sText;
 
 		HasText rWidget = (HasText) getWidget();
 
 		rWidget.setText(sText);
 
-		if (rWidget instanceof PushButton)
-		{
+		if (rWidget instanceof PushButton) {
 			// GWT bug: text of other states will not be set sometimes
 			PushButton rPushButton = (PushButton) rWidget;
 
@@ -142,7 +129,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets an image and/or text on a button widget.
 	 *
 	 * @param rWidget       The button widget
@@ -150,18 +137,13 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 	 * @param rImage        The button image
 	 * @param rTextPosition The position of the text relative to the image
 	 */
-	void setButtonImage(HasText			rWidget,
-						String			sText,
-						Image			rImage,
-						AlignedPosition rTextPosition)
-	{
-		if (rImage instanceof ImageRef)
-		{
+	void setButtonImage(HasText rWidget, String sText, Image rImage,
+		AlignedPosition rTextPosition) {
+		if (rImage instanceof ImageRef) {
 			ImageRef rBitmap = (ImageRef) rImage;
 
 			if (rWidget instanceof PushButton &&
-				(sText == null || sText.length() == 0))
-			{
+				(sText == null || sText.length() == 0)) {
 				com.google.gwt.user.client.ui.Image rGwtImage =
 					rBitmap.getGwtImage();
 
@@ -173,18 +155,12 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 				rPushButton.getDownFace().setImage(rGwtImage);
 				rPushButton.getDownDisabledFace().setImage(rGwtImage);
 				rPushButton.getDownHoveringFace().setImage(rGwtImage);
-			}
-			else
-			{
+			} else {
 				String sImageLabel =
-					createImageLabel(sText,
-									 rBitmap,
-									 rTextPosition,
-									 HasHorizontalAlignment.ALIGN_CENTER,
-									 "100%");
+					createImageLabel(sText, rBitmap, rTextPosition,
+						HasHorizontalAlignment.ALIGN_CENTER, "100%");
 
-				if (rWidget instanceof PushButton)
-				{
+				if (rWidget instanceof PushButton) {
 					PushButton rPushButton = (PushButton) rWidget;
 
 					rPushButton.getUpFace().setHTML(sImageLabel);
@@ -193,50 +169,38 @@ public class Button extends Control implements TextAttribute, ImageAttribute
 					rPushButton.getDownFace().setHTML(sImageLabel);
 					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
 					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
-				}
-				else if (rWidget instanceof HasHTML)
-				{
+				} else if (rWidget instanceof HasHTML) {
 					((HasHTML) rWidget).setHTML(sImageLabel);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			rWidget.setText(sText);
 		}
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The {@link WidgetFactory} for button widgets.
 	 *
 	 * @author eso
 	 */
 	public static class ButtonWidgetFactory<W extends Widget & Focusable & HasText>
-		implements WidgetFactory<W>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<W> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
+		public W createWidget(Component rComponent, StyleData rStyle) {
 			ButtonStyle eButtonStyle =
 				rStyle.getProperty(BUTTON_STYLE, ButtonStyle.DEFAULT);
 
 			IsWidget aButtonWidget;
 
 			if (rStyle.hasFlag(StyleFlag.HYPERLINK) ||
-				eButtonStyle == ButtonStyle.LINK)
-			{
+				eButtonStyle == ButtonStyle.LINK) {
 				aButtonWidget = new Anchor();
-			}
-			else
-			{
+			} else {
 				aButtonWidget = new PushButton();
 			}
 

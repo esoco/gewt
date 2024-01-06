@@ -18,62 +18,55 @@ package de.esoco.ewt.app;
 
 import de.esoco.ewt.graphics.Image;
 
-
-/********************************************************************
+/**
  * A resource implementation that chains two resources. If the lookup in the
  * primary resource fails a lookup in the secondary resource will be performed.
  *
  * @author eso
  */
-public class ChainedResource implements Resource
-{
+public class ChainedResource implements Resource {
 	private final Resource rPrimaryResource;
+
 	private final Resource rSecondaryResource;
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rPrimary   The primary resource to lookup first
 	 * @param rSecondary The secondary resource to lookup if the primary
 	 *                   resource lookup fails
 	 */
-	public ChainedResource(Resource rPrimary, Resource rSecondary)
-	{
-		if (rPrimary == null || rSecondary == null)
-		{
+	public ChainedResource(Resource rPrimary, Resource rSecondary) {
+		if (rPrimary == null || rSecondary == null) {
 			throw new IllegalArgumentException("Arguments must no be NULL");
 		}
 
-		rPrimaryResource   = rPrimary;
+		rPrimaryResource = rPrimary;
 		rSecondaryResource = rSecondary;
 	}
 
-	/***************************************
+	/**
 	 * @see Resource#getImage(String)
 	 */
 	@Override
-	public Image getImage(String sKey)
-	{
+	public Image getImage(String sKey) {
 		Image rImage = rPrimaryResource.getImage(sKey);
 
-		if (rImage == null)
-		{
+		if (rImage == null) {
 			rImage = rSecondaryResource.getImage(sKey);
 		}
 
 		return rImage;
 	}
 
-	/***************************************
+	/**
 	 * @see Resource#getString(String)
 	 */
 	@Override
-	public String getString(String sKey)
-	{
+	public String getString(String sKey) {
 		String sValue = rPrimaryResource.getString(sKey);
 
-		if (sValue == null)
-		{
+		if (sValue == null) {
 			sValue = rSecondaryResource.getString(sKey);
 		}
 

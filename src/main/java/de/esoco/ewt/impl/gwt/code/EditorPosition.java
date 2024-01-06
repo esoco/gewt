@@ -21,71 +21,78 @@ import java.io.Serializable;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-/********************************************************************
+/**
  * Represents a CodeMirror editor position, which is identified by the
  * zero-based line number and column number.
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
- *         Research Group, Date: 19/03/2014
+ * Research Group, Date: 19/03/2014
  */
-public class EditorPosition implements Serializable, IsSerializable
-{
+public class EditorPosition implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 
 	private int nLine;
 
 	private int Column;
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param nLine   TODO: DOCUMENT ME!
 	 * @param nColumn TODO: DOCUMENT ME!
 	 */
-	public EditorPosition(int nLine, int nColumn)
-	{
-		this.nLine  = nLine;
+	public EditorPosition(int nLine, int nColumn) {
+		this.nLine = nLine;
 		this.Column = nColumn;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	private EditorPosition()
-	{
+	private EditorPosition() {
 	}
 
-	/***************************************
+	/**
 	 * Extracts an {@link EditorPosition} from the specified JavaScriptObject.
 	 *
-	 * @param  object The object. Not {@code null}.
-	 *
+	 * @param object The object. Not {@code null}.
 	 * @return The corresponding {@link EditorPosition}
-	 *
-	 * @throws java.lang.NullPointerException is {@code object} is {@code null}.
+	 * @throws java.lang.NullPointerException is {@code object} is
+	 *                                        {@code null}.
 	 */
-	public static EditorPosition fromJavaScriptObject(JavaScriptObject object)
-	{
+	public static EditorPosition fromJavaScriptObject(JavaScriptObject object) {
 		int line = getIntFromJavaScriptObject(object, "line", 0);
-		int ch   = getIntFromJavaScriptObject(object, "ch", 0);
+		int ch = getIntFromJavaScriptObject(object, "ch", 0);
 
 		return new EditorPosition(line, ch);
 	}
 
-	/***************************************
+	/**
+	 * Returns the int from java script object.
+	 *
+	 * @param object       The int from java script object
+	 * @param propertyName The int from java script object
+	 * @param defaultValue The int from java script object
+	 * @return The int from java script object
+	 */
+	private static native int getIntFromJavaScriptObject(
+		JavaScriptObject object, String propertyName, int defaultValue) /*-{
+		if(object[propertyName] == undefined) {
+			return defaultValue;
+		}
+		return object[propertyName];
+	}-*/;
+
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this)
-		{
+	public boolean equals(Object o) {
+		if (o == this) {
 			return true;
 		}
 
-		if (!(o instanceof EditorPosition))
-		{
+		if (!(o instanceof EditorPosition)) {
 			return false;
 		}
 
@@ -94,52 +101,47 @@ public class EditorPosition implements Serializable, IsSerializable
 		return this.nLine == other.nLine && this.Column == other.Column;
 	}
 
-	/***************************************
+	/**
 	 * Returns the column number.
 	 *
 	 * @return The column number
 	 */
-	public int getColumnNumber()
-	{
+	public int getColumnNumber() {
 		return Column;
 	}
 
-	/***************************************
+	/**
 	 * Returns the line number.
 	 *
 	 * @return The line number
 	 */
-	public int getLineNumber()
-	{
+	public int getLineNumber() {
 		return nLine;
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return "EditorPosition".hashCode() + nLine + Column * 13;
 	}
 
-	/***************************************
+	/**
 	 * Consverts this {@code EditorPosition} to a {@code JavaScriptObject}.
 	 *
-	 * @return The {@code JavaScriptObject} that is equivalent to this {@code
-	 *         EditorPosition}.
+	 * @return The {@code JavaScriptObject} that is equivalent to this
+	 * {@code EditorPosition}.
 	 */
-	public JavaScriptObject toJavaScriptObject()
-	{
+	public JavaScriptObject toJavaScriptObject() {
 		return toJavaScriptObject(nLine, Column);
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getSimpleName();
 //				Objects.toStringHelper("EditorPosition")
 //					  .add("lineNumber", lineNumber)
@@ -147,31 +149,11 @@ public class EditorPosition implements Serializable, IsSerializable
 //					  .toString();
 	}
 
-	/***************************************
-	 * Returns the int from java script object.
-	 *
-	 * @param  object       The int from java script object
-	 * @param  propertyName The int from java script object
-	 * @param  defaultValue The int from java script object
-	 *
-	 * @return The int from java script object
-	 */
-	private static native int getIntFromJavaScriptObject(
-		JavaScriptObject object,
-		String			 propertyName,
-		int				 defaultValue) /*-{
-		if(object[propertyName] == undefined) {
-			return defaultValue;
-		}
-		return object[propertyName];
-	}-*/;
-
-	/***************************************
+	/**
 	 * Create a JavaScriptObject that CodeMirror can use.
 	 *
-	 * @param  line The line number.
-	 * @param  ch   The column number.
-	 *
+	 * @param line The line number.
+	 * @param ch   The column number.
 	 * @return The JavaScriptObject position object.
 	 */
 	private native JavaScriptObject toJavaScriptObject(int line, int ch) /*-{

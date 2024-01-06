@@ -32,220 +32,188 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.datepicker.client.DateBox;
 
-
-/********************************************************************
+/**
  * An input field that allows to input or select a date value.
  *
  * @author eso
  */
-public class DateField extends TextControl implements DateAttribute
-{
-	//~ Methods ----------------------------------------------------------------
+public class DateField extends TextControl implements DateAttribute {
 
-	/***************************************
+	/**
 	 * Returns the currently selected date value of this component.
 	 *
 	 * @return The current date value (will be NULL if edit field is empty)
 	 */
 	@Override
-	public Date getDate()
-	{
+	public Date getDate() {
 		Date rDate = null;
 
-		if (getDateWidget().getTextBox().getText().length() > 0)
-		{
+		if (getDateWidget().getTextBox().getText().length() > 0) {
 			rDate = getDateWidget().getDatePicker().getValue();
 		}
 
 		return rDate;
 	}
 
-	/***************************************
+	/**
 	 * Returns the date of the month that is currently displayed by the date
 	 * picker of this instance.
 	 *
 	 * @return The date of the selected month
 	 */
-	public Date getMonth()
-	{
+	public Date getMonth() {
 		return getDateWidget().getDatePicker().getCurrentMonth();
 	}
 
-	/***************************************
+	/**
 	 * Returns the editable state of this component.
 	 *
 	 * @return TRUE if the component allows editing, FALSE if it is readonly
 	 */
 	@Override
-	public boolean isEditable()
-	{
+	public boolean isEditable() {
 		return !getDateWidget().getTextBox().isReadOnly();
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#isEnabled()
 	 */
 	@Override
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return getTextBox().isEnabled();
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns)
-	{
+	public void setColumns(int nColumns) {
 		getDateWidget().getTextBox().setVisibleLength(nColumns);
 	}
 
-	/***************************************
+	/**
 	 * Sets the date value of this component.
 	 *
 	 * @param rDate The new date value or NULL for an empty edit field
 	 */
 	@Override
-	public void setDate(Date rDate)
-	{
-		if (rDate == null)
-		{
+	public void setDate(Date rDate) {
+		if (rDate == null) {
 			getDateWidget().getTextBox().setText("");
-		}
-		else
-		{
+		} else {
 			getDateWidget().setValue(rDate);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the editable state of this component.
 	 *
 	 * @param bEditable TRUE to make the component editable, FALSE to make it
 	 *                  readonly
 	 */
 	@Override
-	public void setEditable(boolean bEditable)
-	{
+	public void setEditable(boolean bEditable) {
 		getDateWidget().getTextBox().setReadOnly(!bEditable);
 	}
 
-	/***************************************
+	/**
 	 * @see TextControl#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled)
-	{
+	public void setEnabled(boolean bEnabled) {
 		getDateWidget().setEnabled(bEnabled);
 	}
 
-	/***************************************
+	/**
 	 * Sets the month to be displayed by the date picker of this instance.
 	 *
 	 * @param rDate A date of the new month to be displayed
 	 */
-	public void setMonth(Date rDate)
-	{
-		if (rDate != null)
-		{
+	public void setMonth(Date rDate) {
+		if (rDate != null) {
 			getDateWidget().getDatePicker().setCurrentMonth(rDate);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Overridden to return the result of {@link DateBox#getTextBox()}.
 	 *
 	 * @see TextControl#getTextBox()
 	 */
 	@Override
-	protected IsTextControlWidget getTextBox()
-	{
+	protected IsTextControlWidget getTextBox() {
 		return new ValueBoxWrapper(getDateWidget().getTextBox());
 	}
 
-	/***************************************
+	/**
 	 * Internal method to return the date widget of this instance.
 	 *
 	 * @return The date widget
 	 */
-	private DateBox getDateWidget()
-	{
+	private DateBox getDateWidget() {
 		return (DateBox) getWidget();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
-	public static class DateFieldWidgetFactory implements WidgetFactory<DateBox>
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class DateFieldWidgetFactory
+		implements WidgetFactory<DateBox> {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public DateBox createWidget(Component rComponent, StyleData rStyle)
-		{
+		public DateBox createWidget(Component rComponent, StyleData rStyle) {
 			return new DateFieldWidget(rComponent.getContext(),
-									   rStyle.hasFlag(StyleFlag.DATE_TIME));
+				rStyle.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A simple {@link DateBox} subclass that implements {@link Focusable} and
 	 * uses a {@link GwtDatePicker} for the date selection.
 	 *
 	 * @author eso
 	 */
-	private static class DateFieldWidget extends DateBox implements Focusable
-	{
-		//~ Constructors -------------------------------------------------------
+	private static class DateFieldWidget extends DateBox implements Focusable {
 
-		/***************************************
+		/**
 		 * Creates a new instance
 		 *
 		 * @param rContext  The user interface context
 		 * @param bDateTime TRUE to pick date and time, FALSE for date only
 		 */
-		public DateFieldWidget(UserInterfaceContext rContext, boolean bDateTime)
-		{
-			super(new GwtDatePicker(rContext, bDateTime),
-				  null,
-				  new DefaultFormat(DateTimeFormat.getFormat(bDateTime
-															 ? PredefinedFormat.DATE_TIME_MEDIUM
-															 : PredefinedFormat.DATE_MEDIUM)));
+		public DateFieldWidget(UserInterfaceContext rContext,
+			boolean bDateTime) {
+			super(new GwtDatePicker(rContext, bDateTime), null,
+				new DefaultFormat(DateTimeFormat.getFormat(bDateTime ?
+				                                           PredefinedFormat.DATE_TIME_MEDIUM :
+				                                           PredefinedFormat.DATE_MEDIUM)));
 
 			((GwtDatePicker) getDatePicker()).setDateBox(this);
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * @see DateBox#hideDatePicker()
 		 */
 		@Override
-		public void hideDatePicker()
-		{
+		public void hideDatePicker() {
 			super.hideDatePicker();
 
-			if (isDatePickerShowing())
-			{
+			if (isDatePickerShowing()) {
 				setValue(((GwtDatePicker) getDatePicker()).getDate());
 			}
 		}
 
-		/***************************************
+		/**
 		 * @see DateBox#showDatePicker()
 		 */
 		@Override
-		public void showDatePicker()
-		{
-			if (!isDatePickerShowing())
-			{
+		public void showDatePicker() {
+			if (!isDatePickerShowing()) {
 				((GwtDatePicker) getDatePicker()).setDate(getValue());
 			}
 

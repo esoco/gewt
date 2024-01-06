@@ -20,41 +20,33 @@ import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 
 import com.google.gwt.user.client.ui.DialogBox;
 
-
-/********************************************************************
+/**
  * Default GWT dialog box view implementation.
  *
  * @author eso
  */
-public class GwtDialogBox extends DialogBox implements IsChildViewWidget
-{
-	//~ Constructors -----------------------------------------------------------
+public class GwtDialogBox extends DialogBox implements IsChildViewWidget {
 
-	/***************************************
+	/**
 	 * @see DialogBox#DialogBox(boolean, boolean)
 	 */
-	public GwtDialogBox(boolean bAutoHide, boolean bModal)
-	{
+	public GwtDialogBox(boolean bAutoHide, boolean bModal) {
 		super(bAutoHide, bModal);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isShown()
-	{
+	public boolean isShown() {
 		return isShowing();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setViewTitle(String sTitle)
-	{
+	public void setViewTitle(String sTitle) {
 		setText(sTitle);
 	}
 }

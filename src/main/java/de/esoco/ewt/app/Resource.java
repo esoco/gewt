@@ -18,30 +18,25 @@ package de.esoco.ewt.app;
 
 import de.esoco.ewt.graphics.Image;
 
-
-/********************************************************************
+/**
  * A generic interface for objects that provide access to resources.
  *
  * @author eso
  */
-public interface Resource
-{
-	//~ Methods ----------------------------------------------------------------
+public interface Resource {
 
-	/***************************************
+	/**
 	 * Returns an image that is associated with a certain key.
 	 *
-	 * @param  sKey The key to return the image for
-	 *
+	 * @param sKey The key to return the image for
 	 * @return The resulting image or NULL if not found
 	 */
 	public Image getImage(String sKey);
 
-	/***************************************
+	/**
 	 * Returns a string that is associated with a certain key.
 	 *
-	 * @param  sKey The key to return the string for
-	 *
+	 * @param sKey The key to return the string for
 	 * @return The resulting string or NULL if not found
 	 */
 	public String getString(String sKey);

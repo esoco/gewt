@@ -27,213 +27,184 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueBoxBase;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A wrapper for {@link ValueBoxBase} implementations that implements the
  * interface {@link IsTextControlWidget}.
  *
  * @author eso
  */
-public class ValueBoxWrapper implements IsTextControlWidget
-{
-	//~ Instance fields --------------------------------------------------------
+public class ValueBoxWrapper implements IsTextControlWidget {
 
 	private final ValueBoxBase<?> rValueBox;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rValueBox The value box to wrap
 	 */
-	public ValueBoxWrapper(ValueBoxBase<?> rValueBox)
-	{
+	public ValueBoxWrapper(ValueBoxBase<?> rValueBox) {
 		this.rValueBox = rValueBox;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public HandlerRegistration addDoubleClickHandler(
-		DoubleClickHandler rHandler)
-	{
+		DoubleClickHandler rHandler) {
 		return rValueBox.addDoubleClickHandler(rHandler);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HandlerRegistration addKeyDownHandler(KeyDownHandler rHandler)
-	{
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler rHandler) {
 		return rValueBox.addKeyDownHandler(rHandler);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HandlerRegistration addKeyPressHandler(KeyPressHandler rHandler)
-	{
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler rHandler) {
 		return rValueBox.addKeyPressHandler(rHandler);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Widget asWidget()
-	{
+	public Widget asWidget() {
 		return rValueBox;
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void fireEvent(GwtEvent<?> rEvent)
-	{
+	public void fireEvent(GwtEvent<?> rEvent) {
 		rValueBox.fireEvent(rEvent);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getCursorPos()
-	{
+	public int getCursorPos() {
 		return rValueBox.getCursorPos();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getSelectedText()
-	{
+	public String getSelectedText() {
 		return rValueBox.getSelectedText();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getTabIndex()
-	{
+	public int getTabIndex() {
 		return rValueBox.getTabIndex();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return rValueBox.getText();
 	}
 
-	/***************************************
+	/**
 	 * @see com.google.gwt.user.client.ui.HasEnabled#isEnabled()
 	 */
 	@Override
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return rValueBox.isEnabled();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isReadOnly()
-	{
+	public boolean isReadOnly() {
 		return rValueBox.isReadOnly();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setAccessKey(char cKey)
-	{
+	public void setAccessKey(char cKey) {
 		rValueBox.setAccessKey(cKey);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setCursorPos(int nPosition)
-	{
+	public void setCursorPos(int nPosition) {
 		rValueBox.setCursorPos(nPosition);
 	}
 
-	/***************************************
+	/**
 	 * @see com.google.gwt.user.client.ui.HasEnabled#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled)
-	{
+	public void setEnabled(boolean bEnabled) {
 		rValueBox.setEnabled(bEnabled);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setFocus(boolean bFocused)
-	{
+	public void setFocus(boolean bFocused) {
 		rValueBox.setFocus(bFocused);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setReadOnly(boolean bReadOnly)
-	{
+	public void setReadOnly(boolean bReadOnly) {
 		rValueBox.setReadOnly(bReadOnly);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc} int)
 	 */
 	@Override
-	public void setSelectionRange(int nStart, int nLength)
-	{
+	public void setSelectionRange(int nStart, int nLength) {
 		rValueBox.setSelectionRange(nStart, nLength);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTabIndex(int nIndex)
-	{
+	public void setTabIndex(int nIndex) {
 		rValueBox.setTabIndex(nIndex);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setText(String sText)
-	{
+	public void setText(String sText) {
 		rValueBox.setText(sText);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisibleLength(int nColumns)
-	{
-		if (rValueBox instanceof TextBox)
-		{
+	public void setVisibleLength(int nColumns) {
+		if (rValueBox instanceof TextBox) {
 			((TextBox) rValueBox).setVisibleLength(nColumns);
 		}
 	}

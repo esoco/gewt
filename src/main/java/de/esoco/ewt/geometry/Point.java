@@ -16,106 +16,95 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.geometry;
 
-/********************************************************************
+/**
  * Unmodifiable representation of a 2-dimensional screen coordinate.
  *
  * @author eso
  */
-public class Point
-{
+public class Point {
 	private int x;
+
 	private int y;
 
-	/***************************************
+	/**
 	 * Copy constructor.
 	 *
 	 * @param rOther The point to copy
 	 */
-	public Point(Point rOther)
-	{
+	public Point(Point rOther) {
 		this.x = rOther.x;
 		this.y = rOther.y;
 	}
 
-	/***************************************
+	/**
 	 * Creates a new point.
 	 *
 	 * @param x The x position
 	 * @param y The y position
 	 */
-	public Point(int x, int y)
-	{
+	public Point(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	/***************************************
+	/**
 	 * Default constructor for serialization.
 	 */
-	Point()
-	{
+	Point() {
 	}
 
-	/***************************************
+	/**
 	 * Checks if another object is a point with the same coordinates.
 	 *
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object rOther)
-	{
-		if (rOther instanceof Point)
-		{
+	public boolean equals(Object rOther) {
+		if (rOther instanceof Point) {
 			Point o = (Point) rOther;
 
 			return x == o.x && y == o.y;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	/***************************************
+	/**
 	 * Returns the x position.
 	 *
 	 * @return The x position
 	 */
-	public final int getX()
-	{
+	public final int getX() {
 		return x;
 	}
 
-	/***************************************
+	/**
 	 * Returns the y position.
 	 *
 	 * @return The y position
 	 */
-	public final int getY()
-	{
+	public final int getY() {
 		return y;
 	}
 
-	/***************************************
+	/**
 	 * Calculates the hashcode of this instance.
 	 *
 	 * @see Object#hashCode()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return ((17 + x) * 37) + y;
 	}
 
-	/***************************************
+	/**
 	 * Returns a string representation of this instance. The value is for
 	 * debugging purposes only and should not be used for parsing.
 	 *
 	 * @return A string description of this instance
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Point[" + x + "," + y + "]";
 	}
 }

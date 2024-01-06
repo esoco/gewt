@@ -42,8 +42,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A base class for components that handle text editing.
  *
  * <p>Supported style flags:</p>
@@ -64,16 +63,60 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eso
  */
-public abstract class TextControl extends Control implements TextAttribute
-{
-	//~ Instance fields --------------------------------------------------------
+public abstract class TextControl extends Control implements TextAttribute {
 
 	private HandlerRegistration rConstraintHandler = null;
-	private boolean			    bResourceValue     = false;
 
-	//~ Methods ----------------------------------------------------------------
+	private boolean bResourceValue = false;
 
-	/***************************************
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void applyStyle(StyleData rStyle) {
+		super.applyStyle(rStyle);
+
+		bResourceValue = rStyle.hasFlag(StyleFlag.RESOURCE);
+	}
+
+	/**
+	 * Returns the position of the input caret.
+	 *
+	 * @return The caret position
+	 */
+	public int getCaretPosition() {
+		return getTextBox().getCursorPos();
+	}
+
+	/**
+	 * Returns the text of this component.
+	 *
+	 * @return The text
+	 */
+	@Override
+	public String getText() {
+		return getTextBox().getText();
+	}
+
+	/**
+	 * Returns the editable state of this component.
+	 *
+	 * @return TRUE if the component allows editing, FALSE if it is readonly
+	 */
+	public boolean isEditable() {
+		return !getTextBox().isReadOnly();
+	}
+
+	/**
+	 * Sets the position of the input caret.
+	 *
+	 * @param nPosition The new caret position
+	 */
+	public void setCaretPosition(int nPosition) {
+		getTextBox().setCursorPos(nPosition);
+	}
+
+	/**
 	 * Allows to set a minimum width by providing the corresponding text column
 	 * count. This may not be supported by all implementations.
 	 *
@@ -81,189 +124,117 @@ public abstract class TextControl extends Control implements TextAttribute
 	 */
 	public abstract void setColumns(int nColumns);
 
-	/***************************************
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void applyStyle(StyleData rStyle)
-	{
-		super.applyStyle(rStyle);
-
-		bResourceValue = rStyle.hasFlag(StyleFlag.RESOURCE);
-	}
-
-	/***************************************
-	 * Returns the position of the input caret.
-	 *
-	 * @return The caret position
-	 */
-	public int getCaretPosition()
-	{
-		return getTextBox().getCursorPos();
-	}
-
-	/***************************************
-	 * Returns the text of this component.
-	 *
-	 * @return The text
-	 */
-	@Override
-	public String getText()
-	{
-		return getTextBox().getText();
-	}
-
-	/***************************************
-	 * Returns the editable state of this component.
-	 *
-	 * @return TRUE if the component allows editing, FALSE if it is readonly
-	 */
-	public boolean isEditable()
-	{
-		return !getTextBox().isReadOnly();
-	}
-
-	/***************************************
-	 * Sets the position of the input caret.
-	 *
-	 * @param nPosition The new caret position
-	 */
-	public void setCaretPosition(int nPosition)
-	{
-		getTextBox().setCursorPos(nPosition);
-	}
-
-	/***************************************
+	/**
 	 * Sets the editable state of this component.
 	 *
-	 * @param bEditable TRUE if the object shall be editable, FALSE to set it to
+	 * @param bEditable TRUE if the object shall be editable, FALSE to set
+	 *                     it to
 	 *                  be readonly
 	 */
-	public void setEditable(boolean bEditable)
-	{
+	public void setEditable(boolean bEditable) {
 		getTextBox().setReadOnly(!bEditable);
 	}
 
-	/***************************************
+	/**
 	 * Sets a regular expression as an input constraint. Any input that doesn't
 	 * match the expression will be rejected.
 	 *
 	 * @param sConstraint The input constraint or NULL for none
 	 */
-	public void setInputConstraint(String sConstraint)
-	{
-		if (rConstraintHandler != null)
-		{
+	public void setInputConstraint(String sConstraint) {
+		if (rConstraintHandler != null) {
 			rConstraintHandler.removeHandler();
 			rConstraintHandler = null;
 		}
 
-		if (sConstraint != null)
-		{
-			rConstraintHandler =
-				getTextBox().addKeyPressHandler(new RegExConstraint(sConstraint));
+		if (sConstraint != null) {
+			rConstraintHandler = getTextBox().addKeyPressHandler(
+				new RegExConstraint(sConstraint));
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the placeholder string that will be display in an empty text
 	 * component.
 	 *
 	 * @param sPlaceholder The placeholder string
 	 */
-	public void setPlaceholder(String sPlaceholder)
-	{
-		getWidget().getElement()
-				   .setPropertyString("placeholder",
-									  getContext().expandResource(sPlaceholder));
+	public void setPlaceholder(String sPlaceholder) {
+		getWidget()
+			.getElement()
+			.setPropertyString("placeholder",
+				getContext().expandResource(sPlaceholder));
 	}
 
-	/***************************************
+	/**
 	 * Sets the text of this component.
 	 *
 	 * @param sText The new text
 	 */
 	@Override
-	public final void setText(String sText)
-	{
-		if (bResourceValue)
-		{
+	public final void setText(String sText) {
+		if (bResourceValue) {
 			sText = getContext().expandResource(sText);
 		}
 
 		setWidgetText(sText);
 	}
 
-	/***************************************
+	/**
 	 * Returns the {@link IsTextControlWidget} implementation of this instance.
 	 *
 	 * @return The text box
 	 */
-	protected IsTextControlWidget getTextBox()
-	{
+	protected IsTextControlWidget getTextBox() {
 		return (IsTextControlWidget) getWidget();
 	}
 
-	/***************************************
-	 * Implements setting the widget text and will be invoked from {@link
-	 * #setText(String)}.
-	 *
-	 * @param sText
+	/**
+	 * Implements setting the widget text and will be invoked from
+	 * {@link #setText(String)}.
 	 */
-	protected void setWidgetText(String sText)
-	{
+	protected void setWidgetText(String sText) {
 		getTextBox().setText(sText);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new TextEventDispatcher();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	void setProperty(String sProperty)
-	{
-		if (bResourceValue)
-		{
+	void setProperty(String sProperty) {
+		if (bResourceValue) {
 			super.setProperty(sProperty);
-		}
-		else
-		{
+		} else {
 			setText(sProperty);
 		}
 	}
 
-	//~ Inner Interfaces -------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The interface that needs to be provided by all text control widgets
 	 * implementations.
 	 *
 	 * @author eso
 	 */
-	public static interface IsTextControlWidget extends IsWidget, HasText,
-														Focusable, HasEnabled,
-														HasKeyPressHandlers,
-														HasKeyDownHandlers,
-														HasDoubleClickHandlers
-	{
-		//~ Methods ------------------------------------------------------------
+	public static interface IsTextControlWidget
+		extends IsWidget, HasText, Focusable, HasEnabled, HasKeyPressHandlers,
+		HasKeyDownHandlers, HasDoubleClickHandlers {
 
-		/***************************************
+		/**
 		 * Returns the position of the input caret.
 		 *
 		 * @return The caret position
 		 */
 		public int getCursorPos();
 
-		/***************************************
+		/**
 		 * Returns the currently selected text. The returned string will be
 		 * empty if no selection exists.
 		 *
@@ -271,40 +242,39 @@ public abstract class TextControl extends Control implements TextAttribute
 		 */
 		public String getSelectedText();
 
-		/***************************************
+		/**
 		 * Returns the editable state of this component.
 		 *
 		 * @return TRUE if the component is readonly
 		 */
 		public boolean isReadOnly();
 
-		/***************************************
+		/**
 		 * Sets the position of the input caret.
 		 *
 		 * @param nPosition The new caret position
 		 */
 		public void setCursorPos(int nPosition);
 
-		/***************************************
+		/**
 		 * Sets the editable state of this component.
 		 *
 		 * @param bReadOnly TRUE if the object shall be readonly
 		 */
 		public void setReadOnly(boolean bReadOnly);
 
-		/***************************************
+		/**
 		 * Sets the selection of the text. A length of zero will remove the
 		 * selection.
 		 *
-		 * @param  nStart  The start index of the selection
-		 * @param  nLength The length of the selection
-		 *
+		 * @param nStart  The start index of the selection
+		 * @param nLength The length of the selection
 		 * @throws IndexOutOfBoundsException If the given selection doesn't fit
 		 *                                   the current text
 		 */
 		public void setSelectionRange(int nStart, int nLength);
 
-		/***************************************
+		/**
 		 * Sets the number of text columns to be displayed by this instance.
 		 *
 		 * @param nColumns The column count
@@ -312,99 +282,82 @@ public abstract class TextControl extends Control implements TextAttribute
 		public void setVisibleLength(int nColumns);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Dispatcher for text-specific events.
 	 *
 	 * @author eso
 	 */
 	class TextEventDispatcher extends ComponentEventDispatcher
-		implements ValueChangeHandler<Object>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements ValueChangeHandler<Object> {
 
-		/***************************************
+		/**
 		 * Overridden to send {@link EventType#POINTER_CLICKED} instead of
 		 * ACTION.
 		 *
 		 * @param rEvent The click event
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent)
-		{
+		public void onClick(ClickEvent rEvent) {
 			notifyEventHandler(EventType.POINTER_CLICKED, rEvent);
 		}
 
-		/***************************************
+		/**
 		 * Overridden to do nothing.
 		 *
 		 * @param rEvent The event
 		 */
 		@Override
-		public void onDoubleClick(DoubleClickEvent rEvent)
-		{
+		public void onDoubleClick(DoubleClickEvent rEvent) {
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onKeyUp(KeyUpEvent rEvent)
-		{
-			if (hasHandlerFor(EventType.KEY_RELEASED))
-			{
+		public void onKeyUp(KeyUpEvent rEvent) {
+			if (hasHandlerFor(EventType.KEY_RELEASED)) {
 				super.onKeyUp(rEvent);
 			}
 
 			handleKeyUp(rEvent);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<Object> rEvent)
-		{
+		public void onValueChange(ValueChangeEvent<Object> rEvent) {
 			notifyEventHandler(EventType.VALUE_CHANGED);
 		}
 
-		/***************************************
+		/**
 		 * Handles a key up event for the text component.
 		 *
 		 * @param rEvent The key up event
 		 */
-		protected void handleKeyUp(KeyUpEvent rEvent)
-		{
-			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-			{
+		protected void handleKeyUp(KeyUpEvent rEvent) {
+			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 				notifyEventHandler(EventType.ACTION, rEvent);
 			}
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.ACTION &&
-				rWidget instanceof HasKeyUpHandlers)
-			{
+				rWidget instanceof HasKeyUpHandlers) {
 				return ((HasKeyUpHandlers) rWidget).addKeyUpHandler(this);
-			}
-			else if (eEventType == EventType.VALUE_CHANGED &&
-					 rWidget instanceof HasValueChangeHandlers)
-			{
-				// register generic event handler to support subclasses like DateField
-				return ((HasValueChangeHandlers<Object>) rWidget)
-					   .addValueChangeHandler(this);
-			}
-			else
-			{
+			} else if (eEventType == EventType.VALUE_CHANGED &&
+				rWidget instanceof HasValueChangeHandlers) {
+				// register generic event handler to support subclasses like
+				// DateField
+				return ((HasValueChangeHandlers<Object>) rWidget).addValueChangeHandler(
+					this);
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

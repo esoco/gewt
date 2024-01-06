@@ -30,33 +30,18 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * Base class for all EWT layouts.
  *
  * @author eso
  */
-public abstract class GenericLayout
-{
-	//~ Methods ----------------------------------------------------------------
+public abstract class GenericLayout {
 
-	/***************************************
-	 * Creates a new GWT container widget that represents this layout. This
-	 * method is only intended to be used internally by the GEWT framework.
-	 *
-	 * @param  rContainer The GEWT container to create the widget for
-	 * @param  rStyleData The style of the container widget
-	 *
-	 * @return A new widget container
-	 */
-	public abstract HasWidgets createLayoutContainer(
-		Container rContainer,
-		StyleData rStyleData);
-
-	/***************************************
+	/**
 	 * Adds a certain widget to a widget container according to this layout and
 	 * the given style data. This default implementation ignores the style data
-	 * and either invokes {@link HasWidgets#remove(Widget)} or, depending on the
+	 * and either invokes {@link HasWidgets#remove(Widget)} or, depending on
+	 * the
 	 * index and container type, {@link InsertPanel#insert(Widget, int)}.
 	 * Subclasses may override this method to implement a different layout
 	 * strategy.
@@ -67,33 +52,38 @@ public abstract class GenericLayout
 	 * @param nIndex     The index to add the widget add (if supported by the
 	 *                   implementation) or -1 to add as the last widget
 	 */
-	public void addWidget(HasWidgets rContainer,
-						  Widget	 rWidget,
-						  StyleData  rStyleData,
-						  int		 nIndex)
-	{
-		if (nIndex >= 0 && rContainer instanceof InsertPanel)
-		{
+	public void addWidget(HasWidgets rContainer, Widget rWidget,
+		StyleData rStyleData, int nIndex) {
+		if (nIndex >= 0 && rContainer instanceof InsertPanel) {
 			((InsertPanel) rContainer).insert(rWidget, nIndex);
-		}
-		else
-		{
+		} else {
 			rContainer.add(rWidget);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Removes all widgets from this layout's container.
 	 *
 	 * @param rContainer The container to clear
 	 */
-	public void clear(HasWidgets rContainer)
-	{
+	public void clear(HasWidgets rContainer) {
 		rContainer.clear();
 	}
 
-	/***************************************
-	 * Removes a certain widget from a widget container according to this layout
+	/**
+	 * Creates a new GWT container widget that represents this layout. This
+	 * method is only intended to be used internally by the GEWT framework.
+	 *
+	 * @param rContainer The GEWT container to create the widget for
+	 * @param rStyleData The style of the container widget
+	 * @return A new widget container
+	 */
+	public abstract HasWidgets createLayoutContainer(Container rContainer,
+		StyleData rStyleData);
+
+	/**
+	 * Removes a certain widget from a widget container according to this
+	 * layout
 	 * and the given style data. This default implementation just invokes the
 	 * method {@link HasWidgets#remove(Widget)}. Subclasses may override this
 	 * method to implement a different layout strategy.
@@ -101,53 +91,47 @@ public abstract class GenericLayout
 	 * @param rContainer The container to remove the widget from
 	 * @param rWidget    The widget to remove
 	 */
-	public void removeWidget(HasWidgets rContainer, Widget rWidget)
-	{
+	public void removeWidget(HasWidgets rContainer, Widget rWidget) {
 		rContainer.remove(rWidget);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getSimpleName();
 	}
 
-	/***************************************
+	/**
 	 * Sets a string property on an element style if it is not NULL.
+	 *
 	 * @param sProperty The property name
 	 * @param rStyle    The element style
 	 * @param sValue    The property value
 	 */
-	protected void setStyleProperty(String sProperty,
-									Style  rStyle,
-									String sValue)
-	{
-		if (sValue != null)
-		{
+	protected void setStyleProperty(String sProperty, Style rStyle,
+		String sValue) {
+		if (sValue != null) {
 			rStyle.setProperty(sProperty, sValue);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets a CSS name property on an element style if it is not NULL.
+	 *
 	 * @param sProperty The property name
 	 * @param rStyle    The element style
 	 * @param rValue    The property value
 	 */
-	protected void setStyleProperty(String	   sProperty,
-									Style	   rStyle,
-									HasCssName rValue)
-	{
-		if (rValue != null)
-		{
+	protected void setStyleProperty(String sProperty, Style rStyle,
+		HasCssName rValue) {
+		if (rValue != null) {
 			rStyle.setProperty(sProperty, rValue.getCssName());
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets a style property from a component style property if it exists.
 	 *
 	 * @param rProperty  The property to get from the component style
@@ -156,19 +140,15 @@ public abstract class GenericLayout
 	 * @param rStyle     The target style
 	 */
 	protected void setStyleProperty(PropertyName<?> rProperty,
-									StyleData		rStyleData,
-									String			sProperty,
-									Style			rStyle)
-	{
+		StyleData rStyleData, String sProperty, Style rStyle) {
 		Object rValue = rStyleData.getProperty(rProperty, null);
 
-		if (rValue != null)
-		{
+		if (rValue != null) {
 			setStyleProperty(sProperty, rStyle, rValue.toString());
 		}
 	}
 
-	/***************************************
+	/**
 	 * Method for table-based subclasses to set the cell alignment according to
 	 * a style data object.
 	 *
@@ -177,22 +157,17 @@ public abstract class GenericLayout
 	 * @param nRow           The row of the cell
 	 * @param nCol           The column of the cell
 	 */
-	void setCellAlignment(StyleData		rStyleData,
-						  CellFormatter rCellFormatter,
-						  int			nRow,
-						  int			nCol)
-	{
+	void setCellAlignment(StyleData rStyleData, CellFormatter rCellFormatter,
+		int nRow, int nCol) {
 		HorizontalAlignmentConstant rHAlign =
 			rStyleData.mapHorizontalAlignment();
-		VerticalAlignmentConstant   rVAlign = rStyleData.mapVerticalAlignment();
+		VerticalAlignmentConstant rVAlign = rStyleData.mapVerticalAlignment();
 
-		if (rHAlign != null)
-		{
+		if (rHAlign != null) {
 			rCellFormatter.setHorizontalAlignment(nRow, nCol, rHAlign);
 		}
 
-		if (rVAlign != null)
-		{
+		if (rVAlign != null) {
 			rCellFormatter.setVerticalAlignment(nRow, nCol, rVAlign);
 		}
 	}

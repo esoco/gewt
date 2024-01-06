@@ -22,23 +22,19 @@ import jsinterop.annotations.JsType;
 
 import de.esoco.ewt.js.JsObject;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent">
  * MessageEvent</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class MessageEvent extends Event
-{
-	//~ Methods ----------------------------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class MessageEvent extends Event {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/data">
-	 *      MessageEvent.data</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/MessageEvent/data"> MessageEvent.data</a>
 	 */
 	@JsProperty
 	public native JsObject getData();

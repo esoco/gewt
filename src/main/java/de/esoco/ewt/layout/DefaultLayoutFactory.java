@@ -33,50 +33,40 @@ import com.google.gwt.user.client.ui.HasWidgets;
 
 import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
-
-/********************************************************************
+/**
  * The default layout factory implementation for GEWT.
  *
  * @author eso
  */
-public class DefaultLayoutFactory implements LayoutFactory
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class DefaultLayoutFactory implements LayoutFactory {
 
-	private static String sGridRowStyleName    = "row";
+	private static String sGridRowStyleName = "row";
+
 	private static String sGridColumnStyleName = "col";
 
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
-	 * Allows to set the style names for the layouts {@link LayoutType#GRID_ROW}
+	/**
+	 * Allows to set the style names for the layouts
+	 * {@link LayoutType#GRID_ROW}
 	 * and {@link LayoutType#GRID_COLUMN}.
 	 *
 	 * @param sRowStyleName    The new grid row style name
 	 * @param sColumnStyleName The new grid column style name
 	 */
-	public static void setGridStyleNames(
-		String sRowStyleName,
-		String sColumnStyleName)
-	{
-		sGridRowStyleName    = sRowStyleName;
+	public static void setGridStyleNames(String sRowStyleName,
+		String sColumnStyleName) {
+		sGridRowStyleName = sRowStyleName;
 		sGridColumnStyleName = sColumnStyleName;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GenericLayout createLayout(Container  rParentContainer,
-									  StyleData  rContainerStyle,
-									  LayoutType eLayout)
-	{
+	public GenericLayout createLayout(Container rParentContainer,
+		StyleData rContainerStyle, LayoutType eLayout) {
 		GenericLayout aLayout;
 
-		switch (eLayout)
-		{
+		switch (eLayout) {
 			case SPLIT:
 				aLayout = new SplitPanelLayout();
 				break;
@@ -84,14 +74,12 @@ public class DefaultLayoutFactory implements LayoutFactory
 			case DECK:
 
 				Alignment eVAlign =
-					rContainerStyle.getProperty(VERTICAL_ALIGN, Alignment.FILL);
+					rContainerStyle.getProperty(VERTICAL_ALIGN,
+						Alignment.FILL);
 
-				if (eVAlign == Alignment.FILL)
-				{
+				if (eVAlign == Alignment.FILL) {
 					aLayout = new DeckLayoutPanelLayout();
-				}
-				else
-				{
+				} else {
 					aLayout = new DeckPanelLayout();
 				}
 
@@ -155,60 +143,48 @@ public class DefaultLayoutFactory implements LayoutFactory
 				break;
 
 			default:
-				throw new IllegalStateException("Unsupported Layout " +
-												eLayout);
+				throw new IllegalStateException(
+					"Unsupported Layout " + eLayout);
 		}
 
 		return aLayout;
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A generic layout implementation that creates a simple panel that is
 	 * controlled by CSS styles (like CSS grid or flexbox).
 	 *
 	 * <p>If the panel needs a specific value of it's 'display' property that
 	 * must be set in the CSS for the given style name. This is because the GWT
-	 * setVisible() implementation toggles 'display' between 'none' and it's CSS
+	 * setVisible() implementation toggles 'display' between 'none' and it's
+	 * CSS
 	 * default; setting it programmatically therefore wouldn't have an effect
 	 * because it would be overridden by invocations of setVisible().</p>
 	 *
 	 * @author eso
 	 */
-	static class CssStyleLayout extends GenericLayout
-	{
-		//~ Instance fields ----------------------------------------------------
+	static class CssStyleLayout extends GenericLayout {
 
 		private String sCssStyleName;
 
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param sStyleName The CSS style name of this instance
 		 */
-		public CssStyleLayout(String sStyleName)
-		{
+		public CssStyleLayout(String sStyleName) {
 			sCssStyleName = sStyleName;
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(
-			Container rContainer,
-			StyleData rStyle)
-		{
-			return new FlowPanel()
-			{
+		public HasWidgets createLayoutContainer(Container rContainer,
+			StyleData rStyle) {
+			return new FlowPanel() {
 				@Override
-				protected void onAttach()
-				{
+				protected void onAttach() {
 					super.onAttach();
 
 					addStyleName(sCssStyleName);

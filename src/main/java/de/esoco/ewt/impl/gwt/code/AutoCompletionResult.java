@@ -23,115 +23,94 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-/********************************************************************
+/**
  * TODO: DOCUMENT ME!
  *
  * @author Matthew Horridge, Stanford University, Bio-Medical Informatics
- *         Research Group, Date: 18/03/2014
+ * Research Group, Date: 18/03/2014
  */
-public class AutoCompletionResult implements Serializable, IsSerializable
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class AutoCompletionResult implements Serializable, IsSerializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final AutoCompletionResult EMPTY_RESULT =
 		new AutoCompletionResult();
 
-	//~ Instance fields --------------------------------------------------------
-
 	private List<AutoCompletionChoice> rChoices;
 
 	private EditorPosition rFromPosition;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	public AutoCompletionResult()
-	{
+	public AutoCompletionResult() {
 		this(new ArrayList<AutoCompletionChoice>(), new EditorPosition(0, 0));
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rChoices      TODO: DOCUMENT ME!
 	 * @param rFromPosition TODO: DOCUMENT ME!
 	 */
-	public AutoCompletionResult(
-		List<AutoCompletionChoice> rChoices,
-		EditorPosition			   rFromPosition)
-	{
-		this.rChoices	   = new ArrayList<AutoCompletionChoice>(rChoices);
+	public AutoCompletionResult(List<AutoCompletionChoice> rChoices,
+		EditorPosition rFromPosition) {
+		this.rChoices = new ArrayList<AutoCompletionChoice>(rChoices);
 		this.rFromPosition = rFromPosition;
 	}
 
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
+	/**
 	 * TODO: DOCUMENT ME!
 	 *
 	 * @return TODO: DOCUMENT ME!
 	 */
-	public static AutoCompletionResult emptyResult()
-	{
+	public static AutoCompletionResult emptyResult() {
 		return EMPTY_RESULT;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this)
-		{
+	public boolean equals(Object o) {
+		if (o == this) {
 			return true;
 		}
 
-		if (!(o instanceof AutoCompletionResult))
-		{
+		if (!(o instanceof AutoCompletionResult)) {
 			return false;
 		}
 
 		AutoCompletionResult other = (AutoCompletionResult) o;
 
 		return this.rFromPosition.equals(other.rFromPosition) &&
-			   this.rChoices.equals(other.rChoices);
+			this.rChoices.equals(other.rChoices);
 	}
 
-	/***************************************
+	/**
 	 * Returns the choices.
 	 *
 	 * @return The choices
 	 */
-	public List<AutoCompletionChoice> getChoices()
-	{
+	public List<AutoCompletionChoice> getChoices() {
 		return new ArrayList<AutoCompletionChoice>(rChoices);
 	}
 
-	/***************************************
+	/**
 	 * Returns the from position.
 	 *
 	 * @return The from position
 	 */
-	public EditorPosition getFromPosition()
-	{
+	public EditorPosition getFromPosition() {
 		return rFromPosition;
 	}
 
-	/***************************************
+	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return "AutoCompletionResult".hashCode() + rChoices.hashCode() +
-			   rFromPosition.hashCode();
+			rFromPosition.hashCode();
 	}
 }

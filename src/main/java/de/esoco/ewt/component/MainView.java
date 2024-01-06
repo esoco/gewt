@@ -28,53 +28,44 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A GWT-specific main view implementation that wraps a root panel.
  *
  * @author eso
  */
-public class MainView extends View
-{
-	//~ Constructors -----------------------------------------------------------
+public class MainView extends View {
 
-	/***************************************
+	/**
 	 * Creates a new instance that wraps a certain root panel.
 	 *
 	 * @param rContext The user interface context this view belongs to
 	 * @param rStyle   The view style
 	 */
-	public MainView(UserInterfaceContext rContext, ViewStyle rStyle)
-	{
+	public MainView(UserInterfaceContext rContext, ViewStyle rStyle) {
 		super(rContext, rStyle);
 
 		setLayout(new MainViewLayout());
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public View getView()
-	{
+	public View getView() {
 		return this;
 	}
 
-	/***************************************
+	/**
 	 * @see Container#setLayout(GenericLayout)
 	 */
 	@Override
-	public void setLayout(GenericLayout rLayout)
-	{
+	public void setLayout(GenericLayout rLayout) {
 		boolean bFullSize = getViewStyle().hasFlag(ViewStyle.Flag.FULL_SIZE);
-		Widget  rWidget   = getWidget();
+		Widget rWidget = getWidget();
 
 		Panel rRootPanel = bFullSize ? RootLayoutPanel.get() : RootPanel.get();
 
-		if (rWidget != null)
-		{
+		if (rWidget != null) {
 			rRootPanel.remove(rWidget);
 		}
 
@@ -86,16 +77,13 @@ public class MainView extends View
 		rRootPanel.add(rWidget);
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The default layout for the {@link MainView} of an application. This is
 	 * just a sub-class of {@link FillLayout} that can be detected by layout
 	 * factories if necessary.
 	 *
 	 * @author eso
 	 */
-	public static class MainViewLayout extends FillLayout
-	{
+	public static class MainViewLayout extends FillLayout {
 	}
 }

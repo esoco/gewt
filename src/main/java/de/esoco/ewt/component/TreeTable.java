@@ -16,12 +16,11 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-/********************************************************************
+/**
  * A hierarchical table that allows it's rows to be expanded and collapsed like
  * in a {@link Tree}.
  *
  * @author eso
  */
-public class TreeTable extends TableControl
-{
+public class TreeTable extends TableControl {
 }

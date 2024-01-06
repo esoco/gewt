@@ -29,112 +29,89 @@ import com.google.gwt.user.client.ui.CustomScrollPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A scroll panel that allows to scroll it's content.
  *
  * @author eso
  */
-public class ScrollPanel extends FixedLayoutPanel
-{
-	//~ Constructors -----------------------------------------------------------
+public class ScrollPanel extends FixedLayoutPanel {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	public ScrollPanel()
-	{
+	public ScrollPanel() {
 		super(new ScrollPanelLayout());
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Overridden to check for scrollbar styles.
 	 *
 	 * @see Component#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle)
-	{
+	public void applyStyle(StyleData rStyle) {
 		com.google.gwt.user.client.ui.ScrollPanel rScrollPanel =
 			(com.google.gwt.user.client.ui.ScrollPanel) getWidget();
 
 		super.applyStyle(rStyle);
 
 		if (rStyle.hasFlag(StyleFlag.SCROLLBAR_HORIZONTAL_ON) ||
-			rStyle.hasFlag(StyleFlag.SCROLLBAR_VERTICAL_ON))
-		{
+			rStyle.hasFlag(StyleFlag.SCROLLBAR_VERTICAL_ON)) {
 			rScrollPanel.setAlwaysShowScrollBars(true);
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see Component#createEventDispatcher()
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new ScrollEventDispatcher();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * The default layout for this panel.
 	 *
 	 * @author eso
 	 */
-	public static class ScrollPanelLayout extends GenericLayout
-	{
-		//~ Methods ------------------------------------------------------------
+	public static class ScrollPanelLayout extends GenericLayout {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(
-			Container rContainer,
-			StyleData rStyle)
-		{
+		public HasWidgets createLayoutContainer(Container rContainer,
+			StyleData rStyle) {
 			return new CustomScrollPanel();
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * Dispatcher for scroll events.
 	 *
 	 * @author eso
 	 */
 	class ScrollEventDispatcher extends ComponentEventDispatcher
-		implements ScrollHandler
-	{
-		//~ Methods ------------------------------------------------------------
+		implements ScrollHandler {
 
-		/***************************************
+		/**
 		 * @see ScrollHandler#onScroll(ScrollEvent)
 		 */
 		@Override
-		public void onScroll(ScrollEvent rEvent)
-		{
+		public void onScroll(ScrollEvent rEvent) {
 			notifyEventHandler(EventType.VALUE_CHANGED, rEvent);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			if (eEventType == EventType.VALUE_CHANGED &&
-				rWidget instanceof HasScrollHandlers)
-			{
+				rWidget instanceof HasScrollHandlers) {
 				return ((HasScrollHandlers) rWidget).addScrollHandler(this);
-			}
-			else
-			{
+			} else {
 				return super.initEventDispatching(rWidget, eEventType);
 			}
 		}

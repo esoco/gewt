@@ -23,57 +23,45 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A panel that can contain arbitrary child widgets.
  *
  * @author eso
  */
-public class Panel extends Container
-{
-	//~ Methods ----------------------------------------------------------------
+public class Panel extends Container {
 
-	/***************************************
+	/**
 	 * Overridden to sink GWT events so that events will be created.
 	 *
 	 * @see Container#createEventDispatcher()
 	 */
 	@Override
-	ComponentEventDispatcher createEventDispatcher()
-	{
+	ComponentEventDispatcher createEventDispatcher() {
 		return new PanelEventDispatcher();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
-	 * A panel event dispatcher that implements action events through DOM events
+	/**
+	 * A panel event dispatcher that implements action events through DOM
+	 * events
 	 * if not supported natively by a panel widget.
 	 *
 	 * @author eso
 	 */
-	class PanelEventDispatcher extends ComponentEventDispatcher
-	{
-		//~ Methods ------------------------------------------------------------
+	class PanelEventDispatcher extends ComponentEventDispatcher {
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(
-			Widget    rWidget,
-			EventType eEventType)
-		{
+		protected HandlerRegistration initEventDispatching(Widget rWidget,
+			EventType eEventType) {
 			HandlerRegistration rHandler;
 
 			if (eEventType == EventType.ACTION &&
-				!(rWidget instanceof HasClickHandlers))
-			{
+				!(rWidget instanceof HasClickHandlers)) {
 				// enable click events for panel widgets without native support
 				rHandler = rWidget.addDomHandler(this, ClickEvent.getType());
-			}
-			else
-			{
+			} else {
 				rHandler = super.initEventDispatching(rWidget, eEventType);
 			}
 

@@ -21,41 +21,33 @@ import de.esoco.ewt.component.ChildView.IsChildViewWidget;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 
-
-/********************************************************************
+/**
  * Default GWT child view implementation.
  *
  * @author eso
  */
-public class GwtChildView extends DialogBox implements IsChildViewWidget
-{
-	//~ Constructors -----------------------------------------------------------
+public class GwtChildView extends DialogBox implements IsChildViewWidget {
 
-	/***************************************
+	/**
 	 * @see DecoratedPopupPanel#DecoratedPopupPanel(boolean, boolean)
 	 */
-	public GwtChildView(boolean bAutoHide, boolean bModal)
-	{
+	public GwtChildView(boolean bAutoHide, boolean bModal) {
 		super(bAutoHide, bModal);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isShown()
-	{
+	public boolean isShown() {
 		return isShowing();
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setViewTitle(String sTitle)
-	{
+	public void setViewTitle(String sTitle) {
 		getCaption().asWidget().setVisible(sTitle != null);
 
 		setText(sTitle != null ? sTitle : "");

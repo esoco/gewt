@@ -85,18 +85,17 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
-
-/********************************************************************
+/**
  * The main entry point into EWT. Contains only static methods that allow to
  * acquire a user interface context or to manipulate global settings.
  *
  * @author eso
  */
-public class EWT
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class EWT {
 
-	/** The GEWT CSS (for package-internal use) */
+	/**
+	 * The GEWT CSS (for package-internal use)
+	 */
 	public static final GewtCss CSS = GewtResources.INSTANCE.css();
 
 	/**
@@ -118,92 +117,78 @@ public class EWT
 	private static ChildViewFactory aChildViewFactory = new ChildViewFactory();
 
 	private static LayoutFactory aLayoutFactory = new DefaultLayoutFactory();
-	private static LayoutMapper  aLayoutMapper  = new IdentityLayoutMapper();
 
-	private static Map<Class<? extends Component>, WidgetFactory<?>> aWidgetFactories =
-		new HashMap<>();
+	private static LayoutMapper aLayoutMapper = new IdentityLayoutMapper();
 
-	//~ Constructors -----------------------------------------------------------
+	private static Map<Class<? extends Component>, WidgetFactory<?>>
+		aWidgetFactories = new HashMap<>();
 
-	/***************************************
+	/**
 	 * Private - only static method access.
 	 */
-	private EWT()
-	{
+	private EWT() {
 	}
 
-	//~ Static methods ---------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Adds a mapping for a CSS class name. Applications can then use their own
-	 * CSS class which will then automatically be translated into the respective
+	 * CSS class which will then automatically be translated into the
+	 * respective
 	 * target CSS class.
 	 *
 	 * @param sApplicationCssClass The CSS class used by the application
-	 * @param sTargetCssClass      The CSS class to map the application class to
+	 * @param sTargetCssClass      The CSS class to map the application class
+	 *                             to
 	 */
-	public static void addCssClassMapping(
-		String sApplicationCssClass,
-		String sTargetCssClass)
-	{
-		if (aCssClassMap == null)
-		{
+	public static void addCssClassMapping(String sApplicationCssClass,
+		String sTargetCssClass) {
+		if (aCssClassMap == null) {
 			aCssClassMap = new HashMap<>();
 		}
 
 		aCssClassMap.put(sApplicationCssClass, sTargetCssClass);
 	}
 
-	/***************************************
+	/**
 	 * Adds several CSS class mappings.
 	 *
 	 * @param rMappings The mappings to add
-	 *
-	 * @see   #addCssClassMapping(String, String)
+	 * @see #addCssClassMapping(String, String)
 	 */
-	public static void addCssClassMappings(Map<String, String> rMappings)
-	{
-		for (Entry<String, String> rMapping : rMappings.entrySet())
-		{
+	public static void addCssClassMappings(Map<String, String> rMappings) {
+		for (Entry<String, String> rMapping : rMappings.entrySet()) {
 			addCssClassMapping(rMapping.getKey(), rMapping.getValue());
 		}
 	}
 
-	/***************************************
+	/**
 	 * Converts an HTML string so that it can be used as the inner HTML of a
 	 * widget. If the input is a complete HTML page this method then first
 	 * extracts the content of the body tag. Then it converts all relative URL
 	 * references with absolute URLs of the given base URL.
 	 *
-	 * @param  sHtml    The HTML to convert
-	 * @param  sBaseUrl The base URL for the conversion of relative URLs
-	 *
+	 * @param sHtml    The HTML to convert
+	 * @param sBaseUrl The base URL for the conversion of relative URLs
 	 * @return The converted HTML string
 	 */
-	public static String convertToInnerHtml(String sHtml, String sBaseUrl)
-	{
+	public static String convertToInnerHtml(String sHtml, String sBaseUrl) {
 		MatchResult aResult =
 			RegExp.compile("<body[^>]*>[\\s\\S]*<\\/body>").exec(sHtml);
 
-		if (aResult != null && aResult.getGroupCount() > 0)
-		{
+		if (aResult != null && aResult.getGroupCount() > 0) {
 			// use only body content if the request returns a full HTML page
 			sHtml = aResult.getGroup(0);
 		}
 
-		SplitResult aSrcRefs  = RegExp.compile("src=\"(.*?)\"").split(sHtml);
-		int		    nRefCount = aSrcRefs.length();
+		SplitResult aSrcRefs = RegExp.compile("src=\"(.*?)\"").split(sHtml);
+		int nRefCount = aSrcRefs.length();
 
-		if (nRefCount > 0)
-		{
+		if (nRefCount > 0) {
 			StringBuilder aExpandedText = new StringBuilder(aSrcRefs.get(0));
 
-			for (int i = 1; i < nRefCount; i += 2)
-			{
+			for (int i = 1; i < nRefCount; i += 2) {
 				String sUrl = aSrcRefs.get(i);
 
-				if (!sUrl.startsWith("http"))
-				{
+				if (!sUrl.startsWith("http")) {
 					sUrl = sBaseUrl + sUrl;
 				}
 
@@ -219,11 +204,12 @@ public class EWT
 		return sHtml;
 	}
 
-	/***************************************
+	/**
 	 * Places a text string in the system clipboard. This requires that the
 	 * input focus is moved to a hidden component. As there is no reliable way
 	 * to find the previously focused element it is recommended that invoking
-	 * code resets the focus to the previously active input component after this
+	 * code resets the focus to the previously active input component after
+	 * this
 	 * method returns.
 	 *
 	 * @param sText The text string
@@ -246,124 +232,113 @@ public class EWT
 		document.body.removeChild(textArea);
 	}-*/;
 
-	/***************************************
+	/**
 	 * Creates a new user interface context.
 	 *
-	 * @param  rResource The context resource or NULL for none
-	 *
+	 * @param rResource The context resource or NULL for none
 	 * @return A new user interface context instance
 	 */
 	public static UserInterfaceContext createUserInterfaceContext(
-		Resource rResource)
-	{
+		Resource rResource) {
 		return new UserInterfaceContext(rResource);
 	}
 
-	/***************************************
-	 * Expands a resource for a particular user interface component. Checks if a
+	/**
+	 * Expands a resource for a particular user interface component. Checks
+	 * if a
 	 * string starts with the character '$' and therefore represents a resource
 	 * key. If so, the corresponding resource value will be returned after
-	 * performing a lookup from the application resource. If the string argument
+	 * performing a lookup from the application resource. If the string
+	 * argument
 	 * is not prefixed and therefore not a resource key it will be returned
 	 * unchanged.
 	 *
-	 * @param  rComponent The Component to perform the resource lookup for
-	 * @param  sResource  The string to check and (if necessary) expand
-	 *
+	 * @param rComponent The Component to perform the resource lookup for
+	 * @param sResource  The string to check and (if necessary) expand
 	 * @return The resource string (NULL if no resource entry could be found)
 	 */
-	public static String expandResource(Component rComponent, String sResource)
-	{
+	public static String expandResource(Component rComponent,
+		String sResource) {
 		return rComponent.getContext().expandResource(sResource);
 	}
 
-	/***************************************
+	/**
 	 * Returns the factory for child view widgets.
 	 *
 	 * @return The child view factory
 	 */
-	public static ChildViewFactory getChildViewFactory()
-	{
+	public static ChildViewFactory getChildViewFactory() {
 		return aChildViewFactory;
 	}
 
-	/***************************************
+	/**
 	 * Returns the default interval for the detection of double clicks.
 	 *
 	 * @return The default double click interval
 	 */
-	public static int getDoubleClickInterval()
-	{
+	public static int getDoubleClickInterval() {
 		return DOUBLE_CLICK_INTERVAL;
 	}
 
-	/***************************************
+	/**
 	 * Returns the current layout factory.
 	 *
 	 * @return The layout factory
 	 */
-	public static final LayoutFactory getLayoutFactory()
-	{
+	public static final LayoutFactory getLayoutFactory() {
 		return aLayoutFactory;
 	}
 
-	/***************************************
+	/**
 	 * Returns the current layout mapper.
 	 *
 	 * @return The layout mapper
 	 */
-	public static final LayoutMapper getLayoutMapper()
-	{
+	public static final LayoutMapper getLayoutMapper() {
 		return aLayoutMapper;
 	}
 
-	/***************************************
+	/**
 	 * Returns the widget factory for a certain component or layout instance.
 	 *
-	 * @param  rComponentClass The component class for which to return the
-	 *                         factory for
-	 *
+	 * @param rComponentClass The component class for which to return the
+	 *                        factory for
 	 * @return The widget factory or NULL if no factory has been registered
-	 *
-	 * @see    #registerWidgetFactory(Class, WidgetFactory, boolean)
+	 * @see #registerWidgetFactory(Class, WidgetFactory, boolean)
 	 */
 	public static WidgetFactory<?> getWidgetFactory(
-		Class<? extends Component> rComponentClass)
-	{
-		if (aWidgetFactories.isEmpty())
-		{
+		Class<? extends Component> rComponentClass) {
+		if (aWidgetFactories.isEmpty()) {
 			registerDefaultWidgetFactories(true);
 		}
 
 		return aWidgetFactories.get(rComponentClass);
 	}
 
-	/***************************************
+	/**
 	 * An enhanced GWT logging method that allows to use a (simple) format
-	 * string and message arguments. Based on {@link GWT#log(String)} and {@link
-	 * TextConvert#format(String, java.util.Collection)}.
+	 * string and message arguments. Based on {@link GWT#log(String)} and
+	 * {@link TextConvert#format(String, java.util.Collection)}.
 	 *
 	 * @param sFormat The message format string
 	 * @param rArgs   The message arguments
 	 */
-	public static void log(String sFormat, Object... rArgs)
-	{
+	public static void log(String sFormat, Object... rArgs) {
 		GWT.log(TextConvert.format(sFormat, rArgs));
 	}
 
-	/***************************************
+	/**
 	 * Measures and logs the time of a profiled execution.
 	 *
 	 * @param sInfo  An info string describing the profiling
 	 * @param sName  The name of the profiled context
 	 * @param nStart The starting time of the measuring in milliseconds
 	 */
-	public static void logTime(String sInfo, String sName, long nStart)
-	{
+	public static void logTime(String sInfo, String sName, long nStart) {
 		logTime(sInfo, sName, nStart, 0);
 	}
 
-	/***************************************
+	/**
 	 * Measures and logs the time of a profiled execution if it exceeds a
 	 * certain threshold.
 	 *
@@ -372,38 +347,30 @@ public class EWT
 	 * @param nStart     The starting time of the measuring in milliseconds
 	 * @param nThreshold The threshold in milliseconds
 	 */
-	public static void logTime(String sInfo,
-							   String sName,
-							   long   nStart,
-							   int    nThreshold)
-	{
+	public static void logTime(String sInfo, String sName, long nStart,
+		int nThreshold) {
 		long t = System.currentTimeMillis() - nStart;
 
-		if (t > nThreshold)
-		{
+		if (t > nThreshold) {
 			GWT.log(
-				t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 +
-				": " + sInfo + " " + sName);
+				t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10 + ":" +
+					" " + sInfo + " " + sName);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Maps a certain CSS class name if a corresponding mapping has been
 	 * registered through {@link #addCssClassMapping(String, String)}. If no
 	 * mapping exists the input name will be returned unchanged.
 	 *
-	 * @param  sCssClass The CSS class name to map
-	 *
+	 * @param sCssClass The CSS class name to map
 	 * @return The mapped CSS class name or the input name if no mapping exists
 	 */
-	public static String mapCssClass(String sCssClass)
-	{
-		if (aCssClassMap != null)
-		{
+	public static String mapCssClass(String sCssClass) {
+		if (aCssClassMap != null) {
 			String sMappedCssClass = aCssClassMap.get(sCssClass);
 
-			if (sMappedCssClass != null)
-			{
+			if (sMappedCssClass != null) {
 				sCssClass = sMappedCssClass;
 			}
 		}
@@ -411,39 +378,34 @@ public class EWT
 		return sCssClass;
 	}
 
-	/***************************************
+	/**
 	 * A helper method that measures the execution time of a {@link Runnable}
 	 * object.
 	 *
 	 * @param sDescription  The description of the measured code
 	 * @param rProfiledCode The code to measure the execution time of
 	 */
-	public static void measure(String sDescription, Runnable rProfiledCode)
-	{
+	public static void measure(String sDescription, Runnable rProfiledCode) {
 		long t = System.currentTimeMillis();
 
 		rProfiledCode.run();
 
 		t = System.currentTimeMillis() - t;
-		EWT.log(
-			"[TIME] %s: %ss",
-			sDescription,
+		EWT.log("[TIME] %s: %ss", sDescription,
 			t / 1000 + "." + t % 1000 / 100 + t % 100 / 10 + t % 10);
 	}
 
-	/***************************************
+	/**
 	 * Opens a URL that is relative to the current web application in an
 	 * invisible frame. This can be used to initiate downloads.
 	 *
 	 * @param sRelativeUrl A URL that is relative to the current module's base
 	 *                     URL
 	 */
-	public static void openHiddenUrl(String sRelativeUrl)
-	{
+	public static void openHiddenUrl(String sRelativeUrl) {
 		final RootPanel rRootPanel = RootPanel.get(HIDDEN_URL_FRAME);
 
-		if (rRootPanel != null)
-		{
+		if (rRootPanel != null) {
 			Frame aFrame = new Frame(GWT.getModuleBaseURL() + sRelativeUrl);
 
 			aFrame.setVisible(false);
@@ -453,7 +415,7 @@ public class EWT
 		}
 	}
 
-	/***************************************
+	/**
 	 * Opens a URL in a new browser window. If the URL is not starting with
 	 * 'http' (i.e. is not absolute) the current module base URL will be
 	 * prepended. The possible values for name and features are described <a
@@ -462,129 +424,90 @@ public class EWT
 	 *
 	 * @param sUrl      The URL to open
 	 * @param sName     The name of the new window or NULL for none
-	 * @param sFeatures The desired Features of the new windows or NULL for none
+	 * @param sFeatures The desired Features of the new windows or NULL for
+	 *                  none
 	 */
-	public static void openUrl(String sUrl, String sName, String sFeatures)
-	{
-		if (!sUrl.startsWith("http"))
-		{
+	public static void openUrl(String sUrl, String sName, String sFeatures) {
+		if (!sUrl.startsWith("http")) {
 			sUrl = GWT.getModuleBaseURL() + sUrl;
 		}
 
-		Window.open(
-			sUrl,
-			sName != null ? sName : "",
+		Window.open(sUrl, sName != null ? sName : "",
 			sFeatures != null ? sFeatures : "");
 	}
 
-	/***************************************
+	/**
 	 * Registers all default GEWT widget factories.
 	 *
 	 * @param bReplaceExisting TRUE to replace existing mappings with the
 	 *                         default factory, FALSE to keep current factories
 	 */
-	public static void registerDefaultWidgetFactories(boolean bReplaceExisting)
-	{
-		registerWidgetFactory(
-			Button.class,
-			new ButtonWidgetFactory<>(),
+	public static void registerDefaultWidgetFactories(
+		boolean bReplaceExisting) {
+		registerWidgetFactory(Button.class, new ButtonWidgetFactory<>(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			Calendar.class,
-			new CalendarWidgetFactory(),
+		registerWidgetFactory(Calendar.class, new CalendarWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			CheckBox.class,
-			new CheckBoxWidgetFactory<>(),
+		registerWidgetFactory(CheckBox.class, new CheckBoxWidgetFactory<>(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			ComboBox.class,
-			new ComboBoxWidgetFactory(),
+		registerWidgetFactory(ComboBox.class, new ComboBoxWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			DateField.class,
-			new DateFieldWidgetFactory(),
+		registerWidgetFactory(DateField.class, new DateFieldWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			FileChooser.class,
+		registerWidgetFactory(FileChooser.class,
 			new FileChooserWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			Label.class,
-			new LabelWidgetFactory<>(),
+		registerWidgetFactory(Label.class, new LabelWidgetFactory<>(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			List.class,
-			new ListControlWidgetFactory(),
+		registerWidgetFactory(List.class, new ListControlWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			ListBox.class,
-			new ListControlWidgetFactory(),
+		registerWidgetFactory(ListBox.class, new ListControlWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			ProgressBar.class,
+		registerWidgetFactory(ProgressBar.class,
 			new ProgressBarWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			RadioButton.class,
+		registerWidgetFactory(RadioButton.class,
 			new RadioButtonWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			Spinner.class,
-			new SpinnerWidgetFactory(),
+		registerWidgetFactory(Spinner.class, new SpinnerWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			Table.class,
+		registerWidgetFactory(Table.class,
 			new TableControlWidgetFactory(false),
 			bReplaceExisting);
-		registerWidgetFactory(
-			TextArea.class,
-			new TextAreaWidgetFactory<>(),
+		registerWidgetFactory(TextArea.class, new TextAreaWidgetFactory<>(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			TextField.class,
-			new TextFieldWidgetFactory<>(),
+		registerWidgetFactory(TextField.class, new TextFieldWidgetFactory<>(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			ToggleButton.class,
-			new ToggleButtonWidgetFactory<>(),
+		registerWidgetFactory(ToggleButton.class,
+			new ToggleButtonWidgetFactory<>(), bReplaceExisting);
+		registerWidgetFactory(Tree.class, new TreeWidgetFactory(),
 			bReplaceExisting);
-		registerWidgetFactory(
-			Tree.class,
-			new TreeWidgetFactory(),
-			bReplaceExisting);
-		registerWidgetFactory(
-			TreeTable.class,
-			new TableControlWidgetFactory(true),
-			bReplaceExisting);
-		registerWidgetFactory(
-			Website.class,
-			new WebsiteWidgetFactory(),
+		registerWidgetFactory(TreeTable.class,
+			new TableControlWidgetFactory(true), bReplaceExisting);
+		registerWidgetFactory(Website.class, new WebsiteWidgetFactory(),
 			bReplaceExisting);
 	}
 
-	/***************************************
+	/**
 	 * Registers a widget factory for a certain component type.
 	 *
-	 * @param rComponentClass  The type of component to register the factory for
+	 * @param rComponentClass  The type of component to register the factory
+	 *                         for
 	 * @param rFactory         The widget factory
 	 * @param bReplaceExisting TRUE to replace an existing mapping with the
 	 *                         given factory, FALSE to keep the current factory
-	 *
-	 * @see   #getWidgetFactory(Class)
+	 * @see #getWidgetFactory(Class)
 	 */
 	public static void registerWidgetFactory(
-		Class<? extends Component> rComponentClass,
-		WidgetFactory<?>		   rFactory,
-		boolean					   bReplaceExisting)
-	{
-		if (bReplaceExisting || !aWidgetFactories.containsKey(rComponentClass))
-		{
+		Class<? extends Component> rComponentClass, WidgetFactory<?> rFactory,
+		boolean bReplaceExisting) {
+		if (bReplaceExisting ||
+			!aWidgetFactories.containsKey(rComponentClass)) {
 			aWidgetFactories.put(rComponentClass, rFactory);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Executes an HTTP request that retrieves the content of the argument URL.
 	 * If the URL is relative (i.e. doesn't start with 'http') it will be
 	 * retrieved relative to the GWT base path for static resources.
@@ -595,13 +518,10 @@ public class EWT
 	 *                        argument
 	 * @param fHandleError    A function that handles errors
 	 */
-	public static void requestUrlContent(
-		String					   sUrl,
+	public static void requestUrlContent(String sUrl,
 		BiConsumer<String, String> fProcessContent,
-		Consumer<Throwable>		   fHandleError)
-	{
-		if (!sUrl.startsWith("http"))
-		{
+		Consumer<Throwable> fHandleError) {
+		if (!sUrl.startsWith("http")) {
 			sUrl = GWT.getModuleBaseForStaticFiles() + sUrl;
 		}
 
@@ -610,77 +530,61 @@ public class EWT
 		RequestBuilder aRequestBuilder =
 			new RequestBuilder(RequestBuilder.GET, sUrl);
 
-		aRequestBuilder.setCallback(
-			new RequestCallback()
-			{
-				@Override
-				public void onResponseReceived(
-					Request  rRequest,
-					Response rResponse)
-				{
-					fProcessContent.accept(rResponse.getText(), sBaseUrl);
-				}
+		aRequestBuilder.setCallback(new RequestCallback() {
+			@Override
+			public void onError(Request rRequest, Throwable e) {
+				fHandleError.accept(e);
+			}
 
-				@Override
-				public void onError(Request rRequest, Throwable e)
-				{
-					fHandleError.accept(e);
-				}
-			});
+			@Override
+			public void onResponseReceived(Request rRequest,
+				Response rResponse) {
+				fProcessContent.accept(rResponse.getText(), sBaseUrl);
+			}
+		});
 
-		try
-		{
+		try {
 			aRequestBuilder.send();
-		}
-		catch (RequestException e)
-		{
+		} catch (RequestException e) {
 			fHandleError.accept(e);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Sets the child view factory to be used by the GEWT framework. This will
 	 * override the default factory.
 	 *
 	 * @param rFactory The new child view factory
 	 */
-	public static void setChildViewFactory(ChildViewFactory rFactory)
-	{
+	public static void setChildViewFactory(ChildViewFactory rFactory) {
 		aChildViewFactory = rFactory;
 	}
 
-	/***************************************
+	/**
 	 * Sets a new layout factory. EWT extensions can set a factory to create
 	 * their own layouts instead of the defaults.
 	 *
 	 * @param rFactory The new layout factory or NULL to reset to the default
 	 */
-	public static void setLayoutFactory(LayoutFactory rFactory)
-	{
-		if (rFactory != null)
-		{
+	public static void setLayoutFactory(LayoutFactory rFactory) {
+		if (rFactory != null) {
 			aLayoutFactory = rFactory;
-		}
-		else
-		{
+		} else {
 			aLayoutFactory = new DefaultLayoutFactory();
 		}
 	}
 
-	/***************************************
-	 * Sets a new layout mapper. EWT extensions can use such a mapper to replace
+	/**
+	 * Sets a new layout mapper. EWT extensions can use such a mapper to
+	 * replace
 	 * default layouts with their own instances.
 	 *
 	 * @param rMapper The new layout mapper or NULL to reset to the default
 	 */
-	public static void setLayoutMapper(LayoutMapper rMapper)
-	{
-		if (rMapper != null)
-		{
+	public static void setLayoutMapper(LayoutMapper rMapper) {
+		if (rMapper != null) {
 			aLayoutMapper = rMapper;
-		}
-		else
-		{
+		} else {
 			aLayoutMapper = new IdentityLayoutMapper();
 		}
 	}

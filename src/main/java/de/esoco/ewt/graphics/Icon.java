@@ -16,39 +16,31 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.graphics;
 
-/********************************************************************
+/**
  * An image implementation that represents an icon which is identified by it's
  * name.
  *
  * @author eso
  */
-public class Icon implements Image
-{
-	//~ Instance fields --------------------------------------------------------
+public class Icon implements Image {
 
 	private final String sName;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param sIconName rName
 	 */
-	public Icon(String sIconName)
-	{
+	public Icon(String sIconName) {
 		sName = sIconName;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Returns the name of this icon.
 	 *
 	 * @return The icon name
 	 */
-	public final String getName()
-	{
+	public final String getName() {
 		return sName;
 	}
 }

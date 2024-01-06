@@ -16,11 +16,10 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-/********************************************************************
+/**
  * A table component.
  *
  * @author eso
  */
-public class Table extends TableControl
-{
+public class Table extends TableControl {
 }

@@ -46,211 +46,173 @@ import com.google.gwt.user.client.ui.Widget;
 
 import static de.esoco.lib.property.ContentProperties.CONTENT_TYPE;
 
-
-/********************************************************************
+/**
  * A GWT-specific EWT label implementation.
  *
  * @author eso
  */
-public class Label extends Component implements TextAttribute, ImageAttribute
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class Label extends Component implements TextAttribute, ImageAttribute {
 
 	private static final String URL_TEXT_PREFIX = "url:";
 
-	//~ Instance fields --------------------------------------------------------
-
 	private String sText;
-	private Image  rImage;
+
+	private Image rImage;
 
 	private AlignedPosition rTextPosition;
-	private boolean		    bContainsHtml;
 
-	//~ Methods ----------------------------------------------------------------
+	private boolean bContainsHtml;
 
-	/***************************************
+	/**
 	 * @see Control#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle)
-	{
+	public void applyStyle(StyleData rStyle) {
 		super.applyStyle(rStyle);
 
 		rTextPosition = getTextPosition(rStyle);
 		bContainsHtml =
 			rStyle.getProperty(CONTENT_TYPE, null) == ContentType.HTML;
 
-		if (bContainsHtml)
-		{
+		if (bContainsHtml) {
 			addStyleName("contains-html");
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see ImageAttribute#getImage()
 	 */
 	@Override
-	public Image getImage()
-	{
+	public Image getImage() {
 		return rImage;
 	}
 
-	/***************************************
+	/**
 	 * @see TextAttribute#getText()
 	 */
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return sText;
 	}
 
-	/***************************************
+	/**
 	 * Checks whether this instance has the style {@link LabelStyle#FORM}.
 	 *
 	 * @return TRUE if this instance is a form label
 	 */
-	public final boolean isFormLabel()
-	{
+	public final boolean isFormLabel() {
 		return getWidget() instanceof GwtFormLabel;
 	}
 
-	/***************************************
+	/**
 	 * Indicates that this label refers to another component in a form-like
-	 * panel. This is only supported for labels with the {@link LabelStyle#FORM}
+	 * panel. This is only supported for labels with the
+	 * {@link LabelStyle#FORM}
 	 * style.
 	 *
 	 * @param rComponent rWidget The target widget for this label
 	 */
-	public void setAsLabelFor(Component rComponent)
-	{
+	public void setAsLabelFor(Component rComponent) {
 		Widget rLabelWidget = getWidget();
 
-		if (rLabelWidget instanceof GwtFormLabel)
-		{
+		if (rLabelWidget instanceof GwtFormLabel) {
 			((GwtFormLabel) rLabelWidget).setAsLabelFor(rComponent.getWidget());
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see ImageAttribute#setImage(Image)
 	 */
 	@Override
-	public void setImage(Image rImage)
-	{
+	public void setImage(Image rImage) {
 		this.rImage = rImage;
 
 		Widget rWidget = getWidget();
 
-		if (rWidget instanceof ImageAttribute)
-		{
+		if (rWidget instanceof ImageAttribute) {
 			((ImageAttribute) rWidget).setImage(rImage);
-		}
-		else
-		{
+		} else {
 			setLabelContent(sText);
 		}
 	}
 
-	/***************************************
+	/**
 	 * @see TextAttribute#setText(String)
 	 */
 	@Override
-	public void setText(String sNewText)
-	{
-		sText = sNewText != null ? getContext().expandResource(sNewText) : null;
+	public void setText(String sNewText) {
+		sText = sNewText != null ? getContext().expandResource(sNewText) :
+		        null;
 
-		if (sText != null && sText.startsWith(URL_TEXT_PREFIX))
-		{
+		if (sText != null && sText.startsWith(URL_TEXT_PREFIX)) {
 			EWT.requestUrlContent(sText.substring(URL_TEXT_PREFIX.length()),
-								  (t, u) ->
-								  setLabelContent(EWT.convertToInnerHtml(t, u)),
-								  this::handleUrlAccessError);
-		}
-		else
-		{
+				(t, u) -> setLabelContent(EWT.convertToInnerHtml(t, u)),
+				this::handleUrlAccessError);
+		} else {
 			setLabelContent(sText);
 		}
 	}
 
-	/***************************************
+	/**
 	 * Logs and displays an error upon querying the label text from a URL.
 	 *
 	 * @param e The error exception
 	 */
-	private void handleUrlAccessError(Throwable e)
-	{
+	private void handleUrlAccessError(Throwable e) {
 		GWT.log("Error reading " + sText, e);
 		sText = getContext().expandResource("$msgUrlTextNotAvailable");
 		setLabelContent(sText);
 	}
 
-	/***************************************
+	/**
 	 * Sets the label html.
 	 *
 	 * @param sLabelText The text to set the content from (may be NULL for
 	 *                   image-only labels)
 	 */
-	private void setLabelContent(String sLabelText)
-	{
-		Widget  rWidget     = getWidget();
-		String  sLabel	    = sLabelText != null ? sLabelText : "";
+	private void setLabelContent(String sLabelText) {
+		Widget rWidget = getWidget();
+		String sLabel = sLabelText != null ? sLabelText : "";
 		boolean bImageLabel = rImage instanceof ImageRef;
 
-		if (bImageLabel)
-		{
+		if (bImageLabel) {
 			rWidget.addStyleName(EWT.CSS.ewtImageLabel());
 
 			sLabel =
-				createImageLabel(sLabelText,
-								 (ImageRef) rImage,
-								 rTextPosition,
-								 HasHorizontalAlignment.ALIGN_CENTER,
-								 "100%");
+				createImageLabel(sLabelText, (ImageRef) rImage, rTextPosition,
+					HasHorizontalAlignment.ALIGN_CENTER, "100%");
 		}
 
-		if (bContainsHtml && rWidget instanceof HasHTML)
-		{
+		if (bContainsHtml && rWidget instanceof HasHTML) {
 			((HasHTML) rWidget).setHTML(sLabel);
-		}
-		else if (bImageLabel)
-		{
+		} else if (bImageLabel) {
 			rWidget.getElement().setInnerHTML(sLabel);
-		}
-		else if (rWidget instanceof HasText)
-		{
+		} else if (rWidget instanceof HasText) {
 			((HasText) rWidget).setText(sLabel);
 		}
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * Widget factory for this component.
 	 *
 	 * @author eso
 	 */
 	public static class LabelWidgetFactory<W extends Widget & HasText>
-		implements WidgetFactory<W>
-	{
-		//~ Methods ------------------------------------------------------------
+		implements WidgetFactory<W> {
 
-		/***************************************
+		/**
 		 * Create the widget for a certain label style.
 		 *
-		 * @param  rComponent  The component to create the widget for
-		 * @param  eLabelStyle The label style
-		 * @param  rStyle      The style data
-		 *
+		 * @param rComponent  The component to create the widget for
+		 * @param eLabelStyle The label style
+		 * @param rStyle      The style data
 		 * @return The new label widget
 		 */
-		public Widget createLabelWidget(Component  rComponent,
-										LabelStyle eLabelStyle,
-										StyleData  rStyle)
-		{
+		public Widget createLabelWidget(Component rComponent,
+			LabelStyle eLabelStyle, StyleData rStyle) {
 			Widget aWidget = null;
 
-			switch (eLabelStyle)
-			{
+			switch (eLabelStyle) {
 				case DEFAULT:
 				case IMAGE:
 				case BRAND:
@@ -277,24 +239,20 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 			return aWidget;
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle)
-		{
+		public W createWidget(Component rComponent, StyleData rStyle) {
 			Widget aWidget = null;
 
-			if (rStyle.hasFlag(StyleFlag.HYPERLINK))
-			{
+			if (rStyle.hasFlag(StyleFlag.HYPERLINK)) {
 				aWidget = new Hyperlink();
-			}
-			else
-			{
+			} else {
 				LabelStyle eLabelStyle =
 					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
-									   LabelStyle.DEFAULT);
+						LabelStyle.DEFAULT);
 
 				aWidget = createLabelWidget(rComponent, eLabelStyle, rStyle);
 			}
@@ -303,111 +261,92 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A GWT widget implementation that wraps a certain DOM text element.
 	 *
 	 * @author eso
 	 */
 	static abstract class LabelWidget<E extends Element> extends Widget
-		implements HasText, HasHTML
-	{
-		//~ Instance fields ----------------------------------------------------
+		implements HasText, HasHTML {
 
 		private final E rElement;
 
-		//~ Constructors -------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param rElement The element for this label widget
 		 */
-		LabelWidget(E rElement)
-		{
+		LabelWidget(E rElement) {
 			this.rElement = rElement;
 			setElement(rElement);
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public String getHTML()
-		{
+		public String getHTML() {
 			return rElement.getInnerHTML();
 		}
 
-		/***************************************
+		/**
 		 * Returns the label element wrapped by this instance.
 		 *
 		 * @return The label element
 		 */
-		public final E getLabelElement()
-		{
+		public final E getLabelElement() {
 			return rElement;
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public String getText()
-		{
+		public String getText() {
 			return rElement.getInnerText();
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setHTML(String sHtml)
-		{
+		public void setHTML(String sHtml) {
 			rElement.setInnerHTML(sHtml);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setText(String sText)
-		{
+		public void setText(String sText) {
 			rElement.setInnerText(sText);
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A GWT widget implementation that wraps a label DOM element.
 	 *
 	 * @author eso
 	 */
-	static class GwtFormLabel extends LabelWidget<LabelElement>
-	{
-		//~ Constructors -------------------------------------------------------
+	static class GwtFormLabel extends LabelWidget<LabelElement> {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		GwtFormLabel()
-		{
+		GwtFormLabel() {
 			super(Document.get().createLabelElement());
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Associates this label with another widget by referencing it's ID in
 		 * the HTML 'for' attribute.
 		 *
 		 * @param rWidget The target widget for this label
 		 */
-		public void setAsLabelFor(Widget rWidget)
-		{
+		public void setAsLabelFor(Widget rWidget) {
 			String sId = rWidget.getElement().getId();
 
-			if (sId == null || sId.isEmpty())
-			{
+			if (sId == null || sId.isEmpty()) {
 				sId = DOM.createUniqueId();
 				rWidget.getElement().setId(sId);
 			}
@@ -416,38 +355,31 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A GWT widget implementation that wraps a label DOM element.
 	 *
 	 * @author eso
 	 */
-	static class GwtIconLabel extends LabelWidget<Element>
-	{
-		//~ Constructors -------------------------------------------------------
+	static class GwtIconLabel extends LabelWidget<Element> {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		GwtIconLabel()
-		{
+		GwtIconLabel() {
 			super(Document.get().createElement("i"));
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Overridden to set the style name instead.
 		 *
 		 * @see LabelWidget#setText(String)
 		 */
 		@Override
-		public void setHTML(String sText)
-		{
-			String[]	  aBaseStyles = sText.split(" ");
-			StringBuilder aStyle	  = new StringBuilder("fa");
+		public void setHTML(String sText) {
+			String[] aBaseStyles = sText.split(" ");
+			StringBuilder aStyle = new StringBuilder("fa");
 
-			for (String sBaseStyle : aBaseStyles)
-			{
+			for (String sBaseStyle : aBaseStyles) {
 				aStyle.append(" fa-").append(sBaseStyle);
 			}
 
@@ -455,20 +387,17 @@ public class Label extends Component implements TextAttribute, ImageAttribute
 		}
 	}
 
-	/********************************************************************
+	/**
 	 * A GWT widget implementation that wraps a label DOM element.
 	 *
 	 * @author eso
 	 */
-	static class GwtLegendLabel extends LabelWidget<LegendElement>
-	{
-		//~ Constructors -------------------------------------------------------
+	static class GwtLegendLabel extends LabelWidget<LegendElement> {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		GwtLegendLabel()
-		{
+		GwtLegendLabel() {
 			super(Document.get().createLegendElement());
 		}
 	}

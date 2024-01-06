@@ -24,8 +24,7 @@ import de.esoco.lib.property.LayoutType;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.LayoutPanel;
 
-
-/********************************************************************
+/**
  * A layout class for typical content area in application. The default
  * implementation always creates a {@link LayoutPanel} container but extended
  * layout factories may create different containers based on the layout type
@@ -33,44 +32,34 @@ import com.google.gwt.user.client.ui.LayoutPanel;
  *
  * @author eso
  */
-public class ContentLayout extends GenericLayout
-{
-	//~ Instance fields --------------------------------------------------------
+public class ContentLayout extends GenericLayout {
 
 	private final LayoutType eLayoutType;
 
-	//~ Constructors -----------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param eLayoutType The type of this content layout
 	 */
-	public ContentLayout(LayoutType eLayoutType)
-	{
+	public ContentLayout(LayoutType eLayoutType) {
 		this.eLayoutType = eLayoutType;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(
-		Container rContainer,
-		StyleData rStyle)
-	{
+	public HasWidgets createLayoutContainer(Container rContainer,
+		StyleData rStyle) {
 		return new LayoutPanel();
 	}
 
-	/***************************************
+	/**
 	 * Returns the layout value.
 	 *
 	 * @return The layout value
 	 */
-	public final LayoutType getLayoutType()
-	{
+	public final LayoutType getLayoutType() {
 		return eLayoutType;
 	}
 }

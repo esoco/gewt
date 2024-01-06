@@ -39,51 +39,43 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.user.datepicker.client.DefaultCalendarView;
 import com.google.gwt.user.datepicker.client.MonthSelector;
 
-
-/********************************************************************
+/**
  * A {@link DatePicker} subclass that uses an extended {@link MonthSelector}
  * with functionality like year selection and time input.
  *
  * @author e.sonnenschein
  */
-public class GwtDatePicker extends DatePicker implements DateAttribute
-{
-	//~ Static fields/initializers ---------------------------------------------
+public class GwtDatePicker extends DatePicker implements DateAttribute {
 
 	private static final GewtResources RES = GewtResources.INSTANCE;
-	private static final GewtCss	   CSS = RES.css();
 
-	//~ Instance fields --------------------------------------------------------
+	private static final GewtCss CSS = RES.css();
 
 	private MonthAndTimeSelector aMonthAndTimeSelector;
-	private DateBox				 rDateBox;
 
-	//~ Constructors -----------------------------------------------------------
+	private DateBox rDateBox;
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rContext  The user interface context
 	 * @param bDateTime TRUE to pick date and time, FALSE for date only
 	 */
-	public GwtDatePicker(UserInterfaceContext rContext, boolean bDateTime)
-	{
+	public GwtDatePicker(UserInterfaceContext rContext, boolean bDateTime) {
 		super(new MonthAndTimeSelector(rContext, bDateTime),
-			  new DefaultCalendarView(),
-			  new CalendarModel());
+			new DefaultCalendarView(), new CalendarModel());
 
 		aMonthAndTimeSelector = (MonthAndTimeSelector) getMonthSelector();
 		aMonthAndTimeSelector.setDatePicker(this);
 
 		GwtTimePicker rTimePicker = aMonthAndTimeSelector.getTimePicker();
 
-		if (rTimePicker != null)
-		{
-			rTimePicker.addValueChangeHandler(new ValueChangeHandler<Integer>()
-				{
+		if (rTimePicker != null) {
+			rTimePicker.addValueChangeHandler(
+				new ValueChangeHandler<Integer>() {
 					@Override
-					public void onValueChange(ValueChangeEvent<Integer> rEvent)
-					{
+					public void onValueChange(
+						ValueChangeEvent<Integer> rEvent) {
 						timePickerValueChanged(rEvent);
 					}
 				});
@@ -93,22 +85,19 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 		setYearArrowsVisible(true);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
-	 * Returns the current date of this instance. If it has been created in date
+	/**
+	 * Returns the current date of this instance. If it has been created in
+	 * date
 	 * and time mode the result will also contain the selected time.
 	 *
 	 * @return The date
 	 */
 	@Override
 	@SuppressWarnings("deprecation")
-	public Date getDate()
-	{
+	public Date getDate() {
 		Date rDate = getValue();
 
-		if (rDate != null)
-		{
+		if (rDate != null) {
 			// DatePicker returns 12:00:00 ?!
 			rDate.setHours(0);
 			rDate.setMinutes(0);
@@ -118,16 +107,14 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 		return aMonthAndTimeSelector.applyTime(rDate);
 	}
 
-	/***************************************
+	/**
 	 * Sets the date.
 	 *
 	 * @param rDate The new date
 	 */
 	@Override
-	public void setDate(Date rDate)
-	{
-		if (rDate != null)
-		{
+	public void setDate(Date rDate) {
+		if (rDate != null) {
 			setCurrentMonth(rDate);
 		}
 
@@ -135,140 +122,124 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 		setValue(rDate);
 	}
 
-	/***************************************
+	/**
 	 * If this instance has a time picker this method can be used to set a date
 	 * box that needs to be updated if the time value has changed. If not set a
 	 * {@link ValueChangeEvent} will be fired instead.
 	 *
 	 * @param rDateBox The dateBox value
 	 */
-	public final void setDateBox(DateBox rDateBox)
-	{
+	public final void setDateBox(DateBox rDateBox) {
 		this.rDateBox = rDateBox;
 	}
 
-	/***************************************
+	/**
 	 * Handles a {@link ValueChangeEvent} from a {@link GwtTimePicker}.
 	 *
 	 * @param rEvent The event that occurred
 	 */
-	void timePickerValueChanged(ValueChangeEvent<Integer> rEvent)
-	{
-		if (rDateBox == null)
-		{
+	void timePickerValueChanged(ValueChangeEvent<Integer> rEvent) {
+		if (rDateBox == null) {
 			ValueChangeEvent.fire(GwtDatePicker.this, getDate());
-		}
-		else
-		{
+		} else {
 			rDateBox.setValue(getDate(), true);
 		}
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A {@link MonthSelector} subclass with extended functionality like year
 	 * selection and (optional) time input.
 	 */
 
-	static class MonthAndTimeSelector extends MonthSelector
-	{
-		//~ Static fields/initializers -----------------------------------------
+	static class MonthAndTimeSelector extends MonthSelector {
 
-		private static final int COL_PREV_YEAR  = 0;
+		private static final int COL_PREV_YEAR = 0;
+
 		private static final int COL_PREV_MONTH = 1;
-		private static final int COL_MONTH	    = 2;
-		private static final int COL_NEXT_MONTH = 3;
-		private static final int COL_NEXT_YEAR  = 4;
 
-		//~ Instance fields ----------------------------------------------------
+		private static final int COL_MONTH = 2;
+
+		private static final int COL_NEXT_MONTH = 3;
+
+		private static final int COL_NEXT_YEAR = 4;
 
 		private GwtDatePicker rDatePicker;
+
 		private GwtTimePicker aTimePicker;
 
-		private Label	   aMonthLabel	    = new Label();
+		private Label aMonthLabel = new Label();
+
 		private PushButton aPrevMonthButton = new PushButton();
+
 		private PushButton aNextMonthButton = new PushButton();
-		private PushButton aPrevYearButton  = new PushButton();
-		private PushButton aNextYearButton  = new PushButton();
 
-		//~ Constructors -------------------------------------------------------
+		private PushButton aPrevYearButton = new PushButton();
 
-		/***************************************
+		private PushButton aNextYearButton = new PushButton();
+
+		/**
 		 * Creates a new instance.
 		 *
 		 * @param rContext  The user interface context
 		 * @param bWithTime TRUE for month and time selection,
 		 */
-		public MonthAndTimeSelector(
-			UserInterfaceContext rContext,
-			boolean				 bWithTime)
-		{
-			if (bWithTime)
-			{
+		public MonthAndTimeSelector(UserInterfaceContext rContext,
+			boolean bWithTime) {
+			if (bWithTime) {
 				aTimePicker = new GwtTimePicker(rContext);
 			}
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * @see MonthSelector#getModel()
 		 */
 		@Override
-		public CalendarModel getModel()
-		{
+		public CalendarModel getModel() {
 			return rDatePicker != null ? rDatePicker.getModel() : null;
 		}
 
-		/***************************************
+		/**
 		 * Overridden to provide access to click handler.
 		 *
 		 * @see MonthSelector#addMonths(int)
 		 */
 		@Override
-		protected void addMonths(int nMonthAdd)
-		{
+		protected void addMonths(int nMonthAdd) {
 			super.addMonths(nMonthAdd);
 		}
 
-		/***************************************
+		/**
 		 * @see MonthSelector#getDatePicker()
 		 */
 		@Override
-		protected DatePicker getDatePicker()
-		{
+		protected DatePicker getDatePicker() {
 			return rDatePicker;
 		}
 
-		/***************************************
+		/**
 		 * Returns the time picker component or NULL if none exits.
 		 *
 		 * @return The time picker component
 		 */
-		protected GwtTimePicker getTimePicker()
-		{
+		protected GwtTimePicker getTimePicker() {
 			return aTimePicker;
 		}
 
-		/***************************************
+		/**
 		 * @see MonthSelector#refresh()
 		 */
 		@Override
-		protected void refresh()
-		{
-			if (rDatePicker != null)
-			{
+		protected void refresh() {
+			if (rDatePicker != null) {
 				aMonthLabel.setText(getModel().formatCurrentMonthAndYear());
 			}
 		}
 
-		/***************************************
+		/**
 		 * @see MonthSelector#setup()
 		 */
 		@Override
-		protected void setup()
-		{
+		protected void setup() {
 			aPrevMonthButton.getUpFace().setHTML("&lsaquo;");
 			aPrevMonthButton.setStyleName("datePickerPreviousButton");
 			aPrevMonthButton.addClickHandler(new MonthChangeClickHandler(-1));
@@ -286,14 +257,12 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 			aNextYearButton.addClickHandler(new MonthChangeClickHandler(12));
 
 			aMonthLabel.setStyleName("datePickerMonth");
-			aMonthLabel.addDoubleClickHandler(new DoubleClickHandler()
-				{
-					@Override
-					public void onDoubleClick(DoubleClickEvent rEvent)
-					{
-						resetDate();
-					}
-				});
+			aMonthLabel.addDoubleClickHandler(new DoubleClickHandler() {
+				@Override
+				public void onDoubleClick(DoubleClickEvent rEvent) {
+					resetDate();
+				}
+			});
 
 			Grid aGrid = new Grid(1, 5);
 
@@ -313,19 +282,19 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 			rFormatter.setWidth(0, COL_NEXT_MONTH, "1");
 			rFormatter.setWidth(0, COL_NEXT_YEAR, "1");
 
-			if (aTimePicker != null)
-			{
+			if (aTimePicker != null) {
 				Grid aPanel = new Grid(2, 1);
 
 				aPanel.setWidth("100%");
 				aPanel.setWidget(0, 0, aTimePicker);
 				aPanel.setWidget(1, 0, aGrid);
-				aPanel.getCellFormatter()
-					  .addStyleName(0, 0, CSS.ewtTimePicker());
-				aPanel.getCellFormatter()
-					  .setHorizontalAlignment(0,
-											  0,
-											  HasHorizontalAlignment.ALIGN_CENTER);
+				aPanel
+					.getCellFormatter()
+					.addStyleName(0, 0, CSS.ewtTimePicker());
+				aPanel
+					.getCellFormatter()
+					.setHorizontalAlignment(0, 0,
+						HasHorizontalAlignment.ALIGN_CENTER);
 
 				aGrid = aPanel;
 			}
@@ -333,91 +302,74 @@ public class GwtDatePicker extends DatePicker implements DateAttribute
 			initWidget(aGrid);
 		}
 
-		/***************************************
+		/**
 		 * If this instance contains a time picker this method sets the input
 		 * time in a new instance of the given date object and returns it.
 		 *
-		 * @param  rDate The date to apply the time to
-		 *
+		 * @param rDate The date to apply the time to
 		 * @return The resulting date (a new instance if modified)
 		 */
-		Date applyTime(Date rDate)
-		{
-			if (aTimePicker != null && rDate != null)
-			{
+		Date applyTime(Date rDate) {
+			if (aTimePicker != null && rDate != null) {
 				rDate = aTimePicker.applyTime(rDate);
 			}
 
 			return rDate;
 		}
 
-		/***************************************
+		/**
 		 * Sets the {@link GwtDatePicker} this instance is associated with.
 		 *
 		 * @param rDatePicker The new date picker
 		 */
-		void setDatePicker(GwtDatePicker rDatePicker)
-		{
+		void setDatePicker(GwtDatePicker rDatePicker) {
 			this.rDatePicker = rDatePicker;
 		}
 
-		/***************************************
+		/**
 		 * Sets the time values if this instance contains a time picker.
 		 *
 		 * @param rDate The date containing the new time
 		 */
-		void setTime(Date rDate)
-		{
-			if (aTimePicker != null)
-			{
+		void setTime(Date rDate) {
+			if (aTimePicker != null) {
 				aTimePicker.setTime(rDate);
 			}
 		}
 
-		/***************************************
+		/**
 		 * Resets the displayed date to today.
 		 */
-		private void resetDate()
-		{
+		private void resetDate() {
 			Date aToday = new Date();
 
 			rDatePicker.setCurrentMonth(aToday);
 			rDatePicker.setValue(aToday, true);
 		}
 
-		//~ Inner Classes ------------------------------------------------------
-
-		/********************************************************************
+		/**
 		 * Standard click handler for the month change buttons.
 		 *
 		 * @author e.sonnenschein
 		 */
-		public class MonthChangeClickHandler implements ClickHandler
-		{
-			//~ Instance fields ------------------------------------------------
+		public class MonthChangeClickHandler implements ClickHandler {
 
 			private int nMonthAdd;
 
-			//~ Constructors ---------------------------------------------------
-
-			/***************************************
+			/**
 			 * Creates a new instance.
 			 *
 			 * @param nMonthAdd The number of month to add
 			 */
-			public MonthChangeClickHandler(int nMonthAdd)
-			{
+			public MonthChangeClickHandler(int nMonthAdd) {
 				this.nMonthAdd = nMonthAdd;
 			}
 
-			//~ Methods --------------------------------------------------------
-
-			/***************************************
+			/**
 			 * @see ClickHandler#onClick(ClickEvent)
 			 */
 			@Override
-			public void onClick(ClickEvent rEvent)
-			{
+			public void onClick(ClickEvent rEvent) {
 				addMonths(nMonthAdd);
 			}
 		}

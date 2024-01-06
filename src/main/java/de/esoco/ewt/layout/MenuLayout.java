@@ -26,95 +26,76 @@ import com.google.gwt.user.client.ui.InsertPanel.ForIsWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A panel layout that contains a menu or navigation structure.
  *
  * @author eso
  */
-public class MenuLayout extends GenericLayout
-{
-	//~ Constructors -----------------------------------------------------------
+public class MenuLayout extends GenericLayout {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 */
-	public MenuLayout()
-	{
+	public MenuLayout() {
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(
-		Container rContainer,
-		StyleData rContainerStyle)
-	{
+	public HasWidgets createLayoutContainer(Container rContainer,
+		StyleData rContainerStyle) {
 		return new MenuPanel();
 	}
 
-	//~ Inner Classes ----------------------------------------------------------
-
-	/********************************************************************
+	/**
 	 * A GWT panel implementation that is based on the HTML NAV element.
 	 *
 	 * @author eso
 	 */
-	public class MenuPanel extends ComplexPanel implements ForIsWidget
-	{
-		//~ Constructors -------------------------------------------------------
+	public class MenuPanel extends ComplexPanel implements ForIsWidget {
 
-		/***************************************
+		/**
 		 * Creates a new instance.
 		 */
-		public MenuPanel()
-		{
+		public MenuPanel() {
 			setElement(Document.get().createElement("nav"));
 		}
 
-		//~ Methods ------------------------------------------------------------
-
-		/***************************************
+		/**
 		 * Adds a new child widget to the panel.
 		 *
 		 * @param w the widget to be added
 		 */
 		@Override
 		@SuppressWarnings("deprecation")
-		public void add(Widget w)
-		{
+		public void add(Widget w) {
 			add(w, getElement());
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void clear()
-		{
+		public void clear() {
 			super.clear();
 			getElement().removeAllChildren();
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void insert(IsWidget w, int beforeIndex)
-		{
+		public void insert(IsWidget w, int beforeIndex) {
 			insert(asWidgetOrNull(w), beforeIndex);
 		}
 
-		/***************************************
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		@SuppressWarnings("deprecation")
-		public void insert(Widget w, int beforeIndex)
-		{
+		public void insert(Widget w, int beforeIndex) {
 			insert(w, getElement(), beforeIndex, true);
 		}
 	}

@@ -16,19 +16,18 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-/********************************************************************
+/**
  * An interface that can be implemented by widgets that need a delay before
  * events are handled. This can be useful to let animations finish before event
  * handling performs UI updates.
  *
  * @author eso
  */
-public interface HasEventHandlingDelay
-{
-	//~ Methods ----------------------------------------------------------------
+public interface HasEventHandlingDelay {
 
-	/***************************************
-	 * Returns the time in milliseconds by which the event handling for a widget
+	/**
+	 * Returns the time in milliseconds by which the event handling for a
+	 * widget
 	 * should be delayed. This can be used by widgets that have some UI
 	 * animation that should be finished before the event handling starts.
 	 *

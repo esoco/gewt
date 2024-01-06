@@ -22,23 +22,19 @@ import jsinterop.annotations.JsType;
 
 import de.esoco.ewt.js.JsObject;
 
-
-/********************************************************************
+/**
  * JsType declaration for <a
  * href="https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent">
  * CustomEvent</a>.
  *
  * @author eso
  */
-@JsType(isNative  = true, namespace = JsPackage.GLOBAL)
-public class CustomEvent extends Event
-{
-	//~ Methods ----------------------------------------------------------------
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class CustomEvent extends Event {
 
-	/***************************************
-	 * @see <a
-	 *      href="https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail">
-	 *      Event.detail</a>
+	/**
+	 * @see <a href="https://developer.mozilla
+	 * .org/en-US/docs/Web/API/CustomEvent/detail"> Event.detail</a>
 	 */
 	@JsProperty
 	public native JsObject getDetail();

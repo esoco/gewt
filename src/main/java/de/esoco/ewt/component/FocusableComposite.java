@@ -24,42 +24,34 @@ import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-
-/********************************************************************
+/**
  * A composite that can receive the input focus.
  *
  * @author eso
  */
-public abstract class FocusableComposite extends Composite
-{
-	//~ Constructors -----------------------------------------------------------
+public abstract class FocusableComposite extends Composite {
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rLayout The composite layout
 	 */
-	protected FocusableComposite(GenericLayout rLayout)
-	{
+	protected FocusableComposite(GenericLayout rLayout) {
 		super(rLayout);
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Requests that the component gets the input focus.
 	 */
-	public void requestFocus()
-	{
+	public void requestFocus() {
 		((Focusable) getWidget()).setFocus(true);
 	}
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IsWidget createWidget(StyleData rStyle)
-	{
+	protected IsWidget createWidget(StyleData rStyle) {
 		return new FocusPanel((Widget) super.createWidget(rStyle));
 	}
 }

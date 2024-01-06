@@ -20,8 +20,7 @@ import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
 import de.esoco.ewt.style.StyleFlag;
 
-
-/********************************************************************
+/**
  * A combo box that combines a text field with a list of values. The values can
  * be selected from the list to be displayed and (optionally) edited in the text
  * field.
@@ -44,16 +43,13 @@ import de.esoco.ewt.style.StyleFlag;
  *
  * @author eso
  */
-public class ListBox extends ListControl
-{
-	//~ Methods ----------------------------------------------------------------
+public class ListBox extends ListControl {
 
-	/***************************************
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle)
-	{
+	public void initWidget(Container rParent, StyleData rStyle) {
 		super.initWidget(rParent, rStyle);
 
 		getGwtListBox().setVisibleItemCount(1);

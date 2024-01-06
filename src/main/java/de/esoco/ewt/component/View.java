@@ -24,99 +24,85 @@ import de.esoco.lib.property.TitleAttribute;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
-
-/********************************************************************
+/**
  * The base class for all EWT views.
  *
  * @author eso
  */
-public abstract class View extends Container implements TitleAttribute
-{
-	//~ Instance fields --------------------------------------------------------
+public abstract class View extends Container implements TitleAttribute {
 
 	private final UserInterfaceContext rContext;
-	private final ViewStyle			   rViewStyle;
 
-	//~ Constructors -----------------------------------------------------------
+	private final ViewStyle rViewStyle;
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rContext   The user interface context
 	 * @param rViewPanel The panel to place the view component in
 	 * @param rStyle     The view style
 	 */
-	public View(UserInterfaceContext rContext,
-				IsWidget			 rViewPanel,
-				ViewStyle			 rStyle)
-	{
+	public View(UserInterfaceContext rContext, IsWidget rViewPanel,
+		ViewStyle rStyle) {
 		this(rContext, rStyle);
 
 		setWidget(rViewPanel);
 	}
 
-	/***************************************
+	/**
 	 * Creates a new instance.
 	 *
 	 * @param rContext The user interface context
 	 * @param rStyle   rViewStyle The view style
 	 */
-	View(UserInterfaceContext rContext, ViewStyle rStyle)
-	{
-		this.rContext   = rContext;
+	View(UserInterfaceContext rContext, ViewStyle rStyle) {
+		this.rContext = rContext;
 		this.rViewStyle = rStyle;
 	}
 
-	//~ Methods ----------------------------------------------------------------
-
-	/***************************************
+	/**
 	 * Overridden to return the actual UI context.
 	 *
 	 * @see Container#getContext()
 	 */
 	@Override
-	public UserInterfaceContext getContext()
-	{
+	public UserInterfaceContext getContext() {
 		return rContext;
 	}
 
-	/***************************************
+	/**
 	 * Returns the view title.
 	 *
 	 * @return The title string
 	 */
 	@Override
-	public String getTitle()
-	{
+	public String getTitle() {
 		return Window.getTitle();
 	}
 
-	/***************************************
+	/**
 	 * Returns the style of this view.
 	 *
 	 * @return The view style
 	 */
-	public final ViewStyle getViewStyle()
-	{
+	public final ViewStyle getViewStyle() {
 		return rViewStyle;
 	}
 
-	/***************************************
+	/**
 	 * Packs this view for display on the screen. This method exists mainly for
 	 * compatibility with other EWT implementations and has no function on GWT.
 	 */
-	public void pack()
-	{
+	public void pack() {
 	}
 
-	/***************************************
+	/**
 	 * Sets the view title. Should be overridden by view implementations that
 	 * can display a view title.
 	 *
 	 * @param sTitle The new title
 	 */
 	@Override
-	public void setTitle(String sTitle)
-	{
+	public void setTitle(String sTitle) {
 	}
 }

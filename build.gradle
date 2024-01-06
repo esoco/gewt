@@ -34,7 +34,7 @@ test {
 }
 
 gwt {
-    gwtVersion = '2.8.2'
+    gwtVersion = '2.10.0'
 }
 
 // sources are need for the GWT compiler

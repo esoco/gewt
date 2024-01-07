@@ -16,14 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.component.Container;
-import de.esoco.ewt.geometry.Margins;
-import de.esoco.ewt.style.AlignedPosition;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.Alignment;
-
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -32,6 +24,12 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.component.Container;
+import de.esoco.ewt.geometry.Margins;
+import de.esoco.ewt.style.AlignedPosition;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.lib.property.Alignment;
 
 /**
  * A generic layout implementation similar to the AWT BorderLayout but with the
@@ -45,18 +43,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class EdgeLayout extends GenericLayout {
 
-	private int nGap;
+	private final int gap;
 
-	private Widget[][] aWidgets = new Widget[3][3];
+	private final Widget[][] widgets = new Widget[3][3];
 
 	/**
 	 * Creates a new EdgeLayout object with specific gaps between the layout
 	 * cells.
 	 *
-	 * @param nGap The horizontal and vertical gap between components
+	 * @param gap The horizontal and vertical gap between components
 	 */
-	public EdgeLayout(int nGap) {
-		this.nGap = nGap;
+	public EdgeLayout(int gap) {
+		this.gap = gap;
 	}
 
 	/**
@@ -64,11 +62,11 @@ public class EdgeLayout extends GenericLayout {
 	 * cells. In GEWT currently only the horizontal gap value will be used
 	 * because of the limitations of the underlying GWT widgets.
 	 *
-	 * @param nHorizontalGap nGapW The horizontal gap between components
-	 * @param nVerticalGap   nGapY The vertical gap between components
+	 * @param horizontalGap gapW The horizontal gap between components
+	 * @param verticalGap   gapY The vertical gap between components
 	 */
-	public EdgeLayout(int nHorizontalGap, int nVerticalGap) {
-		this.nGap = nHorizontalGap;
+	public EdgeLayout(int horizontalGap, int verticalGap) {
+		this.gap = horizontalGap;
 	}
 
 	/**
@@ -77,12 +75,12 @@ public class EdgeLayout extends GenericLayout {
 	 * layout cells. In GEWT currently only the horizontal gap value will be
 	 * used because of the limitations of the underlying GWT widgets.
 	 *
-	 * @param rMargins       The margins
-	 * @param nHorizontalGap nGapW The horizontal gap between components
-	 * @param nVerticalGap   nGapY The vertical gap between components
+	 * @param margins       The margins
+	 * @param horizontalGap gapW The horizontal gap between components
+	 * @param verticalGap   gapY The vertical gap between components
 	 */
-	public EdgeLayout(Margins rMargins, int nHorizontalGap, int nVerticalGap) {
-		this.nGap = nHorizontalGap;
+	public EdgeLayout(Margins margins, int horizontalGap, int verticalGap) {
+		this.gap = horizontalGap;
 	}
 
 	/**
@@ -91,22 +89,22 @@ public class EdgeLayout extends GenericLayout {
 	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData, int nIndex) {
-		Alignment eVAlignment = rStyleData.getVerticalAlignment();
-		Alignment eHAlignment = rStyleData.getHorizontalAlignment();
-		EdgeLayoutTable rTable = (EdgeLayoutTable) rContainer;
-		CellFormatter rCellFormatter = rTable.getCellFormatter();
-		FlexCellFormatter rFlexFormatter = rTable.getFlexCellFormatter();
+	public void addWidget(HasWidgets container, Widget widget,
+		StyleData styleData, int index) {
+		Alignment vAlign = styleData.getVerticalAlignment();
+		Alignment hAlign = styleData.getHorizontalAlignment();
+		EdgeLayoutTable table = (EdgeLayoutTable) container;
+		CellFormatter cellFormatter = table.getCellFormatter();
+		FlexCellFormatter flexFormatter = table.getFlexCellFormatter();
 
-		int nRow = 0;
-		int nCol = 0;
+		int row = 0;
+		int col = 0;
 
-		switch (eVAlignment) {
+		switch (vAlign) {
 			case BEGIN:
 
 				if (countWidgets(0, true) == 0) {
-					rTable.insertRow(0);
+					table.insertRow(0);
 				}
 
 				break;
@@ -114,34 +112,33 @@ public class EdgeLayout extends GenericLayout {
 			case CENTER:
 
 				if (countWidgets(0, true) > 0) {
-					nRow++;
+					row++;
 				}
 
-				rWidget.setHeight("100%");
-				rCellFormatter.setHeight(nRow, nCol, "100%");
+				widget.setHeight("100%");
+				cellFormatter.setHeight(row, col, "100%");
 
 				break;
 
 			case END:
 
 				if (countWidgets(2, true) == 0) {
-					rTable.insertRow(rTable.getRowCount());
+					table.insertRow(table.getRowCount());
 				}
 
-				nRow = rTable.getRowCount() - 1;
+				row = table.getRowCount() - 1;
 
 				break;
 
 			default:
-				assert false :
-					"Unsupported vertical alignment: " + eVAlignment;
+				assert false : "Unsupported vertical alignment: " + vAlign;
 		}
 
-		switch (eHAlignment) {
+		switch (hAlign) {
 			case BEGIN:
 
 				if (countWidgets(0, false) == 0) {
-					insertColumn(rTable, 0);
+					insertColumn(table, 0);
 				}
 
 				break;
@@ -149,39 +146,37 @@ public class EdgeLayout extends GenericLayout {
 			case CENTER:
 
 				if (countWidgets(0, false) > 0) {
-					nCol++;
+					col++;
 				}
 
-				rWidget.setWidth("100%");
-				rCellFormatter.setWidth(nRow, nCol, "100%");
+				widget.setWidth("100%");
+				cellFormatter.setWidth(row, col, "100%");
 
 				break;
 
 			case END:
 
 				if (countWidgets(2, false) == 0) {
-					insertColumn(rTable, rTable.getCellCount(0));
+					insertColumn(table, table.getCellCount(0));
 				}
 
-				nCol = rTable.getCellCount(0) - 1;
+				col = table.getCellCount(0) - 1;
 
 				break;
 
 			default:
-				assert false :
-					"Unsupported horizontal alignment: " + eHAlignment;
+				assert false : "Unsupported horizontal alignment: " + hAlign;
 		}
 
-		rTable.setWidget(nRow, nCol, rWidget);
-		aWidgets[eVAlignment.ordinal()][eHAlignment.ordinal()] = rWidget;
+		table.setWidget(row, col, widget);
+		widgets[vAlign.ordinal()][hAlign.ordinal()] = widget;
 
-		if (eVAlignment == Alignment.CENTER &&
-			eHAlignment == Alignment.CENTER) {
-			rTable.setCenterWidget(rWidget);
+		if (vAlign == Alignment.CENTER && hAlign == Alignment.CENTER) {
+			table.setCenterWidget(widget);
 		}
 
-		setCellSpans(rFlexFormatter, true);
-		setCellAlignment(rStyleData, rCellFormatter, nRow, nCol);
+		setCellSpans(flexFormatter);
+		setCellAlignment(styleData, cellFormatter, row, col);
 		// TODO: check column spans
 	}
 
@@ -189,128 +184,116 @@ public class EdgeLayout extends GenericLayout {
 	 * @see GenericLayout#clear(HasWidgets)
 	 */
 	@Override
-	public void clear(HasWidgets rContainer) {
-		super.clear(rContainer);
+	public void clear(HasWidgets container) {
+		super.clear(container);
 
-		((FlexTable) rContainer).removeAllRows();
+		((FlexTable) container).removeAllRows();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		EdgeLayoutTable aTable = new EdgeLayoutTable();
+	public Panel createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		EdgeLayoutTable table = new EdgeLayoutTable();
 
-		aTable.setCellSpacing(nGap);
-		aTable.setCellPadding(0);
-		aTable.setStylePrimaryName(EWT.CSS.ewtEdgeLayout());
+		table.setCellSpacing(gap);
+		table.setCellPadding(0);
+		table.setStylePrimaryName(EWT.CSS.ewtEdgeLayout());
 
-		return aTable;
+		return table;
 	}
 
 	/**
 	 * @see GenericLayout#removeWidget(HasWidgets, Widget)
 	 */
 	@Override
-	public void removeWidget(HasWidgets rContainer, Widget rWidget) {
-		for (int nRow = 0; nRow < 3; nRow++) {
-			for (int nCol = 0; nCol < 3; nCol++) {
-				if (aWidgets[nRow][nCol] == rWidget) {
-					aWidgets[nRow][nCol] = null;
+	public void removeWidget(HasWidgets container, Widget widget) {
+		for (int row = 0; row < 3; row++) {
+			for (int col = 0; col < 3; col++) {
+				if (widgets[row][col] == widget) {
+					widgets[row][col] = null;
 				}
 			}
 		}
 
-		setCellSpans(((FlexTable) rContainer).getFlexCellFormatter(), true);
+		setCellSpans(((FlexTable) container).getFlexCellFormatter());
 
 		// TODO: implement deletion of rows and columns
 
-		super.removeWidget(rContainer, rWidget);
+		super.removeWidget(container, widget);
 	}
 
 	/**
 	 * Counts the widgets in a certain row or column.
 	 *
-	 * @param nIndex  The row or column index to count the widgets of
-	 * @param bForRow TRUE for a row, FALSE for a column
+	 * @param index  The row or column index to count the widgets of
+	 * @param forRow TRUE for a row, FALSE for a column
 	 * @return The number of widgets in the column
 	 */
-	private int countWidgets(int nIndex, boolean bForRow) {
-		int nCount = 0;
+	private int countWidgets(int index, boolean forRow) {
+		int count = 0;
 
 		for (int i = 0; i < 3; i++) {
-			if ((bForRow && aWidgets[nIndex][i] != null) ||
-				(!bForRow && aWidgets[i][nIndex] != null)) {
-				nCount++;
+			if ((forRow && widgets[index][i] != null) ||
+				(!forRow && widgets[i][index] != null)) {
+				count++;
 			}
 		}
 
-		return nCount;
+		return count;
 	}
 
 	/**
 	 * Returns the maximum widget count for all rows or columns.
 	 *
-	 * @param bForRows TRUE to count rows, FALSE for columns
+	 * @param forRows TRUE to count rows, FALSE for columns
 	 * @return The maximum widget count
 	 */
-	private int getMaxWidgetCount(boolean bForRows) {
-		int nMax = 0;
+	private int getMaxWidgetCount(boolean forRows) {
+		int max = 0;
 
 		for (int i = 0; i < 3; i++) {
-			nMax = Math.max(nMax, countWidgets(i, bForRows));
+			max = Math.max(max, countWidgets(i, forRows));
 		}
 
-		return nMax;
+		return max;
 	}
 
 	/**
 	 * Inserts a column into a {@link FlexTable}.
 	 *
-	 * @param rTable        The table
-	 * @param nBeforeColumn The column to insert before
+	 * @param table        The table
+	 * @param beforeColumn The column to insert before
 	 */
-	private void insertColumn(FlexTable rTable, int nBeforeColumn) {
-		int nCount = rTable.getRowCount();
+	private void insertColumn(FlexTable table, int beforeColumn) {
+		int count = table.getRowCount();
 
-		for (int i = 0; i < nCount; i++) {
-			rTable.insertCell(i, nBeforeColumn);
+		for (int i = 0; i < count; i++) {
+			table.insertCell(i, beforeColumn);
 		}
 	}
 
 	/**
 	 * Sets the table cell spans for asymmetric widget distributions.
 	 *
-	 * @param rCellFormatter The table cell formatter
-	 * @param bForRows       TRUE to set the spans on rows, FALSE for columns
+	 * @param cellFormatter The table cell formatter
 	 */
-	private void setCellSpans(FlexCellFormatter rCellFormatter,
-		boolean bForRows) {
-		int nMaxWidgets = getMaxWidgetCount(bForRows);
-		int nCenter = countWidgets(0, !bForRows) > 0 ? 1 : 0;
-		int nIndex = 0;
+	private void setCellSpans(FlexCellFormatter cellFormatter) {
+		int maxWidgets = getMaxWidgetCount(true);
+		int center = countWidgets(0, false) > 0 ? 1 : 0;
+		int index = 0;
 
 		for (int i = 0; i < 3; i++) {
-			int nWidgets = countWidgets(i, bForRows);
+			int widgetCount = countWidgets(i, true);
 
-			if (nWidgets < nMaxWidgets) {
-				if (bForRows) {
-					if (aWidgets[i][1] != null) {
-						rCellFormatter.setColSpan(nIndex, nCenter,
-							nMaxWidgets);
-					}
-				} else {
-					if (aWidgets[1][i] != null) {
-						rCellFormatter.setRowSpan(nCenter, nIndex,
-							nMaxWidgets);
-					}
-				}
+			if (widgetCount < maxWidgets && widgets[i][1] != null) {
+				cellFormatter.setColSpan(index, center, maxWidgets);
 			}
 
-			if (i > 0 || nWidgets > 0) {
-				nIndex++;
+			if (i > 0 || widgetCount > 0) {
+				index++;
 			}
 		}
 	}
@@ -324,26 +307,26 @@ public class EdgeLayout extends GenericLayout {
 	static class EdgeLayoutTable extends FlexTable
 		implements RequiresResize, ProvidesResize {
 
-		private RequiresResize rCenterWidget;
+		private RequiresResize centerWidget;
 
 		/**
 		 * @see RequiresResize#onResize()
 		 */
 		@Override
 		public void onResize() {
-			if (rCenterWidget != null) {
-				rCenterWidget.onResize();
+			if (centerWidget != null) {
+				centerWidget.onResize();
 			}
 		}
 
 		/**
 		 * Sets the center widget.
 		 *
-		 * @param rWidget The new center widget
+		 * @param widget The new center widget
 		 */
-		public void setCenterWidget(Widget rWidget) {
-			if (rWidget instanceof RequiresResize) {
-				rCenterWidget = (RequiresResize) rWidget;
+		public void setCenterWidget(Widget widget) {
+			if (widget instanceof RequiresResize) {
+				centerWidget = (RequiresResize) widget;
 			}
 		}
 	}

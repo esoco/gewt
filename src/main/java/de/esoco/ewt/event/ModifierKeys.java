@@ -59,22 +59,22 @@ public enum ModifierKeys {
 	 * combination of
 	 * modifier bits.
 	 *
-	 * @param nBits The modifier bits of the instance
+	 * @param bits The modifier bits of the instance
 	 * @return The corresponding instance
 	 */
-	public static ModifierKeys valueOf(int nBits) {
-		return values()[nBits];
+	public static ModifierKeys valueOf(int bits) {
+		return values()[bits];
 	}
 
 	/**
 	 * Checks if this modifiers instance contains all the bits of another
 	 * modifiers instance, e.g. contains(ModifierKeys.SHIFT).
 	 *
-	 * @param rOther The other instance to compare with
+	 * @param other The other instance to compare with
 	 * @return TRUE if this instance contains the other
 	 */
-	public boolean contains(ModifierKeys rOther) {
-		return (ordinal() & rOther.ordinal()) == rOther.ordinal();
+	public boolean contains(ModifierKeys other) {
+		return (ordinal() & other.ordinal()) == other.ordinal();
 	}
 
 	/**
@@ -83,30 +83,30 @@ public enum ModifierKeys {
 	 * order (Shift, Ctrl, Alt, Meta). Between each bit string the separator
 	 * string will be inserted.
 	 *
-	 * @param sSeparator The separator string to insert between the bits
+	 * @param separator The separator string to insert between the bits
 	 * @return The string representing this modifier combination
 	 */
-	public String toString(String sSeparator) {
+	public String toString(String separator) {
 		StringBuilder sb = new StringBuilder();
 
 		if ((ordinal() & SHIFT_BIT) != 0) {
-			sb.append("Shift").append(sSeparator);
+			sb.append("Shift").append(separator);
 		}
 
 		if ((ordinal() & CTRL_BIT) != 0) {
-			sb.append("Ctrl").append(sSeparator);
+			sb.append("Ctrl").append(separator);
 		}
 
 		if ((ordinal() & ALT_BIT) != 0) {
-			sb.append("Alt").append(sSeparator);
+			sb.append("Alt").append(separator);
 		}
 
 		if ((ordinal() & META_BIT) != 0) {
-			sb.append("Meta").append(sSeparator);
+			sb.append("Meta").append(separator);
 		}
 
 		if (sb.length() > 0) {
-			sb.setLength(sb.length() - sSeparator.length());
+			sb.setLength(sb.length() - separator.length());
 		}
 
 		return sb.toString();

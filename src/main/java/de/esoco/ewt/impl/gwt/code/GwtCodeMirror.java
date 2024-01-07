@@ -16,8 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.code;
 
-import de.esoco.ewt.component.TextArea.IsTextArea;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -36,6 +34,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
+import de.esoco.ewt.component.TextArea.IsTextArea;
 
 /**
  * A variation of the CodeMirror wrapper, adapted for GEWT.
@@ -47,16 +46,16 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
 public class GwtCodeMirror extends Composite
 	implements Focusable, IsTextArea, HasValueChangeHandlers<String> {
 
-	private static final FocusImpl aFocusImpl =
+	private static final FocusImpl focusImpl =
 		FocusImpl.getFocusImplForWidget();
 
 	private static final AutoCompletionHandler NO_AUTO_COMPLETION_HANDLER =
 		new AutoCompletionHandler() {
 			@Override
-			public void getCompletions(String sText,
-				EditorPosition rCaretPosition, int nCaretIndex,
-				AutoCompletionCallback rCallback) {
-				rCallback.completionsReady(AutoCompletionResult.emptyResult());
+			public void getCompletions(String text,
+				EditorPosition caretPosition, int caretIndex,
+				AutoCompletionCallback callback) {
+				callback.completionsReady(AutoCompletionResult.emptyResult());
 			}
 		};
 
@@ -68,28 +67,28 @@ public class GwtCodeMirror extends Composite
 
 	private static final boolean DEFAULT_LINE_WRAPPING = true;
 
-	private static int nInstanceCounter = 0;
+	private static int instanceCounter = 0;
 
-	private boolean bLoaded = false;
+	private boolean loaded = false;
 
-	private boolean bIsSettingValue = false;
+	private boolean isSettingValue = false;
 
-	private JavaScriptObject aCodeMirror;
+	private JavaScriptObject codeMirror;
 
-	private TextMarker aErrorMarker = null;
+	private TextMarker errorMarker = null;
 
-	private CodeMirrorOptions aOptions = new CodeMirrorOptions();
+	private final CodeMirrorOptions options = new CodeMirrorOptions();
 
-	private AutoCompletionHandler rAutoCompletionHandler =
+	private AutoCompletionHandler autoCompletionHandler =
 		NO_AUTO_COMPLETION_HANDLER;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param sMode The CodeMirror mode of this instance
+	 * @param mode The CodeMirror mode of this instance
 	 */
-	public GwtCodeMirror(String sMode) {
-		aOptions.setMode(sMode);
+	public GwtCodeMirror(String mode) {
+		options.setMode(mode);
 
 		initWidget(new SimplePanel());
 	}
@@ -99,24 +98,24 @@ public class GwtCodeMirror extends Composite
 	 */
 	@Override
 	public HandlerRegistration addDoubleClickHandler(
-		DoubleClickHandler rHandler) {
-		return addHandler(rHandler, DoubleClickEvent.getType());
+		DoubleClickHandler handler) {
+		return addHandler(handler, DoubleClickEvent.getType());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HandlerRegistration addKeyDownHandler(KeyDownHandler rHandler) {
-		return addHandler(rHandler, KeyDownEvent.getType());
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
+		return addHandler(handler, KeyDownEvent.getType());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HandlerRegistration addKeyPressHandler(KeyPressHandler rHandler) {
-		return addHandler(rHandler, KeyPressEvent.getType());
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
+		return addHandler(handler, KeyPressEvent.getType());
 	}
 
 	/**
@@ -124,8 +123,8 @@ public class GwtCodeMirror extends Composite
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<String> rHandler) {
-		return addHandler(rHandler, ValueChangeEvent.getType());
+		ValueChangeHandler<String> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	/**
@@ -139,9 +138,9 @@ public class GwtCodeMirror extends Composite
 	 * Clears the current error range.
 	 */
 	public void clearErrorRange() {
-		if (aCodeMirror != null && aErrorMarker != null) {
-			aErrorMarker.clear();
-			aErrorMarker = null;
+		if (codeMirror != null && errorMarker != null) {
+			errorMarker.clear();
+			errorMarker = null;
 		}
 	}
 
@@ -151,9 +150,9 @@ public class GwtCodeMirror extends Composite
 	 * @return The caret position
 	 */
 	public EditorPosition getCaretPosition() {
-		return aCodeMirror != null ?
+		return codeMirror != null ?
 		       EditorPosition.fromJavaScriptObject(
-			       getEditorPosition(aCodeMirror)) :
+			       getEditorPosition(codeMirror)) :
 		       new EditorPosition(0, 0);
 	}
 
@@ -168,13 +167,13 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Returns the index for a caret position.
 	 *
-	 * @param rPosition The editor position
+	 * @param position The editor position
 	 * @return The index for the editor position
 	 */
-	public int getIndexFromEditorPosition(EditorPosition rPosition) {
-		return aCodeMirror != null ?
-		       calcIndexFromPosition(aCodeMirror,
-			       rPosition.toJavaScriptObject()) :
+	public int getIndexFromEditorPosition(EditorPosition position) {
+		return codeMirror != null ?
+		       calcIndexFromPosition(codeMirror,
+			       position.toJavaScriptObject()) :
 		       0;
 	}
 
@@ -191,7 +190,7 @@ public class GwtCodeMirror extends Composite
 	 */
 	@Override
 	public int getTabIndex() {
-		return aFocusImpl.getTabIndex(getElement());
+		return focusImpl.getTabIndex(getElement());
 	}
 
 	/**
@@ -199,17 +198,15 @@ public class GwtCodeMirror extends Composite
 	 */
 	@Override
 	public String getText() {
-		return aCodeMirror != null ?
-		       getValue(aCodeMirror) :
-		       aOptions.getValue();
+		return codeMirror != null ? getValue(codeMirror) : options.getValue();
 	}
 
 	/**
 	 * Corrects the indentation of all lines.
 	 */
 	public void indentAllLines() {
-		if (aCodeMirror != null) {
-			indentAllLines(aCodeMirror);
+		if (codeMirror != null) {
+			indentAllLines(codeMirror);
 		}
 	}
 
@@ -226,35 +223,35 @@ public class GwtCodeMirror extends Composite
 	 */
 	@Override
 	public boolean isReadOnly() {
-		return aCodeMirror != null ?
-		       isReadOnly(aCodeMirror) :
-		       aOptions.isReadOnly();
+		return codeMirror != null ?
+		       isReadOnly(codeMirror) :
+		       options.isReadOnly();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setAccessKey(char cKey) {
-		getElement().setPropertyString("accessKey", "" + cKey);
+	public void setAccessKey(char key) {
+		getElement().setPropertyString("accessKey", "" + key);
 	}
 
 	/**
 	 * Sets the {@link AutoCompletionHandler}.
 	 *
-	 * @param rHandler The handler. Not {@code null}.
+	 * @param handler The handler. Not {@code null}.
 	 * @throws java.lang.NullPointerException if {@code autoCompletionHandler}
 	 *                                        is {@code null}.
 	 */
-	public void setAutoCompletionHandler(AutoCompletionHandler rHandler) {
-		rAutoCompletionHandler = rHandler;
+	public void setAutoCompletionHandler(AutoCompletionHandler handler) {
+		autoCompletionHandler = handler;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setCharacterWidth(int nColumns) {
+	public void setCharacterWidth(int columns) {
 		// unsupported
 	}
 
@@ -262,14 +259,12 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setCursorPos(int nPosition) {
-		JavaScriptObject rPosition = aCodeMirror != null ?
-		                             calcPositionFromIndex(aCodeMirror,
-			                             nPosition) :
-		                             null;
+	public void setCursorPos(int pos) {
+		JavaScriptObject position =
+			codeMirror != null ? calcPositionFromIndex(codeMirror, pos) : null;
 
-		if (rPosition != null) {
-			setEditorPosition(aCodeMirror, rPosition);
+		if (position != null) {
+			setEditorPosition(codeMirror, position);
 		}
 	}
 
@@ -277,52 +272,52 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
+	public void setEnabled(boolean enabled) {
 		// unsupported
 	}
 
 	/**
 	 * Sets the error range.
 	 *
-	 * @param rStart The new error range
-	 * @param rEnd   The new error range
+	 * @param start The new error range
+	 * @param end   The new error range
 	 */
-	public void setErrorRange(EditorPosition rStart, EditorPosition rEnd) {
-		if (aCodeMirror == null) {
+	public void setErrorRange(EditorPosition start, EditorPosition end) {
+		if (codeMirror == null) {
 			return;
 		}
 
 		clearErrorRange();
 
-		JavaScriptObject rMark =
-			markText(aCodeMirror, rStart.toJavaScriptObject(),
-				rEnd.toJavaScriptObject(), "error");
+		JavaScriptObject mark = markText(codeMirror,
+			start.toJavaScriptObject(),
+			end.toJavaScriptObject(), "error");
 
-		aErrorMarker = new TextMarker(rMark);
+		errorMarker = new TextMarker(mark);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setFocus(boolean bFocused) {
-		if (bFocused) {
-			aFocusImpl.focus(getElement());
+	public void setFocus(boolean focused) {
+		if (focused) {
+			focusImpl.focus(getElement());
 		} else {
-			aFocusImpl.blur(getElement());
+			focusImpl.blur(getElement());
 		}
 	}
 
 	/**
 	 * Sets the line wrapping.
 	 *
-	 * @param bWrap The new line wrapping
+	 * @param wrap The new line wrapping
 	 */
-	public void setLineWrapping(boolean bWrap) {
-		if (aCodeMirror != null) {
-			setLineWrapping(aCodeMirror, bWrap);
+	public void setLineWrapping(boolean wrap) {
+		if (codeMirror != null) {
+			setLineWrapping(codeMirror, wrap);
 		} else {
-			aOptions.setLineWrapping(bWrap);
+			options.setLineWrapping(wrap);
 		}
 	}
 
@@ -330,11 +325,11 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setReadOnly(boolean bReadOnly) {
-		if (aCodeMirror == null) {
-			aOptions.setReadOnly(bReadOnly);
+	public void setReadOnly(boolean readOnly) {
+		if (codeMirror == null) {
+			options.setReadOnly(readOnly);
 		} else {
-			setReadOnly(aCodeMirror, bReadOnly);
+			setReadOnly(codeMirror, readOnly);
 		}
 	}
 
@@ -342,7 +337,7 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSelectionRange(int nStart, int nLength) {
+	public void setSelectionRange(int start, int length) {
 		// unsupported
 	}
 
@@ -350,24 +345,24 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTabIndex(int nIndex) {
-		aFocusImpl.setTabIndex(getElement(), nIndex);
+	public void setTabIndex(int index) {
+		focusImpl.setTabIndex(getElement(), index);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setText(String sText) {
-		if (aCodeMirror == null) {
-			aOptions.setValue(sText);
+	public void setText(String text) {
+		if (codeMirror == null) {
+			options.setValue(text);
 		} else {
 			try {
-				bIsSettingValue = true;
-				setValue(aCodeMirror, sText);
+				isSettingValue = true;
+				setValue(codeMirror, text);
 				refresh();
 			} finally {
-				bIsSettingValue = false;
+				isSettingValue = false;
 			}
 		}
 	}
@@ -376,7 +371,7 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisibleLength(int nColumns) {
+	public void setVisibleLength(int columns) {
 		// unsupported
 	}
 
@@ -384,7 +379,7 @@ public class GwtCodeMirror extends Composite
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisibleLines(int nRows) {
+	public void setVisibleLines(int rows) {
 		// unsupported
 	}
 
@@ -395,13 +390,13 @@ public class GwtCodeMirror extends Composite
 	protected void onLoad() {
 		super.onLoad();
 
-		if (!bLoaded) {
-			Element rElement = getElement();
-			String sId = ELEMENT_ID_PREFIX + nInstanceCounter++;
+		if (!loaded) {
+			Element element = getElement();
+			String id = ELEMENT_ID_PREFIX + instanceCounter++;
 
-			rElement.setId(sId);
-			aCodeMirror = setup(this, sId, aOptions.toJavaScriptObject());
-			bLoaded = true;
+			element.setId(id);
+			codeMirror = setup(this, id, options.toJavaScriptObject());
+			loaded = true;
 		}
 	}
 
@@ -420,41 +415,41 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Calculates the character index from an editor position.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
-	 * @param rPosition   The editor position
+	 * @param codeMirror The CodeMirror instance
+	 * @param position   The editor position
 	 * @return The index for the editor position
 	 */
-	private native int calcIndexFromPosition(JavaScriptObject rCodeMirror,
-		JavaScriptObject rPosition) /*-{
-		return rCodeMirror.indexFromPos(rPosition);
+	private native int calcIndexFromPosition(JavaScriptObject codeMirror,
+		JavaScriptObject position) /*-{
+		return codeMirror.indexFromPos(position);
 	}-*/;
 
 	/**
 	 * Calculates the editor position from a character index.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
-	 * @param nIndex      The character index
+	 * @param codeMirror The CodeMirror instance
+	 * @param index      The character index
 	 * @return The editor position for the index
 	 */
 	private native JavaScriptObject calcPositionFromIndex(
-		JavaScriptObject rCodeMirror, int nIndex) /*-{
-		return rCodeMirror.posFromIndex(nIndex);
+		JavaScriptObject codeMirror, int index) /*-{
+		return codeMirror.posFromIndex(index);
 	}-*/;
 
 	/**
 	 * Creates an auto-completion result from an {@link AutoCompletionChoice}.
 	 *
-	 * @param rChoice The auto-completion choice
+	 * @param choice The auto-completion choice
 	 * @return The result
 	 */
 	private JavaScriptObject createAutoCompletionResult(
-		AutoCompletionChoice rChoice) {
+		AutoCompletionChoice choice) {
 		JavaScriptObject from =
-			rChoice.getReplaceTextFrom().toJavaScriptObject();
-		JavaScriptObject to = rChoice.getReplaceTextTo().toJavaScriptObject();
+			choice.getReplaceTextFrom().toJavaScriptObject();
+		JavaScriptObject to = choice.getReplaceTextTo().toJavaScriptObject();
 
-		return createAutoCompletionResult(rChoice.getText(),
-			rChoice.getDisplayText(), rChoice.getCssClassName(), from, to);
+		return createAutoCompletionResult(choice.getText(),
+			choice.getDisplayText(), choice.getCssClassName(), from, to);
 	}
 
 	/**
@@ -482,18 +477,19 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Calls the auto-complete callback with the specified argument.
 	 *
-	 * @param rCallbackFunction The actual function to call.
-	 * @param rArgument         The argument to pass to the function.
-	 * @param nLine             The line of the completion (zero based index).
-	 * @param nIndex            The character index on the line of the
-	 *                          completion (zero based index).
+	 * @param callbackFunction The actual function to call.
+	 * @param argument         The argument to pass to the function.
+	 * @param line             The line of the completion (zero based index).
+	 * @param index            The character index on the line of the
+	 *                            completion
+	 *                         (zero based index).
 	 */
 	private native void doAutoCompleteCallback(
-		JavaScriptObject rCallbackFunction, JavaScriptObject rArgument,
-		int nLine, int nIndex) /*-{
-		rCallbackFunction({
-			list: rArgument,
-			from: {'line': nLine, 'ch': nIndex}
+		JavaScriptObject callbackFunction, JavaScriptObject argument, int line,
+		int index) /*-{
+		callbackFunction({
+			list: argument,
+			from: {'line': line, 'ch': nIndex}
 		});
 	}-*/;
 
@@ -502,7 +498,7 @@ public class GwtCodeMirror extends Composite
 	 * in the {@link #setup(GwtCodeMirror, String, JavaScriptObject)} method.
 	 */
 	private void fireValueChangeEvent() {
-		if (!bIsSettingValue) {
+		if (!isSettingValue) {
 			ValueChangeEvent.fire(this, getText());
 		}
 	}
@@ -510,36 +506,36 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Called by CodeMirror to retrieve completions.
 	 *
-	 * @param sEditorText     The current editor text
-	 * @param nLine           The line that the caret is at (zero based)
-	 * @param nColumn         The column that the caret is at (zero based)
-	 * @param nIndex          The caret index relative to the editor text
-	 * @param rCompletionList A JavaScriptObject that is an array and should be
-	 *                        populated with lists of completions. This can be
-	 *                        done by calling
-	 *                        {@link #addElement(JavaScriptObject,
-	 *                        JavaScriptObject)}.
+	 * @param editorText     The current editor text
+	 * @param line           The line that the caret is at (zero based)
+	 * @param column         The column that the caret is at (zero based)
+	 * @param index          The caret index relative to the editor text
+	 * @param completionList A JavaScriptObject that is an array and should be
+	 *                       populated with lists of completions. This can be
+	 *                       done by calling
+	 *                       {@link #addElement(JavaScriptObject,
+	 *                       JavaScriptObject)}.
 	 */
-	private void getCompletions(final String sEditorText, final int nLine,
-		final int nColumn, final int nIndex,
-		final JavaScriptObject rCompletionList,
-		final JavaScriptObject rCallback) {
-		rAutoCompletionHandler.getCompletions(sEditorText,
-			new EditorPosition(nLine, nColumn), nIndex,
+	private void getCompletions(final String editorText, final int line,
+		final int column, final int index,
+		final JavaScriptObject completionList,
+		final JavaScriptObject callback) {
+		autoCompletionHandler.getCompletions(editorText,
+			new EditorPosition(line, column), index,
 			new AutoCompletionCallback() {
 				@Override
-				public void completionsReady(AutoCompletionResult rResult) {
-					for (AutoCompletionChoice rChoice : rResult.getChoices()) {
-						addElement(rCompletionList,
-							createAutoCompletionResult(rChoice));
+				public void completionsReady(AutoCompletionResult result) {
+					for (AutoCompletionChoice choice : result.getChoices()) {
+						addElement(completionList,
+							createAutoCompletionResult(choice));
 					}
 
-					int nFromLine = rResult.getFromPosition().getLineNumber();
-					int nFromColumn =
-						rResult.getFromPosition().getColumnNumber();
+					int fromLine = result.getFromPosition().getLineNumber();
+					int fromColumn =
+						result.getFromPosition().getColumnNumber();
 
-					doAutoCompleteCallback(rCallback, rCompletionList,
-						nFromLine, nFromColumn);
+					doAutoCompleteCallback(callback, completionList, fromLine,
+						fromColumn);
 				}
 			});
 	}
@@ -547,60 +543,60 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Returns the editor position.
 	 *
-	 * @param rCodeMirror The editor position
+	 * @param codeMirror The editor position
 	 * @return The editor position
 	 */
 	private native JavaScriptObject getEditorPosition(
-		JavaScriptObject rCodeMirror) /*-{
-		return rCodeMirror.getCursor("start");
+		JavaScriptObject codeMirror) /*-{
+		return codeMirror.getCursor("start");
 	}-*/;
 
 	/**
 	 * Returns the value.
 	 *
-	 * @param rCodeMirror The value
+	 * @param codeMirror The value
 	 * @return The value
 	 */
-	private native String getValue(JavaScriptObject rCodeMirror) /*-{
-		return rCodeMirror.getValue();
+	private native String getValue(JavaScriptObject codeMirror) /*-{
+		return codeMirror.getValue();
 	}-*/;
 
 	/**
 	 * Indents all lines.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
+	 * @param codeMirror The CodeMirror instance
 	 */
-	private native void indentAllLines(JavaScriptObject rCodeMirror) /*-{
-		var lineCount = rCodeMirror.lineCount();
+	private native void indentAllLines(JavaScriptObject codeMirror) /*-{
+		var lineCount = codeMirror.lineCount();
 		for(i = 0; i < lineCount; i++) {
-			rCodeMirror.indentLine(i);
+			codeMirror.indentLine(i);
 		}
 	}-*/;
 
 	/**
 	 * Returns the enabled state of the given CodeMirror object.
 	 *
-	 * @param rCodeMirror The JavaScript object
+	 * @param codeMirror The JavaScript object
 	 * @return The enabled state
 	 */
-	private native boolean isReadOnly(JavaScriptObject rCodeMirror) /*-{
-		return rCodeMirror.getOption("readOnly");
+	private native boolean isReadOnly(JavaScriptObject codeMirror) /*-{
+		return codeMirror.getOption("readOnly");
 	}-*/;
 
 	/**
 	 * Marks a range of text.
 	 *
-	 * @param rCodeMirror   The CodeMirror instance
-	 * @param rStart        The range start
-	 * @param rEnd          The range end
-	 * @param sCssClassName The name of the CSS class for the range *
+	 * @param codeMirror   The CodeMirror instance
+	 * @param start        The range start
+	 * @param end          The range end
+	 * @param cssClassName The name of the CSS class for the range *
 	 * @return A text marker JavaScriptObject
 	 */
-	private native JavaScriptObject markText(JavaScriptObject rCodeMirror,
-		JavaScriptObject rStart, JavaScriptObject rEnd, String sCssClassName)
+	private native JavaScriptObject markText(JavaScriptObject codeMirror,
+		JavaScriptObject start, JavaScriptObject end, String cssClassName)
 	/*-{
-		return rCodeMirror.markText(rStart, rEnd, {
-			className: sCssClassName
+		return codeMirror.markText(start, end, {
+			className: cssClassName
 		});
 	}-*/;
 
@@ -611,7 +607,7 @@ public class GwtCodeMirror extends Composite
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				refresh(aCodeMirror);
+				refresh(codeMirror);
 			}
 		});
 	}
@@ -619,82 +615,83 @@ public class GwtCodeMirror extends Composite
 	/**
 	 * Calculates the editor position from a character index.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
+	 * @param codeMirror The CodeMirror instance
 	 */
-	private native void refresh(JavaScriptObject rCodeMirror) /*-{
-		rCodeMirror.refresh();
+	private native void refresh(JavaScriptObject codeMirror) /*-{
+		codeMirror.refresh();
 	}-*/;
 
 	/**
 	 * Sets the editor position.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
-	 * @param rPosition   The new position
+	 * @param codeMirror The CodeMirror instance
+	 * @param position   The new position
 	 */
-	private native void setEditorPosition(JavaScriptObject rCodeMirror,
-		JavaScriptObject rPosition) /*-{
-			rCodeMirror.setCursor(rPosition);
+	private native void setEditorPosition(JavaScriptObject codeMirror,
+		JavaScriptObject position) /*-{
+			codeMirror.setCursor(position);
 	}-*/;
 
 	/**
 	 * Sets the line wrapping.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
-	 * @param bWrap       b The new line wrapping
+	 * @param codeMirror The CodeMirror instance
+	 * @param wrap       b The new line wrapping
 	 */
-	private native void setLineWrapping(JavaScriptObject rCodeMirror,
-		boolean bWrap) /*-{
-		rCodeMirror.setOption("lineWrapping", bWrap);
+	private native void setLineWrapping(JavaScriptObject codeMirror,
+		boolean wrap) /*-{
+		codeMirror.setOption("lineWrapping", wrap);
 	}-*/;
 
 	/**
 	 * Sets the read only state.
 	 *
-	 * @param rCodeMirror The CodeMirror instance
-	 * @param bReadOnly   The new read only state
+	 * @param codeMirror The CodeMirror instance
+	 * @param readOnly   The new read only state
 	 */
-	private native void setReadOnly(JavaScriptObject rCodeMirror,
-		boolean bReadOnly) /*-{
-		rCodeMirror.setOption("readOnly", bReadOnly);
+	private native void setReadOnly(JavaScriptObject codeMirror,
+		boolean readOnly) /*-{
+		codeMirror.setOption("readOnly", readOnly);
 	}-*/;
 
 	/**
 	 * Implementation of setting the CodeMirror text.
 	 *
-	 * @param rCodeMirror The new value
-	 * @param sText       The new value
+	 * @param codeMirror The new value
+	 * @param text       The new value
 	 */
-	private native void setValue(JavaScriptObject rCodeMirror, String sText)
+	private native void setValue(JavaScriptObject codeMirror, String text)
 	/*-{
-		rCodeMirror.setValue(sText);
+		codeMirror.setValue(text);
 	}-*/;
 
 	/**
 	 * Sets up the CodeMirror instance in native JavaScript.
 	 *
-	 * @param rGwtCodeMirror A pointer to the this instance which is used to
-	 *                       call out from native code to methods on this.
-	 * @param sId            The id of the element which the CodeMirror editor
-	 *                       should be appended to.
-	 * @param rOptions       The options for the CodeMirror instance
+	 * @param gwtCodeMirror A pointer to the this instance which is used to
+	 *                         call
+	 *                      out from native code to methods on this.
+	 * @param id            The id of the element which the CodeMirror editor
+	 *                      should be appended to.
+	 * @param options       The options for the CodeMirror instance
 	 * @return The native CodeMirror object that was created and set up. Other
 	 * functions can use this as a pointer for calls into native code.
 	 */
-	private native JavaScriptObject setup(GwtCodeMirror rGwtCodeMirror,
-		String sId, JavaScriptObject rOptions) /*-{
+	private native JavaScriptObject setup(GwtCodeMirror gwtCodeMirror,
+		String id, JavaScriptObject options) /*-{
 		// We install an instance of the CodeMirror editor by assigning an
 		id to
 		// the intended parent element and then asking code mirror to create
 		 the
 		// editor for that element.
-		var rElement = $doc.getElementById(sId);
-		var aCodeMirror = $wnd.CodeMirror(
-			rElement,
+		var element = $doc.getElementById(id);
+		var codeMirror = $wnd.CodeMirror(
+			element,
 			{
-				mode: rOptions["mode"],
-				readOnly: rOptions["readOnly"],
-				lineNumbers: rOptions["lineNumbers"],
-				lineWrapping: rOptions["lineWrapping"],
+				mode: options["mode"],
+				readOnly: options["readOnly"],
+				lineNumbers: options["lineNumbers"],
+				lineWrapping: options["lineWrapping"],
 				theme: "eclipse",
 				viewportMargin: Infinity,
 				extraKeys: {
@@ -710,7 +707,7 @@ public class GwtCodeMirror extends Composite
 	//																   var
 	index = editor.indexFromPos(cursor);
 	//																   $entry
-	(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions
+	(gwtCodeMirror.@de.esoco.ewt.impl.gwt.code.GwtCodeMirror::getCompletions
 	(Ljava/lang/String;IIILcom/google/gwt/core/client/JavaScriptObject;
 	Lcom/google/gwt/core/client/JavaScriptObject;)(editor.getValue(), cursor
 	.line, cursor.ch, index, result, callback));
@@ -722,11 +719,11 @@ public class GwtCodeMirror extends Composite
 		);
 		// Listener for changes and propagate them back into the GWT compiled
 		code
-		aCodeMirror.on("change", function () {
-			$entry(rGwtCodeMirror.@de.esoco.ewt.impl.gwt.code
+		codeMirror.on("change", function () {
+			$entry(gwtCodeMirror.@de.esoco.ewt.impl.gwt.code
 			.GwtCodeMirror::fireValueChangeEvent()());
 		});
-		return aCodeMirror;
+		return codeMirror;
 
 
 	}-*/;
@@ -739,15 +736,15 @@ public class GwtCodeMirror extends Composite
 	 */
 	private static class CodeMirrorOptions {
 
-		private String sMode = "text/x-groovy";
+		private String mode = "text/x-groovy";
 
-		private String sValue = "";
+		private String value = "";
 
-		private boolean bReadOnly = DEFAULT_READ_ONLY;
+		private boolean readOnly = DEFAULT_READ_ONLY;
 
-		private boolean bLineNumbers = DEFAULT_LINE_NUMBERS;
+		private boolean lineNumbers = DEFAULT_LINE_NUMBERS;
 
-		private boolean bLineWrapping = DEFAULT_LINE_WRAPPING;
+		private boolean lineWrapping = DEFAULT_LINE_WRAPPING;
 
 		/**
 		 * Add a property.
@@ -772,7 +769,7 @@ public class GwtCodeMirror extends Composite
 		 * @return The mode
 		 */
 		public String getMode() {
-			return sMode;
+			return mode;
 		}
 
 		/**
@@ -781,7 +778,7 @@ public class GwtCodeMirror extends Composite
 		 * @return The value
 		 */
 		public String getValue() {
-			return sValue;
+			return value;
 		}
 
 		/**
@@ -790,7 +787,7 @@ public class GwtCodeMirror extends Composite
 		 * @return The line numbers
 		 */
 		public boolean isLineNumbers() {
-			return bLineNumbers;
+			return lineNumbers;
 		}
 
 		/**
@@ -799,7 +796,7 @@ public class GwtCodeMirror extends Composite
 		 * @return The line wrapping
 		 */
 		public boolean isLineWrapping() {
-			return bLineWrapping;
+			return lineWrapping;
 		}
 
 		/**
@@ -808,7 +805,7 @@ public class GwtCodeMirror extends Composite
 		 * @return The read only
 		 */
 		public boolean isReadOnly() {
-			return bReadOnly;
+			return readOnly;
 		}
 
 		/**
@@ -817,7 +814,7 @@ public class GwtCodeMirror extends Composite
 		 * @param lineNumbers The new line numbers
 		 */
 		public void setLineNumbers(boolean lineNumbers) {
-			this.bLineNumbers = lineNumbers;
+			this.lineNumbers = lineNumbers;
 		}
 
 		/**
@@ -826,7 +823,7 @@ public class GwtCodeMirror extends Composite
 		 * @param lineWrapping The new line wrapping
 		 */
 		public void setLineWrapping(boolean lineWrapping) {
-			this.bLineWrapping = lineWrapping;
+			this.lineWrapping = lineWrapping;
 		}
 
 		/**
@@ -835,7 +832,7 @@ public class GwtCodeMirror extends Composite
 		 * @param mode The new mode
 		 */
 		public void setMode(String mode) {
-			this.sMode = mode;
+			this.mode = mode;
 		}
 
 		/**
@@ -844,7 +841,7 @@ public class GwtCodeMirror extends Composite
 		 * @param readOnly The new read only
 		 */
 		public void setReadOnly(boolean readOnly) {
-			this.bReadOnly = readOnly;
+			this.readOnly = readOnly;
 		}
 
 		/**
@@ -853,7 +850,7 @@ public class GwtCodeMirror extends Composite
 		 * @param value The new value
 		 */
 		public void setValue(String value) {
-			this.sValue = value;
+			this.value = value;
 		}
 
 		/**
@@ -864,11 +861,11 @@ public class GwtCodeMirror extends Composite
 		public JavaScriptObject toJavaScriptObject() {
 			JavaScriptObject result = JavaScriptObject.createObject();
 
-			addProperty(result, "value", sValue);
-			addProperty(result, "mode", sMode);
-			addProperty(result, "readOnly", bReadOnly);
-			addProperty(result, "lineNumbers", bLineNumbers);
-			addProperty(result, "lineWrapping", bLineWrapping);
+			addProperty(result, "value", value);
+			addProperty(result, "mode", mode);
+			addProperty(result, "readOnly", readOnly);
+			addProperty(result, "lineNumbers", lineNumbers);
+			addProperty(result, "lineWrapping", lineWrapping);
 
 			return result;
 		}
@@ -881,31 +878,31 @@ public class GwtCodeMirror extends Composite
 	 */
 	private static class TextMarker {
 
-		private JavaScriptObject rJavaScriptObject;
+		private final JavaScriptObject javaScriptObject;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param rJavaScriptObject The wrapped JavaScript object
+		 * @param javaScriptObject The wrapped JavaScript object
 		 */
-		public TextMarker(JavaScriptObject rJavaScriptObject) {
-			this.rJavaScriptObject = rJavaScriptObject;
+		public TextMarker(JavaScriptObject javaScriptObject) {
+			this.javaScriptObject = javaScriptObject;
 		}
 
 		/**
 		 * Clears this marker.
 		 */
 		public void clear() {
-			clear(rJavaScriptObject);
+			clear(javaScriptObject);
 		}
 
 		/**
 		 * Implementation of {@link #clear()}.
 		 *
-		 * @param rObject rJavaScriptObject The wrapped JavaScript object
+		 * @param object rJavaScriptObject The wrapped JavaScript object
 		 */
-		private native void clear(JavaScriptObject rObject) /*-{
-			rObject.clear();
+		private native void clear(JavaScriptObject object) /*-{
+			object.clear();
 		}-*/;
 	}
 }

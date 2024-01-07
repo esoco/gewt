@@ -30,12 +30,12 @@ public class RadioButton extends CheckBox {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		String sId = rParent.getId();
+		String id = parent.getId();
 
-		((com.google.gwt.user.client.ui.RadioButton) getWidget()).setName(sId);
+		((com.google.gwt.user.client.ui.RadioButton) getWidget()).setName(id);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class RadioButton extends CheckBox {
 		 */
 		@Override
 		public com.google.gwt.user.client.ui.RadioButton createWidget(
-			Component rComponent, StyleData rStyle) {
+			Component component, StyleData style) {
 			return new com.google.gwt.user.client.ui.RadioButton("");
 		}
 	}

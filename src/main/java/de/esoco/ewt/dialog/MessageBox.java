@@ -50,10 +50,9 @@ import com.google.gwt.user.client.ui.Widget;
  * with an image and several types of standard buttons centered on the screen.
  *
  * <p>The following keys must exist in a application resource for message
- * boxes:
- * "$btnRetry", "$btnIgnore", "$btnYes", "$btnNo", "$btnOk", "$btnCancel" for
- * the buttons and "$imQuestion", "$imInfo", "$imWarning", "$imError" for the
- * images.</p>
+ * boxes: "$btnRetry", "$btnIgnore", "$btnYes", "$btnNo", "$btnOk", "$btnCancel"
+ * for the buttons and "$imQuestion", "$imInfo", "$imWarning", "$imError" for
+ * the images.</p>
  *
  * @author eso
  */
@@ -140,81 +139,80 @@ public class MessageBox implements ClickHandler {
 			"$btnOk",
 			"$btnCancel" };
 
-	private IsChildViewWidget aDialog;
+	private IsChildViewWidget dialog;
 
-	private CellPanel aButtonPanel;
+	private CellPanel buttonPanel;
 
-	private ResultHandler rResultHandler;
+	private ResultHandler resultHandler;
 
 	/**
 	 * Creates a new instance with a certain parent view.
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display or NULL for none
-	 * @param sSubMessage    A message to be displayed below image and message
-	 *                       text or NULL for none
-	 * @param rImage         An image to display or NULL for none
-	 * @param nButtons       The bit combination for the message box buttons
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display or NULL for none
+	 * @param subMessage    A message to be displayed below image and message
+	 *                      text or NULL for none
+	 * @param image         An image to display or NULL for none
+	 * @param buttons       The bit combination for the message box buttons
+	 * @param resultHandler The handler for the message box result
 	 */
-	MessageBox(View rParent, String sTitle, String sMessage,
-		String sSubMessage,
-		Image rImage, int nButtons, ResultHandler rResultHandler) {
-		this.rResultHandler = rResultHandler;
+	MessageBox(View parent, String title, String message, String subMessage,
+		Image image, int buttons, ResultHandler resultHandler) {
+		this.resultHandler = resultHandler;
 
-		init(rParent, sTitle, sMessage, sSubMessage, rImage, nButtons);
+		init(parent, title, message, subMessage, image, buttons);
 	}
 
 	/**
 	 * Internal helper method to initialize the message box image for a certain
 	 * icon index.
 	 *
-	 * @param rComponent The component to be used to create the image
-	 * @param nIndex     The icon index
+	 * @param component The component to be used to create the image
+	 * @param index     The icon index
 	 * @return The icon image
 	 */
-	private static Image getIconImage(Component rComponent, int nIndex) {
-		Object rImage = ICON_IMAGES[nIndex];
+	private static Image getIconImage(Component component, int index) {
+		Object image = ICON_IMAGES[index];
 
-		if (rImage instanceof String) {
-			rImage = rComponent.getContext().createImage(rImage);
+		if (image instanceof String) {
+			image = component.getContext().createImage(image);
 
-			ICON_IMAGES[nIndex] = rImage;
+			ICON_IMAGES[index] = image;
 		}
 
-		return (Image) rImage;
+		return (Image) image;
 	}
 
 	/**
 	 * Shows a question message dialog with three buttons: Yes, No, and Cancel.
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display
-	 * @param nIcon          The type constant of the icon to display
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display
+	 * @param icon          The type constant of the icon to display
+	 * @param resultHandler The handler for the message box result
 	 */
-	public static void showCancelQuestion(View rParent, String sTitle,
-		String sMessage, int nIcon, ResultHandler rResultHandler) {
-		showMessage(rParent, sTitle, sMessage, null, nIcon,
-			BUTTONS_YES_NO_CANCEL, rResultHandler);
+	public static void showCancelQuestion(View parent, String title,
+		String message, int icon, ResultHandler resultHandler) {
+		showMessage(parent, title, message, null, icon, BUTTONS_YES_NO_CANCEL,
+			resultHandler);
 	}
 
 	/**
 	 * Shows a confirmation dialog. The dialog will have the buttons OK and
 	 * Cancel.
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display
-	 * @param nIcon          The type constant of the icon to display
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display
+	 * @param icon          The type constant of the icon to display
+	 * @param resultHandler The handler for the message box result
 	 */
-	public static void showConfirmation(View rParent, String sTitle,
-		String sMessage, int nIcon, ResultHandler rResultHandler) {
-		showMessage(rParent, sTitle, sMessage, null, nIcon, BUTTONS_OK_CANCEL,
-			rResultHandler);
+	public static void showConfirmation(View parent, String title,
+		String message, int icon, ResultHandler resultHandler) {
+		showMessage(parent, title, message, null, icon, BUTTONS_OK_CANCEL,
+			resultHandler);
 	}
 
 	/**
@@ -223,20 +221,20 @@ public class MessageBox implements ClickHandler {
 	 * in this class (like {@link #ICON_INFORMATION}, {@link #BUTTON_OK} or
 	 * {@link #BUTTONS_OK_CANCEL}).
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display or NULL for none
-	 * @param sSubMessage    A message to be displayed below image and message
-	 *                       text or NULL for none
-	 * @param nIcon          The type constant of the icon to display
-	 * @param nButtons       The bit combination for the buttons to display
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display or NULL for none
+	 * @param subMessage    A message to be displayed below image and message
+	 *                      text or NULL for none
+	 * @param icon          The type constant of the icon to display
+	 * @param buttons       The bit combination for the buttons to display
+	 * @param resultHandler The handler for the message box result
 	 */
-	private static void showMessage(View rParent, String sTitle,
-		String sMessage, String sSubMessage, int nIcon, int nButtons,
-		ResultHandler rResultHandler) {
-		showMessage(rParent, sTitle, sMessage, sSubMessage,
-			getIconImage(rParent, nIcon), nButtons, rResultHandler);
+	private static void showMessage(View parent, String title, String message,
+		String subMessage, int icon, int buttons,
+		ResultHandler resultHandler) {
+		showMessage(parent, title, message, subMessage,
+			getIconImage(parent, icon), buttons, resultHandler);
 	}
 
 	/**
@@ -244,21 +242,21 @@ public class MessageBox implements ClickHandler {
 	 * to be displayed must be defined with one of the button constants in this
 	 * class (like {@link #BUTTON_OK} or {@link #BUTTONS_OK_CANCEL}).
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display or NULL for none
-	 * @param sSubMessage    A message to be displayed below image and message
-	 *                       text or NULL for none
-	 * @param rImage         The image to display or NULL for none
-	 * @param nButtons       The bit combination for the buttons to display
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display or NULL for none
+	 * @param subMessage    A message to be displayed below image and message
+	 *                      text or NULL for none
+	 * @param image         The image to display or NULL for none
+	 * @param buttons       The bit combination for the buttons to display
+	 * @param resultHandler The handler for the message box result
 	 */
-	private static void showMessage(View rParent, String sTitle,
-		String sMessage, String sSubMessage, Image rImage, int nButtons,
-		ResultHandler rResultHandler) {
+	private static void showMessage(View parent, String title, String message,
+		String subMessage, Image image, int buttons,
+		ResultHandler resultHandler) {
 		MessageBox mb =
-			new MessageBox(rParent, sTitle, sMessage, sSubMessage, rImage,
-				nButtons, rResultHandler);
+			new MessageBox(parent, title, message, subMessage, image, buttons,
+				resultHandler);
 
 		mb.show();
 	}
@@ -267,30 +265,30 @@ public class MessageBox implements ClickHandler {
 	 * Shows a notification dialog. The dialog will have a single OK button and
 	 * therefore doesn't need a result handler.
 	 *
-	 * @param rParent  The parent view
-	 * @param sTitle   The message box title
-	 * @param sMessage The message text to display
-	 * @param nIcon    The type constant of the icon to display
+	 * @param parent  The parent view
+	 * @param title   The message box title
+	 * @param message The message text to display
+	 * @param icon    The type constant of the icon to display
 	 */
-	public static void showNotification(View rParent, String sTitle,
-		String sMessage, int nIcon) {
-		showMessage(rParent, sTitle, sMessage, null, nIcon, BUTTON_OK, null);
+	public static void showNotification(View parent, String title,
+		String message, int icon) {
+		showMessage(parent, title, message, null, icon, BUTTON_OK, null);
 	}
 
 	/**
 	 * Shows a question message dialog. The dialog will have the buttons 'Yes'
 	 * and 'No'.
 	 *
-	 * @param rParent        The parent view
-	 * @param sTitle         The message box title
-	 * @param sMessage       The message text to display
-	 * @param nIcon          The type constant of the icon to display
-	 * @param rResultHandler The handler for the message box result
+	 * @param parent        The parent view
+	 * @param title         The message box title
+	 * @param message       The message text to display
+	 * @param icon          The type constant of the icon to display
+	 * @param resultHandler The handler for the message box result
 	 */
-	public static void showQuestion(View rParent, String sTitle,
-		String sMessage, int nIcon, ResultHandler rResultHandler) {
-		showMessage(rParent, sTitle, sMessage, null, nIcon, BUTTONS_YES_NO,
-			rResultHandler);
+	public static void showQuestion(View parent, String title, String message,
+		int icon, ResultHandler resultHandler) {
+		showMessage(parent, title, message, null, icon, BUTTONS_YES_NO,
+			resultHandler);
 	}
 
 	/**
@@ -300,24 +298,24 @@ public class MessageBox implements ClickHandler {
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		aDialog.hide();
+	public void onClick(ClickEvent event) {
+		dialog.hide();
 
-		Widget rSource = (Widget) rEvent.getSource();
-		int nButtonCount = aButtonPanel.getWidgetCount();
-		int nButton;
+		Widget source = (Widget) event.getSource();
+		int buttonCount = buttonPanel.getWidgetCount();
+		int button;
 
-		if (rSource == aDialog) {
+		if (source == dialog) {
 			// view close button clicked = Cancel/No
-			nButton = nButtonCount;
+			button = buttonCount;
 		} else {
 			// calculate button index from right to left!
-			nButton = aButtonPanel.getWidgetIndex(rSource) + 1;
+			button = buttonPanel.getWidgetIndex(source) + 1;
 		}
 
-		if (nButton > 0) {
-			if (rResultHandler != null) {
-				rResultHandler.handleResult(nButtonCount - nButton);
+		if (button > 0) {
+			if (resultHandler != null) {
+				resultHandler.handleResult(buttonCount - button);
 			}
 		}
 	}
@@ -325,108 +323,107 @@ public class MessageBox implements ClickHandler {
 	/**
 	 * Initializes this instance.
 	 *
-	 * @param sTitle      The message box title
-	 * @param sMessage    The message text to display or NULL for none
-	 * @param sSubMessage A message to be displayed below image and text or
-	 *                       NULL
-	 *                    for none
-	 * @param rImage      The image to display or NULL for none
-	 * @param nButtons    The combined bits of the message box buttons
+	 * @param title      The message box title
+	 * @param message    The message text to display or NULL for none
+	 * @param subMessage A message to be displayed below image and text or NULL
+	 *                   for none
+	 * @param image      The image to display or NULL for none
+	 * @param buttons    The combined bits of the message box buttons
 	 */
-	void init(View rParent, String sTitle, String sMessage, String sSubMessage,
-		Image rImage, int nButtons) {
-		aDialog = EWT
+	void init(View parent, String title, String message, String subMessage,
+		Image image, int buttons) {
+		dialog = EWT
 			.getChildViewFactory()
-			.createChildViewWidget(rParent,
+			.createChildViewWidget(parent,
 				ViewStyle.MODAL.withFlags(Flag.BOTTOM));
 
-		sTitle = EWT.expandResource(rParent, sTitle);
-		sMessage = EWT.expandResource(rParent, sMessage);
+		title = EWT.expandResource(parent, title);
+		message = EWT.expandResource(parent, message);
 
-		DockPanel aMainPanel = new DockPanel();
-		DockPanel aMessagePanel = new DockPanel();
+		DockPanel mainPanel = new DockPanel();
+		DockPanel messagePanel = new DockPanel();
 
-		aButtonPanel = new HorizontalPanel();
+		buttonPanel = new HorizontalPanel();
 
-		aMainPanel.setSpacing(10);
-		aButtonPanel.setSpacing(10);
+		mainPanel.setSpacing(10);
+		buttonPanel.setSpacing(10);
 
-		aMainPanel.add(aMessagePanel, DockPanel.CENTER);
-		aMainPanel.add(aButtonPanel, DockPanel.SOUTH);
+		mainPanel.add(messagePanel, DockPanel.CENTER);
+		mainPanel.add(buttonPanel, DockPanel.SOUTH);
 
-		aDialog.setViewTitle(sTitle);
+		dialog.setViewTitle(title);
 
-		if (rImage instanceof ImageRef) {
-			com.google.gwt.user.client.ui.Image rGwtImage =
-				((ImageRef) rImage).getGwtImage();
+		if (image instanceof ImageRef) {
+			com.google.gwt.user.client.ui.Image gwtImage =
+				((ImageRef) image).getGwtImage();
 
-			rGwtImage.addStyleName(CSS.ewtMessageIcon());
+			gwtImage.addStyleName(CSS.ewtMessageIcon());
 
-			aMessagePanel.add(rGwtImage, DockPanel.WEST);
+			messagePanel.add(gwtImage, DockPanel.WEST);
 		}
 
-		if (sMessage != null) {
-			Label rLabel =
-				addMessageLabel(aMessagePanel, sMessage, DockPanel.CENTER);
+		if (message != null) {
+			Label label =
+				addMessageLabel(messagePanel, message, DockPanel.CENTER);
 
-			rLabel.addStyleName(CSS.ewtMain());
+			label.addStyleName(CSS.ewtMain());
 		}
 
-		if (sSubMessage != null) {
-			addMessageLabel(aMessagePanel, sSubMessage, DockPanel.SOUTH);
+		if (subMessage != null) {
+			addMessageLabel(messagePanel, subMessage, DockPanel.SOUTH);
 		}
 
-		boolean bFirst = true;
+		boolean first = true;
 
 		for (int i = 0; i < BUTTON_LABELS.length; i++) {
-			if ((nButtons & 0x1) != 0) {
-				PushButton aButton = new PushButton(
-					EWT.expandResource(rParent, BUTTON_LABELS[i]));
+			if ((buttons & 0x1) != 0) {
+				PushButton button = new PushButton(
+					EWT.expandResource(parent, BUTTON_LABELS[i]));
 
-				aButton.addClickHandler(this);
-				aButtonPanel.add(aButton);
+				button.addClickHandler(this);
+				buttonPanel.add(button);
 
 				// TODO: implement automatic sizing
-				aButton.setWidth("6EM");
+				button.setWidth("6EM");
 
-				if (bFirst) {
-					final PushButton aFirstButton = aButton;
+				if (first) {
+					final PushButton firstButton = button;
 
-					aFirstButton.addStyleName("ewt-Default");
+					firstButton.addStyleName("ewt-Default");
 
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
 						public void execute() {
-							aFirstButton.setFocus(true);
+							firstButton.setFocus(true);
 						}
 					});
-					bFirst = false;
+					first = false;
 				}
 			}
 
-			nButtons >>= 1;
+			buttons >>= 1;
 		}
 
-		if (aDialog instanceof PopupPanel) {
-			((PopupPanel) aDialog).setWidget(aMainPanel);
+		if (dialog instanceof PopupPanel) {
+			((PopupPanel) dialog).setWidget(mainPanel);
 		} else {
-			aDialog.add(aMainPanel);
+			dialog.add(mainPanel);
 		}
 
-		aDialog.asWidget().addStyleName(CSS.ewtMessageBox());
+		dialog.asWidget().addStyleName(CSS.ewtMessageBox());
 	}
 
 	/**
 	 * Displays this message box instance centered on the screen.
 	 */
 	void show() {
-		aDialog.show();
+		dialog.show();
 
-		if (aDialog instanceof PopupPanel) {
-			PopupPanel rPopupPanel = (PopupPanel) aDialog;
+		if (dialog instanceof PopupPanel) {
+			PopupPanel popupPanel = (PopupPanel) dialog;
 
-			rPopupPanel.setGlassEnabled(true);
-			UserInterfaceContext.setPopupBounds(rPopupPanel,
+			popupPanel.setGlassEnabled(true);
+			UserInterfaceContext.setPopupBounds(popupPanel,
 				Window.getClientWidth() / 2, Window.getClientHeight() / 3,
 				AlignedPosition.CENTER, true);
 		}
@@ -435,19 +432,19 @@ public class MessageBox implements ClickHandler {
 	/**
 	 * Adds a message label to the given panel
 	 *
-	 * @param rPanel    The panel
-	 * @param sMessage  The message string
-	 * @param rPosition The dock layout position constant
+	 * @param panel    The panel
+	 * @param message  The message string
+	 * @param position The dock layout position constant
 	 * @return The new label component
 	 */
-	private Label addMessageLabel(DockPanel rPanel, String sMessage,
-		DockLayoutConstant rPosition) {
-		Label aLabel = new Label(sMessage, true);
+	private Label addMessageLabel(DockPanel panel, String message,
+		DockLayoutConstant position) {
+		Label label = new Label(message, true);
 
-		rPanel.add(aLabel, rPosition);
-		aLabel.addStyleName(CSS.ewtMessageLabel());
+		panel.add(label, position);
+		label.addStyleName(CSS.ewtMessageLabel());
 
-		return aLabel;
+		return label;
 	}
 
 	/**
@@ -463,9 +460,8 @@ public class MessageBox implements ClickHandler {
 		 * no buttons which are always the rightmost buttons will have a button
 		 * number of 0 (zero).
 		 *
-		 * @param nButton The number of the button used to close the message
-		 *                box
+		 * @param button The number of the button used to close the message box
 		 */
-		public void handleResult(int nButton);
+		public void handleResult(int button);
 	}
 }

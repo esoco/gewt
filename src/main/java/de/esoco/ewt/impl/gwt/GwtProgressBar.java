@@ -55,19 +55,19 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 
-	private Element aBarElement;
+	private Element barElement;
 
-	private Element aTextElement;
+	private Element textElement;
 
-	private int nProgress;
+	private int progress;
 
-	private int nMinimum;
+	private int minimum;
 
-	private int nMaximum;
+	private int maximum;
 
-	private boolean bShowText = true;
+	private boolean showText = true;
 
-	private TextFormatter rTextFormatter;
+	private TextFormatter textFormatter;
 
 	/**
 	 * Create a progress bar with default range of 0 to 100.
@@ -80,74 +80,74 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * Create a progress bar with an initial progress and a default range of 0
 	 * to 100.
 	 *
-	 * @param nProgress the current progress
+	 * @param progress the current progress
 	 */
-	public GwtProgressBar(int nProgress) {
-		this(0, 100, nProgress);
+	public GwtProgressBar(int progress) {
+		this(0, 100, progress);
 	}
 
 	/**
 	 * Create a progress bar within the given range.
 	 *
-	 * @param nMinimum the minimum progress
-	 * @param nMaximum the maximum progress
+	 * @param minimum the minimum progress
+	 * @param maximum the maximum progress
 	 */
-	public GwtProgressBar(int nMinimum, int nMaximum) {
-		this(nMinimum, nMaximum, 0);
+	public GwtProgressBar(int minimum, int maximum) {
+		this(minimum, maximum, 0);
 	}
 
 	/**
 	 * Create a progress bar within the given range starting at the specified
 	 * progress amount.
 	 *
-	 * @param nMinimum  the minimum progress
-	 * @param nMaximum  the maximum progress
-	 * @param nProgress the current progress
+	 * @param minimum  the minimum progress
+	 * @param maximum  the maximum progress
+	 * @param progress the current progress
 	 */
-	public GwtProgressBar(int nMinimum, int nMaximum, int nProgress) {
-		this(nMinimum, nMaximum, nProgress, null);
+	public GwtProgressBar(int minimum, int maximum, int progress) {
+		this(minimum, maximum, progress, null);
 	}
 
 	/**
 	 * Create a progress bar within the given range starting at the specified
 	 * progress amount.
 	 *
-	 * @param nMinimum      the minimum progress
-	 * @param nMaximum      the maximum progress
-	 * @param nProgress     the current progress
+	 * @param minimum       the minimum progress
+	 * @param maximum       the maximum progress
+	 * @param progress      the current progress
 	 * @param textFormatter the text formatter
 	 */
-	public GwtProgressBar(int nMinimum, int nMaximum, int nProgress,
+	public GwtProgressBar(int minimum, int maximum, int progress,
 		TextFormatter textFormatter) {
-		this.nMinimum = nMinimum;
-		this.nMaximum = nMaximum;
-		this.nProgress = nProgress;
+		this.minimum = minimum;
+		this.maximum = maximum;
+		this.progress = progress;
 
 		setTextFormatter(textFormatter);
 
 		// Create the outer shell
-		Element aShellElement = DOM.createDiv();
+		Element shellElement = DOM.createDiv();
 
-		setElement(aShellElement);
-		aShellElement.getStyle().setProperty("position", "relative");
+		setElement(shellElement);
+		shellElement.getStyle().setProperty("position", "relative");
 		setStyleName("gwt-ProgressBar-shell");
 
 		// Create the bar element
-		aBarElement = DOM.createDiv();
-		DOM.appendChild(getElement(), aBarElement);
-		aBarElement.getStyle().setProperty("height", "100%");
-		aBarElement.setPropertyString("className", "gwt-ProgressBar-bar");
+		barElement = DOM.createDiv();
+		DOM.appendChild(getElement(), barElement);
+		barElement.getStyle().setProperty("height", "100%");
+		barElement.setPropertyString("className", "gwt-ProgressBar-bar");
 
 		// Create the text element
-		aTextElement = DOM.createDiv();
-		DOM.appendChild(getElement(), aTextElement);
-		aTextElement.getStyle().setProperty("position", "absolute");
-		aTextElement.getStyle().setProperty("top", "0px");
-		aTextElement.setPropertyString("className",
+		textElement = DOM.createDiv();
+		DOM.appendChild(getElement(), textElement);
+		textElement.getStyle().setProperty("position", "absolute");
+		textElement.getStyle().setProperty("top", "0px");
+		textElement.setPropertyString("className",
 			"gwt-ProgressBar-text-firstHalf");
 
 		// Set the current progress
-		setProgress(nProgress);
+		setProgress(progress);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 */
 	@Override
 	public int getMaximum() {
-		return nMaximum;
+		return maximum;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 */
 	@Override
 	public int getMinimum() {
-		return nMinimum;
+		return minimum;
 	}
 
 	/**
@@ -177,14 +177,14 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @return the current percent complete
 	 */
 	public int getPercent() {
-		int nPercent = 0;
+		int percent = 0;
 
-		if (nMaximum > nMinimum) {
-			nPercent = (nProgress - nMinimum) * 100 / (nMaximum - nMinimum);
-			nPercent = Math.max(0, Math.min(100, nPercent));
+		if (maximum > minimum) {
+			percent = (progress - minimum) * 100 / (maximum - minimum);
+			percent = Math.max(0, Math.min(100, percent));
 		}
 
-		return nPercent;
+		return percent;
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 */
 	@Override
 	public int getProgress() {
-		return nProgress;
+		return progress;
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @return the text formatter
 	 */
 	public TextFormatter getTextFormatter() {
-		return rTextFormatter;
+		return textFormatter;
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @return true if the text is visible
 	 */
 	public boolean isTextVisible() {
-		return bShowText;
+		return showText;
 	}
 
 	/**
@@ -225,11 +225,11 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @param height the new client height of the element
 	 */
 	public void onResize(int width, int height) {
-		if (bShowText) {
-			int textWidth = aTextElement.getPropertyInt("offsetWidth");
+		if (showText) {
+			int textWidth = textElement.getPropertyInt("offsetWidth");
 			int left = (width / 2) - (textWidth / 2);
 
-			aTextElement.getStyle().setProperty("left", left + "px");
+			textElement.getStyle().setProperty("left", left + "px");
 		}
 	}
 
@@ -238,9 +238,9 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 */
 	public void redraw() {
 		if (isAttached()) {
-			Element rElement = getElement();
-			int width = rElement.getPropertyInt("clientWidth");
-			int height = rElement.getPropertyInt("clientHeight");
+			Element element = getElement();
+			int width = element.getPropertyInt("clientWidth");
+			int height = element.getPropertyInt("clientHeight");
 
 			onResize(width, height);
 		}
@@ -251,12 +251,12 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * current progress, the current progress is adjusted to be within the new
 	 * range.
 	 *
-	 * @param nMaximum the maximum progress
+	 * @param maximum the maximum progress
 	 */
 	@Override
-	public void setMaximum(int nMaximum) {
-		this.nMaximum = nMaximum;
-		nProgress = Math.min(nProgress, nMaximum);
+	public void setMaximum(int maximum) {
+		this.maximum = maximum;
+		progress = Math.min(progress, maximum);
 
 		resetProgress();
 	}
@@ -266,12 +266,12 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * current progress, the current progress is adjusted to be within the new
 	 * range.
 	 *
-	 * @param nMinimum the minimum progress
+	 * @param minimum the minimum progress
 	 */
 	@Override
-	public void setMinimum(int nMinimum) {
-		this.nMinimum = nMinimum;
-		nProgress = Math.max(nProgress, nMinimum);
+	public void setMinimum(int minimum) {
+		this.minimum = minimum;
+		progress = Math.max(progress, minimum);
 
 		resetProgress();
 	}
@@ -279,24 +279,24 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	/**
 	 * Set the current progress.
 	 *
-	 * @param nProgress the current progress
+	 * @param progress the current progress
 	 */
 	@Override
-	public void setProgress(int nProgress) {
-		this.nProgress = Math.max(nMinimum, Math.min(nMaximum, nProgress));
+	public void setProgress(int progress) {
+		this.progress = Math.max(minimum, Math.min(maximum, progress));
 
 		// Calculate percent complete
-		int nPercent = getPercent();
+		int percent = getPercent();
 
-		aBarElement.getStyle().setProperty("width", nPercent + "%");
-		aTextElement.setPropertyString("innerHTML", generateText(nPercent));
+		barElement.getStyle().setProperty("width", percent + "%");
+		textElement.setPropertyString("innerHTML", generateText(percent));
 
 		// Set the style depending on the size of the bar
-		if (nPercent < 50) {
-			aTextElement.setPropertyString("className",
+		if (percent < 50) {
+			textElement.setPropertyString("className",
 				"gwt-ProgressBar-text gwt-ProgressBar-text-firstHalf");
 		} else {
-			aTextElement.setPropertyString("className",
+			textElement.setPropertyString("className",
 				"gwt-ProgressBar-text gwt-ProgressBar-text-secondHalf");
 		}
 
@@ -310,7 +310,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @param textFormatter the text formatter
 	 */
 	public void setTextFormatter(TextFormatter textFormatter) {
-		this.rTextFormatter = textFormatter;
+		this.textFormatter = textFormatter;
 	}
 
 	/**
@@ -319,13 +319,13 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @param isVisible True to show text, false to hide it
 	 */
 	public void setTextVisible(boolean isVisible) {
-		this.bShowText = isVisible;
+		this.showText = isVisible;
 
-		if (this.bShowText) {
-			aTextElement.getStyle().setProperty("display", "");
+		if (this.showText) {
+			textElement.getStyle().setProperty("display", "");
 			redraw();
 		} else {
-			aTextElement.getStyle().setProperty("display", "none");
+			textElement.getStyle().setProperty("display", "none");
 		}
 	}
 
@@ -334,14 +334,14 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * function to change the default progress percent to a more informative
 	 * message, such as the number of kilobytes downloaded.
 	 *
-	 * @param nPercent curProgress the current progress
+	 * @param percent curProgress the current progress
 	 * @return the text to display in the progress bar
 	 */
-	protected String generateText(int nPercent) {
-		if (rTextFormatter != null) {
-			return rTextFormatter.getText(this, nPercent);
+	protected String generateText(int percent) {
+		if (textFormatter != null) {
+			return textFormatter.getText(this, percent);
 		} else {
-			return nPercent + "%";
+			return percent + "%";
 		}
 	}
 
@@ -351,7 +351,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @return the bar element
 	 */
 	protected Element getBarElement() {
-		return aBarElement;
+		return barElement;
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 	 * @return the text element
 	 */
 	protected Element getTextElement() {
-		return aTextElement;
+		return textElement;
 	}
 
 	/**
@@ -403,10 +403,10 @@ public class GwtProgressBar extends Widget implements IsProgressBarWidget {
 		 * <p>Override this method to change the text displayed within the
 		 * ProgressBar.</p>
 		 *
-		 * @param rProgressBar the progress bar
-		 * @param nProgress    the current progress
+		 * @param progressBar the progress bar
+		 * @param progress    the current progress
 		 * @return the text to display in the progress bar
 		 */
-		public String getText(GwtProgressBar rProgressBar, int nProgress);
+		public String getText(GwtProgressBar progressBar, int progress);
 	}
 }

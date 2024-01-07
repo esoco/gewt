@@ -41,8 +41,8 @@ public class Crypto {
 		 * SubtleCrypto.digest()</a>
 		 */
 		@SuppressWarnings("unusable-by-js")
-		public native Promise<ArrayBuffer> digest(String sAlgorithm,
-			ArrayBuffer rBuffer);
+		public native Promise<ArrayBuffer> digest(String algorithm,
+			ArrayBuffer buffer);
 
 		/**
 		 * @see <a href="https://developer.mozilla
@@ -50,7 +50,7 @@ public class Crypto {
 		 * SubtleCrypto.digest()</a>
 		 */
 		@SuppressWarnings("unusable-by-js")
-		public native Promise<ArrayBuffer> digest(String sAlgorithm,
-			ArrayBufferView rBuffer);
+		public native Promise<ArrayBuffer> digest(String algorithm,
+			ArrayBufferView buffer);
 	}
 }

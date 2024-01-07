@@ -29,33 +29,33 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class AutoCompletionChoice implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 
-	private String sText;
+	private String text;
 
-	private String sDisplayText;
+	private String displayText;
 
-	private String sCssClassName;
+	private String cssClassName;
 
-	private EditorPosition rReplaceTextFrom;
+	private EditorPosition replaceTextFrom;
 
-	private EditorPosition rReplaceTextTo;
+	private EditorPosition replaceTextTo;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param sText            TODO: DOCUMENT ME!
-	 * @param sDisplayText     TODO: DOCUMENT ME!
-	 * @param sCssClassName    TODO: DOCUMENT ME!
-	 * @param rReplaceTextFrom TODO: DOCUMENT ME!
-	 * @param rReplaceTextTo   TODO: DOCUMENT ME!
+	 * @param text            TODO: DOCUMENT ME!
+	 * @param displayText     TODO: DOCUMENT ME!
+	 * @param cssClassName    TODO: DOCUMENT ME!
+	 * @param replaceTextFrom TODO: DOCUMENT ME!
+	 * @param replaceTextTo   TODO: DOCUMENT ME!
 	 */
-	public AutoCompletionChoice(String sText, String sDisplayText,
-		String sCssClassName, EditorPosition rReplaceTextFrom,
-		EditorPosition rReplaceTextTo) {
-		this.sText = sText;
-		this.sDisplayText = sDisplayText;
-		this.sCssClassName = sCssClassName;
-		this.rReplaceTextFrom = rReplaceTextFrom;
-		this.rReplaceTextTo = rReplaceTextTo;
+	public AutoCompletionChoice(String text, String displayText,
+		String cssClassName, EditorPosition replaceTextFrom,
+		EditorPosition replaceTextTo) {
+		this.text = text;
+		this.displayText = displayText;
+		this.cssClassName = cssClassName;
+		this.replaceTextFrom = replaceTextFrom;
+		this.replaceTextTo = replaceTextTo;
 	}
 
 	/**
@@ -79,11 +79,11 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 
 		AutoCompletionChoice other = (AutoCompletionChoice) o;
 
-		return this.sText.equals(other.sText) &&
-			this.sDisplayText.equals(other.sDisplayText) &&
-			this.sCssClassName.equals(other.sCssClassName) &&
-			this.rReplaceTextFrom.equals(other.rReplaceTextFrom) &&
-			this.rReplaceTextTo.equals(other.rReplaceTextTo);
+		return this.text.equals(other.text) &&
+			this.displayText.equals(other.displayText) &&
+			this.cssClassName.equals(other.cssClassName) &&
+			this.replaceTextFrom.equals(other.replaceTextFrom) &&
+			this.replaceTextTo.equals(other.replaceTextTo);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 * @return The css class name
 	 */
 	public String getCssClassName() {
-		return sCssClassName;
+		return cssClassName;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 * @return The display text
 	 */
 	public String getDisplayText() {
-		return sDisplayText;
+		return displayText;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 * @return The replace text from
 	 */
 	public EditorPosition getReplaceTextFrom() {
-		return rReplaceTextFrom;
+		return replaceTextFrom;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 * @return The replace text to
 	 */
 	public EditorPosition getReplaceTextTo() {
-		return rReplaceTextTo;
+		return replaceTextTo;
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 * @return The text
 	 */
 	public String getText() {
-		return sText;
+		return text;
 	}
 
 	/**
@@ -136,9 +136,9 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	 */
 	@Override
 	public int hashCode() {
-		return "AutoCompletionChoice".hashCode() + sText.hashCode() +
-			sDisplayText.hashCode() + sCssClassName.hashCode() +
-			rReplaceTextFrom.hashCode() + rReplaceTextTo.hashCode();
+		return "AutoCompletionChoice".hashCode() + text.hashCode() +
+			displayText.hashCode() + cssClassName.hashCode() +
+			replaceTextFrom.hashCode() + replaceTextTo.hashCode();
 	}
 
 	/**
@@ -148,11 +148,11 @@ public class AutoCompletionChoice implements Serializable, IsSerializable {
 	public String toString() {
 		return getClass().getSimpleName();
 //				Objects.toStringHelper("AutoCompletionChoice").add("text",
-//				sText)
-//					  .add("displayText", sDisplayText)
-//					  .add("cssClassName", sCssClassName)
-//					  .add("replaceFrom", rReplaceTextFrom)
-//					  .add("replaceTo", rReplaceTextTo)
+//				text)
+//					  .add("displayText", displayText)
+//					  .add("cssClassName", cssClassName)
+//					  .add("replaceFrom", replaceTextFrom)
+//					  .add("replaceTo", replaceTextTo)
 //					  .toString();
 	}
 }

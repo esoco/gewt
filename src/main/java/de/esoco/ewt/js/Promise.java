@@ -35,7 +35,7 @@ public class Promise<T> {
 	 * Promise.catch()</a>
 	 */
 	@JsMethod(name = "catch")
-	public native Promise<T> doCatch(JsConsumer<Object> fOnReject);
+	public native Promise<T> doCatch(JsConsumer<Object> onReject);
 
 	/**
 	 * @see <a href="https://developer.mozilla
@@ -43,20 +43,20 @@ public class Promise<T> {
 	 * Promise.finally()</a>
 	 */
 	@JsMethod(name = "finally")
-	public native Promise<T> doFinally(JsRunnable fOnResolve);
+	public native Promise<T> doFinally(JsRunnable onResolve);
 
 	/**
 	 * @see <a href="https://developer.mozilla
 	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
 	 * Promise.then()</a>
 	 */
-	public native Promise<T> then(JsConsumer<T> fOnResolve);
+	public native Promise<T> then(JsConsumer<T> onResolve);
 
 	/**
 	 * @see <a href="https://developer.mozilla
 	 * .org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">
 	 * Promise.then()</a>
 	 */
-	public native Promise<T> then(JsConsumer<T> fOnResolve,
-		JsConsumer<Object> fOnReject);
+	public native Promise<T> then(JsConsumer<T> onResolve,
+		JsConsumer<Object> onReject);
 }

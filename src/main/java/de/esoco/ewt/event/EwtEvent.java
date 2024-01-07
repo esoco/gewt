@@ -29,104 +29,102 @@ import com.google.gwt.dom.client.NativeEvent;
  */
 public final class EwtEvent {
 
-	private final Object rSource;
+	private final Object source;
 
-	private final Object rElement;
+	private final Object element;
 
-	private final EventType rEventType;
+	private final EventType eventType;
 
-	private final NativeEvent rNativeEvent;
+	private final NativeEvent nativeEvent;
 
-	private boolean bCanceled;
+	private boolean canceled;
 
 	/**
 	 * Internal constructor, instance creation is controlled by the factory
-	 * method
-	 * {@link #getEvent(Object, Object, EventType, int, int, KeyCode,
-	 * ModifierKeys)}.
+	 * method {@link #getEvent(Object, Object, EventType, NativeEvent)}.
 	 *
-	 * @param rSource      The source of the event
-	 * @param rElement     The element affected by this event or NULL for none
-	 * @param rType        The event type
-	 * @param rNativeEvent The native event that occurred
+	 * @param source      The source of the event
+	 * @param element     The element affected by this event or NULL for none
+	 * @param type        The event type
+	 * @param nativeEvent The native event that occurred
 	 */
-	private EwtEvent(Object rSource, Object rElement, EventType rType,
-		NativeEvent rNativeEvent) {
-		this.rSource = rSource;
-		this.rElement = rElement;
-		this.rEventType = rType;
-		this.rNativeEvent = rNativeEvent;
+	private EwtEvent(Object source, Object element, EventType type,
+		NativeEvent nativeEvent) {
+		this.source = source;
+		this.element = element;
+		this.eventType = type;
+		this.nativeEvent = nativeEvent;
 	}
 
 	/**
 	 * Factory method that returns a new event instance containing the given
 	 * parameters.
 	 *
-	 * @param rSource      The source of the event
-	 * @param rElement     The element affected by this event or NULL for none
-	 * @param rType        The event type
-	 * @param rNativeEvent The native event that occurred
+	 * @param source      The source of the event
+	 * @param element     The element affected by this event or NULL for none
+	 * @param type        The event type
+	 * @param nativeEvent The native event that occurred
 	 * @return An event instance containing the given parameters
 	 */
-	public static EwtEvent getEvent(Object rSource, Object rElement,
-		EventType rType, NativeEvent rNativeEvent) {
-		return new EwtEvent(rSource, rElement, rType, rNativeEvent);
+	public static EwtEvent getEvent(Object source, Object element,
+		EventType type, NativeEvent nativeEvent) {
+		return new EwtEvent(source, element, type, nativeEvent);
 	}
 
 	/**
 	 * Maps a GWT key code to the corresponding {@link KeyCode} instance.
 	 *
-	 * @param rEvent The native GWT event to map the key code of
+	 * @param event The native GWT event to map the key code of
 	 * @return The corresponding EWT key code instance
 	 */
-	public static KeyCode mapGwtKeyCode(NativeEvent rEvent) {
-		char cChar = (char) rEvent.getCharCode();
-		KeyCode eKeyCode = null;
+	public static KeyCode mapGwtKeyCode(NativeEvent event) {
+		char c = (char) event.getCharCode();
+		KeyCode keyCode = null;
 
-		if (cChar != 0) {
-			eKeyCode = KeyCode.forChar(cChar);
+		if (c != 0) {
+			keyCode = KeyCode.forChar(c);
 		}
 
-		if (eKeyCode == null) {
-			int nKeyCode = rEvent.getKeyCode();
+		if (keyCode == null) {
+			int code = event.getKeyCode();
 
-			eKeyCode = KeyCode.forCode(nKeyCode);
+			keyCode = KeyCode.forCode(code);
 
-			if (eKeyCode == null) {
-				eKeyCode = KeyCode.forChar((char) nKeyCode);
+			if (keyCode == null) {
+				keyCode = KeyCode.forChar((char) code);
 			}
 		}
 
-		return eKeyCode;
+		return keyCode;
 	}
 
 	/**
 	 * Maps a GWT modifier key combination to the corresponding instance of
 	 * {@link ModifierKeys}.
 	 *
-	 * @param rEvent The native GWT event to map the modifiers of
+	 * @param event The native GWT event to map the modifiers of
 	 * @return The corresponding EWT key modifiers instance
 	 */
-	public static ModifierKeys mapGwtModifiers(NativeEvent rEvent) {
-		int nBits = 0;
+	public static ModifierKeys mapGwtModifiers(NativeEvent event) {
+		int bits = 0;
 
-		if (rEvent.getAltKey()) {
-			nBits |= ModifierKeys.ALT_BIT;
+		if (event.getAltKey()) {
+			bits |= ModifierKeys.ALT_BIT;
 		}
 
-		if (rEvent.getCtrlKey()) {
-			nBits |= ModifierKeys.CTRL_BIT;
+		if (event.getCtrlKey()) {
+			bits |= ModifierKeys.CTRL_BIT;
 		}
 
-		if (rEvent.getMetaKey()) {
-			nBits |= ModifierKeys.META_BIT;
+		if (event.getMetaKey()) {
+			bits |= ModifierKeys.META_BIT;
 		}
 
-		if (rEvent.getShiftKey()) {
-			nBits |= ModifierKeys.SHIFT_BIT;
+		if (event.getShiftKey()) {
+			bits |= ModifierKeys.SHIFT_BIT;
 		}
 
-		return ModifierKeys.valueOf(nBits);
+		return ModifierKeys.valueOf(bits);
 	}
 
 	/**
@@ -138,11 +136,11 @@ public final class EwtEvent {
 	 * into the component that caused the event.
 	 */
 	public void cancel() {
-		if (rNativeEvent != null) {
-			rNativeEvent.preventDefault();
+		if (nativeEvent != null) {
+			nativeEvent.preventDefault();
 		}
 
-		bCanceled = true;
+		canceled = true;
 	}
 
 	/**
@@ -154,8 +152,8 @@ public final class EwtEvent {
 	 *
 	 * @return The element affected by this event (NULL for none)
 	 */
-	public final Object getElement() {
-		return rElement;
+	public Object getElement() {
+		return element;
 	}
 
 	/**
@@ -167,8 +165,8 @@ public final class EwtEvent {
 	 * @return The typed character of the keyboard event or 0 (zero) if not
 	 * available
 	 */
-	public final char getKeyChar() {
-		return rNativeEvent != null ? (char) rNativeEvent.getCharCode() : 0;
+	public char getKeyChar() {
+		return nativeEvent != null ? (char) nativeEvent.getCharCode() : 0;
 	}
 
 	/**
@@ -178,10 +176,8 @@ public final class EwtEvent {
 	 * @return The key code of the keyboard event or KeyCode.NONE if not
 	 * available
 	 */
-	public final KeyCode getKeyCode() {
-		return rNativeEvent != null ?
-		       mapGwtKeyCode(rNativeEvent) :
-		       KeyCode.NONE;
+	public KeyCode getKeyCode() {
+		return nativeEvent != null ? mapGwtKeyCode(nativeEvent) : KeyCode.NONE;
 	}
 
 	/**
@@ -192,8 +188,8 @@ public final class EwtEvent {
 	 * describing the modifier key states
 	 */
 	public ModifierKeys getModifiers() {
-		return rNativeEvent != null ?
-		       mapGwtModifiers(rNativeEvent) :
+		return nativeEvent != null ?
+		       mapGwtModifiers(nativeEvent) :
 		       ModifierKeys.NONE;
 	}
 
@@ -202,22 +198,22 @@ public final class EwtEvent {
 	 *
 	 * @return The number of the pointer button pressed, starting at 1
 	 */
-	public final int getPointerButton() {
-		int nButton = 0;
+	public int getPointerButton() {
+		int button = 0;
 
-		if (rNativeEvent != null) {
-			int nNativeButtons = rNativeEvent.getButton();
+		if (nativeEvent != null) {
+			int nativeButtons = nativeEvent.getButton();
 
-			if ((nNativeButtons & NativeEvent.BUTTON_LEFT) != 0) {
-				nButton = 1;
-			} else if ((nNativeButtons & NativeEvent.BUTTON_RIGHT) != 0) {
-				nButton = 2;
-			} else if ((nNativeButtons & NativeEvent.BUTTON_MIDDLE) != 0) {
-				nButton = 3;
+			if ((nativeButtons & NativeEvent.BUTTON_LEFT) != 0) {
+				button = 1;
+			} else if ((nativeButtons & NativeEvent.BUTTON_RIGHT) != 0) {
+				button = 2;
+			} else if ((nativeButtons & NativeEvent.BUTTON_MIDDLE) != 0) {
+				button = 3;
 			}
 		}
 
-		return nButton;
+		return button;
 	}
 
 	/**
@@ -227,9 +223,9 @@ public final class EwtEvent {
 	 * @return The horizontal pointer position or {@link Integer#MIN_VALUE} if
 	 * not available
 	 */
-	public final int getPointerX() {
-		return rNativeEvent != null ?
-		       rNativeEvent.getClientX() :
+	public int getPointerX() {
+		return nativeEvent != null ?
+		       nativeEvent.getClientX() :
 		       Integer.MIN_VALUE;
 	}
 
@@ -241,9 +237,9 @@ public final class EwtEvent {
 	 * not
 	 * available
 	 */
-	public final int getPointerY() {
-		return rNativeEvent != null ?
-		       rNativeEvent.getClientY() :
+	public int getPointerY() {
+		return nativeEvent != null ?
+		       nativeEvent.getClientY() :
 		       Integer.MIN_VALUE;
 	}
 
@@ -252,8 +248,8 @@ public final class EwtEvent {
 	 *
 	 * @return The event source
 	 */
-	public final Object getSource() {
-		return rSource;
+	public Object getSource() {
+		return source;
 	}
 
 	/**
@@ -261,8 +257,8 @@ public final class EwtEvent {
 	 *
 	 * @return The event type
 	 */
-	public final EventType getType() {
-		return rEventType;
+	public EventType getType() {
+		return eventType;
 	}
 
 	/**
@@ -272,7 +268,7 @@ public final class EwtEvent {
 	 * @return TRUE if this event has been canceled
 	 */
 	public boolean isCanceled() {
-		return bCanceled;
+		return canceled;
 	}
 
 	/**
@@ -282,7 +278,7 @@ public final class EwtEvent {
 	 */
 	@Override
 	public String toString() {
-		return "EWTEvent[" + rEventType + ',' + rSource + ',' + getPointerX() +
+		return "EWTEvent[" + eventType + ',' + source + ',' + getPointerX() +
 			',' + getPointerY() + ',' + getModifiers() + ',' + getKeyCode() +
 			']';
 	}

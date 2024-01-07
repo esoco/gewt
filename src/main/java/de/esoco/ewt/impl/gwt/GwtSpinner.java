@@ -16,8 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt;
 
-import de.esoco.ewt.impl.gwt.ValueBoxConstraint.IntRangeConstraint;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -38,6 +36,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ValueBox;
 import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import de.esoco.ewt.impl.gwt.ValueBoxConstraint.IntRangeConstraint;
 
 /**
  * A component that allows to enter or modify integer values.
@@ -50,98 +49,96 @@ public class GwtSpinner extends Composite
 
 	private static final GewtCss CSS = RES.css();
 
-	private int nMinimumValue;
+	private int minimumValue;
 
-	private int nMaximumValue;
+	private int maximumValue;
 
-	private int nValueIncrement;
+	private int valueIncrement;
 
-	private ValueBox<Integer> aInputField;
+	private final ValueBox<Integer> inputField;
 
-	private Timer aEventDelayTimer;
+	private Timer eventDelayTimer;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param nMinimum   The minimum input value
-	 * @param nMaximum   The maximum input value
-	 * @param nIncrement The increment or decrement for value modifications
+	 * @param minimum   The minimum input value
+	 * @param maximum   The maximum input value
+	 * @param increment The increment or decrement for value modifications
 	 */
-	public GwtSpinner(int nMinimum, int nMaximum, int nIncrement) {
-		this(nMinimum, nMaximum, nIncrement, new IntegerBox());
-	}	private PushButton aIncrementButton =
-		createSpinButton(RES.imArrowUp(), RES.imArrowUpPressed(),
-			RES.imArrowUpHover(), RES.imArrowUpDisabled());
+	public GwtSpinner(int minimum, int maximum, int increment) {
+		this(minimum, maximum, increment, new IntegerBox());
+	}
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param nMinimum    The minimum input value
-	 * @param nMaximum    The maximum input value
-	 * @param nIncrement  The increment or decrement for value modifications
-	 * @param rInputField The value input box
+	 * @param minimum    The minimum input value
+	 * @param maximum    The maximum input value
+	 * @param increment  The increment or decrement for value modifications
+	 * @param inputField The value input box
 	 */
 	@SuppressWarnings("boxing")
-	GwtSpinner(int nMinimum, int nMaximum, int nIncrement,
-		ValueBox<Integer> rInputField) {
-		this.nMinimumValue = nMinimum;
-		this.nMaximumValue = nMaximum;
-		this.nValueIncrement = nIncrement;
-		this.aInputField = rInputField;
+	GwtSpinner(int minimum, int maximum, int increment,
+		ValueBox<Integer> inputField) {
+		this.minimumValue = minimum;
+		this.maximumValue = maximum;
+		this.valueIncrement = increment;
+		this.inputField = inputField;
 
-		HorizontalPanel aMainPanel = new HorizontalPanel();
-		VerticalPanel aButtonPanel = new VerticalPanel();
+		HorizontalPanel mainPanel = new HorizontalPanel();
+		VerticalPanel buttonPanel = new VerticalPanel();
 
-		aButtonPanel.setStyleName(CSS.ewtSpinnerButtons());
-		aInputField.setStyleName(CSS.ewtSpinnerInput());
-		aInputField.setValue(nMinimum);
-		aInputField.setAlignment(TextAlignment.CENTER);
+		buttonPanel.setStyleName(CSS.ewtSpinnerButtons());
+		inputField.setStyleName(CSS.ewtSpinnerInput());
+		inputField.setValue(minimum);
+		inputField.setAlignment(TextAlignment.CENTER);
 
 		// subtract 1 to reduce size
-		aInputField.setVisibleLength(Integer.toString(nMaximum).length() - 1);
-		aInputField.addKeyUpHandler(new KeyUpHandler() {
+		inputField.setVisibleLength(Integer.toString(maximum).length() - 1);
+		inputField.addKeyUpHandler(new KeyUpHandler() {
 			@Override
-			public void onKeyUp(KeyUpEvent rEvent) {
-				handleKeySpin(rEvent);
+			public void onKeyUp(KeyUpEvent event) {
+				handleKeySpin(event);
 			}
 		});
-		aInputField.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+		inputField.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
-			public void onValueChange(ValueChangeEvent<Integer> rEvent) {
-				checkValue(rEvent.getValue(), nValueIncrement, false);
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				checkValue(event.getValue(), valueIncrement, false);
 			}
 		});
 
-		aInputField.addKeyPressHandler(
-			new IntRangeConstraint(nMinimum, nMaximum));
-		aButtonPanel.add(aIncrementButton);
-		aButtonPanel.add(aDecrementButton);
-		aMainPanel.add(aInputField);
-		aMainPanel.add(aButtonPanel);
+		inputField.addKeyPressHandler(new IntRangeConstraint(minimum,
+			maximum));
+		buttonPanel.add(incrementButton);
+		buttonPanel.add(decrementButton);
+		mainPanel.add(inputField);
+		mainPanel.add(buttonPanel);
 
-		aButtonPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-		aButtonPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
-		aMainPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-		aMainPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
-		aMainPanel.setCellHorizontalAlignment(aButtonPanel,
+		buttonPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		buttonPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
+		mainPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
+		mainPanel.setVerticalAlignment(HorizontalPanel.ALIGN_MIDDLE);
+		mainPanel.setCellHorizontalAlignment(buttonPanel,
 			HorizontalPanel.ALIGN_RIGHT);
 
-		aMainPanel.setCellWidth(aInputField, "100%");
+		mainPanel.setCellWidth(inputField, "100%");
 
-		initWidget(aMainPanel);
+		initWidget(mainPanel);
 		setStylePrimaryName(CSS.ewtSpinner());
-	}	private PushButton aDecrementButton =
-		createSpinButton(RES.imArrowDown(), RES.imArrowDownPressed(),
-			RES.imArrowDownHover(), RES.imArrowDownDisabled());
+	}
 
 	/**
 	 * @see HasValueChangeHandlers#addValueChangeHandler(ValueChangeHandler)
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<Integer> rHandler) {
-		return addHandler(rHandler, ValueChangeEvent.getType());
-	}
+		ValueChangeHandler<Integer> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
+	}	private final PushButton incrementButton =
+		createSpinButton(RES.imArrowUp(), RES.imArrowUpPressed(),
+			RES.imArrowUpHover(), RES.imArrowUpDisabled());
 
 	/**
 	 * Returns the increment for value modifications.
@@ -149,7 +146,7 @@ public class GwtSpinner extends Composite
 	 * @return The increment value
 	 */
 	public final int getIncrement() {
-		return nValueIncrement;
+		return valueIncrement;
 	}
 
 	/**
@@ -158,7 +155,7 @@ public class GwtSpinner extends Composite
 	 * @return The maximum value
 	 */
 	public final int getMaximum() {
-		return nMaximumValue;
+		return maximumValue;
 	}
 
 	/**
@@ -167,8 +164,10 @@ public class GwtSpinner extends Composite
 	 * @return The minimum value
 	 */
 	public final int getMinimum() {
-		return nMinimumValue;
-	}
+		return minimumValue;
+	}	private final PushButton decrementButton =
+		createSpinButton(RES.imArrowDown(), RES.imArrowDownPressed(),
+			RES.imArrowDownHover(), RES.imArrowDownDisabled());
 
 	/**
 	 * @see Focusable#getTabIndex()
@@ -184,7 +183,7 @@ public class GwtSpinner extends Composite
 	 * @return The current value
 	 */
 	public final int getValue() {
-		return aInputField.getValue().intValue();
+		return inputField.getValue().intValue();
 	}
 
 	/**
@@ -192,105 +191,105 @@ public class GwtSpinner extends Composite
 	 */
 	@Override
 	public boolean isEnabled() {
-		return aInputField.isEnabled();
+		return inputField.isEnabled();
 	}
 
 	/**
 	 * @see Focusable#setAccessKey(char)
 	 */
 	@Override
-	public void setAccessKey(char cKey) {
-		aInputField.setAccessKey(cKey);
+	public void setAccessKey(char key) {
+		inputField.setAccessKey(key);
 	}
 
 	/**
 	 * @see HasEnabled#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
-		aInputField.setEnabled(bEnabled);
-		aIncrementButton.setEnabled(bEnabled);
-		aDecrementButton.setEnabled(bEnabled);
+	public void setEnabled(boolean enabled) {
+		inputField.setEnabled(enabled);
+		incrementButton.setEnabled(enabled);
+		decrementButton.setEnabled(enabled);
 	}
 
 	/**
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused) {
-		aInputField.setFocus(bFocused);
+	public void setFocus(boolean focused) {
+		inputField.setFocus(focused);
 	}
 
 	/**
 	 * Sets the increment for value modifications.
 	 *
-	 * @param rIncrement The increment value
+	 * @param increment The increment value
 	 */
-	public final void setIncrement(int rIncrement) {
-		nValueIncrement = rIncrement;
+	public final void setIncrement(int increment) {
+		valueIncrement = increment;
 	}
 
 	/**
 	 * Sets the maximum value.
 	 *
-	 * @param rMaximum The maximum value
+	 * @param maximum The maximum value
 	 */
-	public final void setMaximum(int rMaximum) {
-		nMaximumValue = rMaximum;
+	public final void setMaximum(int maximum) {
+		maximumValue = maximum;
 	}
 
 	/**
 	 * Sets the minimum value.
 	 *
-	 * @param rMinimum The minimum value
+	 * @param minimum The minimum value
 	 */
-	public final void setMinimum(int rMinimum) {
-		nMinimumValue = rMinimum;
+	public final void setMinimum(int minimum) {
+		minimumValue = minimum;
 	}
 
 	/**
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex) {
-		aInputField.setTabIndex(nIndex);
+	public void setTabIndex(int index) {
+		inputField.setTabIndex(index);
 	}
 
 	/**
 	 * Sets the value of this widget.
 	 *
-	 * @param nValue The new value
+	 * @param value The new value
 	 */
 	@SuppressWarnings("boxing")
-	public final void setValue(int nValue) {
-		aInputField.setValue(nValue);
+	public final void setValue(int value) {
+		inputField.setValue(value);
 	}
 
 	/**
 	 * Checks and performs value spinning based on a pressed key.
 	 *
-	 * @param rEvent The key event
+	 * @param event The key event
 	 */
-	protected void handleKeySpin(KeyUpEvent rEvent) {
-		int nValueRange = nMaximumValue - nMinimumValue + 1;
-		int nIncrement = 1;
+	protected void handleKeySpin(KeyUpEvent event) {
+		int valueRange = maximumValue - minimumValue + 1;
+		int increment = 1;
 
-		if (rEvent.isAltKeyDown()) {
-			nIncrement = nValueRange / 2;
-		} else if (rEvent.isControlKeyDown()) {
-			nIncrement = nValueRange / 4;
-		} else if (rEvent.isShiftKeyDown()) {
-			nIncrement = nValueIncrement;
+		if (event.isAltKeyDown()) {
+			increment = valueRange / 2;
+		} else if (event.isControlKeyDown()) {
+			increment = valueRange / 4;
+		} else if (event.isShiftKeyDown()) {
+			increment = valueIncrement;
 
-			if (rEvent.isControlKeyDown()) {
-				nIncrement *= 2;
+			if (event.isControlKeyDown()) {
+				increment *= 2;
 			}
 		}
 
-		if (rEvent.isUpArrow()) {
-			spinValue(nIncrement, true);
-		} else if (rEvent.isDownArrow()) {
-			spinValue(nIncrement, false);
+		if (event.isUpArrow()) {
+			spinValue(increment, true);
+		} else if (event.isDownArrow()) {
+			spinValue(increment, false);
 		}
 	}
 
@@ -298,94 +297,93 @@ public class GwtSpinner extends Composite
 	 * Checks a value against the minimum and maximum values of this instance,
 	 * corrects it if necessary, and sets it on the input field.
 	 *
-	 * @param rValue     The value to check
-	 * @param nIncrement The increment the value has been changed by
-	 * @param bWrap      TRUE if the value should be wrapped around to the
-	 *                   respective other boundary or just be limited by the
-	 *                   boundary values
+	 * @param value     The value to check
+	 * @param increment The increment the value has been changed by
+	 * @param wrap      TRUE if the value should be wrapped around to the
+	 *                  respective other boundary or just be limited by the
+	 *                  boundary values
 	 */
 	@SuppressWarnings("boxing")
-	private void checkValue(Integer rValue, int nIncrement, boolean bWrap) {
-		int nValue = 0;
+	private void checkValue(Integer value, int increment, boolean wrap) {
+		int val = 0;
 
-		if (rValue != null) {
-			nValue = rValue.intValue();
+		if (value != null) {
+			val = value;
 		} else {
-			nValue = bWrap ? nMaximumValue + 1 : nMinimumValue;
+			val = wrap ? maximumValue + 1 : minimumValue;
 		}
 
-		if (nValue > nMaximumValue) {
-			nValue = bWrap ? nMinimumValue : nMaximumValue;
-		} else if (nValue < nMinimumValue) {
-			nValue =
-				bWrap ? nMaximumValue / nIncrement * nIncrement :
-				nMinimumValue;
+		if (val > maximumValue) {
+			val = wrap ? minimumValue : maximumValue;
+		} else if (val < minimumValue) {
+			val = wrap ? maximumValue / increment * increment : minimumValue;
 		}
 
-		aInputField.setValue(nValue);
+		inputField.setValue(val);
 
-		if (aEventDelayTimer == null) {
-			aEventDelayTimer = new Timer() {
+		if (eventDelayTimer == null) {
+			eventDelayTimer = new Timer() {
 				@Override
 				public void run() {
 					ValueChangeEvent.fire(GwtSpinner.this,
-						aInputField.getValue());
+						inputField.getValue());
 				}
 			};
 		}
 
-		aEventDelayTimer.schedule(200);
+		eventDelayTimer.schedule(200);
 	}
 
 	/**
 	 * Helper method to create a new button with certain images.
 	 *
-	 * @param rImUp       The up (normal) state image
-	 * @param rImPressed  The pressed state image
-	 * @param rImHover    The hover state image
-	 * @param rImDisabled The disabled state image
+	 * @param imUp       The up (normal) state image
+	 * @param imPressed  The pressed state image
+	 * @param imHover    The hover state image
+	 * @param imDisabled The disabled state image
 	 * @return The new button
 	 */
-	private PushButton createSpinButton(ImageResource rImUp,
-		ImageResource rImPressed, ImageResource rImHover,
-		ImageResource rImDisabled) {
-		PushButton aButton =
-			new PushButton(new Image(rImUp), new Image(rImPressed));
+	private PushButton createSpinButton(ImageResource imUp,
+		ImageResource imPressed, ImageResource imHover,
+		ImageResource imDisabled) {
+		PushButton button =
+			new PushButton(new Image(imUp), new Image(imPressed));
 
-		Image rHoverImage = new Image(rImHover);
-		Image rDisabledImage = new Image(rImDisabled);
+		Image hoverImage = new Image(imHover);
+		Image disabledImage = new Image(imDisabled);
 
-		aButton.getUpHoveringFace().setImage(rHoverImage);
-		aButton.getDownHoveringFace().setImage(rHoverImage);
-		aButton.getUpDisabledFace().setImage(rDisabledImage);
-		aButton.getDownDisabledFace().setImage(rDisabledImage);
+		button.getUpHoveringFace().setImage(hoverImage);
+		button.getDownHoveringFace().setImage(hoverImage);
+		button.getUpDisabledFace().setImage(disabledImage);
+		button.getDownDisabledFace().setImage(disabledImage);
 
-		aButton.setStyleName(CSS.ewtSpinnerButton());
-		aButton.addClickHandler(new ClickHandler() {
+		button.setStyleName(CSS.ewtSpinnerButton());
+		button.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent rEvent) {
-				spinValue(nValueIncrement,
-					rEvent.getSource() == aIncrementButton);
+			public void onClick(ClickEvent event) {
+				spinValue(valueIncrement,
+					event.getSource() == incrementButton);
 			}
 		});
 
-		return aButton;
+		return button;
 	}
 
 	/**
 	 * Performs the value changed caused by spinner buttons or keys.
 	 *
-	 * @param nIncrement The increment to spin the value by
-	 * @param bUp        TRUE to spin up, FALSE for down
+	 * @param increment The increment to spin the value by
+	 * @param up        TRUE to spin up, FALSE for down
 	 */
 	@SuppressWarnings("boxing")
-	private void spinValue(int nIncrement, boolean bUp) {
-		int nValue = aInputField.getValue();
+	private void spinValue(int increment, boolean up) {
+		int value = inputField.getValue();
 
-		nValue += bUp ? nIncrement : -nIncrement;
+		value += up ? increment : -increment;
 
-		checkValue(Integer.valueOf(nValue), nIncrement, true);
+		checkValue(Integer.valueOf(value), increment, true);
 	}
+
 
 
 

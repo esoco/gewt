@@ -16,6 +16,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.composite;
 
+import com.google.gwt.i18n.client.LocaleInfo;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.build.ContainerBuilder;
 import de.esoco.ewt.component.Button;
@@ -29,31 +30,26 @@ import de.esoco.ewt.event.EwtEvent;
 import de.esoco.ewt.event.KeyCode;
 import de.esoco.ewt.event.ModifierKeys;
 import de.esoco.ewt.layout.GridLayout;
-
 import de.esoco.lib.datatype.Pair;
 import de.esoco.lib.math.MathUtil;
 import de.esoco.lib.text.TextConvert;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.google.gwt.i18n.client.LocaleInfo;
-
 import static de.esoco.ewt.layout.FlexLayout.flexHorizontal;
 import static de.esoco.ewt.layout.GridLayout.grid;
 import static de.esoco.ewt.style.StyleData.DEFAULT;
-
 import static de.esoco.lib.property.LayoutProperties.COLUMN;
 import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
 import static de.esoco.lib.property.LayoutProperties.LAYOUT_AREA;
-
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.ZERO;
@@ -91,46 +87,47 @@ public class Calculator extends FocusableComposite {
 		RIGHT_SHIFT(">>", 1, '>', (d1, d2) -> new BigDecimal(
 			d1.toBigInteger().shiftRight(d2.intValue())));
 
-		private final String sSymbol;
+		private final String symbol;
 
-		private final int nPriority;
+		private final int priority;
 
-		private final BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc;
+		private final BiFunction<BigDecimal, BigDecimal, BigDecimal> calc;
 
-		private Pair<ModifierKeys, KeyCode> aKey;
+		private final Pair<ModifierKeys, KeyCode> keyCode;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sSymbol   The function symbol
-		 * @param nPriority The priority of this calculation in relation to
-		 *                  other calculations
-		 * @param cKey      The character of the key to invoke this function
-		 * @param fCalc     The calculation function
+		 * @param symbol   The function symbol
+		 * @param priority The priority of this calculation in relation to
+		 *                       other
+		 *                 calculations
+		 * @param key      The character of the key to invoke this function
+		 * @param calc     The calculation function
 		 */
-		private BinaryCalculation(String sSymbol, int nPriority, char cKey,
-			BiFunction<BigDecimal, BigDecimal, BigDecimal> fCalc) {
-			this.sSymbol = sSymbol;
-			this.nPriority = nPriority;
-			this.fCalc = fCalc;
+		BinaryCalculation(String symbol, int priority, char key,
+			BiFunction<BigDecimal, BigDecimal, BigDecimal> calc) {
+			this.symbol = symbol;
+			this.priority = priority;
+			this.calc = calc;
 
-			aKey = key(KeyCode.forChar(cKey));
+			keyCode = key(KeyCode.forChar(key));
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void accept(CalculatorState rState) {
-			rState.addOperation(this);
+		public void accept(CalculatorState state) {
+			state.addOperation(this);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public BigDecimal apply(BigDecimal dLeft, BigDecimal dRight) {
-			return fCalc.apply(dLeft, dRight);
+		public BigDecimal apply(BigDecimal left, BigDecimal right) {
+			return calc.apply(left, right);
 		}
 
 		/**
@@ -138,7 +135,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public Pair<ModifierKeys, KeyCode> getKey() {
-			return aKey;
+			return keyCode;
 		}
 
 		/**
@@ -147,7 +144,7 @@ public class Calculator extends FocusableComposite {
 		 * @return The priority
 		 */
 		public int getPriority() {
-			return nPriority;
+			return priority;
 		}
 
 		/**
@@ -155,7 +152,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String getSymbol() {
-			return sSymbol;
+			return symbol;
 		}
 	}
 
@@ -171,47 +168,48 @@ public class Calculator extends FocusableComposite {
 			KeyCode.forChar(Calculator.DECIMAL_SEPARATOR.charAt(0))),
 		EQUALS("=", CalculatorState::calculate, KeyCode.ENTER);
 
-		private final String sSymbol;
+		private final String symbol;
 
-		private final Consumer<CalculatorState> fPerformAction;
+		private final Consumer<CalculatorState> performAction;
 
-		private Pair<ModifierKeys, KeyCode> aKey;
+		private final Pair<ModifierKeys, KeyCode> key;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sSymbol        The action symbol
-		 * @param fPerformAction The function to perform this action
-		 * @param eKeyCode       The key code for this action
+		 * @param symbol        The action symbol
+		 * @param performAction The function to perform this action
+		 * @param keyCode       The key code for this action
 		 */
-		private CalculatorAction(String sSymbol,
-			Consumer<CalculatorState> fPerformAction, KeyCode eKeyCode) {
-			this(sSymbol, fPerformAction, ModifierKeys.NONE, eKeyCode);
+		CalculatorAction(String symbol,
+			Consumer<CalculatorState> performAction,
+			KeyCode keyCode) {
+			this(symbol, performAction, ModifierKeys.NONE, keyCode);
 		}
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sSymbol        The action symbol
-		 * @param fPerformAction The function to perform this action
-		 * @param rModifiers     The modifier keys for the key code
-		 * @param eKeyCode       The key code for this action
+		 * @param symbol        The action symbol
+		 * @param performAction The function to perform this action
+		 * @param modifiers     The modifier keys for the key code
+		 * @param keyCode       The key code for this action
 		 */
-		private CalculatorAction(String sSymbol,
-			Consumer<CalculatorState> fPerformAction, ModifierKeys rModifiers,
-			KeyCode eKeyCode) {
-			this.sSymbol = sSymbol;
-			this.fPerformAction = fPerformAction;
+		CalculatorAction(String symbol,
+			Consumer<CalculatorState> performAction,
+			ModifierKeys modifiers, KeyCode keyCode) {
+			this.symbol = symbol;
+			this.performAction = performAction;
 
-			aKey = key(rModifiers, eKeyCode);
+			key = key(modifiers, keyCode);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void accept(CalculatorState rState) {
-			fPerformAction.accept(rState);
+		public void accept(CalculatorState state) {
+			performAction.accept(state);
 		}
 
 		/**
@@ -219,7 +217,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public Pair<ModifierKeys, KeyCode> getKey() {
-			return aKey;
+			return key;
 		}
 
 		/**
@@ -227,7 +225,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String getSymbol() {
-			return sSymbol;
+			return symbol;
 		}
 	}
 
@@ -246,42 +244,43 @@ public class Calculator extends FocusableComposite {
 		MEMORY_ADD("M+", (v, m) -> Pair.of(v, m.add(v))),
 		MEMORY_SUBTRACT("M-", (v, m) -> Pair.of(v, m.subtract(v)));
 
-		private final String sSymbol;
+		private final String symbol;
 
 		private final BiFunction<BigDecimal, BigDecimal, Pair<BigDecimal,
 			BigDecimal>>
-			fMemory;
+			memoryAccess;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sSymbol The function symbol
-		 * @param fMemory The function that performs the actual memory function
+		 * @param symbol       The function symbol
+		 * @param memoryAccess The function that performs the actual memory
+		 *                     function
 		 */
-		private MemoryFunction(String sSymbol,
-			BiFunction<BigDecimal, BigDecimal, Pair<BigDecimal, BigDecimal>> fMemory) {
-			this.sSymbol = sSymbol;
-			this.fMemory = fMemory;
+		MemoryFunction(String symbol,
+			BiFunction<BigDecimal, BigDecimal, Pair<BigDecimal, BigDecimal>> memoryAccess) {
+			this.symbol = symbol;
+			this.memoryAccess = memoryAccess;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void accept(CalculatorState rState) {
-			Pair<BigDecimal, BigDecimal> aResult =
-				fMemory.apply(rState.dCurrentValue, rState.dMemoryValue);
+		public void accept(CalculatorState state) {
+			Pair<BigDecimal, BigDecimal> result =
+				memoryAccess.apply(state.currentValue, state.memoryValue);
 
-			rState.updateValues(aResult.first(), aResult.second(), true);
+			state.updateValues(result.first(), result.second(), true);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Pair<BigDecimal, BigDecimal> apply(BigDecimal dValue,
-			BigDecimal dMemory) {
-			return fMemory.apply(dValue, dMemory);
+		public Pair<BigDecimal, BigDecimal> apply(BigDecimal value,
+			BigDecimal memory) {
+			return memoryAccess.apply(value, memory);
 		}
 
 		/**
@@ -289,7 +288,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String getSymbol() {
-			return sSymbol;
+			return symbol;
 		}
 	}
 
@@ -303,29 +302,29 @@ public class Calculator extends FocusableComposite {
 		SQUARE_ROOT("√", MathUtil::sqrt),
 		NOT("Not", d -> new BigDecimal(d.toBigInteger().not()));
 
-		private final String sSymbol;
+		private final String symbol;
 
-		private Function<BigDecimal, BigDecimal> fCalc;
+		private final Function<BigDecimal, BigDecimal> calc;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sSymbol The function symbol
-		 * @param fCalc   The calculation function
+		 * @param symbol The function symbol
+		 * @param calc   The calculation function
 		 */
-		private UnaryCalculation(String sSymbol,
-			Function<BigDecimal, BigDecimal> fCalc) {
-			this.sSymbol = sSymbol;
-			this.fCalc = fCalc;
+		UnaryCalculation(String symbol,
+			Function<BigDecimal, BigDecimal> calc) {
+			this.symbol = symbol;
+			this.calc = calc;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void accept(CalculatorState rState) {
-			rState.updateValues(fCalc.apply(rState.dCurrentValue),
-				rState.dMemoryValue, this != SIGN);
+		public void accept(CalculatorState state) {
+			state.updateValues(calc.apply(state.currentValue),
+				state.memoryValue, this != SIGN);
 		}
 
 		/**
@@ -333,7 +332,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String getSymbol() {
-			return sSymbol;
+			return symbol;
 		}
 	}
 
@@ -343,7 +342,7 @@ public class Calculator extends FocusableComposite {
 	private static final GridLayout STANDARD_LAYOUT =
 		grid().columns("repeat(4, 1fr)");
 
-	private static CalculatorFunction[][] STANDARD_KEYS =
+	private static final CalculatorFunction[][] STANDARD_KEYS =
 		new CalculatorFunction[][] {
 			{ MemoryFunction.MEMORY_CLEAR, MemoryFunction.MEMORY_STORE,
 				MemoryFunction.MEMORY_RECALL, MemoryFunction.MEMORY_EXCHANCE },
@@ -394,14 +393,14 @@ public class Calculator extends FocusableComposite {
 //		};
 //
 
-	private CalculatorState aState = new CalculatorState();
+	private final CalculatorState state = new CalculatorState();
 
-	private CalculatorDisplay aDisplay;
+	private final Map<Pair<ModifierKeys, KeyCode>, CalculatorFunction>
+		functionKeys = new HashMap<>();
 
-	private Map<Pair<ModifierKeys, KeyCode>, CalculatorFunction> aFunctionKeys =
-		new HashMap<>();
+	private CalculatorDisplay display;
 
-	private boolean bKeyHandled = false;
+	private boolean keyHandled = false;
 
 	/**
 	 * Creates a new instance.
@@ -413,11 +412,11 @@ public class Calculator extends FocusableComposite {
 	/**
 	 * Returns a new {@link CalculatorDigit} function for calculator input.
 	 *
-	 * @param cDigit The digit character
+	 * @param digit The digit character
 	 * @return The new input function
 	 */
-	static CalculatorDigit digit(char cDigit) {
-		return new CalculatorDigit(cDigit);
+	static CalculatorDigit digit(char digit) {
+		return new CalculatorDigit(digit);
 	}
 
 	/**
@@ -426,37 +425,37 @@ public class Calculator extends FocusableComposite {
 	 * @return The currentValue value
 	 */
 	public final BigDecimal getValue() {
-		return aState.dCurrentValue;
+		return state.currentValue;
 	}
 
 	/**
 	 * Sets the value of this calculator.
 	 *
-	 * @param dValue The new value
+	 * @param value The new value
 	 */
-	public final void setValue(BigDecimal dValue) {
-		aState.dCurrentValue = dValue;
+	public final void setValue(BigDecimal value) {
+		state.currentValue = value;
 		update(true);
 	}
 
 	/**
 	 * Builds this calculator panel with the given builder.
 	 *
-	 * @param rBuilder The builder to create the panel with
+	 * @param builder The builder to create the panel with
 	 */
 	@Override
-	protected void build(ContainerBuilder<?> rBuilder) {
+	protected void build(ContainerBuilder<?> builder) {
 		addStyleName(EWT.CSS.ewtCalculator());
 
 		addEventListener(EventType.KEY_TYPED, this::handleKey);
 		addEventListener(EventType.KEY_RELEASED, this::handleKey);
 
-		aDisplay = rBuilder.addComponent(new CalculatorDisplay(),
+		display = builder.addComponent(new CalculatorDisplay(),
 			DEFAULT.set(COLUMN, 1).set(COLUMN_SPAN, 4));
 
-		for (CalculatorFunction[] rRow : STANDARD_KEYS) {
-			for (CalculatorFunction rFunction : rRow) {
-				addFunctionButton(rBuilder, rFunction);
+		for (CalculatorFunction[] row : STANDARD_KEYS) {
+			for (CalculatorFunction function : row) {
+				addFunctionButton(builder, function);
 			}
 		}
 
@@ -466,24 +465,23 @@ public class Calculator extends FocusableComposite {
 	/**
 	 * Adds a button for a function with a container builder.
 	 *
-	 * @param rBuilder  The container builder
-	 * @param rFunction rLabels The button labels
+	 * @param builder  The container builder
+	 * @param function labels The button labels
 	 */
-	void addFunctionButton(ContainerBuilder<?> rBuilder,
-		CalculatorFunction rFunction) {
-		Button aButton = rBuilder.addButton(DEFAULT, rFunction.getSymbol());
+	void addFunctionButton(ContainerBuilder<?> builder,
+		CalculatorFunction function) {
+		Button button = builder.addButton(DEFAULT, function.getSymbol());
 
-		aButton.addStyleName(rFunction.getClass().getSimpleName());
+		button.addStyleName(function.getClass().getSimpleName());
 
-		if (rFunction.getClass() != CalculatorDigit.class) {
-			aButton.addStyleName(
-				TextConvert.capitalizedIdentifier(rFunction.toString()));
+		if (function.getClass() != CalculatorDigit.class) {
+			button.addStyleName(
+				TextConvert.capitalizedIdentifier(function.toString()));
 		}
 
-		aButton.addEventListener(EventType.ACTION,
-			e -> rFunction.accept(aState));
+		button.addEventListener(EventType.ACTION, e -> function.accept(state));
 
-		aFunctionKeys.put(rFunction.getKey(), rFunction);
+		functionKeys.put(function.getKey(), function);
 	}
 
 	/**
@@ -491,57 +489,57 @@ public class Calculator extends FocusableComposite {
 	 * system clipboard.
 	 */
 	void copyCurrentValueToClipboard() {
-		EWT.copyTextToClipboard(aDisplay.aValue.getActiveValue());
+		EWT.copyTextToClipboard(display.value.getActiveValue());
 		requestFocus();
 	}
 
 	/**
 	 * Handles all keyboard input events.
 	 *
-	 * @param rEvent The keyboard event
+	 * @param event The keyboard event
 	 */
-	void handleKey(EwtEvent rEvent) {
-		EventType eEventType = rEvent.getType();
+	void handleKey(EwtEvent event) {
+		EventType eventType = event.getType();
 
-		if (rEvent.getModifiers() == ModifierKeys.CTRL) {
-			if (rEvent.getKeyCode() == KeyCode.C) {
+		if (event.getModifiers() == ModifierKeys.CTRL) {
+			if (event.getKeyCode() == KeyCode.C) {
 				copyCurrentValueToClipboard();
 			}
 
-			bKeyHandled = true;
-		} else if (!bKeyHandled || eEventType == EventType.KEY_TYPED) {
-			Pair<ModifierKeys, KeyCode> aKey =
-				Pair.of(rEvent.getModifiers(), rEvent.getKeyCode());
+			keyHandled = true;
+		} else if (!keyHandled || eventType == EventType.KEY_TYPED) {
+			Pair<ModifierKeys, KeyCode> key =
+				Pair.of(event.getModifiers(), event.getKeyCode());
 
-			CalculatorFunction rFunction = aFunctionKeys.get(aKey);
+			CalculatorFunction function = functionKeys.get(key);
 
-			if (rFunction != null) {
-				rFunction.accept(aState);
-				bKeyHandled = (eEventType == EventType.KEY_TYPED);
+			if (function != null) {
+				function.accept(state);
+				keyHandled = (eventType == EventType.KEY_TYPED);
 			}
 		} else {
-			bKeyHandled = false;
+			keyHandled = false;
 		}
 	}
 
 	/**
 	 * Updates the display text field with the current value.
 	 *
-	 * @param bReset TRUE to reset all input parameters
+	 * @param reset TRUE to reset all input parameters
 	 */
-	void update(boolean bReset) {
-		if (bReset) {
-			aState.dInputDigit = ONE;
-			aState.bFractionInput = false;
-			aState.bEnterNewValue = true;
+	void update(boolean reset) {
+		if (reset) {
+			state.inputDigit = ONE;
+			state.fractionInput = false;
+			state.enterNewValue = true;
 		}
 
-		if (ZERO.equals(aState.dCurrentValue)) {
+		if (ZERO.equals(state.currentValue)) {
 			// remove a possible negative sign on a zero value
-			aState.dCurrentValue = ZERO;
+			state.currentValue = ZERO;
 		}
 
-		aDisplay.update(aState);
+		display.update(state);
 	}
 
 	/**
@@ -549,12 +547,12 @@ public class Calculator extends FocusableComposite {
 	 *
 	 * @author eso
 	 */
-	static interface CalculatorFunction extends Consumer<CalculatorState> {
+	interface CalculatorFunction extends Consumer<CalculatorState> {
 
 		/**
 		 * Default value of {@link #getKey()}.
 		 */
-		public static final Pair<ModifierKeys, KeyCode> NO_KEY =
+		Pair<ModifierKeys, KeyCode> NO_KEY =
 			Pair.of(ModifierKeys.NONE, KeyCode.NONE);
 
 		/**
@@ -579,11 +577,11 @@ public class Calculator extends FocusableComposite {
 		 * for
 		 * a single key that needs to be pressed without modifiers.
 		 *
-		 * @param rKey The key code
+		 * @param key The key code
 		 * @return The key combination pair
 		 */
-		default Pair<ModifierKeys, KeyCode> key(KeyCode rKey) {
-			return key(ModifierKeys.NONE, rKey);
+		default Pair<ModifierKeys, KeyCode> key(KeyCode key) {
+			return key(ModifierKeys.NONE, key);
 		}
 
 		/**
@@ -591,13 +589,13 @@ public class Calculator extends FocusableComposite {
 		 * for
 		 * key combinations.
 		 *
-		 * @param rModifiers The modifier keys
-		 * @param rKey       The key code
+		 * @param modifiers The modifier keys
+		 * @param key       The key code
 		 * @return The key combination pair
 		 */
-		default Pair<ModifierKeys, KeyCode> key(ModifierKeys rModifiers,
-			KeyCode rKey) {
-			return Pair.of(rModifiers, rKey);
+		default Pair<ModifierKeys, KeyCode> key(ModifierKeys modifiers,
+			KeyCode key) {
+			return Pair.of(modifiers, key);
 		}
 	}
 
@@ -608,26 +606,26 @@ public class Calculator extends FocusableComposite {
 	 */
 	static class CalculatorDigit implements CalculatorFunction {
 
-		private final char cDigit;
+		private final char digit;
 
-		private final Pair<ModifierKeys, KeyCode> aKey;
+		private final Pair<ModifierKeys, KeyCode> key;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param cDigit sSymbol The input digit
+		 * @param digit symbol The input digit
 		 */
-		public CalculatorDigit(char cDigit) {
-			this.cDigit = cDigit;
-			aKey = key(KeyCode.forChar(cDigit));
+		public CalculatorDigit(char digit) {
+			this.digit = digit;
+			key = key(KeyCode.forChar(digit));
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void accept(CalculatorState rState) {
-			rState.input(cDigit - '0');
+		public void accept(CalculatorState state) {
+			state.input(digit - '0');
 		}
 
 		/**
@@ -635,7 +633,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public Pair<ModifierKeys, KeyCode> getKey() {
-			return aKey;
+			return key;
 		}
 
 		/**
@@ -643,7 +641,7 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String getSymbol() {
-			return Character.toString(cDigit);
+			return Character.toString(digit);
 		}
 	}
 
@@ -652,21 +650,21 @@ public class Calculator extends FocusableComposite {
 	 */
 	static class Operation {
 
-		private BinaryCalculation eCalculation;
+		private final BinaryCalculation calculation;
 
-		private BigDecimal rLeftValue;
+		private final BigDecimal leftValue;
 
 		/**
 		 * Creates a new instance with a certain operator and left value for
 		 * the
 		 * operation.
 		 *
-		 * @param eCalculation The operator character
-		 * @param rLeftValue   The left value for the operation
+		 * @param calculation The operator character
+		 * @param leftValue   The left value for the operation
 		 */
-		Operation(BinaryCalculation eCalculation, BigDecimal rLeftValue) {
-			this.eCalculation = eCalculation;
-			this.rLeftValue = rLeftValue;
+		Operation(BinaryCalculation calculation, BigDecimal leftValue) {
+			this.calculation = calculation;
+			this.leftValue = leftValue;
 		}
 
 		/**
@@ -674,19 +672,18 @@ public class Calculator extends FocusableComposite {
 		 */
 		@Override
 		public String toString() {
-			return rLeftValue.toString() + " " + eCalculation.getSymbol() +
-				" ";
+			return leftValue.toString() + " " + calculation.getSymbol() + " ";
 		}
 
 		/**
 		 * Executes this operation with a right value and returns the result.
 		 *
-		 * @param rRightValue The right value to perform this operation with
+		 * @param rightValue The right value to perform this operation with
 		 * @return The result of performing this operation with the left and
 		 * right values
 		 */
-		BigDecimal execute(BigDecimal rRightValue) {
-			return eCalculation.apply(rLeftValue, rRightValue);
+		BigDecimal execute(BigDecimal rightValue) {
+			return calculation.apply(leftValue, rightValue);
 		}
 
 		/**
@@ -695,7 +692,7 @@ public class Calculator extends FocusableComposite {
 		 * @return The left value
 		 */
 		final BigDecimal getLeftValue() {
-			return rLeftValue;
+			return leftValue;
 		}
 
 		/**
@@ -704,7 +701,7 @@ public class Calculator extends FocusableComposite {
 		 * @return The operator priority
 		 */
 		final int getPriority() {
-			return eCalculation.nPriority;
+			return calculation.priority;
 		}
 	}
 
@@ -715,11 +712,11 @@ public class Calculator extends FocusableComposite {
 	 */
 	class CalculatorDisplay extends Composite {
 
-		private Label aOperationsChain;
+		private Label operationsChain;
 
-		private Label aStateIndicator;
+		private Label stateIndicator;
 
-		private MultiFormatDisplay<BigDecimal, NumberDisplayFormat> aValue;
+		private MultiFormatDisplay<BigDecimal, NumberDisplayFormat> value;
 
 		/**
 		 * Creates a new instance.
@@ -733,46 +730,47 @@ public class Calculator extends FocusableComposite {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void build(ContainerBuilder<?> rBuilder) {
+		protected void build(ContainerBuilder<?> builder) {
 			addStyleName("CalculatorDisplay");
 
-			ContainerBuilder<Panel> aOperationsBuilder =
-				rBuilder.addPanel(DEFAULT.set(LAYOUT_AREA, "operations"),
+			ContainerBuilder<Panel> operationsBuilder =
+				builder.addPanel(DEFAULT.set(LAYOUT_AREA, "operations"),
 					flexHorizontal());
 
-			aOperationsChain = aOperationsBuilder.addLabel(DEFAULT, "");
-			aOperationsBuilder
+			operationsChain = operationsBuilder.addLabel(DEFAULT, "");
+			operationsBuilder
 				.addButton(DEFAULT, "@$CalcCopyButton")
 				.addEventListener(EventType.ACTION,
 					e -> copyCurrentValueToClipboard());
-			aStateIndicator =
-				rBuilder.addLabel(DEFAULT.set(LAYOUT_AREA, "state"), "");
+			stateIndicator =
+				builder.addLabel(DEFAULT.set(LAYOUT_AREA, "state"), "");
 
-			aOperationsChain.setWidth("100%");
-			aOperationsChain.addStyleName("calcOps");
-			aStateIndicator.addStyleName("calcState");
+			operationsChain.setWidth("100%");
+			operationsChain.addStyleName("calcOps");
+			stateIndicator.addStyleName("calcState");
 
-			aValue = new MultiFormatDisplay<>(NumberDisplayFormat.DECIMAL,
+			value = new MultiFormatDisplay<>(NumberDisplayFormat.DECIMAL,
 				NumberDisplayFormat.HEXADECIMAL, NumberDisplayFormat.BINARY);
-			rBuilder.addComponent(aValue, DEFAULT);
-			aValue.addStyleName("CalculatorValue");
+			builder.addComponent(value, DEFAULT);
+			value.addStyleName("CalculatorValue");
 		}
 
 		/**
 		 * Updates the display based on the given state.
 		 *
-		 * @param rState The state to update from
+		 * @param state The state to update from
 		 */
-		void update(CalculatorState rState) {
-			StringBuilder aOperations = new StringBuilder();
+		void update(CalculatorState state) {
+			StringBuilder operations = new StringBuilder();
 
-			for (Operation rOperation : rState.aOperationsStack) {
-				aOperations.append(rOperation);
+			for (Operation operation : state.operationsStack) {
+				operations.append(operation);
 			}
 
-			aOperationsChain.setText(aOperations.toString());
-			aStateIndicator.setText(rState.dMemoryValue == ZERO ? "" : "M");
-			aValue.update(rState.dCurrentValue);
+			operationsChain.setText(operations.toString());
+			stateIndicator.setText(
+				Objects.equals(state.memoryValue, ZERO) ? "" : "M");
+			value.update(state.currentValue);
 		}
 	}
 
@@ -783,31 +781,31 @@ public class Calculator extends FocusableComposite {
 	 */
 	class CalculatorState {
 
-		private BigDecimal dCurrentValue = ZERO;
+		private final Stack<Operation> operationsStack =
+			new Stack<Operation>();
 
-		private BigDecimal dMemoryValue = ZERO;
+		private BigDecimal currentValue = ZERO;
 
-		private BigDecimal dInputDigit = ONE;
+		private BigDecimal memoryValue = ZERO;
 
-		private boolean bFractionInput;
+		private BigDecimal inputDigit = ONE;
 
-		private boolean bEnterNewValue;
+		private boolean fractionInput;
 
-		private Stack<Operation> aOperationsStack = new Stack<Operation>();
+		private boolean enterNewValue;
 
 		/**
 		 * Adds a new operation to the stack.
 		 *
-		 * @param eCalculation The calculation to be performed by the
-		 *                     operation.
+		 * @param calculation The calculation to be performed by the operation.
 		 */
-		void addOperation(BinaryCalculation eCalculation) {
-			dCurrentValue =
-				executeOperations(dCurrentValue, eCalculation.getPriority());
+		void addOperation(BinaryCalculation calculation) {
+			currentValue =
+				executeOperations(currentValue, calculation.getPriority());
 
-			Operation aOperation = new Operation(eCalculation, dCurrentValue);
+			Operation operation = new Operation(calculation, currentValue);
 
-			aOperationsStack.push(aOperation);
+			operationsStack.push(operation);
 
 			update(true);
 		}
@@ -816,23 +814,23 @@ public class Calculator extends FocusableComposite {
 		 * Removes one digit from the current input.
 		 */
 		void backOneDigit() {
-			if (!bEnterNewValue) {
-				if (bFractionInput) {
-					int nScale = dCurrentValue.scale();
+			if (!enterNewValue) {
+				if (fractionInput) {
+					int scale = currentValue.scale();
 
-					if (nScale > 0) {
-						dInputDigit = dInputDigit.multiply(TEN);
-						dCurrentValue = dCurrentValue.setScale(--nScale,
-							RoundingMode.FLOOR);
+					if (scale > 0) {
+						inputDigit = inputDigit.multiply(TEN);
+						currentValue =
+							currentValue.setScale(--scale, RoundingMode.FLOOR);
 					}
 
-					if (nScale == 0) {
-						bFractionInput = false;
-						dInputDigit = ONE;
+					if (scale == 0) {
+						fractionInput = false;
+						inputDigit = ONE;
 					}
 				} else {
-					dCurrentValue =
-						dCurrentValue.divide(TEN, RoundingMode.FLOOR);
+					currentValue = currentValue.divide(TEN,
+						RoundingMode.FLOOR);
 				}
 			}
 
@@ -845,7 +843,7 @@ public class Calculator extends FocusableComposite {
 		 * new value.
 		 */
 		void calculate() {
-			dCurrentValue = executeOperations(dCurrentValue, 0);
+			currentValue = executeOperations(currentValue, 0);
 			update(true);
 		}
 
@@ -854,7 +852,7 @@ public class Calculator extends FocusableComposite {
 		 * the memory).
 		 */
 		void clearAll() {
-			aOperationsStack.removeAllElements();
+			operationsStack.removeAllElements();
 			clearEntry();
 		}
 
@@ -862,7 +860,7 @@ public class Calculator extends FocusableComposite {
 		 * Clears the currently entered value.
 		 */
 		void clearEntry() {
-			dCurrentValue = ZERO;
+			currentValue = ZERO;
 			update(true);
 		}
 
@@ -871,40 +869,38 @@ public class Calculator extends FocusableComposite {
 		 * certain minimum priority, starting with the given right value and
 		 * returning the resulting value.
 		 *
-		 * @param dRightValue  The right value to calculate with
-		 * @param nMinPriority The minimum priority an operation must have
+		 * @param rightValue  The right value to calculate with
+		 * @param minPriority The minimum priority an operation must have
 		 */
-		BigDecimal executeOperations(BigDecimal dRightValue,
-			int nMinPriority) {
-			while (!aOperationsStack.isEmpty() &&
-				aOperationsStack.peek().getPriority() >= nMinPriority) {
-				dRightValue = aOperationsStack.pop().execute(dRightValue);
+		BigDecimal executeOperations(BigDecimal rightValue, int minPriority) {
+			while (!operationsStack.isEmpty() &&
+				operationsStack.peek().getPriority() >= minPriority) {
+				rightValue = operationsStack.pop().execute(rightValue);
 			}
 
 			update(true);
 
-			return dRightValue;
+			return rightValue;
 		}
 
 		/**
 		 * Performs the input of a single digit.
 		 *
-		 * @param nDigit The digit value
+		 * @param digitValue The digit value
 		 */
-		void input(int nDigit) {
-			BigDecimal aDigit = new BigDecimal(nDigit);
+		void input(int digitValue) {
+			BigDecimal digit = new BigDecimal(digitValue);
 
-			if (bEnterNewValue) {
-				dCurrentValue = ZERO;
-				bEnterNewValue = false;
+			if (enterNewValue) {
+				currentValue = ZERO;
+				enterNewValue = false;
 			}
 
-			if (bFractionInput) {
-				dInputDigit = dInputDigit.divide(TEN);
-				dCurrentValue =
-					dCurrentValue.add(dInputDigit.multiply(aDigit));
+			if (fractionInput) {
+				inputDigit = inputDigit.divide(TEN);
+				currentValue = currentValue.add(inputDigit.multiply(digit));
 			} else {
-				dCurrentValue = dCurrentValue.multiply(TEN).add(aDigit);
+				currentValue = currentValue.multiply(TEN).add(digit);
 			}
 
 			update(false);
@@ -914,7 +910,7 @@ public class Calculator extends FocusableComposite {
 		 * Updates this state to perform the input of fraction digits.
 		 */
 		void startFractionInput() {
-			bFractionInput = true;
+			fractionInput = true;
 
 			update(false);
 		}
@@ -922,16 +918,16 @@ public class Calculator extends FocusableComposite {
 		/**
 		 * Updates the current and memory values.
 		 *
-		 * @param dCurrent The new current value
-		 * @param dMemory  The new memory value
-		 * @param bReset   TRUE to reset all input parameters
+		 * @param current The new current value
+		 * @param memory  The new memory value
+		 * @param reset   TRUE to reset all input parameters
 		 */
-		void updateValues(BigDecimal dCurrent, BigDecimal dMemory,
-			boolean bReset) {
-			dCurrentValue = dCurrent;
-			dMemoryValue = dMemory;
+		void updateValues(BigDecimal current, BigDecimal memory,
+			boolean reset) {
+			currentValue = current;
+			memoryValue = memory;
 
-			update(bReset);
+			update(reset);
 		}
 	}
 }

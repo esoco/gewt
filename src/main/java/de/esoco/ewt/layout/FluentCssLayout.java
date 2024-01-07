@@ -48,27 +48,27 @@ public abstract class FluentCssLayout<L extends FluentCssLayout<L>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData, int nIndex) {
-		super.addWidget(rContainer, rWidget, rStyleData, nIndex);
+	public void addWidget(HasWidgets container, Widget widget,
+		StyleData styleData, int index) {
+		super.addWidget(container, widget, styleData, index);
 
-		Style rStyle = rWidget.getElement().getStyle();
+		Style style = widget.getElement().getStyle();
 
-		applyWidgetStyle(rStyleData, rStyle);
+		applyWidgetStyle(styleData, style);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(Container rContainer,
-		StyleData rStyleData) {
-		FlowPanel aPanel = new FlowPanel();
-		Style rStyle = aPanel.getElement().getStyle();
+	public HasWidgets createLayoutContainer(Container container,
+		StyleData styleData) {
+		FlowPanel panel = new FlowPanel();
+		Style style = panel.getElement().getStyle();
 
-		applyLayoutStyle(rStyleData, rStyle);
+		applyLayoutStyle(styleData, style);
 
-		return aPanel;
+		return panel;
 	}
 
 	/**
@@ -76,19 +76,17 @@ public abstract class FluentCssLayout<L extends FluentCssLayout<L>>
 	 * parameters
 	 * to the style of the layout container.
 	 *
-	 * @param rStyleData The style data of the EWT container
-	 * @param rStyle     The style of the layout container
+	 * @param styleData The style data of the EWT container
+	 * @param style     The style of the layout container
 	 */
-	protected abstract void applyLayoutStyle(StyleData rStyleData,
-		Style rStyle);
+	protected abstract void applyLayoutStyle(StyleData styleData, Style style);
 
 	/**
 	 * Must be implemented to apply the CSS layout properties for a widget when
 	 * it is added by {@link #addWidget(HasWidgets, Widget, StyleData, int)}.
 	 *
-	 * @param rStyleData The style data of the EWT component
-	 * @param rStyle     The target style to set the layout properties on
+	 * @param styleData The style data of the EWT component
+	 * @param style     The target style to set the layout properties on
 	 */
-	protected abstract void applyWidgetStyle(StyleData rStyleData,
-		Style rStyle);
+	protected abstract void applyWidgetStyle(StyleData styleData, Style style);
 }

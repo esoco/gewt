@@ -30,7 +30,7 @@ public interface EwtEventHandler {
 	/**
 	 * This method will be invoked to handle events.
 	 *
-	 * @param rEvent The event that occurred
+	 * @param event The event that occurred
 	 */
-	public void handleEvent(EwtEvent rEvent);
+	public void handleEvent(EwtEvent event);
 }

@@ -16,6 +16,18 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 import de.esoco.ewt.app.ChainedResource;
 import de.esoco.ewt.app.GwtResource;
 import de.esoco.ewt.app.Resource;
@@ -38,19 +50,6 @@ import de.esoco.ewt.style.ViewStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.ConstantsWithLookup;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * This is the main interface for creating and manipulating EWT components. It
  * provides access to all methods that are necessary to create and modify user
@@ -63,23 +62,23 @@ public class UserInterfaceContext {
 	private static final Screen DEFAULT_SCREEN = new Screen();
 
 	private static final GwtResource GEWT_RESOURCE =
-		new GwtResource((ConstantsWithLookup) GWT.create(GewtStrings.class));
+		new GwtResource(GWT.create(GewtStrings.class));
 
-	private HandlerRegistration rGlobalKeyHandlerRegistration;
+	private HandlerRegistration globalKeyHandlerRegistration;
 
-	private List<EwtEventHandler> aGlobalKeyListeners;
+	private List<EwtEventHandler> globalKeyListeners;
 
-	private Resource rResource;
+	private final Resource resource;
 
 	/**
 	 * Creates a new instance that uses a certain resource.
 	 *
-	 * @param rResource The context resource
+	 * @param resource The context resource
 	 */
-	public UserInterfaceContext(Resource rResource) {
-		this.rResource = rResource != null ?
-		                 new ChainedResource(rResource, GEWT_RESOURCE) :
-		                 GEWT_RESOURCE;
+	public UserInterfaceContext(Resource resource) {
+		this.resource = resource != null ?
+		                new ChainedResource(resource, GEWT_RESOURCE) :
+		                GEWT_RESOURCE;
 	}
 
 	/**
@@ -91,134 +90,134 @@ public class UserInterfaceContext {
 	 * with their toString() method. The escape %% will insert a single percent
 	 * character.
 	 *
-	 * @param sPattern The pattern string with tokens in the form %x
-	 * @param rArgs    The list of arguments to replace the format tokens
+	 * @param pattern The pattern string with tokens in the form %x
+	 * @param args    The list of arguments to replace the format tokens
 	 * @return String The formatted string
 	 */
-	static final String formatMessage(String sPattern, Object[] rArgs) {
-		StringBuilder aBuilder = new StringBuilder(sPattern);
-		int nTokenPos = 0;
-		int nCurrentPos = 0;
-		int nPrevTokenPos = 0;
-		int nArg = 0;
+	static final String formatMessage(String pattern, Object[] args) {
+		StringBuilder builder = new StringBuilder(pattern);
+		int tokenPos = 0;
+		int currentPos = 0;
+		int prevTokenPos = 0;
+		int arg = 0;
 
-		while ((nTokenPos = sPattern.indexOf('%', nTokenPos)) >= 0) {
-			if (sPattern.charAt(nTokenPos + 1) == '%') {
-				aBuilder.deleteCharAt(nTokenPos);
+		while ((tokenPos = pattern.indexOf('%', tokenPos)) >= 0) {
+			if (pattern.charAt(tokenPos + 1) == '%') {
+				builder.deleteCharAt(tokenPos);
 			} else {
 				// if valid position then replace token with corresponding
 				// value (i.e., an argument object converted to a string)
-				String sValue = rArgs[nArg].toString();
+				String value = args[arg].toString();
 
-				nCurrentPos += (nTokenPos - nPrevTokenPos);
-				aBuilder.delete(nCurrentPos, nCurrentPos + 2);
-				aBuilder.insert(nCurrentPos, sValue);
+				currentPos += (tokenPos - prevTokenPos);
+				builder.delete(currentPos, currentPos + 2);
+				builder.insert(currentPos, value);
 
 				// compensate insertion of the value string and the removal of
 				// 2 chars from the placeholder token
-				nCurrentPos += (sValue.length() - 2);
-				nPrevTokenPos = nTokenPos;
+				currentPos += (value.length() - 2);
+				prevTokenPos = tokenPos;
 			}
 
-			nTokenPos++;
+			tokenPos++;
 		}
 
-		return aBuilder.toString();
+		return builder.toString();
 	}
 
 	/**
 	 * Internal method to set the bounding rectangle of a {@link PopupPanel}.
 	 *
-	 * @param rPopupPanel  The popup panel to set the bounds of
-	 * @param x            The horizontal coordinate to display the popup at
-	 * @param y            The vertical coordinate to display the popup at
-	 * @param rOrigin      An {@link AlignedPosition} instance that defines the
-	 *                     location of the origin for the view alignment
-	 * @param bCheckBounds TRUE to check that the view's bounding rectangle is
-	 *                     placed completely inside the screen area
+	 * @param popupPanel  The popup panel to set the bounds of
+	 * @param x           The horizontal coordinate to display the popup at
+	 * @param y           The vertical coordinate to display the popup at
+	 * @param origin      An {@link AlignedPosition} instance that defines the
+	 *                    location of the origin for the view alignment
+	 * @param checkBounds TRUE to check that the view's bounding rectangle is
+	 *                    placed completely inside the screen area
 	 */
-	public static void setPopupBounds(PopupPanel rPopupPanel, int x, int y,
-		AlignedPosition rOrigin, boolean bCheckBounds) {
-		int nRootX = 0;
-		int nRootY = 0;
-		int nRootWidth = Window.getClientWidth();
-		int nRootHeight = Window.getClientHeight();
-		int w = rPopupPanel.getOffsetWidth();
-		int h = rPopupPanel.getOffsetHeight();
+	public static void setPopupBounds(PopupPanel popupPanel, int x, int y,
+		AlignedPosition origin, boolean checkBounds) {
+		int rootX = 0;
+		int rootY = 0;
+		int rootWidth = Window.getClientWidth();
+		int rootHeight = Window.getClientHeight();
+		int w = popupPanel.getOffsetWidth();
+		int h = popupPanel.getOffsetHeight();
 
-		w = Math.min(w, Math.max(nRootWidth / 4, 200));
+		w = Math.min(w, Math.max(rootWidth / 4, 200));
 
 		// calculate aligned position with negative size to position the view
 		// relative to the origin
-		x = rOrigin.getHorizontalAlignment().calcAlignedPosition(x, -w, true);
-		y = rOrigin.getVerticalAlignment().calcAlignedPosition(y, -h, true);
+		x = origin.getHorizontalAlignment().calcAlignedPosition(x, -w, true);
+		y = origin.getVerticalAlignment().calcAlignedPosition(y, -h, true);
 
-		if (bCheckBounds) {
-			if (x + w > nRootX + nRootWidth) {
-				x = nRootX + nRootWidth - w;
+		if (checkBounds) {
+			if (x + w > rootX + rootWidth) {
+				x = rootX + rootWidth - w;
 			}
 
-			if (x < nRootX) {
-				w = w - (nRootX - x);
-				x = nRootX;
+			if (x < rootX) {
+				w = w - (rootX - x);
+				x = rootX;
 			}
 
-			if (y + h > nRootY + nRootHeight) {
-				y = nRootY + nRootHeight - h;
+			if (y + h > rootY + rootHeight) {
+				y = rootY + rootHeight - h;
 			}
 
-			if (y < nRootY) {
-				h = h - (nRootY - y);
-				y = nRootY;
+			if (y < rootY) {
+				h = h - (rootY - y);
+				y = rootY;
 			}
 		}
 
-		rPopupPanel.setPopupPosition(x, y);
-		rPopupPanel.setPixelSize(w, h);
+		popupPanel.setPopupPosition(x, y);
+		popupPanel.setPixelSize(w, h);
 	}
 
 	/**
 	 * Adds an event listener that will be notified of global key events.
 	 *
-	 * @param rListener The key listener to register
+	 * @param listener The key listener to register
 	 */
-	public void addGlobalKeyListener(EwtEventHandler rListener) {
-		if (rGlobalKeyHandlerRegistration == null) {
-			rGlobalKeyHandlerRegistration =
+	public void addGlobalKeyListener(EwtEventHandler listener) {
+		if (globalKeyHandlerRegistration == null) {
+			globalKeyHandlerRegistration =
 				Event.addNativePreviewHandler(new GlobalKeyEventHandler());
 		}
 
-		if (aGlobalKeyListeners == null) {
-			aGlobalKeyListeners = new ArrayList<EwtEventHandler>();
+		if (globalKeyListeners == null) {
+			globalKeyListeners = new ArrayList<EwtEventHandler>();
 		}
 
-		aGlobalKeyListeners.add(rListener);
+		globalKeyListeners.add(listener);
 	}
 
 	/**
 	 * Creates a new child view that belongs to a parent view. It's default
 	 * layout will be an EdgeLayout.
 	 *
-	 * @param rParent    The parent view
-	 * @param rViewStyle The view style (ViewStyle.DEFAULT for a default style)
+	 * @param parent    The parent view
+	 * @param viewStyle The view style (ViewStyle.DEFAULT for a default style)
 	 * @return The new child view
 	 */
-	public ChildView createChildView(View rParent, ViewStyle rViewStyle) {
-		ChildView aChildView = new ChildView(rParent, rViewStyle);
+	public ChildView createChildView(View parent, ViewStyle viewStyle) {
+		ChildView childView = new ChildView(parent, viewStyle);
 
-		return aChildView;
+		return childView;
 	}
 
 	/**
 	 * Creates a new dialog view. If the parent view is NULL a new top-level
 	 * dialog will be created.
 	 *
-	 * @param rParent    The parent view or NULL for a top-level dialog
-	 * @param rViewStyle The view style (ViewStyle.DEFAULT for a default style)
+	 * @param parent    The parent view or NULL for a top-level dialog
+	 * @param viewStyle The view style (ViewStyle.DEFAULT for a default style)
 	 * @return The new dialog
 	 */
-	public DialogView createDialog(View rParent, ViewStyle rViewStyle) {
-		return new DialogView(rParent, rViewStyle);
+	public DialogView createDialog(View parent, ViewStyle viewStyle) {
+		return new DialogView(parent, viewStyle);
 	}
 
 	/**
@@ -234,63 +233,65 @@ public class UserInterfaceContext {
 	 * <p>The argument to this method is either the direct name of an image
 	 * or a resource key (prefixed with '$') for it.</p>
 	 *
-	 * @param rImageReference sImage The image name
+	 * @param imageReference image The image name
 	 * @return A new EWT image instance
 	 * @throws IllegalArgumentException If the given image reference is invalid
 	 */
-	public Image createImage(Object rImageReference) {
-		Image rImage = null;
+	public Image createImage(Object imageReference) {
+		Image image = null;
 
-		if (rImageReference instanceof String) {
-			String sImage = expandResource((String) rImageReference);
+		if (imageReference instanceof String) {
+			String imgResource = expandResource((String) imageReference);
 
-			if (sImage.length() > 2) {
-				if (sImage.charAt(1) == Image.IMAGE_PREFIX_SEPARATOR) {
-					String sImageUri = sImage.substring(2);
+			if (imgResource.length() > 2) {
+				if (imgResource.charAt(1) == Image.IMAGE_PREFIX_SEPARATOR) {
+					String imageUri = imgResource.substring(2);
 
-					if (sImage.charAt(0) == Image.IMAGE_ICON_PREFIX) {
-						rImage = new Icon(sImageUri);
-					} else if (sImage.charAt(0) == Image.IMAGE_DATA_PREFIX) {
-						rImage = new ImageRef(sImageUri);
-					} else if (sImage.charAt(0) == Image.IMAGE_FILE_PREFIX) {
-						if (!sImageUri.startsWith("http")) {
-							sImageUri =
-								GWT.getModuleBaseForStaticFiles() + sImageUri;
+					if (imgResource.charAt(0) == Image.IMAGE_ICON_PREFIX) {
+						image = new Icon(imageUri);
+					} else if (imgResource.charAt(0) ==
+						Image.IMAGE_DATA_PREFIX) {
+						image = new ImageRef(imageUri);
+					} else if (imgResource.charAt(0) ==
+						Image.IMAGE_FILE_PREFIX) {
+						if (!imageUri.startsWith("http")) {
+							imageUri =
+								GWT.getModuleBaseForStaticFiles() + imageUri;
 						}
 
-						rImage = new ImageRef(sImageUri);
+						image = new ImageRef(imageUri);
 					}
 				} else {
-					rImage = rResource.getImage(sImage);
+					image = resource.getImage(imgResource);
 				}
 
-				if (rImage == null) {
-					GWT.log("No image for " + (sImage.charAt(0) == '$' ?
-					                           sImage.substring(1) :
-					                           sImage));
+				if (image == null) {
+					GWT.log("No image for " + (imgResource.charAt(0) == '$' ?
+					                           imgResource.substring(1) :
+					                           image));
 				}
 			}
 		} else {
-			rImage = new ImageRef(rImageReference);
+			image = new ImageRef(imageReference);
 		}
 
-		return rImage;
+		return image;
 	}
 
 	/**
 	 * Creates a new top-level view width an EdgeLayout as the default layout.
 	 *
-	 * @param rViewStyle The view style (ViewStyle.DEFAULT for a default style)
+	 * @param viewStyle The view style (ViewStyle.DEFAULT for a default style)
 	 * @return The new main view
 	 */
-	public MainView createMainView(ViewStyle rViewStyle) {
-		return new MainView(this, rViewStyle);
+	public MainView createMainView(ViewStyle viewStyle) {
+		return new MainView(this, viewStyle);
 	}
 
 	/**
 	 * This is a helper method to display a view at a certain location on the
 	 * screen. For modal views like dialogs this call blocks until the view is
-	 * closed. If the bCheckCoords parameter is TRUE this method also checks
+	 * closed. If the checkCoords parameter is TRUE this method also checks
 	 * whether the view's bounding rectangle edges are inside the screen area
 	 * and modifies the view's size and location if necessary. If multiple
 	 * screens exist in the current system the coordinate check will be applied
@@ -312,28 +313,28 @@ public class UserInterfaceContext {
 	 * corner
 	 * of the view).</p>
 	 *
-	 * @param rView        The view to display
-	 * @param x            The horizontal coordinate to display the view at
-	 * @param y            The vertical coordinate to display the view at
-	 * @param rOrigin      An {@link AlignedPosition} instance that defines the
-	 *                     location of the origin for the view alignment
-	 * @param bCheckBounds TRUE to check that the view's bounding rectangle is
-	 *                     placed completely inside the screen area
+	 * @param view        The view to display
+	 * @param x           The horizontal coordinate to display the view at
+	 * @param y           The vertical coordinate to display the view at
+	 * @param origin      An {@link AlignedPosition} instance that defines the
+	 *                    location of the origin for the view alignment
+	 * @param checkBounds TRUE to check that the view's bounding rectangle is
+	 *                    placed completely inside the screen area
 	 */
-	public void displayView(final View rView, final int x, final int y,
-		final AlignedPosition rOrigin, final boolean bCheckBounds) {
-		if (rView instanceof ChildView) {
+	public void displayView(final View view, final int x, final int y,
+		final AlignedPosition origin, final boolean checkBounds) {
+		if (view instanceof ChildView) {
 			// delay positioning until all children are attached
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					Widget rViewWidget = rView.getWidget();
+					Widget viewWidget = view.getWidget();
 
-					rView.setVisible(true);
+					view.setVisible(true);
 
-					if (rViewWidget instanceof PopupPanel) {
-						setPopupBounds((PopupPanel) rViewWidget, x, y, rOrigin,
-							bCheckBounds);
+					if (viewWidget instanceof PopupPanel) {
+						setPopupBounds((PopupPanel) viewWidget, x, y, origin,
+							checkBounds);
 					}
 				}
 			});
@@ -345,20 +346,20 @@ public class UserInterfaceContext {
 	 * should invoke the method {@link View#pack()} before to ensure
 	 * compatibility with other EWT platforms.
 	 *
-	 * @param rView The view to display
+	 * @param view The view to display
 	 */
-	public void displayViewCentered(final View rView) {
-		if (rView instanceof ChildView) {
+	public void displayViewCentered(final View view) {
+		if (view instanceof ChildView) {
 			// delay centering until all children are attached
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
-					Widget rViewWidget = rView.getWidget();
+					Widget viewWidget = view.getWidget();
 
-					rView.setVisible(true);
+					view.setVisible(true);
 
-					if (rViewWidget instanceof PopupPanel) {
-						((PopupPanel) rView.getWidget()).center();
+					if (viewWidget instanceof PopupPanel) {
+						((PopupPanel) view.getWidget()).center();
 					}
 				}
 			});
@@ -385,21 +386,21 @@ public class UserInterfaceContext {
 	 * with {@link Component#setProperties(Object)}. But it should also be used
 	 * by application code that needs to query attributes from resources.</p>
 	 *
-	 * @param sResource The string to check and (if necessary) expand
+	 * @param resource The string to check and (if necessary) expand
 	 * @return The (expanded) resource string
 	 */
-	public String expandResource(String sResource) {
-		if (sResource != null && sResource.length() > 1 &&
-			sResource.charAt(0) == '$') {
-			if (sResource.charAt(1) == '$') {
-				sResource = replaceResources(sResource.substring(2));
+	public String expandResource(String resource) {
+		if (resource != null && resource.length() > 1 &&
+			resource.charAt(0) == '$') {
+			if (resource.charAt(1) == '$') {
+				resource = replaceResources(resource.substring(2));
 			} else {
-				sResource =
-					getResourceString(sResource.substring(1), null).trim();
+				resource =
+					getResourceString(resource.substring(1), null).trim();
 			}
 		}
 
-		return sResource;
+		return resource;
 	}
 
 	/**
@@ -422,12 +423,12 @@ public class UserInterfaceContext {
 	 * throw an AssertionError if no matching resource could be found for a
 	 * resource key. Without assertions NULL will be returned.</p>
 	 *
-	 * @param sKey The key that identifies the resource object
+	 * @param key The key that identifies the resource object
 	 * @return The matching resource object or NULL if no matching resource
 	 * could be found
 	 */
-	public Object getResourceObject(String sKey) {
-		return rResource.getString(sKey);
+	public Object getResourceObject(String key) {
+		return resource.getString(key);
 	}
 
 	/**
@@ -449,11 +450,10 @@ public class UserInterfaceContext {
 	 * because of missing resources but instead giving a hint at the missing
 	 * resource string.</p>
 	 *
-	 * @param sKey        The key that identifies the resource string
-	 * @param rFormatArgs The optional arguments if the resource string
-	 *                       contains
-	 *                    placeholders that shall be replaced with the given
-	 *                    values
+	 * @param key        The key that identifies the resource string
+	 * @param formatArgs The optional arguments if the resource string contains
+	 *                   placeholders that shall be replaced with the given
+	 *                   values
 	 * @return The matching resource string or the resource key if no matching
 	 * resource could be found
 	 * @throws IllegalArgumentException If the list of format arguments
@@ -461,37 +461,37 @@ public class UserInterfaceContext {
 	 *                                  values that are illegal for the format
 	 *                                  pattern
 	 */
-	public String getResourceString(String sKey, Object[] rFormatArgs) {
-		String sResource = rResource.getString(sKey);
+	public String getResourceString(String key, Object[] formatArgs) {
+		String resourceString = resource.getString(key);
 
-		if (sResource == null) {
-			sResource = sKey;
+		if (resourceString == null) {
+			resourceString = key;
 
 			// ignore images because they are normally not mapped
-			if (!sKey.startsWith("im")) {
-				GWT.log("No resource for key " + sKey);
+			if (!key.startsWith("im")) {
+				GWT.log("No resource for key " + key);
 			}
 		}
 
-		if (rFormatArgs != null && rFormatArgs.length > 0) {
-			sResource = formatMessage(sResource, rFormatArgs);
+		if (formatArgs != null && formatArgs.length > 0) {
+			resourceString = formatMessage(resourceString, formatArgs);
 		}
 
-		return sResource;
+		return resourceString;
 	}
 
 	/**
 	 * Removes an event listener that will be notified of global key events.
 	 *
-	 * @param rListener The key listener to remove
+	 * @param listener The key listener to remove
 	 */
-	public void removeGlobalKeyListener(EwtEventHandler rListener) {
-		if (aGlobalKeyListeners != null) {
-			aGlobalKeyListeners.remove(rListener);
+	public void removeGlobalKeyListener(EwtEventHandler listener) {
+		if (globalKeyListeners != null) {
+			globalKeyListeners.remove(listener);
 
-			if (aGlobalKeyListeners.isEmpty()) {
-				rGlobalKeyHandlerRegistration.removeHandler();
-				rGlobalKeyHandlerRegistration = null;
+			if (globalKeyListeners.isEmpty()) {
+				globalKeyHandlerRegistration.removeHandler();
+				globalKeyHandlerRegistration = null;
 			}
 		}
 	}
@@ -515,14 +515,14 @@ public class UserInterfaceContext {
 	 * implementation but the application must not expect that the code in the
 	 * Runnable object has already been executed when this method returns.</p>
 	 *
-	 * @param rRunnable The object of which the run() method will be invoked
-	 *                  asynchronously
+	 * @param runnable The object of which the run() method will be invoked
+	 *                 asynchronously
 	 */
-	public void runLater(final Runnable rRunnable) {
+	public void runLater(final Runnable runnable) {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				rRunnable.run();
+				runnable.run();
 			}
 		});
 	}
@@ -532,28 +532,28 @@ public class UserInterfaceContext {
 	 * expanded version of [token] as returned by
 	 * {@link #getResourceString(String, Object[])}.
 	 *
-	 * @param sText The text to replace resource tokens
+	 * @param text The text to replace resource tokens
 	 * @return A string containing the original text with the resource tokens
 	 * expanded
 	 */
-	private String replaceResources(String sText) {
-		StringBuilder aResult = new StringBuilder();
-		int nStart;
+	private String replaceResources(String text) {
+		StringBuilder result = new StringBuilder();
+		int start;
 
-		while ((nStart = sText.indexOf("{$")) >= 0) {
-			aResult.append(sText.substring(0, nStart));
-			nStart += 2;
+		while ((start = text.indexOf("{$")) >= 0) {
+			result.append(text, 0, start);
+			start += 2;
 
-			int nEnd = sText.indexOf('}', nStart);
-			String sResource = sText.substring(nStart, nEnd);
+			int end = text.indexOf('}', start);
+			String resource = text.substring(start, end);
 
-			aResult.append(getResourceString(sResource, null));
-			sText = sText.substring(nEnd + 1);
+			result.append(getResourceString(resource, null));
+			text = text.substring(end + 1);
 		}
 
-		aResult.append(sText);
+		result.append(text);
 
-		return aResult.toString();
+		return result.toString();
 	}
 
 	/**
@@ -567,23 +567,23 @@ public class UserInterfaceContext {
 		 * @see NativePreviewHandler#onPreviewNativeEvent(NativePreviewEvent)
 		 */
 		@Override
-		public void onPreviewNativeEvent(NativePreviewEvent rPreviewEvent) {
-			NativeEvent rEvent = rPreviewEvent.getNativeEvent();
-			String sType = rEvent.getType();
-			char nChar = (char) rEvent.getCharCode();
+		public void onPreviewNativeEvent(NativePreviewEvent previewEvent) {
+			NativeEvent event = previewEvent.getNativeEvent();
+			String type = event.getType();
+			char c = (char) event.getCharCode();
 
-			if (sType.equalsIgnoreCase("keypress")) {
-				if (nChar != 0 && rEvent.getAltKey() && rEvent.getCtrlKey()) {
-					rPreviewEvent.consume();
+			if (type.equalsIgnoreCase("keypress")) {
+				if (c != 0 && event.getAltKey() && event.getCtrlKey()) {
+					previewEvent.consume();
 
-					EwtEvent rEwtEvent =
+					EwtEvent ewtEvent =
 						EwtEvent.getEvent(UserInterfaceContext.this, null,
-							EventType.KEY_TYPED, rEvent);
+							EventType.KEY_TYPED, event);
 
 					Scheduler
 						.get()
 						.scheduleDeferred(
-							new NotifyGlobalKeyListeners(rEwtEvent));
+							new NotifyGlobalKeyListeners(ewtEvent));
 				}
 			}
 		}
@@ -596,15 +596,15 @@ public class UserInterfaceContext {
 		private final class NotifyGlobalKeyListeners
 			implements ScheduledCommand {
 
-			private final EwtEvent rEwtEvent;
+			private final EwtEvent ewtEvent;
 
 			/**
 			 * Creates a new instance.
 			 *
-			 * @param rEwtEvent The EWT event to send
+			 * @param ewtEvent The EWT event to send
 			 */
-			private NotifyGlobalKeyListeners(EwtEvent rEwtEvent) {
-				this.rEwtEvent = rEwtEvent;
+			private NotifyGlobalKeyListeners(EwtEvent ewtEvent) {
+				this.ewtEvent = ewtEvent;
 			}
 
 			/**
@@ -612,8 +612,8 @@ public class UserInterfaceContext {
 			 */
 			@Override
 			public void execute() {
-				for (EwtEventHandler rListener : aGlobalKeyListeners) {
-					rListener.handleEvent(rEwtEvent);
+				for (EwtEventHandler listener : globalKeyListeners) {
+					listener.handleEvent(ewtEvent);
 				}
 			}
 		}

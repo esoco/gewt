@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Spinner extends Control {
 
-	private GwtSpinner aGwtSpinner;
+	private GwtSpinner gwtSpinner;
 
 	/**
 	 * Returns the increment for value modifications.
@@ -37,7 +37,7 @@ public class Spinner extends Control {
 	 * @return The increment value
 	 */
 	public final int getIncrement() {
-		return aGwtSpinner.getIncrement();
+		return gwtSpinner.getIncrement();
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class Spinner extends Control {
 	 * @return The maximum value
 	 */
 	public final int getMaximum() {
-		return aGwtSpinner.getMaximum();
+		return gwtSpinner.getMaximum();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class Spinner extends Control {
 	 * @return The minimum value
 	 */
 	public final int getMinimum() {
-		return aGwtSpinner.getMinimum();
+		return gwtSpinner.getMinimum();
 	}
 
 	/**
@@ -64,53 +64,53 @@ public class Spinner extends Control {
 	 * @return The current value
 	 */
 	public final int getValue() {
-		return aGwtSpinner.getValue();
+		return gwtSpinner.getValue();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		aGwtSpinner = (GwtSpinner) getWidget();
+		gwtSpinner = (GwtSpinner) getWidget();
 	}
 
 	/**
 	 * Sets the increment for value modifications.
 	 *
-	 * @param nIncrement The increment value
+	 * @param increment The increment value
 	 */
-	public final void setIncrement(int nIncrement) {
-		aGwtSpinner.setIncrement(nIncrement);
+	public final void setIncrement(int increment) {
+		gwtSpinner.setIncrement(increment);
 	}
 
 	/**
 	 * Sets the maximum value.
 	 *
-	 * @param nMaximum The maximum value
+	 * @param maximum The maximum value
 	 */
-	public final void setMaximum(int nMaximum) {
-		aGwtSpinner.setMaximum(nMaximum);
+	public final void setMaximum(int maximum) {
+		gwtSpinner.setMaximum(maximum);
 	}
 
 	/**
 	 * Sets the minimum value.
 	 *
-	 * @param nMinimum The minimum value
+	 * @param minimum The minimum value
 	 */
-	public final void setMinimum(int nMinimum) {
-		aGwtSpinner.setMinimum(nMinimum);
+	public final void setMinimum(int minimum) {
+		gwtSpinner.setMinimum(minimum);
 	}
 
 	/**
 	 * Sets the value of this component.
 	 *
-	 * @param nValue The value
+	 * @param value The value
 	 */
-	public final void setValue(int nValue) {
-		aGwtSpinner.setValue(nValue);
+	public final void setValue(int value) {
+		gwtSpinner.setValue(value);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class Spinner extends Control {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle) {
+		public Widget createWidget(Component component, StyleData style) {
 			return new GwtSpinner(0, 100, 1);
 		}
 	}

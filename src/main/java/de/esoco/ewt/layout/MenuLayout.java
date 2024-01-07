@@ -43,8 +43,8 @@ public class MenuLayout extends GenericLayout {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
+	public HasWidgets createLayoutContainer(Container container,
+		StyleData containerStyle) {
 		return new MenuPanel();
 	}
 

@@ -63,12 +63,12 @@ public class TextArea extends TextControl {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		if (rStyle.hasFlag(StyleFlag.WRAP)) {
+		if (style.hasFlag(StyleFlag.WRAP)) {
 			setLineWrapping(true);
-		} else if (rStyle.hasFlag(StyleFlag.NO_WRAP)) {
+		} else if (style.hasFlag(StyleFlag.NO_WRAP)) {
 			setLineWrapping(false);
 		}
 	}
@@ -89,61 +89,60 @@ public class TextArea extends TextControl {
 	 * @return The line wrapping state
 	 */
 	public boolean isLineWrapping() {
-		String sWrapAttr = getWidget().getElement().getAttribute("wrap");
+		String wrapAttr = getWidget().getElement().getAttribute("wrap");
 
 		// return TRUE if on or not set
-		return !"off".equals(sWrapAttr);
+		return !"off".equals(wrapAttr);
 	}
 
 	/**
 	 * Sets the position of the input caret.
 	 *
-	 * @param nPosition The new caret position
+	 * @param position The new caret position
 	 */
 	@Override
-	public void setCaretPosition(int nPosition) {
-		getTextArea().setCursorPos(nPosition);
+	public void setCaretPosition(int position) {
+		getTextArea().setCursorPos(position);
 	}
 
 	/**
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns) {
-		getTextArea().setCharacterWidth(nColumns);
+	public void setColumns(int columns) {
+		getTextArea().setCharacterWidth(columns);
 	}
 
 	/**
 	 * Sets the editable state of this component.
 	 *
-	 * @param bEditable TRUE if the object shall be editable, FALSE to set
-	 *                     it to
-	 *                  be readonly
+	 * @param editable TRUE if the object shall be editable, FALSE to set it to
+	 *                 be readonly
 	 */
 	@Override
-	public void setEditable(boolean bEditable) {
-		getTextArea().setReadOnly(!bEditable);
+	public void setEditable(boolean editable) {
+		getTextArea().setReadOnly(!editable);
 	}
 
 	/**
 	 * Sets whether text lines should be wrapped automatically by this
 	 * component.
 	 *
-	 * @param bWrap TRUE to enabled automatic wrapping
+	 * @param wrap TRUE to enabled automatic wrapping
 	 */
-	public void setLineWrapping(boolean bWrap) {
-		getWidget().getElement().setAttribute("wrap", bWrap ? "on" : "off");
+	public void setLineWrapping(boolean wrap) {
+		getWidget().getElement().setAttribute("wrap", wrap ? "on" : "off");
 	}
 
 	/**
 	 * Allows to set a minimum height by providing the corresponding text row
 	 * count. This may not be supported by all implementations.
 	 *
-	 * @param nRows The minimum number of text rows to display
+	 * @param rows The minimum number of text rows to display
 	 */
-	public void setRows(int nRows) {
-		getTextArea().setVisibleLines(nRows);
-		getElement().getStyle().setProperty("minHeight", nRows + "em");
+	public void setRows(int rows) {
+		getTextArea().setVisibleLines(rows);
+		getElement().getStyle().setProperty("minHeight", rows + "em");
 	}
 
 	/**
@@ -151,8 +150,8 @@ public class TextArea extends TextControl {
 	 * {@link #setText(String)}.
 	 */
 	@Override
-	protected void setWidgetText(String sText) {
-		getTextArea().setText(sText);
+	protected void setWidgetText(String text) {
+		getTextArea().setText(text);
 	}
 
 	/**
@@ -190,22 +189,22 @@ public class TextArea extends TextControl {
 		/**
 		 * @see TextControl#setColumns(int)
 		 */
-		public void setCharacterWidth(int nColumns);
+		public void setCharacterWidth(int columns);
 
 		/**
 		 * Sets the text of this component.
 		 *
-		 * @param sText The new text
+		 * @param text The new text
 		 */
 		@Override
-		public void setText(String sText);
+		public void setText(String text);
 
 		/**
 		 * Sets the row count.
 		 *
-		 * @param nRows The minimum number of text rows to display
+		 * @param rows The minimum number of text rows to display
 		 */
-		public void setVisibleLines(int nRows);
+		public void setVisibleLines(int rows);
 	}
 
 	/**
@@ -221,31 +220,30 @@ public class TextArea extends TextControl {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle) {
-			String sMimeType = rStyle.getProperty(MIME_TYPE, null);
-			IsTextArea aWidget = null;
+		public W createWidget(Component component, StyleData style) {
+			String mimeType = style.getProperty(MIME_TYPE, null);
+			IsTextArea widget = null;
 
-			if (sMimeType != null &&
-				!sMimeType.equalsIgnoreCase("text/plain")) {
-				String sMode = null;
-				int nIndex = sMimeType.indexOf("x-");
+			if (mimeType != null && !mimeType.equalsIgnoreCase("text/plain")) {
+				String mode = null;
+				int index = mimeType.indexOf("x-");
 
-				if (nIndex >= 0) {
-					sMode = sMimeType.substring(nIndex + 2);
-				} else if (sMimeType.toLowerCase().startsWith("text/")) {
-					sMode = sMimeType.substring(5);
+				if (index >= 0) {
+					mode = mimeType.substring(index + 2);
+				} else if (mimeType.toLowerCase().startsWith("text/")) {
+					mode = mimeType.substring(5);
 				}
 
-				if (sMode != null) {
-					aWidget = new GwtCodeMirror(sMode);
+				if (mode != null) {
+					widget = new GwtCodeMirror(mode);
 				}
 			}
 
-			if (aWidget == null) {
-				aWidget = new GwtTextArea();
+			if (widget == null) {
+				widget = new GwtTextArea();
 			}
 
-			return (W) aWidget;
+			return (W) widget;
 		}
 	}
 
@@ -271,10 +269,10 @@ public class TextArea extends TextControl {
 		 * @see com.google.gwt.user.client.ui.TextArea#onBrowserEvent(Event)
 		 */
 		@Override
-		public void onBrowserEvent(Event rEvent) {
-			super.onBrowserEvent(rEvent);
+		public void onBrowserEvent(Event event) {
+			super.onBrowserEvent(event);
 
-			switch (DOM.eventGetType(rEvent)) {
+			switch (DOM.eventGetType(event)) {
 				case Event.ONPASTE:
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
@@ -291,7 +289,7 @@ public class TextArea extends TextControl {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setVisibleLength(int nColumns) {
+		public void setVisibleLength(int columns) {
 			// ignored for TextArea
 		}
 	}
@@ -307,13 +305,13 @@ public class TextArea extends TextControl {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void handleKeyUp(KeyUpEvent rEvent) {
-			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-				if (rEvent.isControlKeyDown()) {
-					notifyEventHandler(EventType.ACTION, rEvent);
+		protected void handleKeyUp(KeyUpEvent event) {
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+				if (event.isControlKeyDown()) {
+					notifyEventHandler(EventType.ACTION, event);
 				}
 			} else {
-				super.handleKeyUp(rEvent);
+				super.handleKeyUp(event);
 			}
 		}
 	}

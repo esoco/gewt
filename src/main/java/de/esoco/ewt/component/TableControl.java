@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public abstract class TableControl extends Control
 	implements SingleSelection, TitleAttribute {
 
-	private IsTableControlWidget aTable;
+	private IsTableControlWidget table;
 
 	/**
 	 * Overridden to also apply table-specific styles.
@@ -49,14 +49,13 @@ public abstract class TableControl extends Control
 	 * @see Control#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle) {
-		super.applyStyle(rStyle);
+	public void applyStyle(StyleData style) {
+		super.applyStyle(style);
 
-		int nRows =
-			rStyle.getIntProperty(UserInterfaceProperties.TABLE_ROWS, 0);
+		int rows = style.getIntProperty(UserInterfaceProperties.TABLE_ROWS, 0);
 
-		if (nRows > 0) {
-			aTable.setVisibleRowCount(nRows);
+		if (rows > 0) {
+			table.setVisibleRowCount(rows);
 		}
 	}
 
@@ -67,7 +66,7 @@ public abstract class TableControl extends Control
 	 * @return The column data model of this table
 	 */
 	public DataModel<ColumnDefinition> getColumns() {
-		return aTable.getColumns();
+		return table.getColumns();
 	}
 
 	/**
@@ -77,7 +76,7 @@ public abstract class TableControl extends Control
 	 * @return The data model of this table
 	 */
 	public DataModel<?> getData() {
-		return aTable.getData();
+		return table.getData();
 	}
 
 	/**
@@ -87,7 +86,7 @@ public abstract class TableControl extends Control
 	 * @return The currently selected row data model or NULL for none
 	 */
 	public DataModel<?> getSelection() {
-		return aTable.getSelection();
+		return table.getSelection();
 	}
 
 	/**
@@ -103,18 +102,18 @@ public abstract class TableControl extends Control
 	 */
 	@Override
 	public String getTitle() {
-		return aTable.getTableTitle();
+		return table.getTableTitle();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		aTable = (IsTableControlWidget) getWidget();
-		aTable.setEventDispatcher(new GewtEventDispatcherImpl());
+		table = (IsTableControlWidget) getWidget();
+		table.setEventDispatcher(new GewtEventDispatcherImpl());
 	}
 
 	/**
@@ -122,7 +121,7 @@ public abstract class TableControl extends Control
 	 */
 	@Override
 	public boolean isEnabled() {
-		return aTable.isEnabled();
+		return table.isEnabled();
 	}
 
 	/**
@@ -130,17 +129,17 @@ public abstract class TableControl extends Control
 	 */
 	@Override
 	public void repaint() {
-		aTable.repaint();
+		table.repaint();
 	}
 
 	/**
 	 * Sets the table columns. The columns are defined in form of a data model
 	 * that must contain one data element for each table column.
 	 *
-	 * @param rColumnModel The table column data model
+	 * @param columnModel The table column data model
 	 */
-	public void setColumns(DataModel<ColumnDefinition> rColumnModel) {
-		aTable.setColumns(rColumnModel);
+	public void setColumns(DataModel<ColumnDefinition> columnModel) {
+		table.setColumns(columnModel);
 	}
 
 	/**
@@ -149,45 +148,45 @@ public abstract class TableControl extends Control
 	 * interface {@link DataModel} and provide the table cells as their
 	 * elements.
 	 *
-	 * @param rDataModel The data model for this table
+	 * @param dataModel The data model for this table
 	 */
-	public void setData(DataModel<? extends DataModel<?>> rDataModel) {
-		aTable.setData(rDataModel);
+	public void setData(DataModel<? extends DataModel<?>> dataModel) {
+		table.setData(dataModel);
 	}
 
 	/**
 	 * @see Component#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
-		aTable.setEnabled(bEnabled);
+	public void setEnabled(boolean enabled) {
+		table.setEnabled(enabled);
 	}
 
 	/**
 	 * @see SingleSelection#setSelection(int)
 	 */
 	@Override
-	public void setSelection(int nIndex) {
-		setSelection(nIndex, false);
+	public void setSelection(int index) {
+		setSelection(index, false);
 	}
 
 	/**
 	 * Sets the selection of this table and optionally fires the associated
 	 * events.
 	 *
-	 * @param nIndex     The selection index
-	 * @param bFireEvent TRUE to fire a selection event
+	 * @param index     The selection index
+	 * @param fireEvent TRUE to fire a selection event
 	 */
-	public void setSelection(int nIndex, boolean bFireEvent) {
-		aTable.setSelection(nIndex, bFireEvent);
+	public void setSelection(int index, boolean fireEvent) {
+		table.setSelection(index, fireEvent);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTitle(String sTitle) {
-		aTable.setTableTitle(sTitle);
+	public void setTitle(String title) {
+		table.setTableTitle(title);
 	}
 
 	/**
@@ -242,46 +241,46 @@ public abstract class TableControl extends Control
 		/**
 		 * Sets the table columns from a data model of column definitions.
 		 *
-		 * @param rColumnModel The column data model
+		 * @param columnModel The column data model
 		 */
-		public void setColumns(DataModel<ColumnDefinition> rColumnModel);
+		public void setColumns(DataModel<ColumnDefinition> columnModel);
 
 		/**
 		 * Sets the table data to a data model that contains data models for
 		 * each table row.
 		 *
-		 * @param rDataModel The table data model
+		 * @param dataModel The table data model
 		 */
-		public void setData(DataModel<? extends DataModel<?>> rDataModel);
+		public void setData(DataModel<? extends DataModel<?>> dataModel);
 
 		/**
 		 * Sets the event dispatcher to be used to notify event listeners.
 		 *
-		 * @param rEventDispatcher The event dispatcher
+		 * @param eventDispatcher The event dispatcher
 		 */
-		public void setEventDispatcher(GewtEventDispatcher rEventDispatcher);
+		public void setEventDispatcher(GewtEventDispatcher eventDispatcher);
 
 		/**
 		 * Sets the selection and optionally fires a selection event.
 		 *
-		 * @param nIndex     The index of the new selection
-		 * @param bFireEvent TRUE to fire a selection event
+		 * @param index     The index of the new selection
+		 * @param fireEvent TRUE to fire a selection event
 		 */
-		public void setSelection(int nIndex, boolean bFireEvent);
+		public void setSelection(int index, boolean fireEvent);
 
 		/**
 		 * Sets the table title.
 		 *
-		 * @param sTableTitle The new table title
+		 * @param tableTitle The new table title
 		 */
-		public void setTableTitle(String sTableTitle);
+		public void setTableTitle(String tableTitle);
 
 		/**
 		 * Sets the visible row count.
 		 *
-		 * @param nCount The new visible row count
+		 * @param count The new visible row count
 		 */
-		public void setVisibleRowCount(int nCount);
+		public void setVisibleRowCount(int count);
 	}
 
 	/**
@@ -292,24 +291,24 @@ public abstract class TableControl extends Control
 	public static class TableControlWidgetFactory
 		implements WidgetFactory<IsTableControlWidget> {
 
-		private boolean bHierarchical;
+		private boolean hierarchical;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param bHierarchical TRUE for a tree-table
+		 * @param hierarchical TRUE for a tree-table
 		 */
-		public TableControlWidgetFactory(boolean bHierarchical) {
-			this.bHierarchical = bHierarchical;
+		public TableControlWidgetFactory(boolean hierarchical) {
+			this.hierarchical = hierarchical;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public IsTableControlWidget createWidget(Component rComponent,
-			StyleData rStyle) {
-			return new GwtTable(rComponent.getContext(), bHierarchical);
+		public IsTableControlWidget createWidget(Component component,
+			StyleData style) {
+			return new GwtTable(component.getContext(), hierarchical);
 		}
 	}
 
@@ -326,11 +325,11 @@ public abstract class TableControl extends Control
 		 * latter is
 		 * generated directly by {@link GwtTable}.
 		 *
-		 * @param rEvent The click event
+		 * @param event The click event
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_CLICKED, rEvent);
+		public void onClick(ClickEvent event) {
+			notifyEventHandler(EventType.POINTER_CLICKED, event);
 		}
 	}
 }

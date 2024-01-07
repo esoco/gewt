@@ -24,15 +24,15 @@ package de.esoco.ewt.graphics;
  */
 public class Icon implements Image {
 
-	private final String sName;
+	private final String name;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param sIconName rName
+	 * @param iconName rName
 	 */
-	public Icon(String sIconName) {
-		sName = sIconName;
+	public Icon(String iconName) {
+		name = iconName;
 	}
 
 	/**
@@ -41,6 +41,6 @@ public class Icon implements Image {
 	 * @return The icon name
 	 */
 	public final String getName() {
-		return sName;
+		return name;
 	}
 }

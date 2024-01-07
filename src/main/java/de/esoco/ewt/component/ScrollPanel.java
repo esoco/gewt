@@ -49,15 +49,15 @@ public class ScrollPanel extends FixedLayoutPanel {
 	 * @see Component#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle) {
-		com.google.gwt.user.client.ui.ScrollPanel rScrollPanel =
+	public void applyStyle(StyleData style) {
+		com.google.gwt.user.client.ui.ScrollPanel scrollPanel =
 			(com.google.gwt.user.client.ui.ScrollPanel) getWidget();
 
-		super.applyStyle(rStyle);
+		super.applyStyle(style);
 
-		if (rStyle.hasFlag(StyleFlag.SCROLLBAR_HORIZONTAL_ON) ||
-			rStyle.hasFlag(StyleFlag.SCROLLBAR_VERTICAL_ON)) {
-			rScrollPanel.setAlwaysShowScrollBars(true);
+		if (style.hasFlag(StyleFlag.SCROLLBAR_HORIZONTAL_ON) ||
+			style.hasFlag(StyleFlag.SCROLLBAR_VERTICAL_ON)) {
+			scrollPanel.setAlwaysShowScrollBars(true);
 		}
 	}
 
@@ -80,8 +80,8 @@ public class ScrollPanel extends FixedLayoutPanel {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
 			return new CustomScrollPanel();
 		}
 	}
@@ -98,21 +98,21 @@ public class ScrollPanel extends FixedLayoutPanel {
 		 * @see ScrollHandler#onScroll(ScrollEvent)
 		 */
 		@Override
-		public void onScroll(ScrollEvent rEvent) {
-			notifyEventHandler(EventType.VALUE_CHANGED, rEvent);
+		public void onScroll(ScrollEvent event) {
+			notifyEventHandler(EventType.VALUE_CHANGED, event);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			if (eEventType == EventType.VALUE_CHANGED &&
-				rWidget instanceof HasScrollHandlers) {
-				return ((HasScrollHandlers) rWidget).addScrollHandler(this);
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			if (eventType == EventType.VALUE_CHANGED &&
+				widget instanceof HasScrollHandlers) {
+				return ((HasScrollHandlers) widget).addScrollHandler(this);
 			} else {
-				return super.initEventDispatching(rWidget, eEventType);
+				return super.initEventDispatching(widget, eventType);
 			}
 		}
 	}

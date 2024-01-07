@@ -44,23 +44,22 @@ public class SplitPanel extends FixedLayoutPanel {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent The parent container
-	 * @param rStyle  The panel style
+	 * @param parent The parent container
+	 * @param style  The panel style
 	 */
-	public SplitPanel(Container rParent, StyleData rStyle) {
+	public SplitPanel(Container parent, StyleData style) {
 		super(EWT
 			.getLayoutFactory()
-			.createLayout(rParent, rStyle, LayoutType.SPLIT));
+			.createLayout(parent, style, LayoutType.SPLIT));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData) {
-		((SplitPanelLayout) getLayout()).addWidget(rContainer, rWidget,
-			rStyleData);
+	void addWidget(HasWidgets container, Widget widget, StyleData styleData) {
+		((SplitPanelLayout) getLayout()).addWidget(container, widget,
+			styleData);
 	}
 
 	/**
@@ -75,23 +74,22 @@ public class SplitPanel extends FixedLayoutPanel {
 		 *
 		 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
 		 */
-		public void addWidget(HasWidgets rContainer, Widget rWidget,
-			StyleData rStyleData) {
-			SplitLayoutPanel rSplitLayoutPanel = (SplitLayoutPanel) rContainer;
+		public void addWidget(HasWidgets container, Widget widget,
+			StyleData styleData) {
+			SplitLayoutPanel splitLayoutPanel = (SplitLayoutPanel) container;
 
-			Alignment eVerticalAlign = rStyleData.getVerticalAlignment();
+			Alignment verticalAlign = styleData.getVerticalAlignment();
 
-			if (eVerticalAlign == Alignment.BEGIN ||
-				eVerticalAlign == Alignment.END) {
-				rWidget.setHeight("100%");
+			if (verticalAlign == Alignment.BEGIN ||
+				verticalAlign == Alignment.END) {
+				widget.setHeight("100%");
 			} else {
-				rWidget.setWidth("100%");
+				widget.setWidth("100%");
 			}
 
-			if (!DockLayout.addDockLayoutPanelWidget(rWidget,
-				rSplitLayoutPanel,
-				rStyleData, true)) {
-				rSplitLayoutPanel.setWidgetToggleDisplayAllowed(rWidget, true);
+			if (!DockLayout.addDockLayoutPanelWidget(widget, splitLayoutPanel,
+				styleData, true)) {
+				splitLayoutPanel.setWidgetToggleDisplayAllowed(widget, true);
 			}
 		}
 
@@ -99,10 +97,10 @@ public class SplitPanel extends FixedLayoutPanel {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
-			return new SplitLayoutPanel(
-				rStyle.getIntProperty(SPLITTER_SIZE, 5));
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
+			return new SplitLayoutPanel(style.getIntProperty(SPLITTER_SIZE,
+				5));
 		}
 	}
 }

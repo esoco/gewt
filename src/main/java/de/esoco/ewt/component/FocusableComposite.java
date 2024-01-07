@@ -34,10 +34,10 @@ public abstract class FocusableComposite extends Composite {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rLayout The composite layout
+	 * @param layout The composite layout
 	 */
-	protected FocusableComposite(GenericLayout rLayout) {
-		super(rLayout);
+	protected FocusableComposite(GenericLayout layout) {
+		super(layout);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public abstract class FocusableComposite extends Composite {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IsWidget createWidget(StyleData rStyle) {
-		return new FocusPanel((Widget) super.createWidget(rStyle));
+	protected IsWidget createWidget(StyleData style) {
+		return new FocusPanel((Widget) super.createWidget(style));
 	}
 }

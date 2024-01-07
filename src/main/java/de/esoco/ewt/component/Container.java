@@ -36,16 +36,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class Container extends Component {
 
-	private GenericLayout rLayout;
+	private GenericLayout layout;
 
-	private HasWidgets rHasWidgets;
+	private HasWidgets hasWidgets;
 
-	private int nNewComponentPosition = -1;
+	private int newComponentPosition = -1;
 
-	private List<Component> aComponents = new ArrayList<Component>();
+	private List<Component> components = new ArrayList<Component>();
 
-	private List<Component> aImmutableComponentList =
-		Collections.unmodifiableList(aComponents);
+	private List<Component> immutableComponentList =
+		Collections.unmodifiableList(components);
 
 	/**
 	 * Removes all components from this container. Depending on the
@@ -55,42 +55,41 @@ public abstract class Container extends Component {
 	 * from it's container.
 	 */
 	public void clear() {
-		rLayout.clear(rHasWidgets);
-		aComponents.clear();
+		layout.clear(hasWidgets);
+		components.clear();
 	}
 
 	/**
 	 * Recursively searches a child component with a certain style name.
 	 *
-	 * @param sStyle The style name to search
+	 * @param style The style name to search
 	 * @return The first child with the given style name or NULL if none could
 	 * be found in this container's hierarchy
 	 */
-	public Component findChildByStyleName(String sStyle) {
-		Component rResult = null;
+	public Component findChildByStyleName(String style) {
+		Component result = null;
 
-		for (Component rChild : aComponents) {
-			if (rChild.getWidget().getStyleName().contains(sStyle)) {
-				rResult = rChild;
+		for (Component child : components) {
+			if (child.getWidget().getStyleName().contains(style)) {
+				result = child;
 
 				break;
 			}
 		}
 
-		if (rResult == null) {
-			for (Component rChild : aComponents) {
-				if (rChild instanceof Container) {
-					rResult =
-						((Container) rChild).findChildByStyleName(sStyle);
+		if (result == null) {
+			for (Component child : components) {
+				if (child instanceof Container) {
+					result = ((Container) child).findChildByStyleName(style);
 
-					if (rResult != null) {
+					if (result != null) {
 						break;
 					}
 				}
 			}
 		}
 
-		return rResult;
+		return result;
 	}
 
 	/**
@@ -98,19 +97,19 @@ public abstract class Container extends Component {
 	 * work correctly for indexed containers for which the {@link #isIndexed()}
 	 * returns TRUE.
 	 *
-	 * @param rComponent The child component to return the index of
+	 * @param component The child component to return the index of
 	 * @return The component's index or -1 if not found or not supported
 	 */
-	public int getComponentIndex(Component rComponent) {
-		Widget rContainerWidget = getWidget();
-		int nIndex = -1;
+	public int getComponentIndex(Component component) {
+		Widget containerWidget = getWidget();
+		int index = -1;
 
-		if (rContainerWidget instanceof InsertPanel) {
-			nIndex = ((InsertPanel) rContainerWidget).getWidgetIndex(
-				rComponent.getWidget());
+		if (containerWidget instanceof InsertPanel) {
+			index = ((InsertPanel) containerWidget).getWidgetIndex(
+				component.getWidget());
 		}
 
-		return nIndex;
+		return index;
 	}
 
 	/**
@@ -121,7 +120,7 @@ public abstract class Container extends Component {
 	 * @return The list of components
 	 */
 	public final List<Component> getComponents() {
-		return aImmutableComponentList;
+		return immutableComponentList;
 	}
 
 	/**
@@ -131,7 +130,7 @@ public abstract class Container extends Component {
 	 * @return The layout of the container
 	 */
 	public GenericLayout getLayout() {
-		return rLayout;
+		return layout;
 	}
 
 	/**
@@ -144,7 +143,7 @@ public abstract class Container extends Component {
 	 * @see #setNewComponentPosition(int)
 	 */
 	public int getNewComponentPosition() {
-		return nNewComponentPosition;
+		return newComponentPosition;
 	}
 
 	/**
@@ -152,18 +151,18 @@ public abstract class Container extends Component {
 	 * code should never invoke this method but use a {@link ContainerBuilder}
 	 * instance instead. The container builder will then invoke this method.
 	 *
-	 * @param rComponent The component to add
-	 * @param rStyleData The style data for the component
+	 * @param component The component to add
+	 * @param styleData The style data for the component
 	 */
-	public final void internalAddComponent(Component rComponent,
-		StyleData rStyleData) {
-		addWidget(rHasWidgets, rComponent.getWidget(), rStyleData);
-		rComponent.applyStyle(rStyleData);
+	public final void internalAddComponent(Component component,
+		StyleData styleData) {
+		addWidget(hasWidgets, component.getWidget(), styleData);
+		component.applyStyle(styleData);
 
-		if (nNewComponentPosition >= 0) {
-			aComponents.add(nNewComponentPosition, rComponent);
+		if (newComponentPosition >= 0) {
+			components.add(newComponentPosition, component);
 		} else {
-			aComponents.add(rComponent);
+			components.add(component);
 		}
 	}
 
@@ -182,11 +181,11 @@ public abstract class Container extends Component {
 	 * no methods should be invoked on a component after it has been removed
 	 * from it's container.
 	 *
-	 * @param rComponent The component to remove
+	 * @param component The component to remove
 	 */
-	public void removeComponent(Component rComponent) {
-		rLayout.removeWidget(rHasWidgets, rComponent.getWidget());
-		aComponents.remove(rComponent);
+	public void removeComponent(Component component) {
+		layout.removeWidget(hasWidgets, component.getWidget());
+		components.remove(component);
 	}
 
 	/**
@@ -194,14 +193,14 @@ public abstract class Container extends Component {
 	 * recursively,
 	 * i.e. the method will be invoked on all child containers.
 	 *
-	 * @param bEnable The new enabled state
+	 * @param enable The new enabled state
 	 */
-	public void setChildrenEnabled(boolean bEnable) {
-		for (Component rChild : aComponents) {
-			rChild.setEnabled(bEnable);
+	public void setChildrenEnabled(boolean enable) {
+		for (Component child : components) {
+			child.setEnabled(enable);
 
-			if (rChild instanceof Container) {
-				((Container) rChild).setChildrenEnabled(bEnable);
+			if (child instanceof Container) {
+				((Container) child).setChildrenEnabled(enable);
 			}
 		}
 	}
@@ -210,10 +209,10 @@ public abstract class Container extends Component {
 	 * Sets the layout to be used by the container to arrange and size it's
 	 * components.
 	 *
-	 * @param rLayout The layout to use
+	 * @param layout The layout to use
 	 */
-	public void setLayout(GenericLayout rLayout) {
-		this.rLayout = EWT.getLayoutMapper().mapLayout(this, rLayout);
+	public void setLayout(GenericLayout layout) {
+		this.layout = EWT.getLayoutMapper().mapLayout(this, layout);
 	}
 
 	/**
@@ -224,11 +223,11 @@ public abstract class Container extends Component {
 	 * position is changed. This method will only work correctly for indexed
 	 * containers for which the method {@link #isIndexed()} returns TRUE.
 	 *
-	 * @param nPosition The position index for new components or -1 to add new
-	 *                  components as the last child of the container
+	 * @param position The position index for new components or -1 to add new
+	 *                 components as the last child of the container
 	 */
-	public void setNewComponentPosition(int nPosition) {
-		nNewComponentPosition = nPosition;
+	public void setNewComponentPosition(int position) {
+		newComponentPosition = position;
 	}
 
 	/**
@@ -239,10 +238,10 @@ public abstract class Container extends Component {
 	 * @see Component#createWidget(StyleData)
 	 */
 	@Override
-	protected IsWidget createWidget(StyleData rStyle) {
-		rHasWidgets = rLayout.createLayoutContainer(this, rStyle);
+	protected IsWidget createWidget(StyleData style) {
+		hasWidgets = layout.createLayoutContainer(this, style);
 
-		return (IsWidget) rHasWidgets;
+		return (IsWidget) hasWidgets;
 	}
 
 	/**
@@ -251,7 +250,7 @@ public abstract class Container extends Component {
 	 * @return The container widget
 	 */
 	protected final HasWidgets getContainerWidget() {
-		return rHasWidgets;
+		return hasWidgets;
 	}
 
 	/**
@@ -264,15 +263,13 @@ public abstract class Container extends Component {
 	 * if no layout has been set, invokes the method
 	 * {@link HasWidgets#add(Widget)} of the widget container.
 	 *
-	 * @param rContainer The container to add the widget to
-	 * @param rWidget    The widget to add
-	 * @param rStyleData The style data defining the layout position of the
-	 *                   widget
+	 * @param container The container to add the widget to
+	 * @param widget    The widget to add
+	 * @param styleData The style data defining the layout position of the
+	 *                  widget
 	 */
-	void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData) {
-		rLayout.addWidget(rContainer, rWidget, rStyleData,
-			nNewComponentPosition);
+	void addWidget(HasWidgets container, Widget widget, StyleData styleData) {
+		layout.addWidget(container, widget, styleData, newComponentPosition);
 	}
 
 	/**
@@ -281,18 +278,18 @@ public abstract class Container extends Component {
 	 * @see Component#setWidget(IsWidget)
 	 */
 	@Override
-	void setWidget(IsWidget rIsWidget) {
-		Widget rContainerWidget = rIsWidget.asWidget();
+	void setWidget(IsWidget isWidget) {
+		Widget containerWidget = isWidget.asWidget();
 
-		assert rContainerWidget instanceof HasWidgets :
+		assert containerWidget instanceof HasWidgets :
 			"Container widget must implement HasWidgets";
 
-		super.setWidget(rIsWidget);
+		super.setWidget(isWidget);
 
-		rHasWidgets = (HasWidgets) rContainerWidget;
+		hasWidgets = (HasWidgets) containerWidget;
 
-		if (rLayout == null) {
-			rLayout = new ImplicitLayout();
+		if (layout == null) {
+			layout = new ImplicitLayout();
 		}
 	}
 
@@ -308,9 +305,9 @@ public abstract class Container extends Component {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rContainerStyle) {
-			return rHasWidgets;
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData containerStyle) {
+			return hasWidgets;
 		}
 	}
 }

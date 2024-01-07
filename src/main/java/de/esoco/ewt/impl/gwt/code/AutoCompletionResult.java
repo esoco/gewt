@@ -36,9 +36,9 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 	private static final AutoCompletionResult EMPTY_RESULT =
 		new AutoCompletionResult();
 
-	private List<AutoCompletionChoice> rChoices;
+	private List<AutoCompletionChoice> choices;
 
-	private EditorPosition rFromPosition;
+	private EditorPosition fromPosition;
 
 	/**
 	 * Creates a new instance.
@@ -50,13 +50,13 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rChoices      TODO: DOCUMENT ME!
-	 * @param rFromPosition TODO: DOCUMENT ME!
+	 * @param choices      TODO: DOCUMENT ME!
+	 * @param fromPosition TODO: DOCUMENT ME!
 	 */
-	public AutoCompletionResult(List<AutoCompletionChoice> rChoices,
-		EditorPosition rFromPosition) {
-		this.rChoices = new ArrayList<AutoCompletionChoice>(rChoices);
-		this.rFromPosition = rFromPosition;
+	public AutoCompletionResult(List<AutoCompletionChoice> choices,
+		EditorPosition fromPosition) {
+		this.choices = new ArrayList<AutoCompletionChoice>(choices);
+		this.fromPosition = fromPosition;
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 
 		AutoCompletionResult other = (AutoCompletionResult) o;
 
-		return this.rFromPosition.equals(other.rFromPosition) &&
-			this.rChoices.equals(other.rChoices);
+		return this.fromPosition.equals(other.fromPosition) &&
+			this.choices.equals(other.choices);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 	 * @return The choices
 	 */
 	public List<AutoCompletionChoice> getChoices() {
-		return new ArrayList<AutoCompletionChoice>(rChoices);
+		return new ArrayList<AutoCompletionChoice>(choices);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 	 * @return The from position
 	 */
 	public EditorPosition getFromPosition() {
-		return rFromPosition;
+		return fromPosition;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class AutoCompletionResult implements Serializable, IsSerializable {
 	 */
 	@Override
 	public int hashCode() {
-		return "AutoCompletionResult".hashCode() + rChoices.hashCode() +
-			rFromPosition.hashCode();
+		return "AutoCompletionResult".hashCode() + choices.hashCode() +
+			fromPosition.hashCode();
 	}
 }

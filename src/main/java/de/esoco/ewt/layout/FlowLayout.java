@@ -31,60 +31,60 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class FlowLayout extends GenericLayout {
 
-	private final Boolean bHorizontal;
+	private final Boolean horizontal;
 
-	private String sLayoutStyleName = null;
+	private String layoutStyleName = null;
 
 	/**
 	 * Creates a new instance that is based on a GWT {@link FlowPanel}.
 	 */
 	public FlowLayout() {
-		bHorizontal = null;
+		horizontal = null;
 	}
 
 	/**
 	 * Creates a new instance with an additional layout style name.
 	 *
-	 * @param sStyleName The additional style name
+	 * @param styleName The additional style name
 	 */
-	public FlowLayout(String sStyleName) {
+	public FlowLayout(String styleName) {
 		this();
 
-		sLayoutStyleName = sStyleName;
+		layoutStyleName = styleName;
 	}
 
 	/**
 	 * Creates a new instance that is based on a GWT {@link HorizontalPanel} or
 	 * a {@link VerticalPanel}.
 	 *
-	 * @param bHorizontal TRUE for horizontal, FALSE for vertical orientation
+	 * @param horizontal TRUE for horizontal, FALSE for vertical orientation
 	 */
-	public FlowLayout(boolean bHorizontal) {
-		this.bHorizontal = Boolean.valueOf(bHorizontal);
+	public FlowLayout(boolean horizontal) {
+		this.horizontal = Boolean.valueOf(horizontal);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		Panel aPanel;
+	public Panel createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		Panel panel;
 
-		if (bHorizontal == null) {
-			aPanel = new FlowPanel();
-		} else if (bHorizontal == Boolean.TRUE) {
-			aPanel = new HorizontalPanel();
+		if (horizontal == null) {
+			panel = new FlowPanel();
+		} else if (horizontal == Boolean.TRUE) {
+			panel = new HorizontalPanel();
 		} else {
-			aPanel = new VerticalPanel();
+			panel = new VerticalPanel();
 		}
 
-		aPanel.addStyleName("ewt-FlowLayout");
+		panel.addStyleName("ewt-FlowLayout");
 
-		if (sLayoutStyleName != null) {
-			aPanel.addStyleName(sLayoutStyleName);
+		if (layoutStyleName != null) {
+			panel.addStyleName(layoutStyleName);
 		}
 
-		return aPanel;
+		return panel;
 	}
 }

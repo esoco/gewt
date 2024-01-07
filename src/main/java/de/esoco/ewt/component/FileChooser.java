@@ -42,15 +42,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FileChooser extends Control implements TextAttribute {
 
-	private String sAction;
+	private String action;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param sAction The action to be performed when a file is selected
+	 * @param action The action to be performed when a file is selected
 	 */
-	public FileChooser(String sAction) {
-		this.sAction = sAction;
+	public FileChooser(String action) {
+		this.action = action;
 	}
 
 	/**
@@ -75,18 +75,18 @@ public class FileChooser extends Control implements TextAttribute {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		getGwtFileChooser().setAction(sAction);
+		getGwtFileChooser().setAction(action);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setText(String sText) {
-		getGwtFileChooser().setText(getContext().expandResource(sText));
+	public void setText(String text) {
+		getGwtFileChooser().setText(getContext().expandResource(text));
 	}
 
 	/**
@@ -118,8 +118,8 @@ public class FileChooser extends Control implements TextAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GwtFileChooser createWidget(Component rComponent,
-			StyleData rStyle) {
+		public GwtFileChooser createWidget(Component component,
+			StyleData style) {
 			return new GwtFileChooser();
 		}
 	}
@@ -138,7 +138,7 @@ public class FileChooser extends Control implements TextAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onSubmitComplete(SubmitCompleteEvent rEvent) {
+		public void onSubmitComplete(SubmitCompleteEvent event) {
 			notifyEventHandler(EventType.ACTION);
 		}
 
@@ -146,15 +146,15 @@ public class FileChooser extends Control implements TextAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			if (eEventType == EventType.ACTION &&
-				rWidget instanceof GwtFileChooser) {
-				return ((GwtFileChooser) rWidget)
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			if (eventType == EventType.ACTION &&
+				widget instanceof GwtFileChooser) {
+				return ((GwtFileChooser) widget)
 					.getFormPanel()
 					.addSubmitCompleteHandler(this);
 			} else {
-				return super.initEventDispatching(rWidget, eEventType);
+				return super.initEventDispatching(widget, eventType);
 			}
 		}
 	}

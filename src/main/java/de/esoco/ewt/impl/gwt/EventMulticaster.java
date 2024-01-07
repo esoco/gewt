@@ -28,19 +28,19 @@ import de.esoco.ewt.event.EwtEventHandler;
  */
 public class EventMulticaster implements EwtEventHandler {
 
-	private EwtEventHandler rFirst;
+	private EwtEventHandler first;
 
-	private EwtEventHandler rSecond;
+	private EwtEventHandler second;
 
 	/**
 	 * Creates a new instance that wraps two event listeners.
 	 *
-	 * @param rFirst  The first listener of this multicaster
-	 * @param rSecond The second listener of this multicaster
+	 * @param first  The first listener of this multicaster
+	 * @param second The second listener of this multicaster
 	 */
-	public EventMulticaster(EwtEventHandler rFirst, EwtEventHandler rSecond) {
-		this.rFirst = rFirst;
-		this.rSecond = rSecond;
+	public EventMulticaster(EwtEventHandler first, EwtEventHandler second) {
+		this.first = first;
+		this.second = second;
 	}
 
 	/**
@@ -48,21 +48,21 @@ public class EventMulticaster implements EwtEventHandler {
 	 * multicaster instances, thus building a tree of multicaster instances and
 	 * listeners.
 	 *
-	 * @param rFirst  The first listener to concatenate (may be NULL)
-	 * @param rSecond The second listener to concatenate (may be NULL)
+	 * @param first  The first listener to concatenate (may be NULL)
+	 * @param second The second listener to concatenate (may be NULL)
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	public static EwtEventHandler add(EwtEventHandler rFirst,
-		EwtEventHandler rSecond) {
-		if (rFirst == null) {
-			return rSecond;
+	public static EwtEventHandler add(EwtEventHandler first,
+		EwtEventHandler second) {
+		if (first == null) {
+			return second;
 		}
 
-		if (rSecond == null) {
-			return rFirst;
+		if (second == null) {
+			return first;
 		}
 
-		return new EventMulticaster(rFirst, rSecond);
+		return new EventMulticaster(first, second);
 	}
 
 	/**
@@ -70,18 +70,18 @@ public class EventMulticaster implements EwtEventHandler {
 	 * instances. If the given listener isn't part of the tree the call will
 	 * have no effect.
 	 *
-	 * @param rListener The listener (tree) to remove the other listener from
-	 * @param rToRemove The listener to remove (NULL will be ignored)
+	 * @param listener The listener (tree) to remove the other listener from
+	 * @param toRemove The listener to remove (NULL will be ignored)
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	public static EwtEventHandler remove(EwtEventHandler rListener,
-		EwtEventHandler rToRemove) {
-		if (rListener == rToRemove || rListener == null) {
+	public static EwtEventHandler remove(EwtEventHandler listener,
+		EwtEventHandler toRemove) {
+		if (listener == toRemove || listener == null) {
 			return null;
-		} else if (rListener instanceof EventMulticaster) {
-			return ((EventMulticaster) rListener).remove(rToRemove);
+		} else if (listener instanceof EventMulticaster) {
+			return ((EventMulticaster) listener).remove(toRemove);
 		} else {
-			return rListener;
+			return listener;
 		}
 	}
 
@@ -89,9 +89,9 @@ public class EventMulticaster implements EwtEventHandler {
 	 * @see EwtEventHandler#handleEvent(EwtEvent)
 	 */
 	@Override
-	public void handleEvent(EwtEvent rEvent) {
-		rFirst.handleEvent(rEvent);
-		rSecond.handleEvent(rEvent);
+	public void handleEvent(EwtEvent event) {
+		first.handleEvent(event);
+		second.handleEvent(event);
 	}
 
 	/**
@@ -99,23 +99,23 @@ public class EventMulticaster implements EwtEventHandler {
 	 * (sub)tree and returns the resulting event listener (which may be a
 	 * multicaster).
 	 *
-	 * @param rToRemove The listener to remove
+	 * @param toRemove The listener to remove
 	 * @return The resulting event listener which may be a multicaster instance
 	 */
-	protected EwtEventHandler remove(EwtEventHandler rToRemove) {
-		if (rFirst == rToRemove) {
-			return rSecond;
+	protected EwtEventHandler remove(EwtEventHandler toRemove) {
+		if (first == toRemove) {
+			return second;
 		}
 
-		if (rSecond == rToRemove) {
-			return rFirst;
+		if (second == toRemove) {
+			return first;
 		}
 
-		EwtEventHandler rRemoveFirst = remove(rFirst, rToRemove);
-		EwtEventHandler rRemoveSecond = remove(rSecond, rToRemove);
+		EwtEventHandler removeFirst = remove(first, toRemove);
+		EwtEventHandler removeSecond = remove(second, toRemove);
 
-		if (rRemoveFirst != rFirst || rRemoveSecond != rSecond) {
-			return add(rRemoveFirst, rRemoveSecond);
+		if (removeFirst != first || removeSecond != second) {
+			return add(removeFirst, removeSecond);
 		}
 
 		return this;

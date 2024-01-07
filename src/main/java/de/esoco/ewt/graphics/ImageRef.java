@@ -30,9 +30,9 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public class ImageRef implements Image {
 
-	private Object rImageDefinition;
+	private Object imageDefinition;
 
-	private com.google.gwt.user.client.ui.Image rGwtImage;
+	private com.google.gwt.user.client.ui.Image gwtImage;
 
 	/**
 	 * Creates a new instance from an arbitrary image object. The supported
@@ -40,23 +40,23 @@ public class ImageRef implements Image {
 	 * the GEWT-specific types {@link com.google.gwt.user.client.ui.Image} or
 	 * {@link ImageResource}.
 	 *
-	 * @param rImageDefinition The image object
+	 * @param imageDefinition The image object
 	 * @throws IllegalArgumentException If the argument type is not supported
 	 */
-	public ImageRef(Object rImageDefinition) {
-		this.rImageDefinition = rImageDefinition;
+	public ImageRef(Object imageDefinition) {
+		this.imageDefinition = imageDefinition;
 
-		if (rImageDefinition instanceof ImageResource) {
-			rGwtImage = new com.google.gwt.user.client.ui.Image(
-				(ImageResource) rImageDefinition);
-		} else if (rImageDefinition instanceof com.google.gwt.user.client.ui.Image) {
-			rGwtImage = (com.google.gwt.user.client.ui.Image) rImageDefinition;
-		} else if (rImageDefinition instanceof String) {
-			rGwtImage = new com.google.gwt.user.client.ui.Image(
-				(String) rImageDefinition);
+		if (imageDefinition instanceof ImageResource) {
+			gwtImage = new com.google.gwt.user.client.ui.Image(
+				(ImageResource) imageDefinition);
+		} else if (imageDefinition instanceof com.google.gwt.user.client.ui.Image) {
+			gwtImage = (com.google.gwt.user.client.ui.Image) imageDefinition;
+		} else if (imageDefinition instanceof String) {
+			gwtImage = new com.google.gwt.user.client.ui.Image(
+				(String) imageDefinition);
 		} else {
 			throw new IllegalArgumentException(
-				"Invalid image parameter: " + rImageDefinition);
+				"Invalid image parameter: " + imageDefinition);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ImageRef implements Image {
 	 * @return The GWT image
 	 */
 	public com.google.gwt.user.client.ui.Image getGwtImage() {
-		return rGwtImage;
+		return gwtImage;
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class ImageRef implements Image {
 	 * @return The height in pixels
 	 */
 	public int getHeight() {
-		return rGwtImage.getHeight();
+		return gwtImage.getHeight();
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class ImageRef implements Image {
 	 * @return The image definition value
 	 */
 	public Object getImageDefinition() {
-		return rImageDefinition;
+		return imageDefinition;
 	}
 
 	/**
@@ -93,6 +93,6 @@ public class ImageRef implements Image {
 	 * @return The width in pixels
 	 */
 	public int getWidth() {
-		return rGwtImage.getWidth();
+		return gwtImage.getWidth();
 	}
 }

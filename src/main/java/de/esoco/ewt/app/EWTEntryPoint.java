@@ -45,17 +45,17 @@ public abstract class EWTEntryPoint implements EntryPoint {
 	public void onModuleLoad() {
 		EWT.CSS.ensureInjected();
 
-		EWTModule rModule = getApplicationModule();
+		EWTModule module = getApplicationModule();
 
-		GwtResource aResource =
+		GwtResource resource =
 			new GwtResource(getStringResources(), getImageResources());
 
-		UserInterfaceContext rContext =
-			EWT.createUserInterfaceContext(aResource);
+		UserInterfaceContext context =
+			EWT.createUserInterfaceContext(resource);
 
-		View rModuleView = rModule.createModuleView(rContext);
+		View moduleView = module.createModuleView(context);
 
-		rModule.showModuleView(rContext, rModuleView);
+		module.showModuleView(context, moduleView);
 	}
 
 	/**

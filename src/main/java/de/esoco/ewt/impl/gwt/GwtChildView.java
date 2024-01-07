@@ -31,8 +31,8 @@ public class GwtChildView extends DialogBox implements IsChildViewWidget {
 	/**
 	 * @see DecoratedPopupPanel#DecoratedPopupPanel(boolean, boolean)
 	 */
-	public GwtChildView(boolean bAutoHide, boolean bModal) {
-		super(bAutoHide, bModal);
+	public GwtChildView(boolean autoHide, boolean modal) {
+		super(autoHide, modal);
 	}
 
 	/**
@@ -47,9 +47,9 @@ public class GwtChildView extends DialogBox implements IsChildViewWidget {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setViewTitle(String sTitle) {
-		getCaption().asWidget().setVisible(sTitle != null);
+	public void setViewTitle(String title) {
+		getCaption().asWidget().setVisible(title != null);
 
-		setText(sTitle != null ? sTitle : "");
+		setText(title != null ? title : "");
 	}
 }

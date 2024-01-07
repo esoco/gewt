@@ -31,13 +31,13 @@ public class DialogView extends ChildView {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent rContext The parent view
-	 * @param rStyle  The style of the dialog
+	 * @param parent rContext The parent view
+	 * @param style  The style of the dialog
 	 */
-	public DialogView(View rParent, ViewStyle rStyle) {
-		super(rParent,
-			EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
-			rStyle);
+	public DialogView(View parent, ViewStyle style) {
+		super(parent,
+			EWT.getChildViewFactory().createChildViewWidget(parent, style),
+			style);
 
 		getWidget().addStyleName(EWT.CSS.ewtDialogView());
 	}
@@ -45,26 +45,26 @@ public class DialogView extends ChildView {
 	/**
 	 * Sets the dialog title.
 	 *
-	 * @param sTitle The new title
+	 * @param title The new title
 	 */
 	@Override
-	public void setTitle(String sTitle) {
-		getChildViewWidget().setViewTitle(getContext().expandResource(sTitle));
+	public void setTitle(String title) {
+		getChildViewWidget().setViewTitle(getContext().expandResource(title));
 	}
 
 	/**
 	 * @see Component#setVisible(boolean)
 	 */
 	@Override
-	public void setVisible(boolean bVisible) {
-		if (bVisible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL)) {
-			IsChildViewWidget rPanel = getChildViewWidget();
+	public void setVisible(boolean visible) {
+		if (visible && getViewStyle().hasFlag(ViewStyle.Flag.MODAL)) {
+			IsChildViewWidget panel = getChildViewWidget();
 
-			if (rPanel instanceof PopupPanel) {
-				((PopupPanel) rPanel).setGlassEnabled(true);
+			if (panel instanceof PopupPanel) {
+				((PopupPanel) panel).setGlassEnabled(true);
 			}
 		}
 
-		super.setVisible(bVisible);
+		super.setVisible(visible);
 	}
 }

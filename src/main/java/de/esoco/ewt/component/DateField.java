@@ -46,13 +46,13 @@ public class DateField extends TextControl implements DateAttribute {
 	 */
 	@Override
 	public Date getDate() {
-		Date rDate = null;
+		Date date = null;
 
 		if (getDateWidget().getTextBox().getText().length() > 0) {
-			rDate = getDateWidget().getDatePicker().getValue();
+			date = getDateWidget().getDatePicker().getValue();
 		}
 
-		return rDate;
+		return date;
 	}
 
 	/**
@@ -87,51 +87,51 @@ public class DateField extends TextControl implements DateAttribute {
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns) {
-		getDateWidget().getTextBox().setVisibleLength(nColumns);
+	public void setColumns(int columns) {
+		getDateWidget().getTextBox().setVisibleLength(columns);
 	}
 
 	/**
 	 * Sets the date value of this component.
 	 *
-	 * @param rDate The new date value or NULL for an empty edit field
+	 * @param date The new date value or NULL for an empty edit field
 	 */
 	@Override
-	public void setDate(Date rDate) {
-		if (rDate == null) {
+	public void setDate(Date date) {
+		if (date == null) {
 			getDateWidget().getTextBox().setText("");
 		} else {
-			getDateWidget().setValue(rDate);
+			getDateWidget().setValue(date);
 		}
 	}
 
 	/**
 	 * Sets the editable state of this component.
 	 *
-	 * @param bEditable TRUE to make the component editable, FALSE to make it
-	 *                  readonly
+	 * @param editable TRUE to make the component editable, FALSE to make it
+	 *                 readonly
 	 */
 	@Override
-	public void setEditable(boolean bEditable) {
-		getDateWidget().getTextBox().setReadOnly(!bEditable);
+	public void setEditable(boolean editable) {
+		getDateWidget().getTextBox().setReadOnly(!editable);
 	}
 
 	/**
 	 * @see TextControl#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
-		getDateWidget().setEnabled(bEnabled);
+	public void setEnabled(boolean enabled) {
+		getDateWidget().setEnabled(enabled);
 	}
 
 	/**
 	 * Sets the month to be displayed by the date picker of this instance.
 	 *
-	 * @param rDate A date of the new month to be displayed
+	 * @param date A date of the new month to be displayed
 	 */
-	public void setMonth(Date rDate) {
-		if (rDate != null) {
-			getDateWidget().getDatePicker().setCurrentMonth(rDate);
+	public void setMonth(Date date) {
+		if (date != null) {
+			getDateWidget().getDatePicker().setCurrentMonth(date);
 		}
 	}
 
@@ -166,9 +166,9 @@ public class DateField extends TextControl implements DateAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public DateBox createWidget(Component rComponent, StyleData rStyle) {
-			return new DateFieldWidget(rComponent.getContext(),
-				rStyle.hasFlag(StyleFlag.DATE_TIME));
+		public DateBox createWidget(Component component, StyleData style) {
+			return new DateFieldWidget(component.getContext(),
+				style.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}
 
@@ -183,15 +183,16 @@ public class DateField extends TextControl implements DateAttribute {
 		/**
 		 * Creates a new instance
 		 *
-		 * @param rContext  The user interface context
-		 * @param bDateTime TRUE to pick date and time, FALSE for date only
+		 * @param context  The user interface context
+		 * @param dateTime TRUE to pick date and time, FALSE for date only
 		 */
-		public DateFieldWidget(UserInterfaceContext rContext,
-			boolean bDateTime) {
-			super(new GwtDatePicker(rContext, bDateTime), null,
-				new DefaultFormat(DateTimeFormat.getFormat(bDateTime ?
-				                                           PredefinedFormat.DATE_TIME_MEDIUM :
-				                                           PredefinedFormat.DATE_MEDIUM)));
+		public DateFieldWidget(UserInterfaceContext context,
+			boolean dateTime) {
+			super(new GwtDatePicker(context, dateTime), null,
+				new DefaultFormat(
+				DateTimeFormat.getFormat(dateTime ?
+				                         PredefinedFormat.DATE_TIME_MEDIUM :
+				                         PredefinedFormat.DATE_MEDIUM)));
 
 			((GwtDatePicker) getDatePicker()).setDateBox(this);
 		}

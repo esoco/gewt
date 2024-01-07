@@ -73,7 +73,7 @@ public class WebSocket extends EventTarget {
 	 * .org/en-US/docs/Web/API/WebSocket/WebSocket"> WebSocket(url)</a>
 	 */
 	@JsConstructor
-	public WebSocket(String sUrl) {
+	public WebSocket(String url) {
 	}
 
 	/**
@@ -111,11 +111,11 @@ public class WebSocket extends EventTarget {
 	/**
 	 * Adds an event handler for web socket messages.
 	 *
-	 * @param fHandler The event handling consumer
+	 * @param handler The event handling consumer
 	 */
 	@JsOverlay
-	public final void onMessage(JsConsumer<MessageEvent> fHandler) {
-		addEventListener(Type.MESSAGE, e -> fHandler.accept((MessageEvent) e));
+	public final void onMessage(JsConsumer<MessageEvent> handler) {
+		addEventListener(Type.MESSAGE, e -> handler.accept((MessageEvent) e));
 	}
 
 	/**

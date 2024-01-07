@@ -17,6 +17,7 @@
 package de.esoco.ewt.style;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 
 /**
@@ -71,58 +72,56 @@ public class ViewStyle {
 	public static final ViewStyle MODAL_AUTO_HIDE =
 		new ViewStyle(Flag.MODAL, Flag.AUTO_HIDE);
 
-	private EnumSet<Flag> aFlags = EnumSet.noneOf(Flag.class);
+	private final EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
 
 	/**
 	 * Internal constructor that creates an instance which contains certain
 	 * flags.
 	 *
-	 * @param rFlags The flags the new instance shall contain
+	 * @param flags The flags the new instance shall contain
 	 */
-	private ViewStyle(Flag... rFlags) {
-		if (rFlags != null) {
-			for (Flag rFlag : rFlags) {
-				aFlags.add(rFlag);
-			}
+	private ViewStyle(Flag... flags) {
+		if (flags != null) {
+			Collections.addAll(this.flags, flags);
 		}
 	}
 
 	/**
 	 * Checks if a certain style flag is set in this instance.
 	 *
-	 * @param rFlag The flag to check
+	 * @param flag The flag to check
 	 * @return TRUE if the flag is set
 	 */
-	public boolean hasFlag(Flag rFlag) {
-		return aFlags.contains(rFlag);
+	public boolean hasFlag(Flag flag) {
+		return flags.contains(flag);
 	}
 
 	/**
 	 * Creates a copy of this instance that has additional flags set.
 	 *
-	 * @param rAdditionalFlags The additional flags to set
+	 * @param additionalFlags The additional flags to set
 	 * @return The new instance
 	 */
-	public ViewStyle withFlags(Flag... rAdditionalFlags) {
-		ViewStyle aViewStyle = new ViewStyle(rAdditionalFlags);
+	public ViewStyle withFlags(Flag... additionalFlags) {
+		ViewStyle viewStyle = new ViewStyle(additionalFlags);
 
-		aViewStyle.aFlags.addAll(aFlags);
+		viewStyle.flags.addAll(flags);
 
-		return aViewStyle;
+		return viewStyle;
 	}
 
 	/**
 	 * Creates a copy of this instance that has additional flags set.
 	 *
-	 * @param rAdditionalFlags The additional flags to set
+	 * @param additionalFlags The additional flags to set
 	 * @return The new instance
 	 */
-	public ViewStyle withFlags(Collection<Flag> rAdditionalFlags) {
-		ViewStyle aViewStyle = new ViewStyle();
+	public ViewStyle withFlags(Collection<Flag> additionalFlags) {
+		ViewStyle viewStyle = new ViewStyle();
 
-		aViewStyle.aFlags.addAll(aFlags);
-		aViewStyle.aFlags.addAll(rAdditionalFlags);
+		viewStyle.flags.addAll(flags);
+		viewStyle.flags.addAll(additionalFlags);
 
-		return aViewStyle;
+		return viewStyle;
 	}
 }

@@ -16,32 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.event.EwtEvent;
-import de.esoco.ewt.event.EwtEventHandler;
-import de.esoco.ewt.graphics.Image;
-import de.esoco.ewt.graphics.ImageRef;
-import de.esoco.ewt.impl.gwt.EventMulticaster;
-import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
-import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.impl.gwt.WidgetStyleHandler;
-import de.esoco.ewt.property.ImageAttribute;
-import de.esoco.ewt.style.AlignedPosition;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.ActiveState;
-import de.esoco.lib.property.Alignment;
-import de.esoco.lib.property.Color;
-import de.esoco.lib.property.HasId;
-import de.esoco.lib.property.TextAttribute;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
@@ -98,6 +72,30 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.event.EwtEvent;
+import de.esoco.ewt.event.EwtEventHandler;
+import de.esoco.ewt.graphics.Image;
+import de.esoco.ewt.graphics.ImageRef;
+import de.esoco.ewt.impl.gwt.EventMulticaster;
+import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.impl.gwt.WidgetStyleHandler;
+import de.esoco.ewt.property.ImageAttribute;
+import de.esoco.ewt.style.AlignedPosition;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.lib.property.ActiveState;
+import de.esoco.lib.property.Alignment;
+import de.esoco.lib.property.Color;
+import de.esoco.lib.property.HasId;
+import de.esoco.lib.property.TextAttribute;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 import static de.esoco.lib.property.ContentProperties.ELEMENT_ID;
 import static de.esoco.lib.property.StateProperties.ACTION_EVENT_ON_ACTIVATION_ONLY;
@@ -118,49 +116,50 @@ public abstract class Component implements HasId<String> {
 	private static final String PROPERTY_PREFIX_CHARS =
 		"~#" + COMPOUND_PROPERTY_CHARS;
 
-	private static int nNextId = 1;
+	private static int nextId = 1;
 
-	private static WidgetStyleHandler rWidgetStyleHandler = null;
+	private static WidgetStyleHandler widgetStyleHandler = null;
 
-	private static BiConsumer<Component, String> fApplyComponentErrorState =
+	private static BiConsumer<Component, String> applyComponentErrorState =
 		Component::applyComponentErrorState;
 
-	private Container rParent;
+	private Container parent;
 
-	private StyleData rStyle;
+	private StyleData style;
 
-	private IsWidget rIsWidget;
+	private IsWidget isWidget;
 
-	private UserInterfaceContext rContext;
+	private UserInterfaceContext context;
 
-	private String sId = null;
+	private String id = null;
 
-	private String sToolTip = "";
+	private String toolTip = "";
 
-	private ComponentEventDispatcher aEventDispatcher;
+	private ComponentEventDispatcher eventDispatcher;
 
-	private String[] rAdditionalStyles;
+	private String[] additionalStyles;
 
 	/**
 	 * The default implementation to set or remove the error state for a
 	 * certain
 	 * widget.
 	 *
-	 * @param rComponent rWidget The widget to change the error state of
-	 * @param sMessage   The error message to display or NULL to remove the
-	 *                   error state
+	 * @param component rWidget The widget to change the error state of
+	 * @param message   The error message to display or NULL to remove the
+	 *                     error
+	 *                  state
 	 */
-	public static void applyComponentErrorState(Component rComponent,
-		String sMessage) {
-		UserInterfaceContext rContext = rComponent.getContext();
-		Widget rWidget = rComponent.getWidget();
+	public static void applyComponentErrorState(Component component,
+		String message) {
+		UserInterfaceContext context = component.getContext();
+		Widget widget = component.getWidget();
 
-		if (sMessage != null) {
-			rComponent.addStyleName(EWT.CSS.ewtError());
-			rWidget.setTitle(rContext.expandResource(sMessage));
+		if (message != null) {
+			component.addStyleName(EWT.CSS.ewtError());
+			widget.setTitle(context.expandResource(message));
 		} else {
-			rComponent.removeStyleName(EWT.CSS.ewtError());
-			rWidget.setTitle(rContext.expandResource(rComponent.getToolTip()));
+			component.removeStyleName(EWT.CSS.ewtError());
+			widget.setTitle(context.expandResource(component.getToolTip()));
 		}
 	}
 
@@ -168,72 +167,72 @@ public abstract class Component implements HasId<String> {
 	 * Helper method to create the HTML string for a label that contains a
 	 * string and an image.
 	 *
-	 * @param sText                The text of the label
-	 * @param rImage               The image of the label
-	 * @param rTextPosition        The aligned position of the text
-	 * @param eHorizontalAlignment The horizontal alignment of the label cells
-	 * @param sWidth               The HTML width of the label or NULL for the
-	 *                             default
+	 * @param text                The text of the label
+	 * @param image               The image of the label
+	 * @param textPosition        The aligned position of the text
+	 * @param horizontalAlignment The horizontal alignment of the label cells
+	 * @param width               The HTML width of the label or NULL for the
+	 *                            default
 	 * @return The HTML string that describes the given label composition
 	 */
-	public static String createImageLabel(String sText, ImageRef rImage,
-		AlignedPosition rTextPosition,
-		HorizontalAlignmentConstant eHorizontalAlignment, String sWidth) {
-		com.google.gwt.user.client.ui.Image rGwtImage = rImage.getGwtImage();
-		Widget rLabelWidget = rGwtImage;
+	public static String createImageLabel(String text, ImageRef image,
+		AlignedPosition textPosition,
+		HorizontalAlignmentConstant horizontalAlignment, String width) {
+		com.google.gwt.user.client.ui.Image gwtImage = image.getGwtImage();
+		Widget labelWidget = gwtImage;
 
-		boolean bHorizontal =
-			rTextPosition.getVerticalAlignment() == Alignment.CENTER;
+		boolean horizontal =
+			textPosition.getVerticalAlignment() == Alignment.CENTER;
 
-		if (sText != null && sText.length() > 0) {
-			HTML aHtml = new HTML(sText);
-			Alignment rAlign;
-			CellPanel aPanel;
+		if (text != null && text.length() > 0) {
+			HTML html = new HTML(text);
+			Alignment align;
+			CellPanel panel;
 
-			if (bHorizontal) {
-				rAlign = rTextPosition.getHorizontalAlignment();
-				aPanel = new HorizontalPanel();
+			if (horizontal) {
+				align = textPosition.getHorizontalAlignment();
+				panel = new HorizontalPanel();
 			} else {
-				rAlign = rTextPosition.getVerticalAlignment();
-				aPanel = new VerticalPanel();
+				align = textPosition.getVerticalAlignment();
+				panel = new VerticalPanel();
 			}
 
-			if (rAlign == Alignment.BEGIN) {
-				aPanel.add(aHtml);
-				aPanel.add(rGwtImage);
+			if (align == Alignment.BEGIN) {
+				panel.add(html);
+				panel.add(gwtImage);
 			} else {
-				aPanel.add(rGwtImage);
-				aPanel.add(aHtml);
+				panel.add(gwtImage);
+				panel.add(html);
 			}
 
-			aPanel.setCellHorizontalAlignment(rGwtImage, eHorizontalAlignment);
-			aPanel.setCellVerticalAlignment(rGwtImage,
+			panel.setCellHorizontalAlignment(gwtImage, horizontalAlignment);
+			panel.setCellVerticalAlignment(gwtImage,
 				HasVerticalAlignment.ALIGN_MIDDLE);
-			aHtml.setWidth("100%");
-			aPanel.setCellHorizontalAlignment(aHtml, eHorizontalAlignment);
-			aPanel.setCellVerticalAlignment(aHtml,
+			html.setWidth("100%");
+			panel.setCellHorizontalAlignment(html, horizontalAlignment);
+			panel.setCellVerticalAlignment(html,
 				HasVerticalAlignment.ALIGN_MIDDLE);
 
-			if (sWidth != null) {
-				aPanel.setWidth(sWidth);
+			if (width != null) {
+				panel.setWidth(width);
 			}
 
-			aPanel.setHeight("100%");
+			panel.setHeight("100%");
 
-			rLabelWidget = aPanel;
+			labelWidget = panel;
 		}
 
-		return rLabelWidget.getElement().getString();
+		return labelWidget.getElement().getString();
 	}
 
 	/**
 	 * Sets a global handler to apply error states to component widgets.
 	 *
-	 * @param fApplyErrorState The new widget error state handler
+	 * @param applyErrorState The new widget error state handler
 	 */
 	public static void setWidgetErrorStateHandler(
-		BiConsumer<Component, String> fApplyErrorState) {
-		fApplyComponentErrorState = fApplyErrorState;
+		BiConsumer<Component, String> applyErrorState) {
+		applyComponentErrorState = applyErrorState;
 	}
 
 	/**
@@ -241,37 +240,37 @@ public abstract class Component implements HasId<String> {
 	 * widgets. This can be used by extensions of the base GEWT implementation
 	 * to be notified of style changes.
 	 *
-	 * @param rHandler The widget style handler
+	 * @param handler The widget style handler
 	 */
-	public static void setWidgetStyleHandler(WidgetStyleHandler rHandler) {
-		rWidgetStyleHandler = rHandler;
+	public static void setWidgetStyleHandler(WidgetStyleHandler handler) {
+		widgetStyleHandler = handler;
 	}
 
 	/**
 	 * Registers an event listener for a certain event type.
 	 *
-	 * @param rEventType The event type the listener shall be registered for
-	 * @param rListener  The event listener to be notified of events
+	 * @param eventType The event type the listener shall be registered for
+	 * @param listener  The event listener to be notified of events
 	 */
-	public void addEventListener(EventType rEventType,
-		EwtEventHandler rListener) {
-		if (aEventDispatcher == null) {
-			aEventDispatcher = createEventDispatcher();
+	public void addEventListener(EventType eventType,
+		EwtEventHandler listener) {
+		if (eventDispatcher == null) {
+			eventDispatcher = createEventDispatcher();
 		}
 
-		aEventDispatcher.setupEventDispatching(getWidget(), rEventType,
-			rListener);
+		eventDispatcher.setupEventDispatching(getWidget(), eventType,
+			listener);
 	}
 
 	/**
 	 * Adds a style name to a component. This is typically only considered by
 	 * HTML-based EWT implementations.
 	 *
-	 * @param sStyle The style name to add
+	 * @param style The style name to add
 	 * @see #removeStyleName(String)
 	 */
-	public void addStyleName(String sStyle) {
-		getWidget().addStyleName(sStyle);
+	public void addStyleName(String style) {
+		getWidget().addStyleName(style);
 	}
 
 	/**
@@ -283,23 +282,23 @@ public abstract class Component implements HasId<String> {
 	 * <p>This method should be overridden by subclasses that need to apply
 	 * subcomponent-specific styles.</p>
 	 *
-	 * @param rNewStyle The style to apply to this instance
+	 * @param newStyle The style to apply to this instance
 	 */
-	public void applyStyle(StyleData rNewStyle) {
-		rStyle = rNewStyle;
+	public void applyStyle(StyleData newStyle) {
+		style = newStyle;
 
-		String sId = rStyle.getProperty(ELEMENT_ID, null);
+		String id = style.getProperty(ELEMENT_ID, null);
 
-		if (sId != null) {
-			getWidget().getElement().setId(sId);
+		if (id != null) {
+			getWidget().getElement().setId(id);
 		}
 
-		applyStyleNames(rStyle);
-		applyAlignments(rStyle);
-		applyCssStyles(rStyle);
+		applyStyleNames(style);
+		applyAlignments(style);
+		applyCssStyles(style);
 
-		if (rWidgetStyleHandler != null) {
-			rWidgetStyleHandler.applyWidgetStyle(this, rNewStyle);
+		if (widgetStyleHandler != null) {
+			widgetStyleHandler.applyWidgetStyle(this, newStyle);
 		}
 	}
 
@@ -326,13 +325,14 @@ public abstract class Component implements HasId<String> {
 	 * no longer needed it may invoke the image's dispose() method any time
 	 * .</p>
 	 *
-	 * @param rID             The identifier for the new image
-	 * @param rImageReference sImage rImageData The input stream that will
-	 *                        provide the image data
+	 * @param iD             The identifier for the new image
+	 * @param imageReference sImage imageData The input stream that will
+	 *                          provide
+	 *                       the image data
 	 * @return A new Image instance that is associated with this component
 	 */
-	public Image createImage(Object rID, Object rImageReference) {
-		return getContext().createImage(rImageReference);
+	public Image createImage(Object iD, Object imageReference) {
+		return getContext().createImage(imageReference);
 	}
 
 	/**
@@ -341,10 +341,10 @@ public abstract class Component implements HasId<String> {
 	 * @return The background color
 	 */
 	public Color getBackgroundColor() {
-		String sColor =
+		String color =
 			getWidget().getElement().getStyle().getBackgroundColor();
 
-		return sColor != null ? Color.valueOf(sColor) : Color.WHITE;
+		return color != null ? Color.valueOf(color) : Color.WHITE;
 	}
 
 	/**
@@ -353,7 +353,7 @@ public abstract class Component implements HasId<String> {
 	 * @return This component's user interface context
 	 */
 	public UserInterfaceContext getContext() {
-		return rContext;
+		return context;
 	}
 
 	/**
@@ -372,9 +372,9 @@ public abstract class Component implements HasId<String> {
 	 * @return The foreground color
 	 */
 	public Color getForegroundColor() {
-		String sColor = getWidget().getElement().getStyle().getColor();
+		String color = getWidget().getElement().getStyle().getColor();
 
-		return sColor != null ? Color.valueOf(sColor) : Color.BLACK;
+		return color != null ? Color.valueOf(color) : Color.BLACK;
 	}
 
 	/**
@@ -393,11 +393,11 @@ public abstract class Component implements HasId<String> {
 	 */
 	@Override
 	public String getId() {
-		if (sId == null) {
-			sId = toString() + nNextId++;
+		if (id == null) {
+			id = toString() + nextId++;
 		}
 
-		return sId;
+		return id;
 	}
 
 	/**
@@ -416,7 +416,7 @@ public abstract class Component implements HasId<String> {
 	 * @return The container instance of which this component is a child
 	 */
 	public Container getParent() {
-		return rParent;
+		return parent;
 	}
 
 	/**
@@ -425,7 +425,7 @@ public abstract class Component implements HasId<String> {
 	 * @return The style data
 	 */
 	public final StyleData getStyle() {
-		return rStyle;
+		return style;
 	}
 
 	/**
@@ -435,7 +435,7 @@ public abstract class Component implements HasId<String> {
 	 * @return The tool tip text
 	 */
 	public String getToolTip() {
-		return sToolTip;
+		return toolTip;
 	}
 
 	/**
@@ -444,13 +444,13 @@ public abstract class Component implements HasId<String> {
 	 * @return The parent view
 	 */
 	public View getView() {
-		Container rView = rParent;
+		Container view = parent;
 
-		while (rView != null && !(rView instanceof View)) {
-			rView = rView.getParent();
+		while (view != null && !(view instanceof View)) {
+			view = view.getParent();
 		}
 
-		return (View) rView;
+		return (View) view;
 	}
 
 	/**
@@ -461,7 +461,7 @@ public abstract class Component implements HasId<String> {
 	 * @return The widget
 	 */
 	public final Widget getWidget() {
-		return rIsWidget != null ? rIsWidget.asWidget() : null;
+		return isWidget != null ? isWidget.asWidget() : null;
 	}
 
 	/**
@@ -495,17 +495,17 @@ public abstract class Component implements HasId<String> {
 	 * Internal method to create and initialize the GWT widget of this instance
 	 * with the widget factory from {@link EWT#getWidgetFactory(Class)}.
 	 *
-	 * @param rParent The parent container of the widget
-	 * @param rStyle  The style data of this instance
+	 * @param parent The parent container of the widget
+	 * @param style  The style data of this instance
 	 * @throws IllegalStateException If no widget factory has been registered
 	 *                               for the class of this component instance
 	 */
-	public void initWidget(Container rParent, StyleData rStyle) {
-		this.rContext = rParent.getContext();
-		this.rParent = rParent;
-		this.rStyle = rStyle;
+	public void initWidget(Container parent, StyleData style) {
+		this.context = parent.getContext();
+		this.parent = parent;
+		this.style = style;
 
-		setWidget(createWidget(rStyle));
+		setWidget(createWidget(style));
 	}
 
 	/**
@@ -514,10 +514,10 @@ public abstract class Component implements HasId<String> {
 	 * @return TRUE if the element is enabled, FALSE if disabled
 	 */
 	public boolean isEnabled() {
-		Widget rWidget = getWidget();
+		Widget widget = getWidget();
 
-		return (rWidget instanceof HasEnabled) &&
-			((HasEnabled) rWidget).isEnabled();
+		return (widget instanceof HasEnabled) &&
+			((HasEnabled) widget).isEnabled();
 	}
 
 	/**
@@ -532,13 +532,13 @@ public abstract class Component implements HasId<String> {
 	/**
 	 * Removes an event handler for a certain event type.
 	 *
-	 * @param rEventType The event type the listener shall be unregistered for
-	 * @param rListener  The event listener to be removed
+	 * @param eventType The event type the listener shall be unregistered for
+	 * @param listener  The event listener to be removed
 	 */
-	public void removeEventListener(EventType rEventType,
-		EwtEventHandler rListener) {
-		if (aEventDispatcher != null) {
-			aEventDispatcher.stopEventDispatching(rEventType, rListener);
+	public void removeEventListener(EventType eventType,
+		EwtEventHandler listener) {
+		if (eventDispatcher != null) {
+			eventDispatcher.stopEventDispatching(eventType, listener);
 		}
 	}
 
@@ -547,11 +547,11 @@ public abstract class Component implements HasId<String> {
 	 * considered by
 	 * HTML-based EWT implementations.
 	 *
-	 * @param sStyle The style name to remove
+	 * @param style The style name to remove
 	 * @see #addStyleName(String)
 	 */
-	public void removeStyleName(String sStyle) {
-		getWidget().removeStyleName(sStyle);
+	public void removeStyleName(String style) {
+		getWidget().removeStyleName(style);
 	}
 
 	/**
@@ -563,14 +563,14 @@ public abstract class Component implements HasId<String> {
 	/**
 	 * Sets the background color of this component.
 	 *
-	 * @param rColor The new background color
+	 * @param color The new background color
 	 */
-	public void setBackgroundColor(Color rColor) {
-		if (rColor != null) {
+	public void setBackgroundColor(Color color) {
+		if (color != null) {
 			getWidget()
 				.getElement()
 				.getStyle()
-				.setBackgroundColor(rColor.toHtml());
+				.setBackgroundColor(color.toHtml());
 		}
 	}
 
@@ -579,13 +579,13 @@ public abstract class Component implements HasId<String> {
 	 * the
 	 * element will allow and react to user input.
 	 *
-	 * @param bEnabled TRUE to enable the component, FALSE to disable it
+	 * @param enabled TRUE to enable the component, FALSE to disable it
 	 */
-	public void setEnabled(boolean bEnabled) {
-		Widget rWidget = getWidget();
+	public void setEnabled(boolean enabled) {
+		Widget widget = getWidget();
 
-		if (rWidget instanceof HasEnabled) {
-			((HasEnabled) rWidget).setEnabled(bEnabled);
+		if (widget instanceof HasEnabled) {
+			((HasEnabled) widget).setEnabled(enabled);
 		}
 	}
 
@@ -595,21 +595,21 @@ public abstract class Component implements HasId<String> {
 	 * rendered in an error state (if a message is provided) and display the
 	 * error message (e.g. as a tool-tip).
 	 *
-	 * @param sErrorMessage The error message to display or NULL to remove the
-	 *                      error state
+	 * @param errorMessage The error message to display or NULL to remove the
+	 *                     error state
 	 */
-	public void setError(String sErrorMessage) {
-		fApplyComponentErrorState.accept(this, sErrorMessage);
+	public void setError(String errorMessage) {
+		applyComponentErrorState.accept(this, errorMessage);
 	}
 
 	/**
 	 * Sets the foreground color of this component.
 	 *
-	 * @param rColor The new foreground color
+	 * @param color The new foreground color
 	 */
-	public void setForegroundColor(Color rColor) {
-		if (rColor != null) {
-			getWidget().getElement().getStyle().setColor(rColor.toHtml());
+	public void setForegroundColor(Color color) {
+		if (color != null) {
+			getWidget().getElement().getStyle().setColor(color.toHtml());
 		}
 	}
 
@@ -617,10 +617,10 @@ public abstract class Component implements HasId<String> {
 	 * Sets the height of this component in string format. How this value is
 	 * interpreted may depend on the underlying implementation.
 	 *
-	 * @param sHeight The new height
+	 * @param height The new height
 	 */
-	public void setHeight(String sHeight) {
-		getWidget().setHeight(sHeight);
+	public void setHeight(String height) {
+		getWidget().setHeight(height);
 	}
 
 	/**
@@ -688,18 +688,18 @@ public abstract class Component implements HasId<String> {
 	 *   <li>"~!$string": the escaped text "!$string"</li>
 	 * </ul>
 	 *
-	 * @param rProperty The property to set on the component
+	 * @param property The property to set on the component
 	 */
-	public void setProperties(Object rProperty) {
-		if (rProperty instanceof String) {
-			setProperty((String) rProperty);
+	public void setProperties(Object property) {
+		if (property instanceof String) {
+			setProperty((String) property);
 		} else if (this instanceof ImageAttribute) {
-			if (rProperty instanceof ImageResource) {
-				rProperty = new ImageRef(rProperty);
+			if (property instanceof ImageResource) {
+				property = new ImageRef(property);
 			}
 
-			if (rProperty instanceof Image) {
-				((ImageAttribute) this).setImage((Image) rProperty);
+			if (property instanceof Image) {
+				((ImageAttribute) this).setImage((Image) property);
 			}
 		}
 	}
@@ -718,11 +718,11 @@ public abstract class Component implements HasId<String> {
 	 * Sets the text of the tool-tip. If the string contains a resource key it
 	 * will be expanded.
 	 *
-	 * @param sText The new tool tip text or NULL for no tool-tip
+	 * @param text The new tool tip text or NULL for no tool-tip
 	 */
-	public void setToolTip(String sText) {
-		sToolTip = sText;
-		getWidget().setTitle(getContext().expandResource(sText));
+	public void setToolTip(String text) {
+		toolTip = text;
+		getWidget().setTitle(getContext().expandResource(text));
 	}
 
 	/**
@@ -732,19 +732,18 @@ public abstract class Component implements HasId<String> {
 	 * To prevent the rendering completely {@link #setVisible(boolean)} should
 	 * be used instead.
 	 *
-	 * @param bVisible TRUE if visible
+	 * @param visible TRUE if visible
 	 */
-	public void setVisibility(boolean bVisible) {
-		Style rWidgetStyle = getWidget().getElement().getStyle();
-		String sCurrentVisibility = rWidgetStyle.getVisibility();
+	public void setVisibility(boolean visible) {
+		Style widgetStyle = getWidget().getElement().getStyle();
+		String currentVisibility = widgetStyle.getVisibility();
 
-		Visibility eVisibility =
-			bVisible ? Visibility.VISIBLE : Visibility.HIDDEN;
+		Visibility visibility =
+			visible ? Visibility.VISIBLE : Visibility.HIDDEN;
 
-		if (eVisibility == Visibility.VISIBLE &&
-			!sCurrentVisibility.equals("") ||
-			!eVisibility.getCssName().equals(sCurrentVisibility)) {
-			rWidgetStyle.setVisibility(eVisibility);
+		if (visibility == Visibility.VISIBLE && !currentVisibility.equals("") ||
+			!visibility.getCssName().equals(currentVisibility)) {
+			widgetStyle.setVisibility(visibility);
 		}
 	}
 
@@ -754,13 +753,13 @@ public abstract class Component implements HasId<String> {
 	 * container. To only affect the rendering of the component itself the
 	 * method {@link #setVisibility(boolean)} can be used instead.
 	 *
-	 * @param bVisible bRender TRUE to display the component, FALSE to hide it
+	 * @param visible bRender TRUE to display the component, FALSE to hide it
 	 */
-	public void setVisible(boolean bVisible) {
-		Widget rWidget = getWidget();
+	public void setVisible(boolean visible) {
+		Widget widget = getWidget();
 
-		if (rWidget.isVisible() != bVisible) {
-			rWidget.setVisible(bVisible);
+		if (widget.isVisible() != visible) {
+			widget.setVisible(visible);
 		}
 	}
 
@@ -768,10 +767,10 @@ public abstract class Component implements HasId<String> {
 	 * Sets the width of this component in string format. How this value is
 	 * interpreted may depend on the underlying implementation.
 	 *
-	 * @param sWidth The new width
+	 * @param width The new width
 	 */
-	public void setWidth(String sWidth) {
-		getWidget().setWidth(sWidth);
+	public void setWidth(String width) {
+		getWidget().setWidth(width);
 	}
 
 	/**
@@ -779,29 +778,29 @@ public abstract class Component implements HasId<String> {
 	 */
 	@Override
 	public String toString() {
-		String sName = getClass().getName();
-		String sStyleName = getWidget().getStyleName();
+		String name = getClass().getName();
+		String styleName = getWidget().getStyleName();
 
-		sName = sName.substring(sName.lastIndexOf('.') + 1);
+		name = name.substring(name.lastIndexOf('.') + 1);
 
-		if (sStyleName.length() > 0) {
-			sName += "(" + sStyleName + ")";
+		if (styleName.length() > 0) {
+			name += "(" + styleName + ")";
 		}
 
-		return sName;
+		return name;
 	}
 
 	/**
 	 * Applies the CSS styles from the given map to the DOM element of this
 	 * component.
 	 *
-	 * @param rCssStyles A mapping from CSS style names to style values
+	 * @param cssStyles A mapping from CSS style names to style values
 	 */
-	protected void applyCssStyles(Map<String, String> rCssStyles) {
-		Style rElementStyle = getElement().getStyle();
+	protected void applyCssStyles(Map<String, String> cssStyles) {
+		Style elementStyle = getElement().getStyle();
 
-		for (Entry<String, String> rCss : rCssStyles.entrySet()) {
-			rElementStyle.setProperty(rCss.getKey(), rCss.getValue());
+		for (Entry<String, String> css : cssStyles.entrySet()) {
+			elementStyle.setProperty(css.getKey(), css.getValue());
 		}
 	}
 
@@ -814,14 +813,14 @@ public abstract class Component implements HasId<String> {
 	 * added to the parent at this point. The method {@link #getContext()} can
 	 * also be invoked to access the {@link UserInterfaceContext}.
 	 *
-	 * @param rStyle The component style
+	 * @param style The component style
 	 * @return The new widget
 	 */
-	protected IsWidget createWidget(StyleData rStyle) {
-		WidgetFactory<?> rWidgetFactory = EWT.getWidgetFactory(getClass());
+	protected IsWidget createWidget(StyleData style) {
+		WidgetFactory<?> widgetFactory = EWT.getWidgetFactory(getClass());
 
-		if (rWidgetFactory != null) {
-			return rWidgetFactory.createWidget(this, rStyle);
+		if (widgetFactory != null) {
+			return widgetFactory.createWidget(this, style);
 		} else {
 			throw new IllegalStateException(
 				"No widget factory for " + getClass());
@@ -833,31 +832,31 @@ public abstract class Component implements HasId<String> {
 	 * in a style data object. If no text alignment is set the returned value
 	 * will be {@link AlignedPosition#RIGHT}.
 	 *
-	 * @param rStyle The style data object
+	 * @param style The style data object
 	 * @return The aligned position of the text
 	 */
-	protected AlignedPosition getTextPosition(StyleData rStyle) {
-		TextAlignment eTextAlignment = rStyle.mapTextAlignment();
-		AlignedPosition aTextPosition = AlignedPosition.RIGHT;
+	protected AlignedPosition getTextPosition(StyleData style) {
+		TextAlignment textAlignment = style.mapTextAlignment();
+		AlignedPosition textPosition = AlignedPosition.RIGHT;
 
-		if (eTextAlignment != null) {
-			switch (eTextAlignment) {
+		if (textAlignment != null) {
+			switch (textAlignment) {
 				case LEFT:
-					aTextPosition = AlignedPosition.LEFT;
+					textPosition = AlignedPosition.LEFT;
 
 					break;
 
 				case RIGHT:
-					aTextPosition = AlignedPosition.RIGHT;
+					textPosition = AlignedPosition.RIGHT;
 
 					break;
 
 				default:
-					aTextPosition = AlignedPosition.BOTTOM;
+					textPosition = AlignedPosition.BOTTOM;
 			}
 		}
 
-		return aTextPosition;
+		return textPosition;
 	}
 
 	/**
@@ -880,12 +879,12 @@ public abstract class Component implements HasId<String> {
 	 * will be
 	 * an event multicaster that will notify all listeners on invocation.
 	 *
-	 * @param eEventType The event type to return the listener for
+	 * @param eventType The event type to return the listener for
 	 * @return The event listener for the given type or NULL for none
 	 */
-	EwtEventHandler getEventListener(EventType eEventType) {
-		if (aEventDispatcher != null) {
-			return aEventDispatcher.getEventHandler(eEventType);
+	EwtEventHandler getEventListener(EventType eventType) {
+		if (eventDispatcher != null) {
+			return eventDispatcher.getEventHandler(eventType);
 		} else {
 			return null;
 		}
@@ -895,126 +894,126 @@ public abstract class Component implements HasId<String> {
 	 * Notifies the event handler of a certain event type without a native
 	 * event.
 	 *
-	 * @param rEventType The event type
+	 * @param eventType The event type
 	 */
-	void notifyEventHandler(EventType rEventType) {
-		notifyEventHandler(rEventType, null, null);
+	void notifyEventHandler(EventType eventType) {
+		notifyEventHandler(eventType, null, null);
 	}
 
 	/**
 	 * Notifies the event handler of a certain event type for a GWT
 	 * {@link DomEvent}.
 	 *
-	 * @param rEventType The event type
-	 * @param rDomEvent  The DOM event
+	 * @param eventType The event type
+	 * @param domEvent  The DOM event
 	 */
-	void notifyEventHandler(EventType rEventType, DomEvent<?> rDomEvent) {
-		notifyEventHandler(rEventType, null, rDomEvent.getNativeEvent());
+	void notifyEventHandler(EventType eventType, DomEvent<?> domEvent) {
+		notifyEventHandler(eventType, null, domEvent.getNativeEvent());
 
-		if (rStyle != null && rStyle.hasFlag(NO_EVENT_PROPAGATION)) {
-			rDomEvent.stopPropagation();
+		if (style != null && style.hasFlag(NO_EVENT_PROPAGATION)) {
+			domEvent.stopPropagation();
 		}
 	}
 
 	/**
 	 * Notifies the event handler of a certain event.
 	 *
-	 * @param rEventType The event type
-	 * @param rElement   The element that is affected by the event
+	 * @param eventType The event type
+	 * @param element   The element that is affected by the event
 	 */
-	void notifyEventHandler(EventType rEventType, Object rElement) {
-		notifyEventHandler(rEventType, rElement, null);
+	void notifyEventHandler(EventType eventType, Object element) {
+		notifyEventHandler(eventType, element, null);
 	}
 
 	/**
 	 * Notifies the event handler of a certain event.
 	 *
-	 * @param rEventType   The event type
-	 * @param rElement     The element that is affected by the event
-	 * @param rNativeEvent nPointerX The horizontal pointer coordinate
+	 * @param eventType   The event type
+	 * @param element     The element that is affected by the event
+	 * @param nativeEvent nPointerX The horizontal pointer coordinate
 	 */
-	void notifyEventHandler(EventType rEventType, Object rElement,
-		NativeEvent rNativeEvent) {
-		EwtEventHandler rHandler = getEventListener(rEventType);
+	void notifyEventHandler(EventType eventType, Object element,
+		NativeEvent nativeEvent) {
+		EwtEventHandler handler = getEventListener(eventType);
 
-		if (rHandler != null) {
-			rHandler.handleEvent(
-				EwtEvent.getEvent(this, rElement, rEventType, rNativeEvent));
+		if (handler != null) {
+			handler.handleEvent(
+				EwtEvent.getEvent(this, element, eventType, nativeEvent));
 		}
 	}
 
 	/**
 	 * Sets the default style name of this component.
 	 *
-	 * @param sDefaultStyleName The default style name
+	 * @param defaultStyleName The default style name
 	 */
-	void setDefaultStyleName(String sDefaultStyleName) {
-		getWidget().setStylePrimaryName(sDefaultStyleName);
+	void setDefaultStyleName(String defaultStyleName) {
+		getWidget().setStylePrimaryName(defaultStyleName);
 	}
 
 	/**
 	 * Internal method to set properties from a property string.
 	 *
-	 * @param sProperty The property string
+	 * @param property The property string
 	 */
-	void setProperty(String sProperty) {
-		UserInterfaceContext rContext = getContext();
-		String sImage = null;
-		String sToolTip = null;
-		char cPrefix = 0;
+	void setProperty(String property) {
+		UserInterfaceContext context = getContext();
+		String image = null;
+		String toolTip = null;
+		char prefix = 0;
 
-		if (sProperty.length() > 0) {
-			cPrefix = sProperty.charAt(0);
+		if (property.length() > 0) {
+			prefix = property.charAt(0);
 		}
 
 		// remove escape prefix
-		if (PROPERTY_PREFIX_CHARS.indexOf(cPrefix) >= 0 &&
-			sProperty.length() > 1) {
-			sProperty = sProperty.substring(1);
+		if (PROPERTY_PREFIX_CHARS.indexOf(prefix) >= 0 &&
+			property.length() > 1) {
+			property = property.substring(1);
 
-			if (cPrefix == '#') {
-				sImage = sProperty;
-				sProperty = null;
-			} else if (cPrefix == '+' || cPrefix == '%' || cPrefix == '@') {
-				StringBuffer sb = new StringBuffer(sProperty);
-				int nPos = sProperty.lastIndexOf('.') + 1;
+			if (prefix == '#') {
+				image = property;
+				property = null;
+			} else if (prefix == '+' || prefix == '%' || prefix == '@') {
+				StringBuffer sb = new StringBuffer(property);
+				int pos = property.lastIndexOf('.') + 1;
 
 				// if no '.' separators exist insert image prefix after '$'
 				// prefix which must always exist for the prefixes +,%,@
-				nPos = nPos > 0 ? nPos : 1;
+				pos = pos > 0 ? pos : 1;
 
-				sImage = sb.insert(nPos, "im").toString();
+				image = sb.insert(pos, "im").toString();
 
-				if (cPrefix == '%' || cPrefix == '@') {
-					sToolTip = sb.replace(nPos, nPos + 2, "tt").toString();
+				if (prefix == '%' || prefix == '@') {
+					toolTip = sb.replace(pos, pos + 2, "tt").toString();
 
-					if (cPrefix == '@') {
-						sProperty = null;
+					if (prefix == '@') {
+						property = null;
 					}
 				}
 			}
 		}
 
-		if (sProperty != null && this instanceof TextAttribute) {
-			((TextAttribute) this).setText(sProperty);
+		if (property != null && this instanceof TextAttribute) {
+			((TextAttribute) this).setText(property);
 		}
 
-		if (sImage != null && this instanceof ImageAttribute) {
-			((ImageAttribute) this).setImage(rContext.createImage(sImage));
+		if (image != null && this instanceof ImageAttribute) {
+			((ImageAttribute) this).setImage(context.createImage(image));
 		}
 
-		if (sToolTip != null) {
-			setToolTip(sToolTip);
+		if (toolTip != null) {
+			setToolTip(toolTip);
 		}
 	}
 
 	/**
 	 * Internal method to set the widget of this component.
 	 *
-	 * @param rIsWidget The component widget
+	 * @param isWidget The component widget
 	 */
-	void setWidget(IsWidget rIsWidget) {
-		this.rIsWidget = rIsWidget;
+	void setWidget(IsWidget isWidget) {
+		this.isWidget = isWidget;
 	}
 
 	/**
@@ -1022,34 +1021,32 @@ public abstract class Component implements HasId<String> {
 	 * the
 	 * underlying GWT widget.
 	 *
-	 * @param rStyle The style data
+	 * @param style The style data
 	 */
-	private void applyAlignments(StyleData rStyle) {
-		Widget rWidget = getWidget();
+	private void applyAlignments(StyleData style) {
+		Widget widget = getWidget();
 
-		if (rWidget instanceof HasHorizontalAlignment) {
-			HorizontalAlignmentConstant rAlignment =
-				rStyle.mapHorizontalAlignment();
+		if (widget instanceof HasHorizontalAlignment) {
+			HorizontalAlignmentConstant alignment =
+				style.mapHorizontalAlignment();
 
-			if (rAlignment != null) {
-				((HasHorizontalAlignment) rWidget).setHorizontalAlignment(
-					rAlignment);
+			if (alignment != null) {
+				((HasHorizontalAlignment) widget).setHorizontalAlignment(
+					alignment);
 			}
-		} else if (rWidget instanceof TextBoxBase) {
-			TextAlignment rAlignment = rStyle.mapTextAlignment();
+		} else if (widget instanceof TextBoxBase) {
+			TextAlignment alignment = style.mapTextAlignment();
 
-			if (rAlignment != null) {
-				((TextBoxBase) rWidget).setAlignment(rAlignment);
+			if (alignment != null) {
+				((TextBoxBase) widget).setAlignment(alignment);
 			}
 		}
 
-		if (rWidget instanceof HasVerticalAlignment) {
-			VerticalAlignmentConstant rAlignment =
-				rStyle.mapVerticalAlignment();
+		if (widget instanceof HasVerticalAlignment) {
+			VerticalAlignmentConstant alignment = style.mapVerticalAlignment();
 
-			if (rAlignment != null) {
-				((HasVerticalAlignment) rWidget).setVerticalAlignment(
-					rAlignment);
+			if (alignment != null) {
+				((HasVerticalAlignment) widget).setVerticalAlignment(alignment);
 			}
 		}
 	}
@@ -1059,20 +1056,20 @@ public abstract class Component implements HasId<String> {
 	 * the
 	 * DOM element of the underlying GWT widget.
 	 *
-	 * @param rStyle The style data
+	 * @param style The style data
 	 */
-	private void applyCssStyles(StyleData rStyle) {
-		final Map<String, String> rCssStyles =
-			rStyle.getProperty(CSS_STYLES, null);
+	private void applyCssStyles(StyleData style) {
+		final Map<String, String> cssStyles =
+			style.getProperty(CSS_STYLES, null);
 
-		if (rCssStyles != null) {
+		if (cssStyles != null) {
 			if (getWidget().isAttached()) {
-				applyCssStyles(rCssStyles);
+				applyCssStyles(cssStyles);
 			} else {
 				getWidget().addAttachHandler(new Handler() {
 					@Override
-					public void onAttachOrDetach(AttachEvent rEvent) {
-						applyCssStyles(rCssStyles);
+					public void onAttachOrDetach(AttachEvent event) {
+						applyCssStyles(cssStyles);
 					}
 				});
 			}
@@ -1083,38 +1080,40 @@ public abstract class Component implements HasId<String> {
 	 * Applies any style names that are set in the given {@link StyleData} to
 	 * the underlying GWT widget.
 	 *
-	 * @param rStyle The style data
+	 * @param styleData The style data
 	 */
-	private void applyStyleNames(StyleData rStyle) {
-		Widget rWidget = getWidget();
-		String sWebStyle = rStyle.getProperty(StyleData.WEB_STYLE, null);
-		String sWebDependentStyle =
-			rStyle.getProperty(StyleData.WEB_DEPENDENT_STYLE, null);
-		String sWebAdditionalStyles =
-			rStyle.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
+	private void applyStyleNames(StyleData styleData) {
+		Widget widget = getWidget();
+		assert widget != null;
 
-		if (sWebStyle != null) {
-			rWidget.setStylePrimaryName(sWebStyle);
+		String webStyle = styleData.getProperty(StyleData.WEB_STYLE, null);
+		String webDependentStyle =
+			styleData.getProperty(StyleData.WEB_DEPENDENT_STYLE, null);
+		String webAdditionalStyles =
+			styleData.getProperty(StyleData.WEB_ADDITIONAL_STYLES, null);
+
+		if (webStyle != null) {
+			widget.setStylePrimaryName(webStyle);
 		}
 
-		if (rAdditionalStyles != null) {
-			for (String sStyle : rAdditionalStyles) {
-				rWidget.removeStyleName(EWT.mapCssClass(sStyle));
+		if (additionalStyles != null) {
+			for (String style : additionalStyles) {
+				widget.removeStyleName(EWT.mapCssClass(style));
 			}
 
-			rAdditionalStyles = null;
+			additionalStyles = null;
 		}
 
-		if (sWebAdditionalStyles != null) {
-			rAdditionalStyles = sWebAdditionalStyles.split("\\s+");
+		if (webAdditionalStyles != null) {
+			additionalStyles = webAdditionalStyles.split("\\s+");
 
-			for (String sStyle : rAdditionalStyles) {
-				rWidget.addStyleName(EWT.mapCssClass(sStyle));
+			for (String style : additionalStyles) {
+				widget.addStyleName(EWT.mapCssClass(style));
 			}
 		}
 
-		if (sWebDependentStyle != null) {
-			rWidget.addStyleDependentName(sWebDependentStyle);
+		if (webDependentStyle != null) {
+			widget.addStyleDependentName(webDependentStyle);
 		}
 	}
 
@@ -1131,39 +1130,39 @@ public abstract class Component implements HasId<String> {
 		MouseDownHandler, MouseUpHandler, MouseMoveHandler, MouseOutHandler,
 		MouseOverHandler, MouseWheelHandler, ValueChangeHandler<Object> {
 
-		private boolean bActionEventOnActivationOnly = false;
-
-		private Map<EventType, EwtEventHandler> aEventHandlers =
+		private final Map<EventType, EwtEventHandler> eventHandlers =
 			new HashMap<>(1);
 
-		private Map<EventType, HandlerRegistration> aHandlerRegistrations =
+		private final Map<EventType, HandlerRegistration> handlerRegistrations =
 			new HashMap<>(1);
+
+		private boolean actionEventOnActivationOnly = false;
 
 		/**
 		 * Creates a new instance.
 		 */
 		public ComponentEventDispatcher() {
-			bActionEventOnActivationOnly = rStyle != null &&
-				rStyle.hasFlag(ACTION_EVENT_ON_ACTIVATION_ONLY);
+			actionEventOnActivationOnly =
+				style != null && style.hasFlag(ACTION_EVENT_ON_ACTIVATION_ONLY);
 		}
 
 		/**
 		 * @see BlurHandler#onBlur(BlurEvent)
 		 */
 		@Override
-		public void onBlur(BlurEvent rEvent) {
-			notifyEventHandler(EventType.FOCUS_LOST, rEvent);
+		public void onBlur(BlurEvent event) {
+			notifyEventHandler(EventType.FOCUS_LOST, event);
 		}
 
 		/**
 		 * @see ClickHandler#onClick(ClickEvent)
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent) {
-			if (!bActionEventOnActivationOnly ||
+		public void onClick(ClickEvent event) {
+			if (!actionEventOnActivationOnly ||
 				!(getWidget() instanceof ActiveState) ||
 				!((ActiveState) getWidget()).isActive()) {
-				notifyEventHandler(EventType.ACTION, rEvent);
+				notifyEventHandler(EventType.ACTION, event);
 			}
 		}
 
@@ -1171,95 +1170,95 @@ public abstract class Component implements HasId<String> {
 		 * @see DoubleClickHandler#onDoubleClick(DoubleClickEvent)
 		 */
 		@Override
-		public void onDoubleClick(DoubleClickEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_DOUBLE_CLICKED, rEvent);
+		public void onDoubleClick(DoubleClickEvent event) {
+			notifyEventHandler(EventType.POINTER_DOUBLE_CLICKED, event);
 		}
 
 		/**
 		 * @see FocusHandler#onFocus(FocusEvent)
 		 */
 		@Override
-		public void onFocus(FocusEvent rEvent) {
-			notifyEventHandler(EventType.FOCUS_GAINED, rEvent);
+		public void onFocus(FocusEvent event) {
+			notifyEventHandler(EventType.FOCUS_GAINED, event);
 		}
 
 		/**
 		 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 		 */
 		@Override
-		public void onKeyDown(KeyDownEvent rEvent) {
-			notifyEventHandler(EventType.KEY_PRESSED, rEvent);
+		public void onKeyDown(KeyDownEvent event) {
+			notifyEventHandler(EventType.KEY_PRESSED, event);
 		}
 
 		/**
 		 * @see KeyPressHandler#onKeyPress(KeyPressEvent)
 		 */
 		@Override
-		public void onKeyPress(KeyPressEvent rEvent) {
-			notifyEventHandler(EventType.KEY_TYPED, rEvent);
+		public void onKeyPress(KeyPressEvent event) {
+			notifyEventHandler(EventType.KEY_TYPED, event);
 		}
 
 		/**
 		 * @see KeyUpHandler#onKeyUp(KeyUpEvent)
 		 */
 		@Override
-		public void onKeyUp(KeyUpEvent rEvent) {
-			notifyEventHandler(EventType.KEY_RELEASED, rEvent);
+		public void onKeyUp(KeyUpEvent event) {
+			notifyEventHandler(EventType.KEY_RELEASED, event);
 		}
 
 		/**
 		 * @see MouseDownHandler#onMouseDown(MouseDownEvent)
 		 */
 		@Override
-		public void onMouseDown(MouseDownEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_PRESSED, rEvent);
+		public void onMouseDown(MouseDownEvent event) {
+			notifyEventHandler(EventType.POINTER_PRESSED, event);
 		}
 
 		/**
 		 * @see MouseMoveHandler#onMouseMove(MouseMoveEvent)
 		 */
 		@Override
-		public void onMouseMove(MouseMoveEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_MOVED, rEvent);
+		public void onMouseMove(MouseMoveEvent event) {
+			notifyEventHandler(EventType.POINTER_MOVED, event);
 		}
 
 		/**
 		 * @see MouseOutHandler#onMouseOut(MouseOutEvent)
 		 */
 		@Override
-		public void onMouseOut(MouseOutEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_EXITED, rEvent);
+		public void onMouseOut(MouseOutEvent event) {
+			notifyEventHandler(EventType.POINTER_EXITED, event);
 		}
 
 		/**
 		 * @see MouseOverHandler#onMouseOver(MouseOverEvent)
 		 */
 		@Override
-		public void onMouseOver(MouseOverEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_ENTERED, rEvent);
+		public void onMouseOver(MouseOverEvent event) {
+			notifyEventHandler(EventType.POINTER_ENTERED, event);
 		}
 
 		/**
 		 * @see MouseUpHandler#onMouseUp(MouseUpEvent)
 		 */
 		@Override
-		public void onMouseUp(MouseUpEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_RELEASED, rEvent);
+		public void onMouseUp(MouseUpEvent event) {
+			notifyEventHandler(EventType.POINTER_RELEASED, event);
 		}
 
 		/**
 		 * @see MouseWheelHandler#onMouseWheel(MouseWheelEvent)
 		 */
 		@Override
-		public void onMouseWheel(MouseWheelEvent rEvent) {
-			notifyEventHandler(EventType.POINTER_WHEEL, rEvent);
+		public void onMouseWheel(MouseWheelEvent event) {
+			notifyEventHandler(EventType.POINTER_WHEEL, event);
 		}
 
 		/**
 		 * @see ValueChangeHandler#onValueChange(ValueChangeEvent)
 		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<Object> rEvent) {
+		public void onValueChange(ValueChangeEvent<Object> event) {
 			notifyEventHandler(EventType.VALUE_CHANGED);
 		}
 
@@ -1267,11 +1266,11 @@ public abstract class Component implements HasId<String> {
 		 * Allows to check whether a handler has been registered for a certain
 		 * event type.
 		 *
-		 * @param eEventType The event type to check
+		 * @param eventType The event type to check
 		 * @return TRUE if a handler has been registered for the event type
 		 */
-		protected boolean hasHandlerFor(EventType eEventType) {
-			return getEventHandler(eEventType) != null;
+		protected boolean hasHandlerFor(EventType eventType) {
+			return getEventHandler(eventType) != null;
 		}
 
 		/**
@@ -1279,100 +1278,98 @@ public abstract class Component implements HasId<String> {
 		 * dispatching for a certain event type and it's specific widget
 		 * subclass. The superclass method must alsways be invoked.
 		 *
-		 * @param rWidget    The widget to initialize the event dispatching for
-		 * @param eEventType The event type
+		 * @param widget    The widget to initialize the event dispatching for
+		 * @param eventType The event type
 		 * @return The event handler registration or NULL if no handler has
 		 * been
 		 * registered
 		 */
 		@SuppressWarnings("incomplete-switch")
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			HandlerRegistration rHandler = null;
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			HandlerRegistration handler = null;
 
-			if (rWidget instanceof HasAllMouseHandlers) {
-				HasAllMouseHandlers rMouseWidget =
-					(HasAllMouseHandlers) rWidget;
+			if (widget instanceof HasAllMouseHandlers) {
+				HasAllMouseHandlers mouseWidget = (HasAllMouseHandlers) widget;
 
-				switch (eEventType) {
+				switch (eventType) {
 					case POINTER_PRESSED:
-						rHandler = rMouseWidget.addMouseDownHandler(this);
+						handler = mouseWidget.addMouseDownHandler(this);
 						break;
 
 					case POINTER_RELEASED:
-						rHandler = rMouseWidget.addMouseUpHandler(this);
+						handler = mouseWidget.addMouseUpHandler(this);
 						break;
 
 					case POINTER_MOVED:
-						rHandler = rMouseWidget.addMouseMoveHandler(this);
+						handler = mouseWidget.addMouseMoveHandler(this);
 						break;
 
 					case POINTER_EXITED:
-						rHandler = rMouseWidget.addMouseOutHandler(this);
+						handler = mouseWidget.addMouseOutHandler(this);
 						break;
 
 					case POINTER_ENTERED:
-						rHandler = rMouseWidget.addMouseOverHandler(this);
+						handler = mouseWidget.addMouseOverHandler(this);
 						break;
 
 					case POINTER_WHEEL:
-						rHandler = rMouseWidget.addMouseWheelHandler(this);
+						handler = mouseWidget.addMouseWheelHandler(this);
 						break;
 				}
 			}
 
-			if (rWidget instanceof HasAllFocusHandlers) {
-				HasAllFocusHandlers rFocusWidget =
-					(HasAllFocusHandlers) rWidget;
+			if (widget instanceof HasAllFocusHandlers) {
+				HasAllFocusHandlers focusWidget = (HasAllFocusHandlers) widget;
 
-				if (eEventType == EventType.FOCUS_GAINED) {
-					rHandler = rFocusWidget.addFocusHandler(this);
-				} else if (eEventType == EventType.FOCUS_LOST) {
-					rHandler = rFocusWidget.addBlurHandler(this);
+				if (eventType == EventType.FOCUS_GAINED) {
+					handler = focusWidget.addFocusHandler(this);
+				} else if (eventType == EventType.FOCUS_LOST) {
+					handler = focusWidget.addBlurHandler(this);
 				}
 			}
 
-			if (rWidget instanceof HasAllKeyHandlers) {
-				HasAllKeyHandlers rKeyWidget = (HasAllKeyHandlers) rWidget;
+			if (widget instanceof HasAllKeyHandlers) {
+				HasAllKeyHandlers keyWidget = (HasAllKeyHandlers) widget;
 
-				switch (eEventType) {
+				switch (eventType) {
 					case KEY_PRESSED:
-						rHandler = rKeyWidget.addKeyDownHandler(this);
+						handler = keyWidget.addKeyDownHandler(this);
 						break;
 
 					case KEY_RELEASED:
-						rHandler = rKeyWidget.addKeyUpHandler(this);
+						handler = keyWidget.addKeyUpHandler(this);
 						break;
 
 					case KEY_TYPED:
-						rHandler = rKeyWidget.addKeyPressHandler(this);
+						handler = keyWidget.addKeyPressHandler(this);
 						break;
 				}
 			}
 
-			if (eEventType == EventType.ACTION) {
-				if (rWidget instanceof HasClickHandlers) {
-					rHandler =
-						((HasClickHandlers) rWidget).addClickHandler(this);
+			if (eventType == EventType.ACTION) {
+				if (widget instanceof HasClickHandlers) {
+					handler =
+						((HasClickHandlers) widget).addClickHandler(this);
 				}
-			} else if (eEventType == EventType.POINTER_DOUBLE_CLICKED) {
-				if (rWidget instanceof HasDoubleClickHandlers) {
-					rHandler =
-						((HasDoubleClickHandlers) rWidget).addDoubleClickHandler(
+			} else if (eventType == EventType.POINTER_DOUBLE_CLICKED) {
+				if (widget instanceof HasDoubleClickHandlers) {
+					handler =
+						((HasDoubleClickHandlers) widget).addDoubleClickHandler(
 							this);
 				}
-			} else if (eEventType == EventType.VALUE_CHANGED) {
-				if (rWidget instanceof HasValueChangeHandlers) {
+			} else if (eventType == EventType.VALUE_CHANGED) {
+				if (widget instanceof HasValueChangeHandlers) {
 					@SuppressWarnings("unchecked")
-					HasValueChangeHandlers<Object> rHasValueChangeHandlers =
-						(HasValueChangeHandlers<Object>) rWidget;
+					HasValueChangeHandlers<Object> hasValueChangeHandlers =
+						(HasValueChangeHandlers<Object>) widget;
 
-					rHandler =
-						rHasValueChangeHandlers.addValueChangeHandler(this);
+					handler =
+						hasValueChangeHandlers.addValueChangeHandler(this);
 				}
 			}
 
-			return rHandler;
+			return handler;
 		}
 
 		/**
@@ -1383,22 +1380,22 @@ public abstract class Component implements HasId<String> {
 		 * may
 		 * implement to perform additional event dispatch initializations-
 		 *
-		 * @param rWidget    The widget to initialize the dispatching for
-		 * @param eEventType The event type
-		 * @param rHandler   The event listener to be notified of events
+		 * @param widget    The widget to initialize the dispatching for
+		 * @param eventType The event type
+		 * @param handler   The event listener to be notified of events
 		 */
-		protected void setupEventDispatching(Widget rWidget,
-			EventType eEventType, EwtEventHandler rHandler) {
-			aEventHandlers.put(eEventType,
-				EventMulticaster.add(aEventHandlers.get(eEventType),
-					rHandler));
+		protected void setupEventDispatching(Widget widget,
+			EventType eventType,
+			EwtEventHandler handler) {
+			eventHandlers.put(eventType,
+				EventMulticaster.add(eventHandlers.get(eventType), handler));
 
-			if (aHandlerRegistrations.get(eEventType) == null) {
-				HandlerRegistration rRegistration =
-					initEventDispatching(rWidget, eEventType);
+			if (handlerRegistrations.get(eventType) == null) {
+				HandlerRegistration registration =
+					initEventDispatching(widget, eventType);
 
-				if (rRegistration != null) {
-					aHandlerRegistrations.put(eEventType, rRegistration);
+				if (registration != null) {
+					handlerRegistrations.put(eventType, registration);
 				}
 			}
 		}
@@ -1408,33 +1405,33 @@ public abstract class Component implements HasId<String> {
 		 * handlers are registered for the given type the returned hadnler will
 		 * be an event multicaster that will notify all handlers on invocation.
 		 *
-		 * @param eEventType The event type to return the handler for
+		 * @param eventType The event type to return the handler for
 		 * @return The event handler for the given type or NULL for none
 		 */
-		EwtEventHandler getEventHandler(EventType eEventType) {
-			return aEventHandlers.get(eEventType);
+		EwtEventHandler getEventHandler(EventType eventType) {
+			return eventHandlers.get(eventType);
 		}
 
 		/**
 		 * Removes an event handler for a certain event type.
 		 *
-		 * @param eEventType The event type the handler shall be unregistered
-		 *                   for
-		 * @param rHandler   The event handler to be removed
+		 * @param eventType The event type the handler shall be unregistered
+		 *                  for
+		 * @param handler   The event handler to be removed
 		 */
-		void stopEventDispatching(EventType eEventType,
-			EwtEventHandler rHandler) {
+		void stopEventDispatching(EventType eventType,
+			EwtEventHandler handler) {
 			{
-				EwtEventHandler rHandlerChain = getEventHandler(eEventType);
+				EwtEventHandler handlerChain = getEventHandler(eventType);
 
-				if (rHandlerChain != null) {
-					rHandlerChain =
-						EventMulticaster.remove(rHandlerChain, rHandler);
+				if (handlerChain != null) {
+					handlerChain =
+						EventMulticaster.remove(handlerChain, handler);
 
-					if (rHandlerChain != null) {
-						aEventHandlers.put(eEventType, rHandlerChain);
+					if (handlerChain != null) {
+						eventHandlers.put(eventType, handlerChain);
 					} else {
-						aEventHandlers.remove(eEventType);
+						eventHandlers.remove(eventType);
 					}
 				}
 			}
@@ -1453,8 +1450,8 @@ public abstract class Component implements HasId<String> {
 		 * @see GewtEventDispatcher#dispatchEvent(EventType, NativeEvent)
 		 */
 		@Override
-		public void dispatchEvent(EventType rEventType, NativeEvent rEvent) {
-			notifyEventHandler(rEventType, null, rEvent);
+		public void dispatchEvent(EventType eventType, NativeEvent event) {
+			notifyEventHandler(eventType, null, event);
 		}
 	}
 }

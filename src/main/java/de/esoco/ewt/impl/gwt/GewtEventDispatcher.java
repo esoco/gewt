@@ -31,10 +31,10 @@ public interface GewtEventDispatcher {
 	/**
 	 * Dispatches an event without a native event.
 	 *
-	 * @param rEventType The event type
+	 * @param eventType The event type
 	 */
-	default public void dispatchEvent(EventType rEventType) {
-		dispatchEvent(rEventType, null);
+	default public void dispatchEvent(EventType eventType) {
+		dispatchEvent(eventType, null);
 	}
 
 	/**
@@ -43,9 +43,9 @@ public interface GewtEventDispatcher {
 	 * native event argument is NULL because no native GWT event is available
 	 * only a simple event notification will be dispatched.
 	 *
-	 * @param rEventType The event type
-	 * @param rEvent     The native GWT event that occurred or NULL if not
-	 *                   available
+	 * @param eventType The event type
+	 * @param event     The native GWT event that occurred or NULL if not
+	 *                  available
 	 */
-	public void dispatchEvent(EventType rEventType, NativeEvent rEvent);
+	public void dispatchEvent(EventType eventType, NativeEvent event);
 }

@@ -16,6 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.style;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
+import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import de.esoco.lib.property.AbstractStringProperties;
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.HasProperties;
@@ -23,19 +29,13 @@ import de.esoco.lib.property.PropertyName;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
-import com.google.gwt.user.client.ui.TextBoxBase;
-import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 
 import static de.esoco.lib.property.StyleProperties.CSS_STYLES;
 
@@ -53,9 +53,8 @@ import static de.esoco.lib.property.StyleProperties.CSS_STYLES;
  * are defined as constants in the class {@link StyleFlag}.</p>
  *
  * <p>The style data constant {@link #DEFAULT} should be used in all cases
- * where
- * no specific style is needed. This constant is also used internally by GEWT
- * and in cases where a NULL value is set as the style data.</p>
+ * where no specific style is needed. This constant is also used internally by
+ * GEWT and in cases where a NULL value is set as the style data.</p>
  *
  * @author eso
  */
@@ -88,9 +87,9 @@ public class StyleData extends AbstractStringProperties {
 
 	private static final long serialVersionUID = 1L;
 
-	private Alignment eHAlign = Alignment.FILL;
+	private Alignment horizontalAlign = Alignment.FILL;
 
-	private Alignment eVAlign = Alignment.FILL;
+	private Alignment verticalAlign = Alignment.FILL;
 
 	private double x = 0;
 
@@ -100,19 +99,19 @@ public class StyleData extends AbstractStringProperties {
 
 	private double h = 1;
 
-	private Set<StyleFlag> aFlags = EnumSet.noneOf(StyleFlag.class);
+	private Set<StyleFlag> flags = EnumSet.noneOf(StyleFlag.class);
 
 	/**
 	 * Creates a style data object with particular horizontal and vertical
 	 * alignments.
 	 *
-	 * @param eHorizontalAlignment The horizontal Alignment
-	 * @param eVerticalAlignment   The vertical Alignment
+	 * @param horizontalAlignment The horizontal Alignment
+	 * @param verticalAlignment   The vertical Alignment
 	 */
-	public StyleData(Alignment eHorizontalAlignment,
-		Alignment eVerticalAlignment) {
-		this.eHAlign = eHorizontalAlignment;
-		this.eVAlign = eVerticalAlignment;
+	public StyleData(Alignment horizontalAlignment,
+		Alignment verticalAlignment) {
+		this.horizontalAlign = horizontalAlignment;
+		this.verticalAlign = verticalAlignment;
 	}
 
 	/**
@@ -124,18 +123,18 @@ public class StyleData extends AbstractStringProperties {
 	/**
 	 * Internal copy constructor.
 	 *
-	 * @param rOther The StyleData object to copy
+	 * @param other The StyleData object to copy
 	 */
-	private StyleData(StyleData rOther) {
-		x = rOther.x;
-		y = rOther.y;
-		w = rOther.w;
-		h = rOther.h;
-		eHAlign = rOther.eHAlign;
-		eVAlign = rOther.eVAlign;
-		aFlags = rOther.aFlags;
+	private StyleData(StyleData other) {
+		x = other.x;
+		y = other.y;
+		w = other.w;
+		h = other.h;
+		horizontalAlign = other.horizontalAlign;
+		verticalAlign = other.verticalAlign;
+		flags = other.flags;
 
-		setPropertyMap(rOther.getPropertyMap());
+		setPropertyMap(other.getPropertyMap());
 	}
 
 	/**
@@ -143,8 +142,8 @@ public class StyleData extends AbstractStringProperties {
 	 *
 	 * @see #append(PropertyName, String, String)
 	 */
-	public StyleData append(PropertyName<String> rName, String sValue) {
-		return append(rName, sValue, " ");
+	public StyleData append(PropertyName<String> name, String value) {
+		return append(name, value, " ");
 	}
 
 	/**
@@ -153,37 +152,35 @@ public class StyleData extends AbstractStringProperties {
 	 * character it's distinct parts will be appended separately and only if
 	 * they do not already occur in the current value.
 	 *
-	 * @param rName      The name of the string property to append to
-	 * @param sValue     The string to append
-	 * @param sSeparator The separator string between an existing value and the
-	 *                   new one
+	 * @param name      The name of the string property to append to
+	 * @param value     The string to append
+	 * @param separator The separator string between an existing value and the
+	 *                  new one
 	 * @return A copy of this instance with the given property changed
 	 */
-	public StyleData append(PropertyName<String> rName, String sValue,
-		String sSeparator) {
-		String sCurrentValue = getProperty(rName, "");
+	public StyleData append(PropertyName<String> name, String value,
+		String separator) {
+		String currentValue = getProperty(name, "");
 
-		sValue = sValue.trim();
+		value = value.trim();
 
-		if (sCurrentValue.length() > 0) {
-			Set<String> aCurrentValues = new LinkedHashSet<>(5);
+		if (currentValue.length() > 0) {
+			Set<String> currentValues = new LinkedHashSet<>(5);
 
-			for (String s : sCurrentValue.split(sSeparator)) {
-				aCurrentValues.add(s);
-			}
+			Collections.addAll(currentValues, currentValue.split(separator));
 
-			StringBuilder aResult = new StringBuilder(sCurrentValue);
+			StringBuilder result = new StringBuilder(currentValue);
 
-			for (String sNewValue : sValue.split(sSeparator)) {
-				if (!aCurrentValues.contains(sNewValue)) {
-					aResult.append(sSeparator).append(sNewValue);
+			for (String newValue : value.split(separator)) {
+				if (!currentValues.contains(newValue)) {
+					result.append(separator).append(newValue);
 				}
 			}
 
-			sValue = aResult.toString();
+			value = result.toString();
 		}
 
-		return set(rName, sValue);
+		return set(name, value);
 	}
 
 	/**
@@ -192,9 +189,9 @@ public class StyleData extends AbstractStringProperties {
 	 *
 	 * @see Alignment#calcAlignedPosition(int, int, int)
 	 */
-	public final int calcHorizontalPosition(int nStart, int nFullSize,
-		int nAlignSize) {
-		return eHAlign.calcAlignedPosition(nStart, nFullSize, nAlignSize);
+	public final int calcHorizontalPosition(int start, int fullSize,
+		int alignSize) {
+		return horizontalAlign.calcAlignedPosition(start, fullSize, alignSize);
 	}
 
 	/**
@@ -203,39 +200,39 @@ public class StyleData extends AbstractStringProperties {
 	 *
 	 * @see Alignment#calcAlignedPosition(int, int, int)
 	 */
-	public final int calcVerticalPosition(int nStart, int nFullSize,
-		int nAlignSize) {
-		return eVAlign.calcAlignedPosition(nStart, nFullSize, nAlignSize);
+	public final int calcVerticalPosition(int start, int fullSize,
+		int alignSize) {
+		return verticalAlign.calcAlignedPosition(start, fullSize, alignSize);
 	}
 
 	/**
 	 * Sets a CSS style property.
 	 *
-	 * @param sCssProperty The name of the CSS property
-	 * @param sValue       The value of the CSS property or NULL to clear
+	 * @param cssProperty The name of the CSS property
+	 * @param value       The value of the CSS property or NULL to clear
 	 * @return A new style data instance with the modified CSS property
 	 */
 	@SuppressWarnings("unchecked")
-	public final StyleData css(String sCssProperty, String sValue) {
-		StyleData aCopy = new StyleData(this);
+	public final StyleData css(String cssProperty, String value) {
+		StyleData copy = new StyleData(this);
 
-		Map<String, String> rCssStyles = aCopy.getProperty(CSS_STYLES, null);
+		Map<String, String> cssStyles = copy.getProperty(CSS_STYLES, null);
 
-		if (rCssStyles == null && sValue != null) {
-			rCssStyles = new HashMap<>();
+		if (cssStyles == null && value != null) {
+			cssStyles = new HashMap<>();
 		}
 
-		if (rCssStyles != null) {
-			if (sValue != null) {
-				rCssStyles.put(sCssProperty, sValue);
+		if (cssStyles != null) {
+			if (value != null) {
+				cssStyles.put(cssProperty, value);
 			} else {
-				rCssStyles.remove(sCssProperty);
+				cssStyles.remove(cssProperty);
 			}
 		}
 
-		aCopy.setProperty(CSS_STYLES, rCssStyles);
+		copy.setProperty(CSS_STYLES, cssStyles);
 
-		return aCopy;
+		return copy;
 	}
 
 	/**
@@ -254,7 +251,7 @@ public class StyleData extends AbstractStringProperties {
 	 * @return The horizontal alignment
 	 */
 	public final Alignment getHorizontalAlignment() {
-		return eHAlign;
+		return horizontalAlign;
 	}
 
 	/**
@@ -264,7 +261,7 @@ public class StyleData extends AbstractStringProperties {
 	 * @return The vertical alignment
 	 */
 	public final Alignment getVerticalAlignment() {
-		return eVAlign;
+		return verticalAlign;
 	}
 
 	/**
@@ -308,11 +305,11 @@ public class StyleData extends AbstractStringProperties {
 	/**
 	 * Returns TRUE the argument style flag has been set in this style data.
 	 *
-	 * @param rFlag The flag to check for
+	 * @param flag The flag to check for
 	 * @return TRUE if the flags is set
 	 */
-	public final boolean hasFlag(StyleFlag rFlag) {
-		return aFlags.contains(rFlag);
+	public final boolean hasFlag(StyleFlag flag) {
+		return flags.contains(flag);
 	}
 
 	/**
@@ -323,17 +320,17 @@ public class StyleData extends AbstractStringProperties {
 	 * this instance contains no horizontal alignment flag
 	 */
 	public HorizontalAlignmentConstant mapHorizontalAlignment() {
-		HorizontalAlignmentConstant rAlignment = null;
+		HorizontalAlignmentConstant alignment = null;
 
 		if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_LEFT)) {
-			rAlignment = HasHorizontalAlignment.ALIGN_LEFT;
+			alignment = HasHorizontalAlignment.ALIGN_LEFT;
 		} else if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_CENTER)) {
-			rAlignment = HasHorizontalAlignment.ALIGN_CENTER;
+			alignment = HasHorizontalAlignment.ALIGN_CENTER;
 		} else if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_RIGHT)) {
-			rAlignment = HasHorizontalAlignment.ALIGN_RIGHT;
+			alignment = HasHorizontalAlignment.ALIGN_RIGHT;
 		}
 
-		return rAlignment;
+		return alignment;
 	}
 
 	/**
@@ -344,17 +341,17 @@ public class StyleData extends AbstractStringProperties {
 	 * this instance contains no horizontal alignment flag
 	 */
 	public TextAlignment mapTextAlignment() {
-		TextAlignment rAlignment = null;
+		TextAlignment alignment = null;
 
 		if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_LEFT)) {
-			rAlignment = TextAlignment.LEFT;
+			alignment = TextAlignment.LEFT;
 		} else if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_CENTER)) {
-			rAlignment = TextAlignment.CENTER;
+			alignment = TextAlignment.CENTER;
 		} else if (hasFlag(StyleFlag.HORIZONTAL_ALIGN_RIGHT)) {
-			rAlignment = TextAlignment.RIGHT;
+			alignment = TextAlignment.RIGHT;
 		}
 
-		return rAlignment;
+		return alignment;
 	}
 
 	/**
@@ -366,17 +363,17 @@ public class StyleData extends AbstractStringProperties {
 	 * instance contains no vertical alignment flag
 	 */
 	public VerticalAlignmentConstant mapVerticalAlignment() {
-		VerticalAlignmentConstant rAlignment = null;
+		VerticalAlignmentConstant alignment = null;
 
 		if (hasFlag(StyleFlag.VERTICAL_ALIGN_BOTTOM)) {
-			rAlignment = HasVerticalAlignment.ALIGN_BOTTOM;
+			alignment = HasVerticalAlignment.ALIGN_BOTTOM;
 		} else if (hasFlag(StyleFlag.VERTICAL_ALIGN_CENTER)) {
-			rAlignment = HasVerticalAlignment.ALIGN_MIDDLE;
+			alignment = HasVerticalAlignment.ALIGN_MIDDLE;
 		} else if (hasFlag(StyleFlag.VERTICAL_ALIGN_TOP)) {
-			rAlignment = HasVerticalAlignment.ALIGN_TOP;
+			alignment = HasVerticalAlignment.ALIGN_TOP;
 		}
 
-		return rAlignment;
+		return alignment;
 	}
 
 	/**
@@ -384,40 +381,40 @@ public class StyleData extends AbstractStringProperties {
 	 * will
 	 * be merged in from the other instance.
 	 *
-	 * @param rOther The other instance to merge the values from
+	 * @param other The other instance to merge the values from
 	 * @return A new StyleData instance
 	 */
-	public final StyleData merge(StyleData rOther) {
-		StyleData aCopy = new StyleData(this);
+	public final StyleData merge(StyleData other) {
+		StyleData copy = new StyleData(this);
 
-		if (eHAlign == DEFAULT.eHAlign) {
-			aCopy.eHAlign = rOther.eHAlign;
+		if (horizontalAlign == DEFAULT.horizontalAlign) {
+			copy.horizontalAlign = other.horizontalAlign;
 		}
 
-		if (eVAlign == DEFAULT.eVAlign) {
-			aCopy.eVAlign = rOther.eVAlign;
+		if (verticalAlign == DEFAULT.verticalAlign) {
+			copy.verticalAlign = other.verticalAlign;
 		}
 
 		if (x == DEFAULT.x) {
-			aCopy.x = rOther.x;
+			copy.x = other.x;
 		}
 
 		if (y == DEFAULT.y) {
-			aCopy.y = rOther.y;
+			copy.y = other.y;
 		}
 
 		if (w == DEFAULT.w) {
-			aCopy.w = rOther.w;
+			copy.w = other.w;
 		}
 
 		if (h == DEFAULT.h) {
-			aCopy.h = rOther.h;
+			copy.h = other.h;
 		}
 
-		aCopy.addStyleFlags(rOther.aFlags);
-		aCopy.addPropertyMap(rOther.getPropertyMap());
+		copy.addStyleFlags(other.flags);
+		copy.addPropertyMap(other.getPropertyMap());
 
-		return aCopy;
+		return copy;
 	}
 
 	/**
@@ -431,23 +428,23 @@ public class StyleData extends AbstractStringProperties {
 	 * implementation-specific prefixes that are separated by dots, like
 	 * 'Swing.LayoutKey'.</p>
 	 *
-	 * @param rName  The property name of the style
-	 * @param rValue The style value
+	 * @param name  The property name of the style
+	 * @param value The style value
 	 * @return A copy of this instance with the given style set
 	 */
-	public <T> StyleData set(PropertyName<T> rName, T rValue) {
-		StyleData aCopy = new StyleData(this);
+	public <T> StyleData set(PropertyName<T> name, T value) {
+		StyleData copy = new StyleData(this);
 
-		Map<PropertyName<?>, String> rPropertyMap = getPropertyMap();
+		Map<PropertyName<?>, String> propertyMap = getPropertyMap();
 
-		if (rPropertyMap != null) {
-			aCopy.setPropertyMap(
-				new HashMap<PropertyName<?>, String>(rPropertyMap));
+		if (propertyMap != null) {
+			copy.setPropertyMap(
+				new HashMap<PropertyName<?>, String>(propertyMap));
 		}
 
-		aCopy.setProperty(rName, rValue);
+		copy.setProperty(name, value);
 
-		return aCopy;
+		return copy;
 	}
 
 	/**
@@ -461,19 +458,17 @@ public class StyleData extends AbstractStringProperties {
 	 * combination of multiple integer flags (which would only work in
 	 * microEWT).</p>
 	 *
-	 * @param rFlags The style flag to set
+	 * @param styleFlags The style flag to set
 	 * @return A new instance that as a copy of this one that contains the
 	 * given
 	 * flag
 	 */
-	public final StyleData setFlags(StyleFlag... rFlags) {
-		StyleData aCopy = new StyleData(this);
+	public final StyleData setFlags(StyleFlag... styleFlags) {
+		StyleData copy = new StyleData(this);
 
-		aCopy.aFlags = EnumSet.copyOf(aFlags);
-
-		aCopy.aFlags.addAll(Arrays.asList(rFlags));
-
-		return aCopy;
+		copy.flags = EnumSet.copyOf(flags);
+		copy.flags.addAll(Arrays.asList(styleFlags));
+		return copy;
 	}
 
 	/**
@@ -481,16 +476,17 @@ public class StyleData extends AbstractStringProperties {
 	 */
 	@Override
 	public String toString() {
-		Map<PropertyName<?>, String> rPropertyMap = getPropertyMap();
+		Map<PropertyName<?>, String> propertyMap = getPropertyMap();
 
-		String sProperties = rPropertyMap != null && rPropertyMap.size() > 0 ?
-		                     "," + rPropertyMap.toString() :
-		                     "";
+		String properties = propertyMap != null && propertyMap.size() > 0 ?
+		                    "," + propertyMap :
+		                    "";
 
-		String sFlags = aFlags.size() > 0 ? "," + aFlags.toString() : "";
+		String flags = this.flags.size() > 0 ? "," + this.flags : "";
 
 		return getClass().getSimpleName() + "[" + x + "," + y + "," + w + "," +
-			h + "," + eHAlign + "," + eVAlign + sFlags + sProperties + "]";
+			h + "," + horizontalAlign + "," + verticalAlign + flags +
+			properties + "]";
 	}
 
 	/**
@@ -519,33 +515,33 @@ public class StyleData extends AbstractStringProperties {
 	 * Returns a copy of this style data object with the give properties copied
 	 * from an instance {@link HasProperties}.
 	 *
-	 * @param rSource        The properties object to copy the properties from
-	 * @param rPropertyNames The names of the properties to copy
+	 * @param source        The properties object to copy the properties from
+	 * @param propertyNames The names of the properties to copy
 	 * @return A copy of this instance that contains the given properties (if
 	 * they are available in the source properties)
 	 */
 	@SuppressWarnings("unchecked")
-	public StyleData withProperties(HasProperties rSource,
-		Collection<PropertyName<?>> rPropertyNames) {
-		StyleData aCopy = new StyleData(this);
+	public StyleData withProperties(HasProperties source,
+		Collection<PropertyName<?>> propertyNames) {
+		StyleData copy = new StyleData(this);
 
-		Map<PropertyName<?>, String> rPropertyMap = getPropertyMap();
+		Map<PropertyName<?>, String> propertyMap = getPropertyMap();
 
-		if (rPropertyMap != null) {
-			aCopy.setPropertyMap(
-				new HashMap<PropertyName<?>, String>(rPropertyMap));
+		if (propertyMap != null) {
+			copy.setPropertyMap(
+				new HashMap<PropertyName<?>, String>(propertyMap));
 		}
 
-		for (PropertyName<?> rPropertyName : rPropertyNames) {
-			Object rProperty = rSource.getProperty(rPropertyName, null);
+		for (PropertyName<?> propertyName : propertyNames) {
+			Object property = source.getProperty(propertyName, null);
 
-			if (rProperty != null) {
-				aCopy.setProperty((PropertyName<Object>) rPropertyName,
-					rProperty);
+			if (property != null) {
+				copy.setProperty((PropertyName<Object>) propertyName,
+					property);
 			}
 		}
 
-		return aCopy;
+		return copy;
 	}
 
 	/**
@@ -585,14 +581,14 @@ public class StyleData extends AbstractStringProperties {
 	 * @return A new StyleData instance
 	 */
 	public final StyleData xywh(double x, double y, double w, double h) {
-		StyleData aCopy = new StyleData(this);
+		StyleData copy = new StyleData(this);
 
-		aCopy.x = x;
-		aCopy.y = y;
-		aCopy.w = w;
-		aCopy.h = h;
+		copy.x = x;
+		copy.y = y;
+		copy.w = w;
+		copy.h = h;
 
-		return aCopy;
+		return copy;
 	}
 
 	/**
@@ -612,18 +608,18 @@ public class StyleData extends AbstractStringProperties {
 	 * creates a new property map if necessary to ensure the immutability of
 	 * style data instances.
 	 *
-	 * @param rPropertyMap A map of properties to be added to this instance
+	 * @param propertyMap A map of properties to be added to this instance
 	 */
 	private final void addPropertyMap(
-		Map<PropertyName<?>, String> rPropertyMap) {
+		Map<PropertyName<?>, String> propertyMap) {
 		if (getPropertyCount() == 0) {
-			setPropertyMap(rPropertyMap);
-		} else if (rPropertyMap != null && rPropertyMap.size() > 0) {
-			HashMap<PropertyName<?>, String> aNewPropertyMap =
+			setPropertyMap(propertyMap);
+		} else if (propertyMap != null && propertyMap.size() > 0) {
+			HashMap<PropertyName<?>, String> newPropertyMap =
 				new HashMap<PropertyName<?>, String>(getPropertyMap());
 
-			aNewPropertyMap.putAll(rPropertyMap);
-			setPropertyMap(aNewPropertyMap);
+			newPropertyMap.putAll(propertyMap);
+			setPropertyMap(newPropertyMap);
 		}
 	}
 
@@ -632,15 +628,15 @@ public class StyleData extends AbstractStringProperties {
 	 * creates a new set of flags if necessary to ensure the immutability of
 	 * style data instances.
 	 *
-	 * @param rStyleFlags A set of style flags to be added to this instance
+	 * @param styleFlags A set of style flags to be added to this instance
 	 */
-	private final void addStyleFlags(Set<StyleFlag> rStyleFlags) {
-		if (aFlags.size() == 0) {
-			aFlags = rStyleFlags;
-		} else if (rStyleFlags.size() > 0) {
-			aFlags = new HashSet<StyleFlag>(aFlags);
-			aFlags.addAll(rStyleFlags);
-			aFlags = EnumSet.copyOf(aFlags);
+	private final void addStyleFlags(Set<StyleFlag> styleFlags) {
+		if (flags.size() == 0) {
+			flags = styleFlags;
+		} else if (styleFlags.size() > 0) {
+			flags = new HashSet<StyleFlag>(flags);
+			flags.addAll(styleFlags);
+			flags = EnumSet.copyOf(flags);
 		}
 	}
 }

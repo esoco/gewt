@@ -52,20 +52,20 @@ import static de.esoco.lib.property.StyleProperties.BUTTON_STYLE;
  */
 public class Button extends Control implements TextAttribute, ImageAttribute {
 
-	private String sText;
+	private String text;
 
-	private Image rImage;
+	private Image image;
 
-	private AlignedPosition rTextPosition = AlignedPosition.RIGHT;
+	private AlignedPosition textPosition = AlignedPosition.RIGHT;
 
 	/**
 	 * @see Control#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle) {
-		super.applyStyle(rStyle);
+	public void applyStyle(StyleData style) {
+		super.applyStyle(style);
 
-		rTextPosition = getTextPosition(rStyle);
+		textPosition = getTextPosition(style);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class Button extends Control implements TextAttribute, ImageAttribute {
 	 */
 	@Override
 	public Image getImage() {
-		return rImage;
+		return image;
 	}
 
 	/**
@@ -83,98 +83,98 @@ public class Button extends Control implements TextAttribute, ImageAttribute {
 	 */
 	@Override
 	public String getText() {
-		return sText;
+		return text;
 	}
 
 	/**
 	 * @see ImageAttribute#setImage(Image)
 	 */
 	@Override
-	public void setImage(Image rImage) {
-		this.rImage = rImage;
+	public void setImage(Image image) {
+		this.image = image;
 
-		HasText rWidget = (HasText) getWidget();
+		HasText widget = (HasText) getWidget();
 
-		if (rWidget instanceof ImageAttribute) {
-			((ImageAttribute) rWidget).setImage(rImage);
+		if (widget instanceof ImageAttribute) {
+			((ImageAttribute) widget).setImage(image);
 		} else {
-			setButtonImage(rWidget, getText(), rImage, rTextPosition);
+			setButtonImage(widget, getText(), image, textPosition);
 		}
 	}
 
 	/**
 	 * Sets the button text.
 	 *
-	 * @param sText The new button text
+	 * @param text The new button text
 	 */
 	@Override
-	public void setText(String sText) {
-		sText = getContext().expandResource(sText);
-		this.sText = sText;
+	public void setText(String text) {
+		text = getContext().expandResource(text);
+		this.text = text;
 
-		HasText rWidget = (HasText) getWidget();
+		HasText widget = (HasText) getWidget();
 
-		rWidget.setText(sText);
+		widget.setText(text);
 
-		if (rWidget instanceof PushButton) {
+		if (widget instanceof PushButton) {
 			// GWT bug: text of other states will not be set sometimes
-			PushButton rPushButton = (PushButton) rWidget;
+			PushButton pushButton = (PushButton) widget;
 
-			rPushButton.getUpFace().setText(sText);
-			rPushButton.getDownFace().setText(sText);
-			rPushButton.getUpHoveringFace().setText(sText);
-			rPushButton.getDownHoveringFace().setText(sText);
-			rPushButton.getUpDisabledFace().setText(sText);
-			rPushButton.getDownDisabledFace().setText(sText);
+			pushButton.getUpFace().setText(text);
+			pushButton.getDownFace().setText(text);
+			pushButton.getUpHoveringFace().setText(text);
+			pushButton.getDownHoveringFace().setText(text);
+			pushButton.getUpDisabledFace().setText(text);
+			pushButton.getDownDisabledFace().setText(text);
 		}
 	}
 
 	/**
 	 * Sets an image and/or text on a button widget.
 	 *
-	 * @param rWidget       The button widget
-	 * @param sText         The button text (NULL or empty for none)
-	 * @param rImage        The button image
-	 * @param rTextPosition The position of the text relative to the image
+	 * @param widget       The button widget
+	 * @param text         The button text (NULL or empty for none)
+	 * @param image        The button image
+	 * @param textPosition The position of the text relative to the image
 	 */
-	void setButtonImage(HasText rWidget, String sText, Image rImage,
-		AlignedPosition rTextPosition) {
-		if (rImage instanceof ImageRef) {
-			ImageRef rBitmap = (ImageRef) rImage;
+	void setButtonImage(HasText widget, String text, Image image,
+		AlignedPosition textPosition) {
+		if (image instanceof ImageRef) {
+			ImageRef bitmap = (ImageRef) image;
 
-			if (rWidget instanceof PushButton &&
-				(sText == null || sText.length() == 0)) {
-				com.google.gwt.user.client.ui.Image rGwtImage =
-					rBitmap.getGwtImage();
+			if (widget instanceof PushButton &&
+				(text == null || text.length() == 0)) {
+				com.google.gwt.user.client.ui.Image gwtImage =
+					bitmap.getGwtImage();
 
-				PushButton rPushButton = (PushButton) rWidget;
+				PushButton pushButton = (PushButton) widget;
 
-				rPushButton.getUpFace().setImage(rGwtImage);
-				rPushButton.getUpDisabledFace().setImage(rGwtImage);
-				rPushButton.getUpHoveringFace().setImage(rGwtImage);
-				rPushButton.getDownFace().setImage(rGwtImage);
-				rPushButton.getDownDisabledFace().setImage(rGwtImage);
-				rPushButton.getDownHoveringFace().setImage(rGwtImage);
+				pushButton.getUpFace().setImage(gwtImage);
+				pushButton.getUpDisabledFace().setImage(gwtImage);
+				pushButton.getUpHoveringFace().setImage(gwtImage);
+				pushButton.getDownFace().setImage(gwtImage);
+				pushButton.getDownDisabledFace().setImage(gwtImage);
+				pushButton.getDownHoveringFace().setImage(gwtImage);
 			} else {
-				String sImageLabel =
-					createImageLabel(sText, rBitmap, rTextPosition,
-						HasHorizontalAlignment.ALIGN_CENTER, "100%");
+				String imageLabel = createImageLabel(text, bitmap,
+					textPosition,
+					HasHorizontalAlignment.ALIGN_CENTER, "100%");
 
-				if (rWidget instanceof PushButton) {
-					PushButton rPushButton = (PushButton) rWidget;
+				if (widget instanceof PushButton) {
+					PushButton pushButton = (PushButton) widget;
 
-					rPushButton.getUpFace().setHTML(sImageLabel);
-					rPushButton.getUpDisabledFace().setHTML(sImageLabel);
-					rPushButton.getUpHoveringFace().setHTML(sImageLabel);
-					rPushButton.getDownFace().setHTML(sImageLabel);
-					rPushButton.getDownDisabledFace().setHTML(sImageLabel);
-					rPushButton.getDownHoveringFace().setHTML(sImageLabel);
-				} else if (rWidget instanceof HasHTML) {
-					((HasHTML) rWidget).setHTML(sImageLabel);
+					pushButton.getUpFace().setHTML(imageLabel);
+					pushButton.getUpDisabledFace().setHTML(imageLabel);
+					pushButton.getUpHoveringFace().setHTML(imageLabel);
+					pushButton.getDownFace().setHTML(imageLabel);
+					pushButton.getDownDisabledFace().setHTML(imageLabel);
+					pushButton.getDownHoveringFace().setHTML(imageLabel);
+				} else if (widget instanceof HasHTML) {
+					((HasHTML) widget).setHTML(imageLabel);
 				}
 			}
 		} else {
-			rWidget.setText(sText);
+			widget.setText(text);
 		}
 	}
 
@@ -191,20 +191,20 @@ public class Button extends Control implements TextAttribute, ImageAttribute {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle) {
-			ButtonStyle eButtonStyle =
-				rStyle.getProperty(BUTTON_STYLE, ButtonStyle.DEFAULT);
+		public W createWidget(Component component, StyleData style) {
+			ButtonStyle buttonStyle =
+				style.getProperty(BUTTON_STYLE, ButtonStyle.DEFAULT);
 
-			IsWidget aButtonWidget;
+			IsWidget buttonWidget;
 
-			if (rStyle.hasFlag(StyleFlag.HYPERLINK) ||
-				eButtonStyle == ButtonStyle.LINK) {
-				aButtonWidget = new Anchor();
+			if (style.hasFlag(StyleFlag.HYPERLINK) ||
+				buttonStyle == ButtonStyle.LINK) {
+				buttonWidget = new Anchor();
 			} else {
-				aButtonWidget = new PushButton();
+				buttonWidget = new PushButton();
 			}
 
-			return (W) aButtonWidget;
+			return (W) buttonWidget;
 		}
 	}
 }

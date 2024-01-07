@@ -16,6 +16,8 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import de.esoco.ewt.EWT;
 import de.esoco.ewt.component.Container;
 import de.esoco.ewt.component.DeckPanel.DeckLayoutPanelLayout;
@@ -24,12 +26,8 @@ import de.esoco.ewt.component.SplitPanel.SplitPanelLayout;
 import de.esoco.ewt.component.StackPanel.StackPanelLayout;
 import de.esoco.ewt.component.TabPanel.TabPanelLayout;
 import de.esoco.ewt.style.StyleData;
-
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.LayoutType;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
 
 import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
 
@@ -40,114 +38,113 @@ import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
  */
 public class DefaultLayoutFactory implements LayoutFactory {
 
-	private static String sGridRowStyleName = "row";
+	private static String gridRowStyleName = "row";
 
-	private static String sGridColumnStyleName = "col";
+	private static String gridColumnStyleName = "col";
 
 	/**
 	 * Allows to set the style names for the layouts
 	 * {@link LayoutType#GRID_ROW}
 	 * and {@link LayoutType#GRID_COLUMN}.
 	 *
-	 * @param sRowStyleName    The new grid row style name
-	 * @param sColumnStyleName The new grid column style name
+	 * @param rowStyleName    The new grid row style name
+	 * @param columnStyleName The new grid column style name
 	 */
-	public static void setGridStyleNames(String sRowStyleName,
-		String sColumnStyleName) {
-		sGridRowStyleName = sRowStyleName;
-		sGridColumnStyleName = sColumnStyleName;
+	public static void setGridStyleNames(String rowStyleName,
+		String columnStyleName) {
+		gridRowStyleName = rowStyleName;
+		gridColumnStyleName = columnStyleName;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GenericLayout createLayout(Container rParentContainer,
-		StyleData rContainerStyle, LayoutType eLayout) {
-		GenericLayout aLayout;
+	public GenericLayout createLayout(Container parentContainer,
+		StyleData containerStyle, LayoutType layoutType) {
+		GenericLayout layout;
 
-		switch (eLayout) {
+		switch (layoutType) {
 			case SPLIT:
-				aLayout = new SplitPanelLayout();
+				layout = new SplitPanelLayout();
 				break;
 
 			case DECK:
 
-				Alignment eVAlign =
-					rContainerStyle.getProperty(VERTICAL_ALIGN,
-						Alignment.FILL);
+				Alignment vAlign =
+					containerStyle.getProperty(VERTICAL_ALIGN, Alignment.FILL);
 
-				if (eVAlign == Alignment.FILL) {
-					aLayout = new DeckLayoutPanelLayout();
+				if (vAlign == Alignment.FILL) {
+					layout = new DeckLayoutPanelLayout();
 				} else {
-					aLayout = new DeckPanelLayout();
+					layout = new DeckPanelLayout();
 				}
 
 				break;
 
 			case STACK:
-				aLayout = new StackPanelLayout();
+				layout = new StackPanelLayout();
 				break;
 
 			case TABS:
-				aLayout = new TabPanelLayout();
+				layout = new TabPanelLayout();
 				break;
 
 			case FILL:
-				aLayout = new FillLayout();
+				layout = new FillLayout();
 				break;
 
 			case GRID_ROW:
-				aLayout = new FlowLayout(sGridRowStyleName);
+				layout = new FlowLayout(gridRowStyleName);
 				break;
 
 			case GRID_COLUMN:
-				aLayout = new FlowLayout(sGridColumnStyleName);
+				layout = new FlowLayout(gridColumnStyleName);
 				break;
 
 			case FLOW:
 			case GRID:
 			case CARD:
 			case LIST_ITEM:
-				aLayout = new FlowLayout();
+				layout = new FlowLayout();
 				break;
 
 			case FLEX:
-				aLayout = new CssStyleLayout(EWT.CSS.ewtFlexLayout());
+				layout = new CssStyleLayout(EWT.CSS.ewtFlexLayout());
 				break;
 
 			case CSS_GRID:
-				aLayout = new CssStyleLayout(EWT.CSS.ewtGridLayout());
+				layout = new CssStyleLayout(EWT.CSS.ewtGridLayout());
 				break;
 
 			case LIST:
-				aLayout = new ListLayout();
+				layout = new ListLayout();
 				break;
 
 			case FORM:
-				aLayout = new FormLayout();
+				layout = new FormLayout();
 				break;
 
 			case GROUP:
-				aLayout = new GroupLayout();
+				layout = new GroupLayout();
 				break;
 
 			case MENU:
-				aLayout = new MenuLayout();
+				layout = new MenuLayout();
 				break;
 
 			case HEADER:
 			case CONTENT:
 			case FOOTER:
-				aLayout = new ContentLayout(eLayout);
+				layout = new ContentLayout(layoutType);
 				break;
 
 			default:
 				throw new IllegalStateException(
-					"Unsupported Layout " + eLayout);
+					"Unsupported Layout " + layoutType);
 		}
 
-		return aLayout;
+		return layout;
 	}
 
 	/**
@@ -165,29 +162,29 @@ public class DefaultLayoutFactory implements LayoutFactory {
 	 */
 	static class CssStyleLayout extends GenericLayout {
 
-		private String sCssStyleName;
+		private final String cssStyleName;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sStyleName The CSS style name of this instance
+		 * @param styleName The CSS style name of this instance
 		 */
-		public CssStyleLayout(String sStyleName) {
-			sCssStyleName = sStyleName;
+		public CssStyleLayout(String styleName) {
+			cssStyleName = styleName;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
 			return new FlowPanel() {
 				@Override
 				protected void onAttach() {
 					super.onAttach();
 
-					addStyleName(sCssStyleName);
+					addStyleName(cssStyleName);
 				}
 			};
 		}

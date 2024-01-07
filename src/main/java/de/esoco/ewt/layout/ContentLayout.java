@@ -34,23 +34,23 @@ import com.google.gwt.user.client.ui.LayoutPanel;
  */
 public class ContentLayout extends GenericLayout {
 
-	private final LayoutType eLayoutType;
+	private final LayoutType layoutType;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param eLayoutType The type of this content layout
+	 * @param layoutType The type of this content layout
 	 */
-	public ContentLayout(LayoutType eLayoutType) {
-		this.eLayoutType = eLayoutType;
+	public ContentLayout(LayoutType layoutType) {
+		this.layoutType = layoutType;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(Container rContainer,
-		StyleData rStyle) {
+	public HasWidgets createLayoutContainer(Container container,
+		StyleData style) {
 		return new LayoutPanel();
 	}
 
@@ -60,6 +60,6 @@ public class ContentLayout extends GenericLayout {
 	 * @return The layout value
 	 */
 	public final LayoutType getLayoutType() {
-		return eLayoutType;
+		return layoutType;
 	}
 }

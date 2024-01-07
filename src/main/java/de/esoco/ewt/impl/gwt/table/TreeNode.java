@@ -16,17 +16,16 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
 
-import de.esoco.lib.model.Callback;
-import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.HierarchicalDataModel;
-import de.esoco.lib.model.RemoteDataModel;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import de.esoco.lib.model.Callback;
+import de.esoco.lib.model.DataModel;
+import de.esoco.lib.model.HierarchicalDataModel;
+import de.esoco.lib.model.RemoteDataModel;
 
 /**
  * A widget that represents a tree node.
@@ -35,62 +34,63 @@ import com.google.gwt.user.client.ui.Image;
  */
 class TreeNode extends Composite
 	implements ClickHandler, Callback<RemoteDataModel<DataModel<?>>> {
-	private final GwtTable rTable;
+	private final GwtTable table;
 
-	private final TreeNode rParent;
+	private final TreeNode parent;
 
-	private final TreeNode rPrevious;
+	private final TreeNode previous;
 
-	private int nIndex;
+	private final int index;
 
-	private int nLevel;
+	private final int level;
 
-	private int nDirectChildren;
+	private final HTML spacing = new HTML("&nbsp;");
 
-	private int nVisibleChildren = 0;
+	private final Image nodeControl = new Image(GwtTable.RES.imTreeLeaf());
 
-	private DataModel<?> rRowModel;
+	private final HTML cellText = new HTML("");
 
-	private boolean bExpanded = false;
+	private int directChildren;
 
-	private boolean bChanging = false;
+	private int visibleChildren = 0;
 
-	private HTML aSpacing = new HTML("&nbsp;");
+	private DataModel<?> rowModel;
 
-	private Image aNodeControl = new Image(GwtTable.RES.imTreeLeaf());
+	private boolean expanded = false;
 
-	private HTML aCellText = new HTML("");
+	private boolean changing = false;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rTable    The table this node belongs to
-	 * @param rParent   The parent cell or NULL for root level cells
-	 * @param rPrevious The previous cell in the same level or NULL for the
-	 *                  first cell
+	 * @param table    The table this node belongs to
+	 * @param parent   The parent cell or NULL for root level cells
+	 * @param previous The previous cell in the same level or NULL for the
+	 *                    first
+	 *                 cell
 	 */
-	TreeNode(GwtTable rTable, TreeNode rParent, TreeNode rPrevious) {
-		this.rTable = rTable;
-		this.rParent = rParent;
-		this.rPrevious = rPrevious;
+	TreeNode(GwtTable table, TreeNode parent, TreeNode previous) {
+		this.table = table;
+		this.parent = parent;
+		this.previous = previous;
 
-		nIndex = rPrevious != null ? rPrevious.nIndex + 1 : 0;
-		nLevel = rParent != null ? rParent.nLevel + 1 : 0;
+		index = previous != null ? previous.index + 1 : 0;
+		level = parent != null ? parent.level + 1 : 0;
 
-		FlowPanel aPanel = new FlowPanel();
+		FlowPanel panel = new FlowPanel();
 
-		aPanel.add(aSpacing);
-		aPanel.add(aNodeControl);
-		aPanel.add(aCellText);
+		panel.add(spacing);
+		panel.add(nodeControl);
+		panel.add(cellText);
 
-		aNodeControl.addClickHandler(this);
+		nodeControl.addClickHandler(this);
 
-		aPanel.setStylePrimaryName(GwtTable.CSS.ewtTreeNode());
-		aSpacing.addStyleName(GwtTable.CSS.ewtTreeNode());
-		aNodeControl.addStyleName(GwtTable.CSS.ewtTreeNode());
-		aCellText.addStyleName(GwtTable.CSS.ewtTreeNode());
+		panel.setStylePrimaryName(GwtTable.CSS.ewtTreeNode());
+		spacing.addStyleName(GwtTable.CSS.ewtTreeNode());
+		nodeControl.addStyleName(GwtTable.CSS.ewtTreeNode());
+		cellText.addStyleName(GwtTable.CSS.ewtTreeNode());
 
-		initWidget(aPanel);
+		initWidget(panel);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class TreeNode extends Composite
 	 * @return The count of direct children
 	 */
 	public final int getDirectChildren() {
-		return nDirectChildren;
+		return directChildren;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class TreeNode extends Composite
 	 * @return The parent node
 	 */
 	public final TreeNode getParentNode() {
-		return rParent;
+		return parent;
 	}
 
 	/**
@@ -117,7 +117,7 @@ class TreeNode extends Composite
 	 * @return The row data model
 	 */
 	public final DataModel<?> getRowModel() {
-		return rRowModel;
+		return rowModel;
 	}
 
 	/**
@@ -126,7 +126,7 @@ class TreeNode extends Composite
 	 * @return The count of visible children
 	 */
 	public final int getVisibleChildren() {
-		return nVisibleChildren;
+		return visibleChildren;
 	}
 
 	/**
@@ -135,7 +135,7 @@ class TreeNode extends Composite
 	 * @return TRUE if this node is currently expanded
 	 */
 	public final boolean isExpanded() {
-		return bExpanded;
+		return expanded;
 	}
 
 	/**
@@ -144,15 +144,15 @@ class TreeNode extends Composite
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		rEvent.stopPropagation();
+	public void onClick(ClickEvent event) {
+		event.stopPropagation();
 
-		if (!bChanging) {
-			if (bExpanded) {
-				rTable.collapseNode(this);
+		if (!changing) {
+			if (expanded) {
+				table.collapseNode(this);
 			} else {
-				bChanging = true;
-				rTable.expandNode(this);
+				changing = true;
+				table.expandNode(this);
 			}
 		}
 	}
@@ -164,8 +164,8 @@ class TreeNode extends Composite
 	 */
 	@Override
 	public void onError(Throwable e) {
-		bChanging = false;
-		rTable.onError(e);
+		changing = false;
+		table.onError(e);
 	}
 
 	/**
@@ -174,9 +174,9 @@ class TreeNode extends Composite
 	 * @see Callback#onSuccess(Object)
 	 */
 	@Override
-	public void onSuccess(RemoteDataModel<DataModel<?>> rChildModels) {
-		rTable.hideBusyIndicator();
-		rTable.addChildRows(this, rChildModels);
+	public void onSuccess(RemoteDataModel<DataModel<?>> childModels) {
+		table.hideBusyIndicator();
+		table.addChildRows(this, childModels);
 	}
 
 	/**
@@ -187,59 +187,56 @@ class TreeNode extends Composite
 	 * @return The absolute index of the cell
 	 */
 	int getAbsoluteIndex() {
-		int nResult;
+		int result;
 
-		if (rPrevious != null) {
-			nResult = rPrevious.getAbsoluteIndex() + 1;
-			nResult += rPrevious.nVisibleChildren;
-		} else if (rParent != null) {
-			nResult = rParent.getAbsoluteIndex() + 1;
+		if (previous != null) {
+			result = previous.getAbsoluteIndex() + 1;
+			result += previous.visibleChildren;
+		} else if (parent != null) {
+			result = parent.getAbsoluteIndex() + 1;
 		} else {
-			nResult = 0;
+			result = 0;
 		}
 
-		return nResult;
+		return result;
 	}
 
 	/**
 	 * Updates the hierarchical parameters of this node.
 	 *
-	 * @param bExpanded TRUE to expand the node, FALSE to collapse
+	 * @param expanded TRUE to expand the node, FALSE to collapse
 	 */
-	void setExpanded(boolean bExpanded) {
-		updateVisibleChildren(bExpanded ? nDirectChildren : -nVisibleChildren);
-		aNodeControl.setResource(bExpanded ?
-		                         GwtTable.RES.imTreeCollapse() :
-		                         GwtTable.RES.imTreeExpand());
-		this.bExpanded = bExpanded;
-		bChanging = false;
+	void setExpanded(boolean expanded) {
+		updateVisibleChildren(expanded ? directChildren : -visibleChildren);
+		nodeControl.setResource(expanded ?
+		                        GwtTable.RES.imTreeCollapse() :
+		                        GwtTable.RES.imTreeExpand());
+		this.expanded = expanded;
+		changing = false;
 	}
 
 	/**
 	 * Updates this cell with the given values.
 	 *
-	 * @param rRow  The data model of the row represented by this cell
-	 * @param sText The new text for the cell
+	 * @param row  The data model of the row represented by this cell
+	 * @param text The new text for the cell
 	 */
-	void update(DataModel<?> rRow, String sText) {
-		rRowModel = rRow;
+	void update(DataModel<?> row, String text) {
+		rowModel = row;
 
-		if (rRow instanceof HierarchicalDataModel<?>) {
-			DataModel<? extends DataModel<?>> rChildren =
-				((HierarchicalDataModel<?>) rRow).getChildModels();
+		if (row instanceof HierarchicalDataModel<?>) {
+			DataModel<? extends DataModel<?>> children =
+				((HierarchicalDataModel<?>) row).getChildModels();
 
-			nDirectChildren =
-				rChildren != null ? rChildren.getElementCount() : 0;
+			directChildren = children != null ? children.getElementCount() : 0;
 		}
 
-		int nSpacing = nLevel;
+		cellText.setHTML("&nbsp;" + (text != null ? text : ""));
+		spacing.setWidth(level + "em");
 
-		aCellText.setHTML("&nbsp;" + (sText != null ? sText : ""));
-		aSpacing.setWidth(nSpacing + "em");
-
-		aNodeControl.setResource(nDirectChildren > 0 ?
-		                         GwtTable.RES.imTreeExpand() :
-		                         GwtTable.RES.imTreeLeaf());
+		nodeControl.setResource(directChildren > 0 ?
+		                        GwtTable.RES.imTreeExpand() :
+		                        GwtTable.RES.imTreeLeaf());
 	}
 
 	/**
@@ -247,13 +244,13 @@ class TreeNode extends Composite
 	 * it's
 	 * parents.
 	 *
-	 * @param nChange The number of children that has changed
+	 * @param change The number of children that has changed
 	 */
-	void updateVisibleChildren(int nChange) {
-		nVisibleChildren += nChange;
+	void updateVisibleChildren(int change) {
+		visibleChildren += change;
 
-		if (rParent != null) {
-			rParent.updateVisibleChildren(nChange);
+		if (parent != null) {
+			parent.updateVisibleChildren(change);
 		}
 	}
 }

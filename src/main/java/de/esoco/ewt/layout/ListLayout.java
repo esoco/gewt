@@ -39,12 +39,12 @@ public class ListLayout extends GenericLayout {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		Panel aPanel = new VerticalPanel();
+	public Panel createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		Panel panel = new VerticalPanel();
 
-		aPanel.addStyleName("ewt-ListLayout");
+		panel.addStyleName("ewt-ListLayout");
 
-		return aPanel;
+		return panel;
 	}
 }

@@ -57,10 +57,10 @@ public interface EWTModule {
 	 * <p>If the module view cannot be created for some reason this method
 	 * should throw a RuntimeException. It must not return NULL.</p>
 	 *
-	 * @param rContext The user interface context to create the view in
+	 * @param context The user interface context to create the view in
 	 * @return The module's main view
 	 */
-	public View createModuleView(UserInterfaceContext rContext);
+	public View createModuleView(UserInterfaceContext context);
 
 	/**
 	 * This method will be invoked by the EWT framework to display a view
@@ -69,8 +69,8 @@ public interface EWTModule {
 	 * then display it on the screen, e.g. with one of the display methods in
 	 * the {@link UserInterfaceContext}.
 	 *
-	 * @param rContext The user interface context of the view
-	 * @param rView    The view to display
+	 * @param context The user interface context of the view
+	 * @param view    The view to display
 	 */
-	public void showModuleView(UserInterfaceContext rContext, View rView);
+	public void showModuleView(UserInterfaceContext context, View view);
 }

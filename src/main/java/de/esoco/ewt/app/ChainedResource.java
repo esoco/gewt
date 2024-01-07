@@ -25,51 +25,52 @@ import de.esoco.ewt.graphics.Image;
  * @author eso
  */
 public class ChainedResource implements Resource {
-	private final Resource rPrimaryResource;
+	private final Resource primaryResource;
 
-	private final Resource rSecondaryResource;
+	private final Resource secondaryResource;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rPrimary   The primary resource to lookup first
-	 * @param rSecondary The secondary resource to lookup if the primary
-	 *                   resource lookup fails
+	 * @param primary   The primary resource to lookup first
+	 * @param secondary The secondary resource to lookup if the primary
+	 *                     resource
+	 *                  lookup fails
 	 */
-	public ChainedResource(Resource rPrimary, Resource rSecondary) {
-		if (rPrimary == null || rSecondary == null) {
+	public ChainedResource(Resource primary, Resource secondary) {
+		if (primary == null || secondary == null) {
 			throw new IllegalArgumentException("Arguments must no be NULL");
 		}
 
-		rPrimaryResource = rPrimary;
-		rSecondaryResource = rSecondary;
+		primaryResource = primary;
+		secondaryResource = secondary;
 	}
 
 	/**
 	 * @see Resource#getImage(String)
 	 */
 	@Override
-	public Image getImage(String sKey) {
-		Image rImage = rPrimaryResource.getImage(sKey);
+	public Image getImage(String key) {
+		Image image = primaryResource.getImage(key);
 
-		if (rImage == null) {
-			rImage = rSecondaryResource.getImage(sKey);
+		if (image == null) {
+			image = secondaryResource.getImage(key);
 		}
 
-		return rImage;
+		return image;
 	}
 
 	/**
 	 * @see Resource#getString(String)
 	 */
 	@Override
-	public String getString(String sKey) {
-		String sValue = rPrimaryResource.getString(sKey);
+	public String getString(String key) {
+		String value = primaryResource.getString(key);
 
-		if (sValue == null) {
-			sValue = rSecondaryResource.getString(sKey);
+		if (value == null) {
+			value = secondaryResource.getString(key);
 		}
 
-		return sValue;
+		return value;
 	}
 }

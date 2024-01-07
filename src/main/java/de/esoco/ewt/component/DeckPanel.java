@@ -16,15 +16,13 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.LayoutType;
-
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.lib.property.LayoutType;
 
 /**
  * A panel that can contain multiple components of which only one is visible at
@@ -40,13 +38,13 @@ public class DeckPanel extends SwitchPanel {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent The parent container
-	 * @param rStyle  The panel style
+	 * @param parent The parent container
+	 * @param style  The panel style
 	 */
-	public DeckPanel(Container rParent, StyleData rStyle) {
+	public DeckPanel(Container parent, StyleData style) {
 		super(EWT
 			.getLayoutFactory()
-			.createLayout(rParent, rStyle, LayoutType.DECK));
+			.createLayout(parent, style, LayoutType.DECK));
 	}
 
 	/**
@@ -59,9 +57,8 @@ public class DeckPanel extends SwitchPanel {
 	 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
 	 */
 	@Override
-	void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData) {
-		getLayout().addWidget(getContainerWidget(), rWidget, rStyleData, -1);
+	void addWidget(HasWidgets container, Widget widget, StyleData styleData) {
+		getLayout().addWidget(getContainerWidget(), widget, styleData, -1);
 	}
 
 	/**
@@ -72,49 +69,34 @@ public class DeckPanel extends SwitchPanel {
 	public static abstract class AbstractDeckPanelLayout<T extends IndexedPanel & HasWidgets>
 		extends SwitchPanelLayout {
 
-		private T rDeckPanel;
+		private T deckPanel;
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public void addPage(Component rGroupComponent, String sGroupTitle,
-			boolean bCloseable) {
-			rDeckPanel.add(rGroupComponent.getWidget());
+		public void addPage(Component groupComponent, String groupTitle,
+			boolean closeable) {
+			deckPanel.add(groupComponent.getWidget());
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
-			rDeckPanel = createDeckPanel(rContainer, rStyle);
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
+			deckPanel = createDeckPanel(container, style);
 
-			return rDeckPanel;
+			return deckPanel;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int getPageCount() {
-			return rDeckPanel.getWidgetCount();
+			return deckPanel.getWidgetCount();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public int getPageIndex(Component rGroupComponent) {
-			return rDeckPanel.getWidgetIndex(rGroupComponent.getWidget());
+		public int getPageIndex(Component groupComponent) {
+			return deckPanel.getWidgetIndex(groupComponent.getWidget());
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public void setPageTitle(int nIndex, String sTitle) {
+		public void setPageTitle(int index, String title) {
 			// ignored
 		}
 
@@ -123,7 +105,7 @@ public class DeckPanel extends SwitchPanel {
 		 *
 		 * @see #createLayoutContainer(Container, StyleData)
 		 */
-		abstract T createDeckPanel(Container rContainer, StyleData rStyle);
+		abstract T createDeckPanel(Container container, StyleData style);
 
 		/**
 		 * Returns the deck panel widget of this instance.
@@ -131,7 +113,7 @@ public class DeckPanel extends SwitchPanel {
 		 * @return The deck panel widget
 		 */
 		final T getDeckPanel() {
-			return rDeckPanel;
+			return deckPanel;
 		}
 	}
 
@@ -143,29 +125,20 @@ public class DeckPanel extends SwitchPanel {
 	public static class DeckLayoutPanelLayout
 		extends AbstractDeckPanelLayout<DeckLayoutPanel> {
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public DeckLayoutPanel createDeckPanel(Container rContainer,
-			StyleData rStyle) {
+		public DeckLayoutPanel createDeckPanel(Container container,
+			StyleData style) {
 			return new DeckLayoutPanel();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int getSelectionIndex() {
 			return getDeckPanel().getVisibleWidgetIndex();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public void setSelection(int nIndex) {
-			getDeckPanel().showWidget(nIndex);
+		public void setSelection(int index) {
+			getDeckPanel().showWidget(index);
 		}
 	}
 
@@ -178,29 +151,20 @@ public class DeckPanel extends SwitchPanel {
 	public static class DeckPanelLayout extends
 		AbstractDeckPanelLayout<com.google.gwt.user.client.ui.DeckPanel> {
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public com.google.gwt.user.client.ui.DeckPanel createDeckPanel(
-			Container rContainer, StyleData rStyle) {
+			Container container, StyleData style) {
 			return new com.google.gwt.user.client.ui.DeckPanel();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int getSelectionIndex() {
 			return getDeckPanel().getVisibleWidget();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public void setSelection(int nIndex) {
-			getDeckPanel().showWidget(nIndex);
+		public void setSelection(int index) {
+			getDeckPanel().showWidget(index);
 		}
 	}
 }

@@ -35,70 +35,70 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public class GwtResource implements Resource {
 
-	private final Collection<ConstantsWithLookup> rStrings;
+	private final Collection<ConstantsWithLookup> strings;
 
-	private final Map<String, ImageResource> rImages;
+	private final Map<String, ImageResource> images;
 
 	/**
 	 * Creates a new instance that only performs string lookups.
 	 *
-	 * @param rConstants The constants to lookup resources from
+	 * @param constants The constants to lookup resources from
 	 */
-	public GwtResource(ConstantsWithLookup rConstants) {
+	public GwtResource(ConstantsWithLookup constants) {
 		this(null, null);
 	}
 
 	/**
 	 * Creates a new instance performs string and image lookups.
 	 *
-	 * @param rStrings The constants to lookup strings from
-	 * @param rImages  A mapping from string keys to image resources
+	 * @param strings The constants to lookup strings from
+	 * @param images  A mapping from string keys to image resources
 	 */
-	public GwtResource(Collection<ConstantsWithLookup> rStrings,
-		Map<String, ImageResource> rImages) {
-		this.rStrings = rStrings;
-		this.rImages = rImages;
+	public GwtResource(Collection<ConstantsWithLookup> strings,
+		Map<String, ImageResource> images) {
+		this.strings = strings;
+		this.images = images;
 	}
 
 	/**
 	 * @see Resource#getImage(String)
 	 */
 	@Override
-	public Image getImage(String sKey) {
-		Image rImage = null;
+	public Image getImage(String key) {
+		Image image = null;
 
-		if (rImages != null) {
-			ImageResource rImageResource = rImages.get(sKey);
+		if (images != null) {
+			ImageResource imageResource = images.get(key);
 
-			if (rImageResource != null) {
-				rImage = new ImageRef(rImageResource);
+			if (imageResource != null) {
+				image = new ImageRef(imageResource);
 			}
 		}
 
-		return rImage;
+		return image;
 	}
 
 	/**
 	 * @see Resource#getString(String)
 	 */
 	@Override
-	public String getString(String sKey) {
-		String sValue = null;
+	public String getString(String key) {
+		String value = null;
 
-		if (rStrings != null) {
-			for (ConstantsWithLookup rStrings : rStrings) {
+		if (strings != null) {
+			for (ConstantsWithLookup strings : strings) {
 				try {
-					sValue = rStrings.getString(sKey);
+					value = strings.getString(key);
 				} catch (MissingResourceException e) {
 					// ignore and continue checking or return NULL
 				}
 
-				if (sValue != null) {
+				if (value != null) {
 					break;
 				}
 			}
 		}
 
-		return sValue;
+		return value;
 	}
 }

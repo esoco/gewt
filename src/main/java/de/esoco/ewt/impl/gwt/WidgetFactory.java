@@ -40,9 +40,9 @@ public interface WidgetFactory<W extends IsWidget> {
 	 * Creates a new widget instance for a certain component based on the given
 	 * style.
 	 *
-	 * @param rComponent The component to create the widget for
-	 * @param rStyle     The style of the new widget
+	 * @param component The component to create the widget for
+	 * @param style     The style of the new widget
 	 * @return The new widget instance
 	 */
-	W createWidget(Component rComponent, StyleData rStyle);
+	W createWidget(Component component, StyleData style);
 }

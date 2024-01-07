@@ -49,8 +49,8 @@ public class ListBox extends ListControl {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
 		getGwtListBox().setVisibleItemCount(1);
 	}

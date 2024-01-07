@@ -16,10 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
-import de.esoco.ewt.component.Component;
-import de.esoco.ewt.component.Container;
-import de.esoco.ewt.style.StyleData;
-
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -28,17 +24,20 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.component.Component;
+import de.esoco.ewt.component.Container;
+import de.esoco.ewt.style.StyleData;
 
 /**
  * A table-based grid layout.
  */
 public class TableGridLayout extends GenericLayout {
 
-	private int nGridCount;
+	private int gridCount;
 
-	private boolean bIsColumnCount;
+	private final boolean isColumnCount;
 
-	private int nGap;
+	private final int gap;
 
 	/**
 	 * Creates a new GridLayout instance with a single row of components.
@@ -52,11 +51,11 @@ public class TableGridLayout extends GenericLayout {
 	 * number of rows will be calculated from the number of components in the
 	 * container.
 	 *
-	 * @param nColumns The number of grid columns
+	 * @param columns The number of grid columns
 	 * @throws IllegalArgumentException If the count value is &lt;= 0
 	 */
-	public TableGridLayout(int nColumns) {
-		this(nColumns, true);
+	public TableGridLayout(int columns) {
+		this(columns, true);
 	}
 
 	/**
@@ -65,52 +64,51 @@ public class TableGridLayout extends GenericLayout {
 	 * number of columns (TRUE) or rows (FALSE). In each case the other number
 	 * will be calculated from the number of components in the container.
 	 *
-	 * @param nGridCount     The number of grid columns or rows
-	 * @param bIsColumnCount TRUE for a fixed column count or FALSE for a fixed
-	 *                       row count
+	 * @param gridCount     The number of grid columns or rows
+	 * @param isColumnCount TRUE for a fixed column count or FALSE for a fixed
+	 *                      row count
 	 * @throws IllegalArgumentException If the grid count value is &lt;= 0
 	 */
-	public TableGridLayout(int nGridCount, boolean bIsColumnCount) {
-		this(nGridCount, bIsColumnCount, 0);
+	public TableGridLayout(int gridCount, boolean isColumnCount) {
+		this(gridCount, isColumnCount, 0);
 	}
 
 	/**
 	 * Creates a new GridLayout instance with a certain number of columns or
 	 * rows and gaps between the grid cells. The boolean parameter defines if
-	 * the nCount value contains the row or column count. In each case the
-	 * other
+	 * the count value contains the row or column count. In each case the other
 	 * number will be calculated from the number of components in the
 	 * container.
 	 *
-	 * @param nGridCount     The number of grid columns or rows
-	 * @param bIsColumnCount TRUE for a fixed column count or FALSE for a fixed
-	 *                       row count
-	 * @param nGap           The gap between components
+	 * @param gridCount     The number of grid columns or rows
+	 * @param isColumnCount TRUE for a fixed column count or FALSE for a fixed
+	 *                      row count
+	 * @param gap           The gap between components
 	 * @throws IllegalArgumentException If the grid count value is &lt;= 0
 	 */
-	public TableGridLayout(int nGridCount, boolean bIsColumnCount, int nGap) {
-		this.nGap = nGap;
+	public TableGridLayout(int gridCount, boolean isColumnCount, int gap) {
+		this.gap = gap;
 
-		if (nGridCount <= 0) {
+		if (gridCount <= 0) {
 			throw new IllegalArgumentException("Grid count must be > 0");
 		}
 
-		this.nGridCount = nGridCount;
-		this.bIsColumnCount = bIsColumnCount;
+		this.gridCount = gridCount;
+		this.isColumnCount = isColumnCount;
 	}
 
 	/**
 	 * Adds a style name to the cell in which the last component has been added
 	 * to this layout.
 	 *
-	 * @param rContainer The container to set the cell style in
-	 * @param sStyle     The style name to add
+	 * @param container The container to set the cell style in
+	 * @param style     The style name to add
 	 */
-	public void addCellStyle(Container rContainer, String sStyle) {
-		FlexTable rTable = (FlexTable) rContainer.getWidget();
-		CellAddress rCell = getCell(rTable, false);
+	public void addCellStyle(Container container, String style) {
+		FlexTable table = (FlexTable) container.getWidget();
+		CellAddress cell = getCell(table, false);
 
-		rTable.getCellFormatter().addStyleName(rCell.nRow, rCell.nCol, sStyle);
+		table.getCellFormatter().addStyleName(cell.row, cell.col, style);
 	}
 
 	/**
@@ -120,41 +118,41 @@ public class TableGridLayout extends GenericLayout {
 	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData, int nIndex) {
-		FlexTable rTable = (FlexTable) rContainer;
-		CellAddress rNextCell = getCell(rTable, true);
+	public void addWidget(HasWidgets container, Widget widget,
+		StyleData styleData, int index) {
+		FlexTable table = (FlexTable) container;
+		CellAddress nextCell = getCell(table, true);
 
-		rTable.setWidget(rNextCell.nRow, rNextCell.nCol, rWidget);
-		setCellAlignment(rStyleData, rTable.getCellFormatter(), rNextCell.nRow,
-			rNextCell.nCol);
+		table.setWidget(nextCell.row, nextCell.col, widget);
+		setCellAlignment(styleData, table.getCellFormatter(), nextCell.row,
+			nextCell.col);
 	}
 
 	/**
 	 * Adds or removes a style name for the cell of a certain component.
 	 *
-	 * @param rContainer The container to modify the cell style in
-	 * @param rComponent The component
-	 * @param sStyle     The style name to add or remove
-	 * @param bAdd       TRUE to add the style, FALSE to remove
+	 * @param container The container to modify the cell style in
+	 * @param component The component
+	 * @param style     The style name to add or remove
+	 * @param add       TRUE to add the style, FALSE to remove
 	 */
-	public void changeCellStyle(Container rContainer, Component rComponent,
-		String sStyle, boolean bAdd) {
-		FlexTable rTable = (FlexTable) rContainer.getWidget();
-		int nRows = rTable.getRowCount();
+	public void changeCellStyle(Container container, Component component,
+		String style, boolean add) {
+		FlexTable table = (FlexTable) container.getWidget();
+		int rows = table.getRowCount();
 
-		for (int nRow = 0; nRow < nRows; nRow++) {
-			int nRowCells = rTable.getCellCount(nRow);
+		for (int row = 0; row < rows; row++) {
+			int rowCells = table.getCellCount(row);
 
-			for (int nCol = 0; nCol < nRowCells; nCol++) {
-				if (rTable.getWidget(nRow, nCol) == rComponent.getWidget()) {
-					CellFormatter rCellFormatter = rTable.getCellFormatter();
+			for (int col = 0; col < rowCells; col++) {
+				if (table.getWidget(row, col) == component.getWidget()) {
+					CellFormatter cellFormatter = table.getCellFormatter();
 
 					// always remove first to prevent duplication
-					rCellFormatter.removeStyleName(nRow, nCol, sStyle);
+					cellFormatter.removeStyleName(row, col, style);
 
-					if (bAdd) {
-						rCellFormatter.addStyleName(nRow, nCol, sStyle);
+					if (add) {
+						cellFormatter.addStyleName(row, col, style);
 					}
 
 					return;
@@ -167,23 +165,23 @@ public class TableGridLayout extends GenericLayout {
 	 * @see GenericLayout#clear(HasWidgets)
 	 */
 	@Override
-	public void clear(HasWidgets rContainer) {
-		super.clear(rContainer);
+	public void clear(HasWidgets container) {
+		super.clear(container);
 
-		((FlexTable) rContainer).removeAllRows();
+		((FlexTable) container).removeAllRows();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		FlexTable aContainer = new LayoutTable();
+	public Panel createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		FlexTable table = new LayoutTable();
 
-		aContainer.setCellSpacing(nGap);
+		table.setCellSpacing(gap);
 
-		return aContainer;
+		return table;
 	}
 
 	/**
@@ -192,7 +190,7 @@ public class TableGridLayout extends GenericLayout {
 	 * @return The column count
 	 */
 	public int getGridCount() {
-		return nGridCount;
+		return gridCount;
 	}
 
 	/**
@@ -202,7 +200,7 @@ public class TableGridLayout extends GenericLayout {
 	 * number of rows
 	 */
 	public boolean isColumnCount() {
-		return bIsColumnCount;
+		return isColumnCount;
 	}
 
 	/**
@@ -212,16 +210,14 @@ public class TableGridLayout extends GenericLayout {
 	 * or else the result will be undefined. This method must be invoked
 	 * directly after the component that shall span the columns had been added.
 	 *
-	 * @param rContainer The container to join the columns in
-	 * @param nCount     The number of columns to join
+	 * @param container The container to join the columns in
+	 * @param count     The number of columns to join
 	 */
-	public void joinColumns(Container rContainer, int nCount) {
-		FlexTable rTable = (FlexTable) rContainer.getWidget();
-		CellAddress rCell = getCell(rTable, false);
+	public void joinColumns(Container container, int count) {
+		FlexTable table = (FlexTable) container.getWidget();
+		CellAddress cell = getCell(table, false);
 
-		rTable
-			.getFlexCellFormatter()
-			.setColSpan(rCell.nRow, rCell.nCol, nCount);
+		table.getFlexCellFormatter().setColSpan(cell.row, cell.col, count);
 	}
 
 	/**
@@ -230,41 +226,34 @@ public class TableGridLayout extends GenericLayout {
 	 * or else the result will be undefined. This method must be invoked
 	 * directly after the component that shall span the rows had been added.
 	 *
-	 * @param rContainer The container to join the rows in
-	 * @param nCount     The number of rows to join
+	 * @param container The container to join the rows in
+	 * @param count     The number of rows to join
 	 */
-	public void joinRows(Container rContainer, int nCount) {
-		FlexTable rTable = (FlexTable) rContainer.getWidget();
-		CellAddress rCell = getCell(rTable, false);
+	public void joinRows(Container container, int count) {
+		FlexTable table = (FlexTable) container.getWidget();
+		CellAddress cell = getCell(table, false);
 
-		rTable
-			.getFlexCellFormatter()
-			.setRowSpan(rCell.nRow, rCell.nCol, nCount);
+		table.getFlexCellFormatter().setRowSpan(cell.row, cell.col, count);
 	}
 
 	/**
 	 * Sets the size of the cell in which the last component has been added to
 	 * this layout.
 	 *
-	 * @param rContainer The container to set the component cell size of
-	 * @param sWidth     The width of the component's cell or NULL for none
-	 * @param sHeight    The height of the component's cell or NULL for none
+	 * @param container The container to set the component cell size of
+	 * @param width     The width of the component's cell or NULL for none
+	 * @param height    The height of the component's cell or NULL for none
 	 */
-	public void setCellSize(Container rContainer, String sWidth,
-		String sHeight) {
-		FlexTable rTable = (FlexTable) rContainer.getWidget();
-		CellAddress rCell = getCell(rTable, false);
+	public void setCellSize(Container container, String width, String height) {
+		FlexTable table = (FlexTable) container.getWidget();
+		CellAddress cell = getCell(table, false);
 
-		if (sWidth != null) {
-			rTable
-				.getFlexCellFormatter()
-				.setWidth(rCell.nRow, rCell.nCol, sWidth);
+		if (width != null) {
+			table.getFlexCellFormatter().setWidth(cell.row, cell.col, width);
 		}
 
-		if (sHeight != null) {
-			rTable
-				.getFlexCellFormatter()
-				.setHeight(rCell.nRow, rCell.nCol, sHeight);
+		if (height != null) {
+			table.getFlexCellFormatter().setHeight(cell.row, cell.col, height);
 		}
 	}
 
@@ -272,51 +261,51 @@ public class TableGridLayout extends GenericLayout {
 	 * Sets the grid count, interpreted as columns or rows depending on the
 	 * layout configuration.
 	 *
-	 * @param nCount The new grid count
+	 * @param count The new grid count
 	 */
-	public final void setGridCount(int nCount) {
-		nGridCount = nCount;
+	public final void setGridCount(int count) {
+		gridCount = count;
 	}
 
 	/**
 	 * Internal helper method to determine the row and column of the last added
 	 * or next cell to fill.
 	 *
-	 * @param rTable The table to determine the cell of
-	 * @param bNext  TRUE for the next, FALSE for the last cell
+	 * @param table The table to determine the cell of
+	 * @param next  TRUE for the next, FALSE for the last cell
 	 * @return The address of the cell
 	 */
-	private CellAddress getCell(FlexTable rTable, boolean bNext) {
-		FlexCellFormatter rCellFormatter = rTable.getFlexCellFormatter();
-		int nRows = rTable.getRowCount();
-		int nCellCount = bNext ? 0 : -1;
+	private CellAddress getCell(FlexTable table, boolean next) {
+		FlexCellFormatter cellFormatter = table.getFlexCellFormatter();
+		int rows = table.getRowCount();
+		int cellCount = next ? 0 : -1;
 
-		for (int nRow = 0; nRow < nRows; nRow++) {
-			int nRowCells = rTable.getCellCount(nRow);
+		for (int row = 0; row < rows; row++) {
+			int rowCells = table.getCellCount(row);
 
-			for (int nCol = 0; nCol < nRowCells; nCol++) {
-				nCellCount += rCellFormatter.getColSpan(nRow, nCol);
+			for (int col = 0; col < rowCells; col++) {
+				cellCount += cellFormatter.getColSpan(row, col);
 			}
 		}
 
-		int nCol = 0;
-		int nRow;
+		int col = 0;
+		int row;
 
-		if (bIsColumnCount) {
-			nRow = nCellCount / nGridCount;
+		if (isColumnCount) {
+			row = cellCount / gridCount;
 		} else {
-			nRow = nCellCount % nGridCount;
+			row = cellCount % gridCount;
 		}
 
-		if (nRow < nRows) {
-			nCol = rTable.getCellCount(nRow);
+		if (row < rows) {
+			col = table.getCellCount(row);
 
-			if (!bNext) {
-				nCol--;
+			if (!next) {
+				col--;
 			}
 		}
 
-		return new CellAddress(nRow, nCol);
+		return new CellAddress(row, col);
 	}
 
 	/**
@@ -332,9 +321,9 @@ public class TableGridLayout extends GenericLayout {
 		 */
 		@Override
 		public void onResize() {
-			for (Widget rWidget : this) {
-				if (rWidget instanceof RequiresResize) {
-					((RequiresResize) rWidget).onResize();
+			for (Widget widget : this) {
+				if (widget instanceof RequiresResize) {
+					((RequiresResize) widget).onResize();
 				}
 			}
 		}
@@ -347,19 +336,19 @@ public class TableGridLayout extends GenericLayout {
 	 */
 	private static class CellAddress {
 
-		int nRow;
+		int row;
 
-		int nCol;
+		int col;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param nRow The row
-		 * @param nCol The column
+		 * @param row The row
+		 * @param col The column
 		 */
-		public CellAddress(int nRow, int nCol) {
-			this.nRow = nRow;
-			this.nCol = nCol;
+		public CellAddress(int row, int col) {
+			this.row = row;
+			this.col = col;
 		}
 	}
 }

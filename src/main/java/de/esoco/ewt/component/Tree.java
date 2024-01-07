@@ -47,11 +47,11 @@ public class Tree extends Control {
 	 * @return The selected model elements
 	 */
 	public Object[] getSelection() {
-		TreeItem rItem =
+		TreeItem item =
 			((com.google.gwt.user.client.ui.Tree) getWidget()).getSelectedItem();
 
-		if (rItem != null) {
-			return new Object[] { rItem.getUserObject() };
+		if (item != null) {
+			return new Object[] { item.getUserObject() };
 		} else {
 			return new Object[] {};
 		}
@@ -66,18 +66,18 @@ public class Tree extends Control {
 	 * children or elements that don't implement DataModel will be shown as
 	 * leafs with no further children.
 	 *
-	 * @param rDataModel A data model that contains the root items of the tree
+	 * @param dataModel A data model that contains the root items of the tree
 	 */
-	public void setData(DataModel<?> rDataModel) {
-		com.google.gwt.user.client.ui.Tree rTree =
+	public void setData(DataModel<?> dataModel) {
+		com.google.gwt.user.client.ui.Tree tree =
 			(com.google.gwt.user.client.ui.Tree) getWidget();
 
-		rTree.clear();
+		tree.clear();
 
-		for (int i = 0; i < rDataModel.getElementCount(); i++) {
-			Object rElement = rDataModel.getElement(i);
+		for (int i = 0; i < dataModel.getElementCount(); i++) {
+			Object element = dataModel.getElement(i);
 
-			rTree.addItem(createTreeItem(rElement));
+			tree.addItem(createTreeItem(element));
 		}
 	}
 
@@ -96,26 +96,26 @@ public class Tree extends Control {
 	 * {@link DataModel} it's data elements will be added recursively as child
 	 * items of the returned tree item.
 	 *
-	 * @param rElement The data element to create the tree item for
+	 * @param element The data element to create the tree item for
 	 * @return A new tree item, containing child items as necessary
 	 */
-	private TreeItem createTreeItem(Object rElement) {
-		SafeHtml aHtml =
-			SimpleHtmlSanitizer.getInstance().sanitize(rElement.toString());
+	private TreeItem createTreeItem(Object element) {
+		SafeHtml html =
+			SimpleHtmlSanitizer.getInstance().sanitize(element.toString());
 
-		TreeItem aTreeItem = new TreeItem(aHtml);
+		TreeItem treeItem = new TreeItem(html);
 
-		aTreeItem.setUserObject(rElement);
+		treeItem.setUserObject(element);
 
-		if (rElement instanceof DataModel<?>) {
-			DataModel<?> rChildren = (DataModel<?>) rElement;
+		if (element instanceof DataModel<?>) {
+			DataModel<?> children = (DataModel<?>) element;
 
-			for (int i = 0; i < rChildren.getElementCount(); i++) {
-				aTreeItem.addItem(createTreeItem(rChildren.getElement(i)));
+			for (int i = 0; i < children.getElementCount(); i++) {
+				treeItem.addItem(createTreeItem(children.getElement(i)));
 			}
 		}
 
-		return aTreeItem;
+		return treeItem;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class Tree extends Control {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle) {
+		public Widget createWidget(Component component, StyleData style) {
 			return new com.google.gwt.user.client.ui.Tree();
 		}
 	}
@@ -146,7 +146,7 @@ public class Tree extends Control {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onSelection(SelectionEvent<TreeItem> rEvent) {
+		public void onSelection(SelectionEvent<TreeItem> event) {
 			notifyEventHandler(EventType.SELECTION);
 		}
 
@@ -154,14 +154,14 @@ public class Tree extends Control {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			if (eEventType == EventType.SELECTION &&
-				rWidget instanceof com.google.gwt.user.client.ui.Tree) {
-				return ((com.google.gwt.user.client.ui.Tree) rWidget).addSelectionHandler(
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			if (eventType == EventType.SELECTION &&
+				widget instanceof com.google.gwt.user.client.ui.Tree) {
+				return ((com.google.gwt.user.client.ui.Tree) widget).addSelectionHandler(
 					this);
 			} else {
-				return super.initEventDispatching(rWidget, eEventType);
+				return super.initEventDispatching(widget, eventType);
 			}
 		}
 	}

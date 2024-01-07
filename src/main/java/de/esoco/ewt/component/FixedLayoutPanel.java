@@ -31,10 +31,10 @@ public abstract class FixedLayoutPanel extends Panel {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rLayout The fixed layout for this instance
+	 * @param layout The fixed layout for this instance
 	 */
-	public FixedLayoutPanel(GenericLayout rLayout) {
-		super.setLayout(rLayout);
+	public FixedLayoutPanel(GenericLayout layout) {
+		super.setLayout(layout);
 	}
 
 	/**
@@ -44,7 +44,7 @@ public abstract class FixedLayoutPanel extends Panel {
 	 * @see Panel#setLayout(GenericLayout)
 	 */
 	@Override
-	public void setLayout(GenericLayout rLayout) {
+	public void setLayout(GenericLayout layout) {
 		throw new UnsupportedOperationException(
 			"Layout must be set through constructor");
 	}

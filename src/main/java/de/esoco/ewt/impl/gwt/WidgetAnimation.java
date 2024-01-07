@@ -33,68 +33,68 @@ public class WidgetAnimation extends Animation {
 	public enum AnimationType {
 		FADE_IN {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				rElement.getStyle().setOpacity(fProgress);
+			void animate(Element element, double progress) {
+				element.getStyle().setOpacity(progress);
 			}
 		}, FADE_OUT {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				rElement.getStyle().setOpacity(1.0d - fProgress);
+			void animate(Element element, double progress) {
+				element.getStyle().setOpacity(1.0d - progress);
 			}
 		}, VERTICAL_SHRINK {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				double fHeight = rElement.getOffsetHeight();
+			void animate(Element element, double progress) {
+				double height = element.getOffsetHeight();
 
-				rElement
+				element
 					.getStyle()
-					.setHeight(fHeight * (1.0d - fProgress), Unit.PX);
+					.setHeight(height * (1.0d - progress), Unit.PX);
 			}
 		}, VERTICAL_GROW {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				double fHeight = rElement.getOffsetHeight();
+			void animate(Element element, double progress) {
+				double height = element.getOffsetHeight();
 
-				rElement.getStyle().setHeight(fHeight * fProgress, Unit.PX);
+				element.getStyle().setHeight(height * progress, Unit.PX);
 			}
 		}, HORIZONTAL_SHRINK {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				double fWidth = rElement.getOffsetWidth();
+			void animate(Element element, double progress) {
+				double width = element.getOffsetWidth();
 
-				rElement
+				element
 					.getStyle()
-					.setHeight(fWidth * (1.0d - fProgress), Unit.PX);
+					.setHeight(width * (1.0d - progress), Unit.PX);
 			}
 		}, HORIZONTAL_GROW {
 			@Override
-			void animate(Element rElement, double fProgress) {
-				double fWidth = rElement.getOffsetWidth();
+			void animate(Element element, double progress) {
+				double width = element.getOffsetWidth();
 
-				rElement.getStyle().setHeight(fWidth * fProgress, Unit.PX);
+				element.getStyle().setHeight(width * progress, Unit.PX);
 			}
 		};
 
 		/**
 		 * Animates a certain element with this animation type.
 		 *
-		 * @param rElement  The element to animate
-		 * @param fProgress The current animation progress
+		 * @param element  The element to animate
+		 * @param progress The current animation progress
 		 */
-		abstract void animate(Element rElement, double fProgress);
+		abstract void animate(Element element, double progress);
 	}
 
-	private final Widget rWidget;
+	private final Widget widget;
 
-	private WidgetAnimation.AnimationType eCurrentType;
+	private WidgetAnimation.AnimationType currentType;
 
 	/**
 	 * Creates a new instance for a certain element.
 	 *
-	 * @param rWidget rElement The element
+	 * @param widget rElement The element
 	 */
-	public WidgetAnimation(Widget rWidget) {
-		this.rWidget = rWidget;
+	public WidgetAnimation(Widget widget) {
+		this.widget = widget;
 	}
 
 	/**
@@ -103,27 +103,27 @@ public class WidgetAnimation extends Animation {
 	 * @return The widget
 	 */
 	public final Widget getWidget() {
-		return rWidget;
+		return widget;
 	}
 
 	/**
 	 * Performs a certain animation for the element of this instance.
 	 *
-	 * @param eType     The animation type
-	 * @param nDuration The duration of the animation in milliseconds
+	 * @param type     The animation type
+	 * @param duration The duration of the animation in milliseconds
 	 */
-	public void perform(WidgetAnimation.AnimationType eType, int nDuration) {
-		this.eCurrentType = eType;
+	public void perform(WidgetAnimation.AnimationType type, int duration) {
+		this.currentType = type;
 
 		cancel();
-		run(nDuration);
+		run(duration);
 	}
 
 	/**
 	 * @see Animation#onUpdate(double)
 	 */
 	@Override
-	protected void onUpdate(double fProgress) {
-		eCurrentType.animate(rWidget.getElement(), fProgress);
+	protected void onUpdate(double progress) {
+		currentType.animate(widget.getElement(), progress);
 	}
 }

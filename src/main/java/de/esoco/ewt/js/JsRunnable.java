@@ -23,11 +23,11 @@ public interface JsRunnable {
 	 * Default JavaScript function method that ignores the input and always
 	 * returns NULL.
 	 *
-	 * @param rValue The value to consume
+	 * @param value The value to consume
 	 * @return Always NULL
 	 */
 	@JsOverlay
-	default Object apply(Object rValue) {
+	default Object apply(Object value) {
 		run();
 
 		return null;

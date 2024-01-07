@@ -45,8 +45,8 @@ public class ToggleButton extends SelectableButton {
 	 */
 	@Override
 	@SuppressWarnings({ "unchecked", "boxing" })
-	public void setSelected(boolean bSelected) {
-		((HasValue<Boolean>) getWidget()).setValue(bSelected);
+	public void setSelected(boolean selected) {
+		((HasValue<Boolean>) getWidget()).setValue(selected);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ToggleButton extends SelectableButton {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle) {
+		public W createWidget(Component component, StyleData style) {
 			return (W) new com.google.gwt.user.client.ui.ToggleButton();
 		}
 	}

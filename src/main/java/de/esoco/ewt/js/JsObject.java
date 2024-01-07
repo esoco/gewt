@@ -33,14 +33,14 @@ public class JsObject {
 	 * .org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 	 * /getOwnPropertyNames"> Object.getOwnPropertyNames</a>
 	 */
-	public static native String[] getOwnPropertyNames(Object rObject);
+	public static native String[] getOwnPropertyNames(Object object);
 
 	/**
 	 * @see <a href="https://developer.mozilla
 	 * .org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 	 * /hasOwnProperty"> Object.hasOwnProperty</a>
 	 */
-	public native boolean hasOwnProperty(String sName);
+	public native boolean hasOwnProperty(String name);
 
 	/**
 	 * @see <a href="https://developer.mozilla

@@ -34,13 +34,13 @@ public class Rectangle {
 	/**
 	 * Copy constructor.
 	 *
-	 * @param rOther The point to copy
+	 * @param other The point to copy
 	 */
-	public Rectangle(Rectangle rOther) {
-		this.x = rOther.x;
-		this.y = rOther.y;
-		this.w = rOther.w;
-		this.h = rOther.h;
+	public Rectangle(Rectangle other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.w = other.w;
+		this.h = other.h;
 	}
 
 	/**
@@ -82,9 +82,9 @@ public class Rectangle {
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object rOther) {
-		if (rOther instanceof Rectangle) {
-			Rectangle o = (Rectangle) rOther;
+	public boolean equals(Object other) {
+		if (other instanceof Rectangle) {
+			Rectangle o = (Rectangle) other;
 
 			return x == o.x && y == o.y && w == o.w && h == o.h;
 		}

@@ -36,13 +36,13 @@ public interface LayoutFactory {
 	 * Checks whether the given layout for a particular target container should
 	 * be mapped to a different layout instance and returns that if applicable.
 	 *
-	 * @param rParentContainer The parent of the container for which the layout
-	 *                         is created
-	 * @param rContainerStyle  rContainer The target container for the layout
-	 * @param eLayout          The original layout for the container
+	 * @param parentContainer The parent of the container for which the layout
+	 *                        is created
+	 * @param containerStyle  container The target container for the layout
+	 * @param layout          The original layout for the container
 	 * @return Either a new (mapped) layout instance or the original layout if
 	 * no mapping is necessary
 	 */
-	public GenericLayout createLayout(Container rParentContainer,
-		StyleData rContainerStyle, LayoutType eLayout);
+	public GenericLayout createLayout(Container parentContainer,
+		StyleData containerStyle, LayoutType layout);
 }

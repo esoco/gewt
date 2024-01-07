@@ -31,33 +31,33 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class View extends Container implements TitleAttribute {
 
-	private final UserInterfaceContext rContext;
+	private final UserInterfaceContext context;
 
-	private final ViewStyle rViewStyle;
+	private final ViewStyle viewStyle;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rContext   The user interface context
-	 * @param rViewPanel The panel to place the view component in
-	 * @param rStyle     The view style
+	 * @param context   The user interface context
+	 * @param viewPanel The panel to place the view component in
+	 * @param style     The view style
 	 */
-	public View(UserInterfaceContext rContext, IsWidget rViewPanel,
-		ViewStyle rStyle) {
-		this(rContext, rStyle);
+	public View(UserInterfaceContext context, IsWidget viewPanel,
+		ViewStyle style) {
+		this(context, style);
 
-		setWidget(rViewPanel);
+		setWidget(viewPanel);
 	}
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rContext The user interface context
-	 * @param rStyle   rViewStyle The view style
+	 * @param context The user interface context
+	 * @param style   viewStyle The view style
 	 */
-	View(UserInterfaceContext rContext, ViewStyle rStyle) {
-		this.rContext = rContext;
-		this.rViewStyle = rStyle;
+	View(UserInterfaceContext context, ViewStyle style) {
+		this.context = context;
+		this.viewStyle = style;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public abstract class View extends Container implements TitleAttribute {
 	 */
 	@Override
 	public UserInterfaceContext getContext() {
-		return rContext;
+		return context;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public abstract class View extends Container implements TitleAttribute {
 	 * @return The view style
 	 */
 	public final ViewStyle getViewStyle() {
-		return rViewStyle;
+		return viewStyle;
 	}
 
 	/**
@@ -100,9 +100,9 @@ public abstract class View extends Container implements TitleAttribute {
 	 * Sets the view title. Should be overridden by view implementations that
 	 * can display a view title.
 	 *
-	 * @param sTitle The new title
+	 * @param title The new title
 	 */
 	@Override
-	public void setTitle(String sTitle) {
+	public void setTitle(String title) {
 	}
 }

@@ -53,19 +53,19 @@ public class Panel extends Container {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			HandlerRegistration rHandler;
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			HandlerRegistration handler;
 
-			if (eEventType == EventType.ACTION &&
-				!(rWidget instanceof HasClickHandlers)) {
+			if (eventType == EventType.ACTION &&
+				!(widget instanceof HasClickHandlers)) {
 				// enable click events for panel widgets without native support
-				rHandler = rWidget.addDomHandler(this, ClickEvent.getType());
+				handler = widget.addDomHandler(this, ClickEvent.getType());
 			} else {
-				rHandler = super.initEventDispatching(rWidget, eEventType);
+				handler = super.initEventDispatching(widget, eventType);
 			}
 
-			return rHandler;
+			return handler;
 		}
 	}
 }

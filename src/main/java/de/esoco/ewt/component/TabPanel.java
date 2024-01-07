@@ -53,13 +53,13 @@ public class TabPanel extends SwitchPanel {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent The parent container
-	 * @param rStyle  The panel style
+	 * @param parent The parent container
+	 * @param style  The panel style
 	 */
-	public TabPanel(Container rParent, StyleData rStyle) {
+	public TabPanel(Container parent, StyleData style) {
 		super(EWT
 			.getLayoutFactory()
-			.createLayout(rParent, rStyle, LayoutType.TABS));
+			.createLayout(parent, style, LayoutType.TABS));
 	}
 
 	/**
@@ -77,35 +77,35 @@ public class TabPanel extends SwitchPanel {
 	 */
 	public static class TabPanelLayout extends SwitchPanelLayout {
 
-		private GwtTabPanel aTabPanel;
+		private GwtTabPanel tabPanel;
 
-		private UserInterfaceContext rContext;
+		private UserInterfaceContext context;
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addPage(Component rTabComponent, String sGroupTitle,
-			boolean bCloseable) {
-			Widget rTabContent = rTabComponent.getWidget();
+		public void addPage(Component tabComponent, String groupTitle,
+			boolean closeable) {
+			Widget tabContent = tabComponent.getWidget();
 
-			sGroupTitle = rContext.expandResource(sGroupTitle);
+			groupTitle = context.expandResource(groupTitle);
 
-			if (bCloseable) {
-				Grid aTabWidgets = new Grid(1, 2);
-				Button aCloseButton = new Button("x");
+			if (closeable) {
+				Grid tabWidgets = new Grid(1, 2);
+				Button closeButton = new Button("x");
 
-				aTabWidgets.setWidget(0, 0, new Label(sGroupTitle));
-				aTabWidgets.setWidget(0, 1, aCloseButton);
-				aCloseButton.addClickHandler(new TabCloseHandler(rTabContent));
+				tabWidgets.setWidget(0, 0, new Label(groupTitle));
+				tabWidgets.setWidget(0, 1, closeButton);
+				closeButton.addClickHandler(new TabCloseHandler(tabContent));
 
-				aTabPanel.add(rTabContent, aTabWidgets);
+				tabPanel.add(tabContent, tabWidgets);
 			} else {
-				aTabPanel.add(rTabContent, sGroupTitle);
+				tabPanel.add(tabContent, groupTitle);
 			}
 
-			if (aTabPanel.getWidgetCount() == 1) {
-				aTabPanel.selectTab(0);
+			if (tabPanel.getWidgetCount() == 1) {
+				tabPanel.selectTab(0);
 			}
 		}
 
@@ -113,12 +113,12 @@ public class TabPanel extends SwitchPanel {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
-			this.rContext = rContainer.getContext();
-			aTabPanel = new GwtTabPanel(2, Unit.EM);
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
+			this.context = container.getContext();
+			tabPanel = new GwtTabPanel(2, Unit.EM);
 
-			return aTabPanel;
+			return tabPanel;
 		}
 
 		/**
@@ -126,15 +126,15 @@ public class TabPanel extends SwitchPanel {
 		 */
 		@Override
 		public int getPageCount() {
-			return aTabPanel.getWidgetCount();
+			return tabPanel.getWidgetCount();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getPageIndex(Component rGroupComponent) {
-			return aTabPanel.getWidgetIndex(rGroupComponent.getWidget());
+		public int getPageIndex(Component groupComponent) {
+			return tabPanel.getWidgetIndex(groupComponent.getWidget());
 		}
 
 		/**
@@ -142,23 +142,23 @@ public class TabPanel extends SwitchPanel {
 		 */
 		@Override
 		public int getSelectionIndex() {
-			return aTabPanel.getSelectedIndex();
+			return tabPanel.getSelectedIndex();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setPageTitle(int nIndex, String sTitle) {
-			aTabPanel.setTabText(nIndex, sTitle);
+		public void setPageTitle(int index, String title) {
+			tabPanel.setTabText(index, title);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setSelection(int nIndex) {
-			aTabPanel.selectTab(nIndex);
+		public void setSelection(int index) {
+			tabPanel.selectTab(index);
 		}
 
 		/**
@@ -168,31 +168,30 @@ public class TabPanel extends SwitchPanel {
 		 */
 		class TabCloseHandler implements ClickHandler {
 
-			private final Widget rTabWidget;
+			private final Widget tabWidget;
 
 			/**
 			 * Creates a new instance.
 			 *
-			 * @param rTabWidget The widget of the tab to close
+			 * @param tabWidget The widget of the tab to close
 			 */
-			public TabCloseHandler(Widget rTabWidget) {
-				this.rTabWidget = rTabWidget;
+			public TabCloseHandler(Widget tabWidget) {
+				this.tabWidget = tabWidget;
 			}
 
 			/**
 			 * @see ClickHandler#onClick(ClickEvent)
 			 */
 			@Override
-			public void onClick(ClickEvent rEvent) {
-				int nWidgetIndex = aTabPanel.getWidgetIndex(rTabWidget);
-				int nSelectedTab = aTabPanel.getSelectedIndex();
+			public void onClick(ClickEvent event) {
+				int widgetIndex = tabPanel.getWidgetIndex(tabWidget);
+				int selectedTab = tabPanel.getSelectedIndex();
 
-				aTabPanel.remove(rTabWidget);
+				tabPanel.remove(tabWidget);
 
-				if (nWidgetIndex == nSelectedTab &&
-					aTabPanel.getWidgetCount() > 0) {
-					aTabPanel.selectTab(
-						nSelectedTab > 0 ? nSelectedTab - 1 : 0);
+				if (widgetIndex == selectedTab &&
+					tabPanel.getWidgetCount() > 0) {
+					tabPanel.selectTab(selectedTab > 0 ? selectedTab - 1 : 0);
 				}
 			}
 		}
@@ -210,7 +209,7 @@ public class TabPanel extends SwitchPanel {
 		 * @see SelectionHandler#onSelection(SelectionEvent)
 		 */
 		@Override
-		public void onSelection(SelectionEvent<Integer> rEvent) {
+		public void onSelection(SelectionEvent<Integer> event) {
 			notifyEventHandler(EventType.SELECTION);
 		}
 
@@ -219,15 +218,15 @@ public class TabPanel extends SwitchPanel {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			if (eEventType == EventType.SELECTION &&
-				rWidget instanceof HasSelectionHandlers) {
-				return ((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			if (eventType == EventType.SELECTION &&
+				widget instanceof HasSelectionHandlers) {
+				return ((HasSelectionHandlers<Integer>) widget).addSelectionHandler(
 					this);
 			}
 
-			return super.initEventDispatching(rWidget, eEventType);
+			return super.initEventDispatching(widget, eventType);
 		}
 	}
 }

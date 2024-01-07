@@ -29,18 +29,18 @@ public interface ValueFormat {
 	 */
 	public static final ValueFormat TO_STRING = new ValueFormat() {
 		@Override
-		public String format(Object rValue) {
-			return rValue.toString();
+		public String format(Object value) {
+			return value.toString();
 		}
 	};
 
 	/**
 	 * Formats a value object into a string.
 	 *
-	 * @param rValue The value
+	 * @param value The value
 	 * @return A string representing the value
 	 */
-	public String format(Object rValue);
+	public String format(Object value);
 
 	/**
 	 * A format that converts objects with the {@link Object#toString()} method
@@ -50,29 +50,29 @@ public interface ValueFormat {
 	 */
 	public static class StringLengthFormat implements ValueFormat {
 
-		private final int nMaxLength;
+		private final int maxLength;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param nMaxLength The maximum length for strings.
+		 * @param maxLength The maximum length for strings.
 		 */
-		public StringLengthFormat(int nMaxLength) {
-			this.nMaxLength = nMaxLength;
+		public StringLengthFormat(int maxLength) {
+			this.maxLength = maxLength;
 		}
 
 		/**
 		 * @see ValueFormat#format(Object)
 		 */
 		@Override
-		public String format(Object rValue) {
-			String sResult = rValue.toString();
+		public String format(Object value) {
+			String result = value.toString();
 
-			if (sResult.length() > nMaxLength) {
-				sResult = sResult.substring(0, nMaxLength - 1) + '\u2026';
+			if (result.length() > maxLength) {
+				result = result.substring(0, maxLength - 1) + '\u2026';
 			}
 
-			return sResult;
+			return result;
 		}
 
 		/**
@@ -81,7 +81,7 @@ public interface ValueFormat {
 		 * @return The maximum string length
 		 */
 		public final int getMaxLength() {
-			return nMaxLength;
+			return maxLength;
 		}
 	}
 }

@@ -38,42 +38,42 @@ import com.google.gwt.user.client.ui.impl.FocusImpl;
  */
 public class GwtImageButton extends Image implements Focusable, HasEnabled {
 
-	private static final FocusImpl rFocusImpl =
+	private static final FocusImpl focusImpl =
 		FocusImpl.getFocusImplForWidget();
 
-	private final ImageResource rDefaultImage;
+	private final ImageResource defaultImage;
 
-	private final ImageResource rPressedImage;
+	private final ImageResource pressedImage;
 
-	private final ImageResource rHoverImage;
+	private final ImageResource hoverImage;
 
-	private final ImageResource rDisabledImage;
+	private final ImageResource disabledImage;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rDefaultImage  The default image
-	 * @param rPressedImage  The image to be displayed if the mouse button is
-	 *                       pressed on the image
-	 * @param rHoverImage    rPressedImage The image to be displayed if the
-	 *                       mouse hovers over the image
-	 * @param rDisabledImage The image to be displayed if the image is disabled
+	 * @param defaultImage  The default image
+	 * @param pressedImage  The image to be displayed if the mouse button is
+	 *                      pressed on the image
+	 * @param hoverImage    pressedImage The image to be displayed if the mouse
+	 *                      hovers over the image
+	 * @param disabledImage The image to be displayed if the image is disabled
 	 */
-	public GwtImageButton(ImageResource rDefaultImage,
-		ImageResource rPressedImage, ImageResource rHoverImage,
-		ImageResource rDisabledImage) {
-		super(rDefaultImage);
+	public GwtImageButton(ImageResource defaultImage,
+		ImageResource pressedImage, ImageResource hoverImage,
+		ImageResource disabledImage) {
+		super(defaultImage);
 
-		this.rDefaultImage = rDefaultImage;
-		this.rPressedImage = rPressedImage;
-		this.rHoverImage = rHoverImage;
-		this.rDisabledImage = rDisabledImage;
+		this.defaultImage = defaultImage;
+		this.pressedImage = pressedImage;
+		this.hoverImage = hoverImage;
+		this.disabledImage = disabledImage;
 
 		addMouseDownHandler(new MouseDownHandler() {
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
 				if (isEnabled()) {
-					setResource(GwtImageButton.this.rPressedImage);
+					setResource(GwtImageButton.this.pressedImage);
 				}
 			}
 		});
@@ -82,7 +82,7 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
 				if (isEnabled()) {
-					setResource(GwtImageButton.this.rPressedImage);
+					setResource(GwtImageButton.this.pressedImage);
 				}
 			}
 		});
@@ -91,7 +91,7 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 			@Override
 			public void onMouseOut(MouseOutEvent event) {
 				if (isEnabled()) {
-					setResource(GwtImageButton.this.rDefaultImage);
+					setResource(GwtImageButton.this.defaultImage);
 				}
 			}
 		});
@@ -100,7 +100,7 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 			@Override
 			public void onMouseUp(MouseUpEvent event) {
 				if (isEnabled()) {
-					setResource(GwtImageButton.this.rHoverImage);
+					setResource(GwtImageButton.this.hoverImage);
 				}
 			}
 		});
@@ -111,7 +111,7 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 	 */
 	@Override
 	public int getTabIndex() {
-		return rFocusImpl.getTabIndex(getElement());
+		return focusImpl.getTabIndex(getElement());
 	}
 
 	/**
@@ -134,21 +134,21 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 	 * @see HasEnabled#setEnabled(boolean)
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
-		getElement().setPropertyBoolean("disabled", !bEnabled);
+	public void setEnabled(boolean enabled) {
+		getElement().setPropertyBoolean("disabled", !enabled);
 
-		setResource(bEnabled ? rDefaultImage : rDisabledImage);
+		setResource(enabled ? defaultImage : disabledImage);
 	}
 
 	/**
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused) {
-		if (bFocused) {
-			rFocusImpl.focus(getElement());
+	public void setFocus(boolean focused) {
+		if (focused) {
+			focusImpl.focus(getElement());
 		} else {
-			rFocusImpl.blur(getElement());
+			focusImpl.blur(getElement());
 		}
 	}
 
@@ -156,8 +156,8 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex) {
-		rFocusImpl.setTabIndex(getElement(), nIndex);
+	public void setTabIndex(int index) {
+		focusImpl.setTabIndex(getElement(), index);
 	}
 
 	/**
@@ -168,9 +168,9 @@ public class GwtImageButton extends Image implements Focusable, HasEnabled {
 		super.onAttach();
 
 		// from FocusWidget
-		int nTabIndex = getTabIndex();
+		int tabIndex = getTabIndex();
 
-		if (nTabIndex == -1) {
+		if (tabIndex == -1) {
 			setTabIndex(0);
 		}
 	}

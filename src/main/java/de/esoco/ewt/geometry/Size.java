@@ -34,11 +34,11 @@ public class Size {
 	/**
 	 * Copy constructor.
 	 *
-	 * @param rOther The size to copy
+	 * @param other The size to copy
 	 */
-	public Size(Size rOther) {
-		this.w = rOther.w;
-		this.h = rOther.h;
+	public Size(Size other) {
+		this.w = other.w;
+		this.h = other.h;
 	}
 
 	/**
@@ -64,9 +64,9 @@ public class Size {
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object rOther) {
-		if (rOther instanceof Size) {
-			Size o = (Size) rOther;
+	public boolean equals(Object other) {
+		if (other instanceof Size) {
+			Size o = (Size) other;
 
 			return w == o.w && h == o.h;
 		} else {

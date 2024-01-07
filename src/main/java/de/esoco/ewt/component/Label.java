@@ -55,26 +55,26 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 
 	private static final String URL_TEXT_PREFIX = "url:";
 
-	private String sText;
+	private String text;
 
-	private Image rImage;
+	private Image image;
 
-	private AlignedPosition rTextPosition;
+	private AlignedPosition textPosition;
 
-	private boolean bContainsHtml;
+	private boolean containsHtml;
 
 	/**
 	 * @see Control#applyStyle(StyleData)
 	 */
 	@Override
-	public void applyStyle(StyleData rStyle) {
-		super.applyStyle(rStyle);
+	public void applyStyle(StyleData style) {
+		super.applyStyle(style);
 
-		rTextPosition = getTextPosition(rStyle);
-		bContainsHtml =
-			rStyle.getProperty(CONTENT_TYPE, null) == ContentType.HTML;
+		textPosition = getTextPosition(style);
+		containsHtml =
+			style.getProperty(CONTENT_TYPE, null) == ContentType.HTML;
 
-		if (bContainsHtml) {
+		if (containsHtml) {
 			addStyleName("contains-html");
 		}
 	}
@@ -84,7 +84,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 */
 	@Override
 	public Image getImage() {
-		return rImage;
+		return image;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 */
 	@Override
 	public String getText() {
-		return sText;
+		return text;
 	}
 
 	/**
@@ -110,13 +110,13 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 * {@link LabelStyle#FORM}
 	 * style.
 	 *
-	 * @param rComponent rWidget The target widget for this label
+	 * @param component rWidget The target widget for this label
 	 */
-	public void setAsLabelFor(Component rComponent) {
-		Widget rLabelWidget = getWidget();
+	public void setAsLabelFor(Component component) {
+		Widget labelWidget = getWidget();
 
-		if (rLabelWidget instanceof GwtFormLabel) {
-			((GwtFormLabel) rLabelWidget).setAsLabelFor(rComponent.getWidget());
+		if (labelWidget instanceof GwtFormLabel) {
+			((GwtFormLabel) labelWidget).setAsLabelFor(component.getWidget());
 		}
 	}
 
@@ -124,15 +124,15 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 * @see ImageAttribute#setImage(Image)
 	 */
 	@Override
-	public void setImage(Image rImage) {
-		this.rImage = rImage;
+	public void setImage(Image image) {
+		this.image = image;
 
-		Widget rWidget = getWidget();
+		Widget widget = getWidget();
 
-		if (rWidget instanceof ImageAttribute) {
-			((ImageAttribute) rWidget).setImage(rImage);
+		if (widget instanceof ImageAttribute) {
+			((ImageAttribute) widget).setImage(image);
 		} else {
-			setLabelContent(sText);
+			setLabelContent(text);
 		}
 	}
 
@@ -140,16 +140,15 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 * @see TextAttribute#setText(String)
 	 */
 	@Override
-	public void setText(String sNewText) {
-		sText = sNewText != null ? getContext().expandResource(sNewText) :
-		        null;
+	public void setText(String newText) {
+		text = newText != null ? getContext().expandResource(newText) : null;
 
-		if (sText != null && sText.startsWith(URL_TEXT_PREFIX)) {
-			EWT.requestUrlContent(sText.substring(URL_TEXT_PREFIX.length()),
+		if (text != null && text.startsWith(URL_TEXT_PREFIX)) {
+			EWT.requestUrlContent(text.substring(URL_TEXT_PREFIX.length()),
 				(t, u) -> setLabelContent(EWT.convertToInnerHtml(t, u)),
 				this::handleUrlAccessError);
 		} else {
-			setLabelContent(sText);
+			setLabelContent(text);
 		}
 	}
 
@@ -159,36 +158,35 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 * @param e The error exception
 	 */
 	private void handleUrlAccessError(Throwable e) {
-		GWT.log("Error reading " + sText, e);
-		sText = getContext().expandResource("$msgUrlTextNotAvailable");
-		setLabelContent(sText);
+		GWT.log("Error reading " + text, e);
+		text = getContext().expandResource("$msgUrlTextNotAvailable");
+		setLabelContent(text);
 	}
 
 	/**
 	 * Sets the label html.
 	 *
-	 * @param sLabelText The text to set the content from (may be NULL for
-	 *                   image-only labels)
+	 * @param labelText The text to set the content from (may be NULL for
+	 *                  image-only labels)
 	 */
-	private void setLabelContent(String sLabelText) {
-		Widget rWidget = getWidget();
-		String sLabel = sLabelText != null ? sLabelText : "";
-		boolean bImageLabel = rImage instanceof ImageRef;
+	private void setLabelContent(String labelText) {
+		Widget widget = getWidget();
+		String label = labelText != null ? labelText : "";
+		boolean imageLabel = image instanceof ImageRef;
 
-		if (bImageLabel) {
-			rWidget.addStyleName(EWT.CSS.ewtImageLabel());
+		if (imageLabel) {
+			widget.addStyleName(EWT.CSS.ewtImageLabel());
 
-			sLabel =
-				createImageLabel(sLabelText, (ImageRef) rImage, rTextPosition,
-					HasHorizontalAlignment.ALIGN_CENTER, "100%");
+			label = createImageLabel(labelText, (ImageRef) image, textPosition,
+				HasHorizontalAlignment.ALIGN_CENTER, "100%");
 		}
 
-		if (bContainsHtml && rWidget instanceof HasHTML) {
-			((HasHTML) rWidget).setHTML(sLabel);
-		} else if (bImageLabel) {
-			rWidget.getElement().setInnerHTML(sLabel);
-		} else if (rWidget instanceof HasText) {
-			((HasText) rWidget).setText(sLabel);
+		if (containsHtml && widget instanceof HasHTML) {
+			((HasHTML) widget).setHTML(label);
+		} else if (imageLabel) {
+			widget.getElement().setInnerHTML(label);
+		} else if (widget instanceof HasText) {
+			((HasText) widget).setText(label);
 		}
 	}
 
@@ -203,40 +201,40 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		/**
 		 * Create the widget for a certain label style.
 		 *
-		 * @param rComponent  The component to create the widget for
-		 * @param eLabelStyle The label style
-		 * @param rStyle      The style data
+		 * @param component  The component to create the widget for
+		 * @param labelStyle The label style
+		 * @param style      The style data
 		 * @return The new label widget
 		 */
-		public Widget createLabelWidget(Component rComponent,
-			LabelStyle eLabelStyle, StyleData rStyle) {
-			Widget aWidget = null;
+		public Widget createLabelWidget(Component component,
+			LabelStyle labelStyle, StyleData style) {
+			Widget widget = null;
 
-			switch (eLabelStyle) {
+			switch (labelStyle) {
 				case DEFAULT:
 				case IMAGE:
 				case BRAND:
-					aWidget = new HTML("", rStyle.hasFlag(StyleFlag.WRAP));
+					widget = new HTML("", style.hasFlag(StyleFlag.WRAP));
 					break;
 
 				case INLINE:
-					aWidget = new InlineHTML();
+					widget = new InlineHTML();
 					break;
 
 				case FORM:
-					aWidget = new GwtFormLabel();
+					widget = new GwtFormLabel();
 					break;
 
 				case TITLE:
-					aWidget = new GwtLegendLabel();
+					widget = new GwtLegendLabel();
 					break;
 
 				case ICON:
-					aWidget = new GwtIconLabel();
+					widget = new GwtIconLabel();
 					break;
 			}
 
-			return aWidget;
+			return widget;
 		}
 
 		/**
@@ -244,20 +242,20 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle) {
-			Widget aWidget = null;
+		public W createWidget(Component component, StyleData style) {
+			Widget widget = null;
 
-			if (rStyle.hasFlag(StyleFlag.HYPERLINK)) {
-				aWidget = new Hyperlink();
+			if (style.hasFlag(StyleFlag.HYPERLINK)) {
+				widget = new Hyperlink();
 			} else {
-				LabelStyle eLabelStyle =
-					rStyle.getProperty(UserInterfaceProperties.LABEL_STYLE,
+				LabelStyle labelStyle =
+					style.getProperty(UserInterfaceProperties.LABEL_STYLE,
 						LabelStyle.DEFAULT);
 
-				aWidget = createLabelWidget(rComponent, eLabelStyle, rStyle);
+				widget = createLabelWidget(component, labelStyle, style);
 			}
 
-			return (W) aWidget;
+			return (W) widget;
 		}
 	}
 
@@ -269,16 +267,16 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	static abstract class LabelWidget<E extends Element> extends Widget
 		implements HasText, HasHTML {
 
-		private final E rElement;
+		private final E element;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param rElement The element for this label widget
+		 * @param element The element for this label widget
 		 */
-		LabelWidget(E rElement) {
-			this.rElement = rElement;
-			setElement(rElement);
+		LabelWidget(E element) {
+			this.element = element;
+			setElement(element);
 		}
 
 		/**
@@ -286,7 +284,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 */
 		@Override
 		public String getHTML() {
-			return rElement.getInnerHTML();
+			return element.getInnerHTML();
 		}
 
 		/**
@@ -295,7 +293,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 * @return The label element
 		 */
 		public final E getLabelElement() {
-			return rElement;
+			return element;
 		}
 
 		/**
@@ -303,23 +301,23 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 */
 		@Override
 		public String getText() {
-			return rElement.getInnerText();
+			return element.getInnerText();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setHTML(String sHtml) {
-			rElement.setInnerHTML(sHtml);
+		public void setHTML(String html) {
+			element.setInnerHTML(html);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setText(String sText) {
-			rElement.setInnerText(sText);
+		public void setText(String text) {
+			element.setInnerText(text);
 		}
 	}
 
@@ -341,17 +339,17 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 * Associates this label with another widget by referencing it's ID in
 		 * the HTML 'for' attribute.
 		 *
-		 * @param rWidget The target widget for this label
+		 * @param widget The target widget for this label
 		 */
-		public void setAsLabelFor(Widget rWidget) {
-			String sId = rWidget.getElement().getId();
+		public void setAsLabelFor(Widget widget) {
+			String id = widget.getElement().getId();
 
-			if (sId == null || sId.isEmpty()) {
-				sId = DOM.createUniqueId();
-				rWidget.getElement().setId(sId);
+			if (id == null || id.isEmpty()) {
+				id = DOM.createUniqueId();
+				widget.getElement().setId(id);
 			}
 
-			getLabelElement().setHtmlFor(sId);
+			getLabelElement().setHtmlFor(id);
 		}
 	}
 
@@ -375,15 +373,15 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 		 * @see LabelWidget#setText(String)
 		 */
 		@Override
-		public void setHTML(String sText) {
-			String[] aBaseStyles = sText.split(" ");
-			StringBuilder aStyle = new StringBuilder("fa");
+		public void setHTML(String text) {
+			String[] baseStyles = text.split(" ");
+			StringBuilder style = new StringBuilder("fa");
 
-			for (String sBaseStyle : aBaseStyles) {
-				aStyle.append(" fa-").append(sBaseStyle);
+			for (String baseStyle : baseStyles) {
+				style.append(" fa-").append(baseStyle);
 			}
 
-			setStyleName(aStyle.toString());
+			setStyleName(style.toString());
 		}
 	}
 

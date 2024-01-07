@@ -180,9 +180,9 @@ public class TooltipPopup extends PopupPanel {
 	 * @return The offset
 	 */
 	private int getPageScrollLeft() {
-		Element rBodyElement = RootPanel.getBodyElement();
+		Element bodyElement = RootPanel.getBodyElement();
 
-		return DOM.getParent(rBodyElement).getAbsoluteLeft();
+		return DOM.getParent(bodyElement).getAbsoluteLeft();
 	}
 
 	/**
@@ -191,9 +191,9 @@ public class TooltipPopup extends PopupPanel {
 	 * @return The offset
 	 */
 	private int getPageScrollTop() {
-		Element rBodyElement = RootPanel.getBodyElement();
+		Element bodyElement = RootPanel.getBodyElement();
 
-		return DOM.getParent(rBodyElement).getAbsoluteTop();
+		return DOM.getParent(bodyElement).getAbsoluteTop();
 	}
 
 	/**

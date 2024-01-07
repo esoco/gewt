@@ -30,7 +30,7 @@ import de.esoco.ewt.style.StyleData;
 public abstract class ContainerManager<C extends Container>
 	extends ContainerBuilder<C> {
 
-	private StyleData rBaseStyle;
+	private StyleData baseStyle;
 
 	/**
 	 * Creates a new instance that manages a certain container type.
@@ -43,14 +43,13 @@ public abstract class ContainerManager<C extends Container>
 	 * Builds a child container manager in the container of this instance by
 	 * invoking it's {@link #buildIn(ContainerBuilder, StyleData)} method.
 	 *
-	 * @param rChildManager The child container manager to build
-	 * @param rStyle        The style data for the appearance and
-	 *                         positioning of
-	 *                      the new child container
+	 * @param childManager The child container manager to build
+	 * @param style        The style data for the appearance and positioning of
+	 *                     the new child container
 	 */
-	public final void build(ContainerManager<?> rChildManager,
-		StyleData rStyle) {
-		rChildManager.buildIn(this, rStyle);
+	public final void build(ContainerManager<?> childManager,
+		StyleData style) {
+		childManager.buildIn(this, style);
 	}
 
 	/**
@@ -61,18 +60,19 @@ public abstract class ContainerManager<C extends Container>
 	 * contain the necessary layout constraints for the placements of the new
 	 * container in the parent.
 	 *
-	 * @param rParentBuilder The parent container builder to build the panel
-	 *                       with
-	 * @param rStyle         The style data for the appearance and positioning
-	 *                       of the new container
+	 * @param parentBuilder The parent container builder to build the panel
+	 *                      with
+	 * @param style         The style data for the appearance and
+	 *                         positioning of
+	 *                      the new container
 	 */
-	public void buildIn(ContainerBuilder<?> rParentBuilder, StyleData rStyle) {
-		rBaseStyle = rStyle;
+	public void buildIn(ContainerBuilder<?> parentBuilder, StyleData style) {
+		baseStyle = style;
 
-		ContainerBuilder<C> aBuilder = createContainer(rParentBuilder, rStyle);
+		ContainerBuilder<C> builder = createContainer(parentBuilder, style);
 
-		setContainer(aBuilder.getContainer());
-		setParent(aBuilder.getParent());
+		setContainer(builder.getContainer());
+		setParent(builder.getParent());
 
 		addComponents();
 	}
@@ -83,7 +83,7 @@ public abstract class ContainerManager<C extends Container>
 	 * @return The base style data
 	 */
 	public final StyleData getBaseStyle() {
-		return rBaseStyle;
+		return baseStyle;
 	}
 
 	/**
@@ -113,10 +113,10 @@ public abstract class ContainerManager<C extends Container>
 	 * Must be implemented by subclasses to create a new container of the
 	 * managed type with the given parent container builder.
 	 *
-	 * @param rBuilder   The container builder to build the panel with
-	 * @param rStyleData The style data for the new panel
+	 * @param builder   The container builder to build the panel with
+	 * @param styleData The style data for the new panel
 	 * @return The builder of the new container
 	 */
 	protected abstract ContainerBuilder<C> createContainer(
-		ContainerBuilder<?> rBuilder, StyleData rStyleData);
+		ContainerBuilder<?> builder, StyleData styleData);
 }

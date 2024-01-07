@@ -55,51 +55,51 @@ public class GwtTagField extends Composite
 	implements Focusable, HasEnabled, KeyDownHandler, ClickHandler,
 	SelectionHandler<Suggestion>, HasValueChangeHandlers<Set<String>> {
 
-	private final FlowPanel aMainPanel;
+	private final FlowPanel mainPanel;
 
-	private final SuggestBox aTagInput;
+	private final SuggestBox tagInput;
 
-	private Set<String> aDeletedTags;
+	private Set<String> deletedTags;
 
 	/**
 	 * Creates a new instance.
 	 */
 	public GwtTagField() {
-		aMainPanel = new FlowPanel();
-		aTagInput = new SuggestBox(new MultiWordSuggestOracle());
+		mainPanel = new FlowPanel();
+		tagInput = new SuggestBox(new MultiWordSuggestOracle());
 
-		initWidget(aMainPanel);
+		initWidget(mainPanel);
 
 		setStylePrimaryName(EWT.CSS.ewtTagField());
 
 		addDomHandler(this, ClickEvent.getType());
 
-		aTagInput.addSelectionHandler(this);
-		aTagInput.getValueBox().addKeyDownHandler(this);
-		aTagInput.setStylePrimaryName(EWT.CSS.ewtTagInput());
+		tagInput.addSelectionHandler(this);
+		tagInput.getValueBox().addKeyDownHandler(this);
+		tagInput.setStylePrimaryName(EWT.CSS.ewtTagInput());
 
-		aMainPanel.add(aTagInput);
+		mainPanel.add(tagInput);
 	}
 
 	/**
 	 * Adds a tag string.
 	 *
-	 * @param sTag The tag to add
+	 * @param tag The tag to add
 	 */
-	public void addTag(String sTag) {
-		TagDisplay aTagDisplay = new TagDisplay(sTag);
+	public void addTag(String tag) {
+		TagDisplay tagDisplay = new TagDisplay(tag);
 
-		aMainPanel.insert(aTagDisplay, aMainPanel.getWidgetCount() - 1);
+		mainPanel.insert(tagDisplay, mainPanel.getWidgetCount() - 1);
 	}
 
 	/**
 	 * Adds multiple tag strings.
 	 *
-	 * @param rTags rValues The tags to add
+	 * @param tags rValues The tags to add
 	 */
-	public void addTags(Collection<String> rTags) {
-		for (String sTag : rTags) {
-			addTag(sTag);
+	public void addTags(Collection<String> tags) {
+		for (String tag : tags) {
+			addTag(tag);
 		}
 	}
 
@@ -108,16 +108,16 @@ public class GwtTagField extends Composite
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<Set<String>> rHandler) {
-		return addHandler(rHandler, ValueChangeEvent.getType());
+		ValueChangeHandler<Set<String>> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	/**
 	 * Removes all tags.
 	 */
 	public void clearTags() {
-		while (aMainPanel.getWidgetCount() > 1) {
-			aMainPanel.remove(0);
+		while (mainPanel.getWidgetCount() > 1) {
+			mainPanel.remove(0);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class GwtTagField extends Composite
 	 * @return The suggest box of this instance
 	 */
 	public final SuggestBox getSuggestBox() {
-		return aTagInput;
+		return tagInput;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class GwtTagField extends Composite
 	 */
 	@Override
 	public int getTabIndex() {
-		return aTagInput.getTabIndex();
+		return tagInput.getTabIndex();
 	}
 
 	/**
@@ -145,16 +145,15 @@ public class GwtTagField extends Composite
 	 * @return A set of the current tag strings
 	 */
 	public Set<String> getTags() {
-		Set<String> aTags =
-			new LinkedHashSet<>(aMainPanel.getWidgetCount() - 1);
+		Set<String> tags = new LinkedHashSet<>(mainPanel.getWidgetCount() - 1);
 
-		for (Widget rChild : aMainPanel) {
-			if (rChild instanceof TagDisplay) {
-				aTags.add(((TagDisplay) rChild).getText());
+		for (Widget child : mainPanel) {
+			if (child instanceof TagDisplay) {
+				tags.add(((TagDisplay) child).getText());
 			}
 		}
 
-		return aTags;
+		return tags;
 	}
 
 	/**
@@ -162,17 +161,17 @@ public class GwtTagField extends Composite
 	 */
 	@Override
 	public boolean isEnabled() {
-		return aTagInput.isEnabled();
+		return tagInput.isEnabled();
 	}
 
 	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		aTagInput.getValueBox().setFocus(true);
+	public void onClick(ClickEvent event) {
+		tagInput.getValueBox().setFocus(true);
 
-		if (rEvent.getSource() == this) {
+		if (event.getSource() == this) {
 			setTagsSelected(false);
 		}
 	}
@@ -183,27 +182,27 @@ public class GwtTagField extends Composite
 	 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent rEvent) {
-		if (aTagInput.isEnabled()) {
-			String sInput = aTagInput.getValue();
+	public void onKeyDown(KeyDownEvent event) {
+		if (tagInput.isEnabled()) {
+			String input = tagInput.getValue();
 
-			if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-				addTagFromInput(sInput);
-			} else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE &&
-				sInput.equals("") && aMainPanel.getWidgetCount() > 1) {
-				Widget rTag =
-					aMainPanel.getWidget(aMainPanel.getWidgetCount() - 2);
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+				addTagFromInput(input);
+			} else if (event.getNativeKeyCode() == KeyCodes.KEY_BACKSPACE &&
+				input.equals("") && mainPanel.getWidgetCount() > 1) {
+				Widget tag =
+					mainPanel.getWidget(mainPanel.getWidgetCount() - 2);
 
-				deleteTag((TagDisplay) rTag);
-			} else if (rEvent.isControlKeyDown() &&
-				rEvent.getNativeKeyCode() == KeyCodes.KEY_Z) {
+				deleteTag((TagDisplay) tag);
+			} else if (event.isControlKeyDown() &&
+				event.getNativeKeyCode() == KeyCodes.KEY_Z) {
 				// undo delete
-				if (aDeletedTags != null) {
-					for (String sTag : aDeletedTags) {
-						addTag(sTag);
+				if (deletedTags != null) {
+					for (String tag : deletedTags) {
+						addTag(tag);
 					}
 
-					aDeletedTags = null;
+					deletedTags = null;
 					ValueChangeEvent.fire(this, getTags());
 				}
 			}
@@ -216,20 +215,20 @@ public class GwtTagField extends Composite
 	 * @see SelectionHandler#onSelection(SelectionEvent)
 	 */
 	@Override
-	public void onSelection(SelectionEvent<Suggestion> rEvent) {
-		addTagFromInput(rEvent.getSelectedItem().getReplacementString());
+	public void onSelection(SelectionEvent<Suggestion> event) {
+		addTagFromInput(event.getSelectedItem().getReplacementString());
 	}
 
 	/**
 	 * Removes a tag.
 	 *
-	 * @param sTag The name of the tag to remove
+	 * @param tag The name of the tag to remove
 	 */
-	public void removeTag(String sTag) {
-		for (Widget rChild : aMainPanel) {
-			if (rChild instanceof TagDisplay &&
-				sTag.equals(((TagDisplay) rChild).getText())) {
-				aMainPanel.remove(rChild);
+	public void removeTag(String tag) {
+		for (Widget child : mainPanel) {
+			if (child instanceof TagDisplay &&
+				tag.equals(((TagDisplay) child).getText())) {
+				mainPanel.remove(child);
 
 				break;
 			}
@@ -240,18 +239,18 @@ public class GwtTagField extends Composite
 	 * @see Focusable#setAccessKey(char)
 	 */
 	@Override
-	public void setAccessKey(char cKey) {
-		aTagInput.setAccessKey(cKey);
+	public void setAccessKey(char key) {
+		tagInput.setAccessKey(key);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setEnabled(boolean bEnabled) {
-		aTagInput.setEnabled(bEnabled);
+	public void setEnabled(boolean enabled) {
+		tagInput.setEnabled(enabled);
 
-		if (bEnabled) {
+		if (enabled) {
 			removeStyleDependentName("disabled");
 		} else {
 			addStyleDependentName("disabled");
@@ -262,39 +261,39 @@ public class GwtTagField extends Composite
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused) {
-		aTagInput.setFocus(bFocused);
+	public void setFocus(boolean focused) {
+		tagInput.setFocus(focused);
 	}
 
 	/**
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex) {
-		aTagInput.setTabIndex(nIndex);
+	public void setTabIndex(int index) {
+		tagInput.setTabIndex(index);
 	}
 
 	/**
 	 * Deletes all selected tags.
 	 */
 	void deleteSelectedTags() {
-		Set<Widget> aDeletedTagDisplays = new HashSet<>();
+		Set<Widget> deletedTagDisplays = new HashSet<>();
 
-		aDeletedTags = new HashSet<>();
+		deletedTags = new HashSet<>();
 
-		for (Widget rChild : aMainPanel) {
-			if (rChild instanceof TagDisplay) {
-				TagDisplay rTagDisplay = (TagDisplay) rChild;
+		for (Widget child : mainPanel) {
+			if (child instanceof TagDisplay) {
+				TagDisplay tagDisplay = (TagDisplay) child;
 
-				if (rTagDisplay.isSelected()) {
-					aDeletedTagDisplays.add(rChild);
-					aDeletedTags.add(((TagDisplay) rChild).getText());
+				if (tagDisplay.isSelected()) {
+					deletedTagDisplays.add(child);
+					deletedTags.add(((TagDisplay) child).getText());
 				}
 			}
 		}
 
-		for (Widget rChild : aDeletedTagDisplays) {
-			aMainPanel.remove(rChild);
+		for (Widget child : deletedTagDisplays) {
+			mainPanel.remove(child);
 		}
 
 		ValueChangeEvent.fire(this, getTags());
@@ -304,25 +303,25 @@ public class GwtTagField extends Composite
 	 * Deletes a tag widget from this instance after querying the user for
 	 * confirmation.
 	 *
-	 * @param rTagDisplay The tag widget to delete
+	 * @param tagDisplay The tag widget to delete
 	 */
-	void deleteTag(TagDisplay rTagDisplay) {
-		aDeletedTags = new HashSet<>();
-		aDeletedTags.add(rTagDisplay.getText());
+	void deleteTag(TagDisplay tagDisplay) {
+		deletedTags = new HashSet<>();
+		deletedTags.add(tagDisplay.getText());
 
-		aMainPanel.remove(rTagDisplay);
+		mainPanel.remove(tagDisplay);
 		ValueChangeEvent.fire(this, getTags());
 	}
 
 	/**
 	 * Sets the selected state for all tags.
 	 *
-	 * @param bSelected The new selected state
+	 * @param selected The new selected state
 	 */
-	void setTagsSelected(boolean bSelected) {
-		for (Widget rChild : aMainPanel) {
-			if (rChild instanceof TagDisplay) {
-				((TagDisplay) rChild).setSelected(bSelected);
+	void setTagsSelected(boolean selected) {
+		for (Widget child : mainPanel) {
+			if (child instanceof TagDisplay) {
+				((TagDisplay) child).setSelected(selected);
 			}
 		}
 	}
@@ -330,12 +329,12 @@ public class GwtTagField extends Composite
 	/**
 	 * Internal method to add a tag from an input value.
 	 *
-	 * @param sInput The input value
+	 * @param input The input value
 	 */
-	private void addTagFromInput(String sInput) {
-		if (sInput.length() > 0) {
-			addTag(sInput);
-			aTagInput.setValue("");
+	private void addTagFromInput(String input) {
+		if (input.length() > 0) {
+			addTag(input);
+			tagInput.setValue("");
 			ValueChangeEvent.fire(this, getTags());
 		}
 	}
@@ -347,21 +346,21 @@ public class GwtTagField extends Composite
 	 */
 	private class TagDisplay extends Grid implements ClickHandler {
 
-		private Label rDeleteWidget;
+		private Label deleteWidget;
 
-		private boolean bSelected;
+		private boolean selected;
 
 		/**
 		 * Creates a new instance with a certain tag text
 		 *
-		 * @param sText The tag text
+		 * @param text The tag text
 		 */
-		public TagDisplay(String sText) {
+		public TagDisplay(String text) {
 			super(1, 2);
 
-			rDeleteWidget = new Label();
-			setText(0, 0, sText);
-			setWidget(0, 1, rDeleteWidget);
+			deleteWidget = new Label();
+			setText(0, 0, text);
+			setWidget(0, 1, deleteWidget);
 			setSelected(false);
 
 			setStylePrimaryName(EWT.CSS.ewtTagDisplay());
@@ -383,21 +382,21 @@ public class GwtTagField extends Composite
 		 * @return The selected state
 		 */
 		public final boolean isSelected() {
-			return bSelected;
+			return selected;
 		}
 
 		/**
 		 * @see ClickHandler#onClick(ClickEvent)
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent) {
-			if (aTagInput.isEnabled()) {
-				if (bSelected) {
-					if (getCellForEvent(rEvent).getCellIndex() == 1) {
+		public void onClick(ClickEvent event) {
+			if (tagInput.isEnabled()) {
+				if (selected) {
+					if (getCellForEvent(event).getCellIndex() == 1) {
 						deleteSelectedTags();
 					}
 				} else {
-					if (!rEvent.isControlKeyDown()) {
+					if (!event.isControlKeyDown()) {
 						setTagsSelected(false);
 					}
 
@@ -406,22 +405,22 @@ public class GwtTagField extends Composite
 			}
 
 			// prevent click handling in parent
-			rEvent.stopPropagation();
+			event.stopPropagation();
 		}
 
 		/**
 		 * Sets the selected.
 		 *
-		 * @param bSelected The new selected
+		 * @param selected The new selected
 		 */
-		void setSelected(boolean bSelected) {
-			this.bSelected = bSelected;
+		void setSelected(boolean selected) {
+			this.selected = selected;
 
-			if (bSelected) {
-				rDeleteWidget.setText("\u00D7"); // multiplication sign '×'
+			if (selected) {
+				deleteWidget.setText("\u00D7"); // multiplication sign '×'
 				addStyleDependentName("selected");
 			} else {
-				rDeleteWidget.setText("");
+				deleteWidget.setText("");
 				removeStyleDependentName("selected");
 			}
 		}

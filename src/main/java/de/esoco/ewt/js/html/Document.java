@@ -24,5 +24,5 @@ public class Document extends Node {
 	 * .org/en-US/docs/Web/API/Document/getElementById">
 	 * Document.getElementById()</a>
 	 */
-	public native EventTarget getElementById(String sId);
+	public native EventTarget getElementById(String id);
 }

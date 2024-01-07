@@ -35,11 +35,11 @@ public class Calendar extends Component implements DateAttribute {
 	/**
 	 * Adds a style name to a certain date.
 	 *
-	 * @param rDate  The date to set the style for
-	 * @param sStyle The style to set
+	 * @param date  The date to set the style for
+	 * @param style The style to set
 	 */
-	public void addDateStyle(Date rDate, String sStyle) {
-		getDatePicker().addStyleToDates(sStyle, rDate);
+	public void addDateStyle(Date date, String style) {
+		getDatePicker().addStyleToDates(style, date);
 	}
 
 	/**
@@ -65,31 +65,31 @@ public class Calendar extends Component implements DateAttribute {
 	/**
 	 * Clears the highlighting of a date.
 	 *
-	 * @param rDate  The date to clear the highlight of
-	 * @param sStyle nType The highlight type
+	 * @param date  The date to clear the highlight of
+	 * @param style nType The highlight type
 	 */
-	public void removeDateStyle(Date rDate, String sStyle) {
-		getDatePicker().removeStyleFromDates(sStyle, rDate);
+	public void removeDateStyle(Date date, String style) {
+		getDatePicker().removeStyleFromDates(style, date);
 	}
 
 	/**
 	 * Sets the date that is highlighted by this component.
 	 *
-	 * @param rDate The new date value or NULL to remove the date highlight
+	 * @param date The new date value or NULL to remove the date highlight
 	 */
 	@Override
-	public void setDate(Date rDate) {
-		getDatePicker().setDate(rDate);
+	public void setDate(Date date) {
+		getDatePicker().setDate(date);
 	}
 
 	/**
 	 * Sets the month to be displayed by this calendar.
 	 *
-	 * @param rDate A date of the new month to be displayed
+	 * @param date A date of the new month to be displayed
 	 */
-	public void setMonth(Date rDate) {
-		if (rDate != null) {
-			getDatePicker().setCurrentMonth(rDate);
+	public void setMonth(Date date) {
+		if (date != null) {
+			getDatePicker().setCurrentMonth(date);
 		}
 	}
 
@@ -114,10 +114,10 @@ public class Calendar extends Component implements DateAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GwtDatePicker createWidget(Component rComponent,
-			StyleData rStyle) {
-			return new GwtDatePicker(rComponent.getContext(),
-				rStyle.hasFlag(StyleFlag.DATE_TIME));
+		public GwtDatePicker createWidget(Component component,
+			StyleData style) {
+			return new GwtDatePicker(component.getContext(),
+				style.hasFlag(StyleFlag.DATE_TIME));
 		}
 	}
 }

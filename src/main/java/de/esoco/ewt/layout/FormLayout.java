@@ -39,8 +39,8 @@ public class FormLayout extends TwoLayerLayout {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Panel createLayoutWidget(Container rContainer,
-		StyleData rContainerStyle) {
+	protected Panel createLayoutWidget(Container container,
+		StyleData containerStyle) {
 		return new FormPanel();
 	}
 }

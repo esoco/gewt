@@ -16,12 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.StyleProperties;
-import de.esoco.lib.property.TextFieldStyle;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -29,6 +23,10 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.lib.property.StyleProperties;
+import de.esoco.lib.property.TextFieldStyle;
 
 import static de.esoco.lib.property.StyleProperties.TEXT_FIELD_STYLE;
 
@@ -61,21 +59,21 @@ public class TextField extends TextControl {
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns) {
-		getTextBox().setVisibleLength(nColumns);
+	public void setColumns(int columns) {
+		getTextBox().setVisibleLength(columns);
 	}
 
 	/**
 	 * Sets the selection of the text. A length of zero will remove the
 	 * selection.
 	 *
-	 * @param nStart  The start of the selection
-	 * @param nLength The length of the selection
+	 * @param start  The start of the selection
+	 * @param length The length of the selection
 	 * @throws IndexOutOfBoundsException If the given selection doesn't fit the
 	 *                                   current text
 	 */
-	public void setSelection(int nStart, int nLength) {
-		getTextBox().setSelectionRange(nStart, nLength);
+	public void setSelection(int start, int length) {
+		getTextBox().setSelectionRange(start, length);
 	}
 
 	/**
@@ -91,19 +89,19 @@ public class TextField extends TextControl {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		public W createWidget(Component rComponent, StyleData rStyle) {
-			TextFieldStyle eStyle =
-				rStyle.getProperty(TEXT_FIELD_STYLE, TextFieldStyle.DEFAULT);
+		public W createWidget(Component component, StyleData style) {
+			TextFieldStyle textStyle =
+				style.getProperty(TEXT_FIELD_STYLE, TextFieldStyle.DEFAULT);
 
-			IsTextControlWidget aTextBox;
+			IsTextControlWidget textBox;
 
-			if (eStyle == TextFieldStyle.PASSWORD) {
-				aTextBox = new GwtPasswordBox();
+			if (textStyle == TextFieldStyle.PASSWORD) {
+				textBox = new GwtPasswordBox();
 			} else {
-				aTextBox = new GwtTextField();
+				textBox = new GwtTextField();
 			}
 
-			return (W) aTextBox;
+			return (W) textBox;
 		}
 	}
 
@@ -126,10 +124,10 @@ public class TextField extends TextControl {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onBrowserEvent(Event rEvent) {
-			super.onBrowserEvent(rEvent);
+		public void onBrowserEvent(Event event) {
+			super.onBrowserEvent(event);
 
-			switch (DOM.eventGetType(rEvent)) {
+			switch (DOM.eventGetType(event)) {
 				case Event.ONPASTE:
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
@@ -162,10 +160,10 @@ public class TextField extends TextControl {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onBrowserEvent(Event rEvent) {
-			super.onBrowserEvent(rEvent);
+		public void onBrowserEvent(Event event) {
+			super.onBrowserEvent(event);
 
-			switch (DOM.eventGetType(rEvent)) {
+			switch (DOM.eventGetType(event)) {
 				case Event.ONPASTE:
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override

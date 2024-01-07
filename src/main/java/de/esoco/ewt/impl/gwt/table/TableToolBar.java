@@ -39,78 +39,78 @@ import com.google.gwt.user.client.ui.ToggleButton;
  */
 class TableToolBar extends Composite implements ClickHandler {
 
-	private final GwtTable rTable;
+	private final GwtTable table;
 
-	private TableFilterPanel aFilterPanel = null;
+	private TableFilterPanel filterPanel = null;
 
-	private FlexTable aToolBarTable = new FlexTable();
+	private FlexTable toolBarTable = new FlexTable();
 
-	private HTML aCountLabel = new HTML();
+	private HTML countLabel = new HTML();
 
-	private PushButton aPrevPageButton;
+	private PushButton prevPageButton;
 
-	private PushButton aNextPageButton;
+	private PushButton nextPageButton;
 
-	private PushButton aStartButton;
+	private PushButton startButton;
 
-	private PushButton aEndButton;
+	private PushButton endButton;
 
-	private PushButton aCollapseAllButton;
+	private PushButton collapseAllButton;
 
-	private PushButton aExpandAllButton;
+	private PushButton expandAllButton;
 
-	private ToggleButton aLockSizeButton;
+	private ToggleButton lockSizeButton;
 
-	private PushButton aDownloadButton;
+	private PushButton downloadButton;
 
-	private PushButton aClearSelectionButton;
+	private PushButton clearSelectionButton;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rTable The parent table of this tool bar
+	 * @param table The parent table of this tool bar
 	 */
-	public TableToolBar(GwtTable rTable) {
-		this.rTable = rTable;
+	public TableToolBar(GwtTable table) {
+		this.table = table;
 
-		UserInterfaceContext rContext = rTable.getContext();
+		UserInterfaceContext context = table.getContext();
 
-		boolean bFilterPanel = rTable.getData() instanceof FilterableDataModel;
+		boolean filterPanel = table.getData() instanceof FilterableDataModel;
 
-		Grid aNavButtons = new Grid(1, 5);
-		Grid aRightButtons = new Grid(1, 3);
+		Grid navButtons = new Grid(1, 5);
+		Grid rightButtons = new Grid(1, 3);
 
-		initToolBarButtons(rContext);
+		initToolBarButtons(context);
 
-		aNavButtons.setWidget(0, 0, aStartButton);
-		aNavButtons.setWidget(0, 1, aPrevPageButton);
-		aNavButtons.setWidget(0, 2, aCountLabel);
-		aNavButtons.setWidget(0, 3, aNextPageButton);
-		aNavButtons.setWidget(0, 4, aEndButton);
-		aNavButtons.addStyleName(GwtTable.CSS.ewtNavButtons());
+		navButtons.setWidget(0, 0, startButton);
+		navButtons.setWidget(0, 1, prevPageButton);
+		navButtons.setWidget(0, 2, countLabel);
+		navButtons.setWidget(0, 3, nextPageButton);
+		navButtons.setWidget(0, 4, endButton);
+		navButtons.addStyleName(GwtTable.CSS.ewtNavButtons());
 
-		if (rTable.getData() instanceof Downloadable) {
-			aRightButtons.setWidget(0, 0, aDownloadButton);
+		if (table.getData() instanceof Downloadable) {
+			rightButtons.setWidget(0, 0, downloadButton);
 		}
 
-		aRightButtons.setWidget(0, 1, aLockSizeButton);
-		aRightButtons.setWidget(0, 2, aClearSelectionButton);
+		rightButtons.setWidget(0, 1, lockSizeButton);
+		rightButtons.setWidget(0, 2, clearSelectionButton);
 
-		if (bFilterPanel) {
-			initFilterPanel(rTable);
+		if (filterPanel) {
+			initFilterPanel(table);
 		}
 
-		if (rTable.isHierarchical()) {
+		if (table.isHierarchical()) {
 			initTreeControls();
 		}
 
-		aToolBarTable.setWidget(1, 1, aNavButtons);
-		aToolBarTable.setWidget(1, 2, aRightButtons);
-		aToolBarTable.getCellFormatter().setWidth(1, 1, "100%");
+		toolBarTable.setWidget(1, 1, navButtons);
+		toolBarTable.setWidget(1, 2, rightButtons);
+		toolBarTable.getCellFormatter().setWidth(1, 1, "100%");
 
-		aToolBarTable.setStylePrimaryName(GwtTable.CSS.ewtToolbar());
+		toolBarTable.setStylePrimaryName(GwtTable.CSS.ewtToolbar());
 
-		initWidget(aToolBarTable);
+		initWidget(toolBarTable);
 	}
 
 	/**
@@ -119,32 +119,32 @@ class TableToolBar extends Composite implements ClickHandler {
 	 * @return The filter panel or NULL if the data model is not searchable
 	 */
 	public final TableFilterPanel getFilterPanel() {
-		return aFilterPanel;
+		return filterPanel;
 	}
 
 	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		if (rTable.canHandleInput()) {
-			Object rSource = rEvent.getSource();
+	public void onClick(ClickEvent event) {
+		if (table.canHandleInput()) {
+			Object source = event.getSource();
 
-			if (rSource == aClearSelectionButton) {
-				rTable.setSelection(-1);
-			} else if (rSource == aDownloadButton) {
-				rTable.initiateDownload();
-			} else if (rSource == aLockSizeButton) {
-				rTable.setHeightLocked(isHeightLocked());
+			if (source == clearSelectionButton) {
+				table.setSelection(-1);
+			} else if (source == downloadButton) {
+				table.initiateDownload();
+			} else if (source == lockSizeButton) {
+				table.setHeightLocked(isHeightLocked());
 			} else {
-				rTable.setRowUnselected(rTable.getSelectedRow());
+				table.setRowUnselected(table.getSelectedRow());
 
-				if (rSource == aCollapseAllButton) {
-					rTable.collapseAllNodes();
-				} else if (rSource == aExpandAllButton) {
-					rTable.expandAllNodes();
+				if (source == collapseAllButton) {
+					table.collapseAllNodes();
+				} else if (source == expandAllButton) {
+					table.expandAllNodes();
 				} else {
-					handleNavigationButton(rSource);
+					handleNavigationButton(source);
 				}
 			}
 		}
@@ -154,36 +154,36 @@ class TableToolBar extends Composite implements ClickHandler {
 	 * Resets all filter criteria in the model.
 	 */
 	public void resetFilterCriteria() {
-		if (aFilterPanel != null) {
-			aFilterPanel.removeFilter();
+		if (filterPanel != null) {
+			filterPanel.removeFilter();
 		}
 	}
 
 	/**
 	 * Sets the enabled state of this toolbar.
 	 *
-	 * @param bEnabled The new enabled state
+	 * @param enabled The new enabled state
 	 */
-	public void setEnabled(boolean bEnabled) {
-		if (bEnabled) {
+	public void setEnabled(boolean enabled) {
+		if (enabled) {
 			updateNavigationButtons();
 		} else {
-			aPrevPageButton.setEnabled(false);
-			aNextPageButton.setEnabled(false);
-			aStartButton.setEnabled(false);
-			aEndButton.setEnabled(false);
+			prevPageButton.setEnabled(false);
+			nextPageButton.setEnabled(false);
+			startButton.setEnabled(false);
+			endButton.setEnabled(false);
 		}
 
-		if (aCollapseAllButton != null) {
-			aCollapseAllButton.setEnabled(bEnabled);
-			aExpandAllButton.setEnabled(bEnabled);
+		if (collapseAllButton != null) {
+			collapseAllButton.setEnabled(enabled);
+			expandAllButton.setEnabled(enabled);
 		}
 
-		aClearSelectionButton.setEnabled(
-			bEnabled && rTable.getSelectionIndex() >= 0);
+		clearSelectionButton.setEnabled(
+			enabled && table.getSelectionIndex() >= 0);
 
-		if (aFilterPanel != null) {
-			aFilterPanel.setEnabled(bEnabled);
+		if (filterPanel != null) {
+			filterPanel.setEnabled(enabled);
 		}
 	}
 
@@ -193,146 +193,145 @@ class TableToolBar extends Composite implements ClickHandler {
 	 * @return The height locked
 	 */
 	boolean isHeightLocked() {
-		return !aLockSizeButton.isDown();
+		return !lockSizeButton.isDown();
 	}
 
 	/**
 	 * Sets the enabled state of the clear selection button.
 	 *
-	 * @param bEnabled The enabled state
+	 * @param enabled The enabled state
 	 */
-	void setClearSelectionButtonEnabled(boolean bEnabled) {
-		aClearSelectionButton.setEnabled(bEnabled);
+	void setClearSelectionButtonEnabled(boolean enabled) {
+		clearSelectionButton.setEnabled(enabled);
 	}
 
 	/**
 	 * Updates the navigation button states.
 	 */
 	void updateNavigationButtons() {
-		int nFirstRow = rTable.getFirstRow();
-		boolean bHasPrev = nFirstRow != 0;
-		boolean bHasNext = nFirstRow + rTable.getVisibleRowCount() <
-			rTable.getData().getElementCount();
+		int firstRow = table.getFirstRow();
+		boolean hasPrev = firstRow != 0;
+		boolean hasNext = firstRow + table.getVisibleRowCount() <
+			table.getData().getElementCount();
 
-		aStartButton.setEnabled(bHasPrev);
-		aPrevPageButton.setEnabled(bHasPrev);
-		aNextPageButton.setEnabled(bHasNext);
-		aEndButton.setEnabled(bHasNext);
+		startButton.setEnabled(hasPrev);
+		prevPageButton.setEnabled(hasPrev);
+		nextPageButton.setEnabled(hasNext);
+		endButton.setEnabled(hasNext);
 	}
 
 	/**
 	 * Updates the navigation position and row count display.
 	 *
-	 * @param nRowCount    The number of rows in the data
-	 * @param nVisibleRows The number of displayed rows
-	 * @param nFirstRow    The index of the first visible row
+	 * @param rowCount    The number of rows in the data
+	 * @param visibleRows The number of displayed rows
+	 * @param firstRow    The index of the first visible row
 	 */
-	void updatePosition(int nRowCount, int nVisibleRows, int nFirstRow) {
-		int nLastRow = nFirstRow + nVisibleRows - 1;
+	void updatePosition(int rowCount, int visibleRows, int firstRow) {
+		int lastRow = firstRow + visibleRows - 1;
 
-		if (nLastRow == 0) {
-			nFirstRow = 0;
+		if (lastRow == 0) {
+			firstRow = 0;
 		}
 
-		aCountLabel.setHTML(
-			"" + nFirstRow + "&nbsp;-&nbsp;" + nLastRow + "/" + nRowCount);
+		countLabel.setHTML(
+			"" + firstRow + "&nbsp;-&nbsp;" + lastRow + "/" + rowCount);
 	}
 
 	/**
 	 * Handles click events for navigation buttons.
 	 *
-	 * @param rButton The navigation button
+	 * @param button The navigation button
 	 */
-	private void handleNavigationButton(Object rButton) {
-		int nTableRows = rTable.getVisibleRowCount();
-		int nFirstRow = rTable.getFirstRow();
+	private void handleNavigationButton(Object button) {
+		int tableRows = table.getVisibleRowCount();
+		int firstRow = table.getFirstRow();
 
-		rTable.setRowUnselected(rTable.getSelectedRow());
-		rTable.setSelectedRow(-1);
+		table.setRowUnselected(table.getSelectedRow());
+		table.setSelectedRow(-1);
 
-		if (rButton == aEndButton) {
-			rTable.setFirstRow(rTable.getData().getElementCount());
-		} else if (rButton == aStartButton) {
-			rTable.setFirstRow(0);
+		if (button == endButton) {
+			table.setFirstRow(table.getData().getElementCount());
+		} else if (button == startButton) {
+			table.setFirstRow(0);
 		}
 
-		if (rButton == aNextPageButton) {
-			rTable.setFirstRow(nFirstRow + nTableRows);
-		} else if (rButton == aPrevPageButton) {
-			rTable.setFirstRow(nFirstRow - nTableRows);
+		if (button == nextPageButton) {
+			table.setFirstRow(firstRow + tableRows);
+		} else if (button == prevPageButton) {
+			table.setFirstRow(firstRow - tableRows);
 		}
 
-		rTable.update();
+		table.update();
 	}
 
 	/**
 	 * Initializes the filter panel for a searchable data model.
 	 *
-	 * @param rTable The parent table of this toolbar and the filter panel
+	 * @param table The parent table of this toolbar and the filter panel
 	 */
-	private void initFilterPanel(GwtTable rTable) {
-		FlexCellFormatter rCellFormatter =
-			aToolBarTable.getFlexCellFormatter();
+	private void initFilterPanel(GwtTable table) {
+		FlexCellFormatter cellFormatter = toolBarTable.getFlexCellFormatter();
 
-		aFilterPanel = new TableFilterPanel(rTable);
-		aToolBarTable.setWidget(0, 0, aFilterPanel);
-		rCellFormatter.setColSpan(0, 0, 3);
+		filterPanel = new TableFilterPanel(table);
+		toolBarTable.setWidget(0, 0, filterPanel);
+		cellFormatter.setColSpan(0, 0, 3);
 	}
 
 	/**
 	 * Creates an initializes the toolbar buttons.
 	 *
-	 * @param rContext The user interface context
+	 * @param context The user interface context
 	 */
-	private void initToolBarButtons(UserInterfaceContext rContext) {
-		aPrevPageButton = new PushButton(new Image(GwtTable.RES.imLeft()));
-		aNextPageButton = new PushButton(new Image(GwtTable.RES.imRight()));
-		aStartButton = new PushButton(new Image(GwtTable.RES.imBack()));
-		aEndButton = new PushButton(new Image(GwtTable.RES.imForward()));
-		aLockSizeButton = new ToggleButton(new Image(GwtTable.RES.imLock()),
+	private void initToolBarButtons(UserInterfaceContext context) {
+		prevPageButton = new PushButton(new Image(GwtTable.RES.imLeft()));
+		nextPageButton = new PushButton(new Image(GwtTable.RES.imRight()));
+		startButton = new PushButton(new Image(GwtTable.RES.imBack()));
+		endButton = new PushButton(new Image(GwtTable.RES.imForward()));
+		lockSizeButton = new ToggleButton(new Image(GwtTable.RES.imLock()),
 			new Image(GwtTable.RES.imUnlock()));
-		aDownloadButton = new PushButton(new Image(GwtTable.RES.imDownload()));
-		aClearSelectionButton =
+		downloadButton = new PushButton(new Image(GwtTable.RES.imDownload()));
+		clearSelectionButton =
 			new PushButton(new Image(GwtTable.RES.imClearSelection()));
 
-		aPrevPageButton.setTitle(rContext.expandResource("$ttPrevTablePage"));
-		aNextPageButton.setTitle(rContext.expandResource("$ttNextTablePage"));
-		aStartButton.setTitle(rContext.expandResource("$ttFirstTablePage"));
-		aEndButton.setTitle(rContext.expandResource("$ttLastTablePage"));
-		aLockSizeButton.setTitle(rContext.expandResource("$ttLockTableSize"));
-		aDownloadButton.setTitle(
-			rContext.expandResource("$ttDownloadTableContent"));
-		aClearSelectionButton.setTitle(
-			rContext.expandResource("$ttClearSelection"));
+		prevPageButton.setTitle(context.expandResource("$ttPrevTablePage"));
+		nextPageButton.setTitle(context.expandResource("$ttNextTablePage"));
+		startButton.setTitle(context.expandResource("$ttFirstTablePage"));
+		endButton.setTitle(context.expandResource("$ttLastTablePage"));
+		lockSizeButton.setTitle(context.expandResource("$ttLockTableSize"));
+		downloadButton.setTitle(
+			context.expandResource("$ttDownloadTableContent"));
+		clearSelectionButton.setTitle(
+			context.expandResource("$ttClearSelection"));
 
-		aPrevPageButton.addClickHandler(this);
-		aNextPageButton.addClickHandler(this);
-		aStartButton.addClickHandler(this);
-		aEndButton.addClickHandler(this);
-		aLockSizeButton.addClickHandler(this);
-		aDownloadButton.addClickHandler(this);
-		aClearSelectionButton.addClickHandler(this);
+		prevPageButton.addClickHandler(this);
+		nextPageButton.addClickHandler(this);
+		startButton.addClickHandler(this);
+		endButton.addClickHandler(this);
+		lockSizeButton.addClickHandler(this);
+		downloadButton.addClickHandler(this);
+		clearSelectionButton.addClickHandler(this);
 
-		aClearSelectionButton.setEnabled(false);
+		clearSelectionButton.setEnabled(false);
 	}
 
 	/**
 	 * Initializes the controls for tree tables.
 	 */
 	private void initTreeControls() {
-		Grid aTreeButtons = new Grid(1, 2);
+		Grid treeButtons = new Grid(1, 2);
 
-		aCollapseAllButton =
+		collapseAllButton =
 			new PushButton(new Image(GwtTable.RES.imTreeCollapse()));
-		aExpandAllButton =
+		expandAllButton =
 			new PushButton(new Image(GwtTable.RES.imTreeExpand()));
 
-		aTreeButtons.setWidget(0, 0, aCollapseAllButton);
-		aTreeButtons.setWidget(0, 1, aExpandAllButton);
+		treeButtons.setWidget(0, 0, collapseAllButton);
+		treeButtons.setWidget(0, 1, expandAllButton);
 
-		aToolBarTable.setWidget(1, 0, aTreeButtons);
+		toolBarTable.setWidget(1, 0, treeButtons);
 
-		aCollapseAllButton.addClickHandler(this);
-		aExpandAllButton.addClickHandler(this);
+		collapseAllButton.addClickHandler(this);
+		expandAllButton.addClickHandler(this);
 	}
 }

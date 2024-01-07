@@ -22,12 +22,10 @@ import de.esoco.ewt.component.Composite;
 import de.esoco.ewt.component.Label;
 import de.esoco.ewt.event.EventType;
 import de.esoco.ewt.style.StyleData;
-
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.ButtonStyle;
 
 import java.math.BigDecimal;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -35,7 +33,6 @@ import java.util.function.Function;
 
 import static de.esoco.ewt.layout.GridLayout.grid;
 import static de.esoco.ewt.style.StyleData.DEFAULT;
-
 import static de.esoco.lib.property.LayoutProperties.HORIZONTAL_ALIGN;
 import static de.esoco.lib.property.StyleProperties.BUTTON_STYLE;
 import static de.esoco.lib.text.TextConvert.capitalizedIdentifier;
@@ -53,11 +50,10 @@ import static de.esoco.lib.text.TextConvert.interleave;
  * {@link NumberDisplayFormat} enum.
  *
  * <p>If the display mode is {@link DisplayMode#INTERACTIVE} the user can
- * select
- * an active format which can then be rendered differently (by providing the
- * appropriate CSS). It is also possible to set and query the currently active
- * format ({@link #getActiveFormat()}) and to register listeners for changes of
- * the active format ({@link #onFormatChanged(Consumer)}).</p>
+ * select an active format which can then be rendered differently (by providing
+ * the appropriate CSS). It is also possible to set and query the currently
+ * active format ({@link #getActiveFormat()}) and to register listeners for
+ * changes of the active format ({@link #onFormatChanged(Consumer)}).</p>
  *
  * @author eso
  */
@@ -81,15 +77,15 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 			-4)),
 		OCTAL(d -> format(d, 8, -3)), BINARY(d -> format(d, 2, -4));
 
-		private final Function<BigDecimal, String> fFormatValue;
+		private final Function<BigDecimal, String> formatValue;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param fFormat The value formatting function
+		 * @param format The value formatting function
 		 */
-		private NumberDisplayFormat(Function<BigDecimal, String> fFormat) {
-			fFormatValue = fFormat;
+		NumberDisplayFormat(Function<BigDecimal, String> format) {
+			formatValue = format;
 		}
 
 		/**
@@ -97,33 +93,32 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 		 * certain
 		 * (non-decimal) radix.
 		 *
-		 * @param dValue     The value to format
-		 * @param nRadix     The radix
-		 * @param nChunkSize The chunk size at which to interleave the
-		 *                         formatted
-		 *                   string with spaces
+		 * @param value     The value to format
+		 * @param radix     The radix
+		 * @param chunkSize The chunk size at which to interleave the formatted
+		 *                  string with spaces
 		 * @return The formatted string value or NULL if the scale of the input
 		 * value is not zero
 		 */
-		private static String format(BigDecimal dValue, int nRadix,
-			int nChunkSize) {
-			String sFormatted = null;
+		private static String format(BigDecimal value, int radix,
+			int chunkSize) {
+			String formatted = null;
 
-			if (dValue.scale() == 0) {
-				sFormatted =
-					interleave(dValue.toBigInteger().toString(nRadix), " ",
-						nChunkSize);
+			if (value.scale() == 0) {
+				formatted =
+					interleave(value.toBigInteger().toString(radix), " ",
+						chunkSize);
 			}
 
-			return sFormatted;
+			return formatted;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public String apply(BigDecimal dValue) {
-			return fFormatValue.apply(dValue);
+		public String apply(BigDecimal value) {
+			return formatValue.apply(value);
 		}
 	}
 
@@ -136,28 +131,28 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	private static final StyleData VALUE_STYLE =
 		DEFAULT.set(HORIZONTAL_ALIGN, Alignment.END);
 
-	private F[] aFormats;
+	private final F[] formats;
 
-	private int nActiveFormat = 0;
+	private int activeFormat = 0;
 
-	private DisplayMode eDisplayMode = DisplayMode.INTERACTIVE;
+	private DisplayMode displayMode = DisplayMode.INTERACTIVE;
 
-	private Button[] aFormatButtons;
+	private Button[] formatButtons;
 
-	private Label[] aValueLabels;
+	private Label[] valueLabels;
 
-	private Set<Consumer<F>> aFormatChangeListeners;
+	private Set<Consumer<F>> formatChangeListeners;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rModes The conversion functions of the displays modes
+	 * @param modes The conversion functions of the displays modes
 	 */
 	@SafeVarargs
-	public MultiFormatDisplay(F... rModes) {
+	public MultiFormatDisplay(F... modes) {
 		super(grid("auto 1fr"));
 
-		this.aFormats = rModes;
+		this.formats = modes;
 	}
 
 	/**
@@ -166,7 +161,7 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * @return The active format
 	 */
 	public F getActiveFormat() {
-		return aFormats[nActiveFormat];
+		return formats[activeFormat];
 	}
 
 	/**
@@ -175,7 +170,7 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * @return The string value for the active format
 	 */
 	public String getActiveValue() {
-		return aValueLabels[nActiveFormat].getText();
+		return valueLabels[activeFormat].getText();
 	}
 
 	/**
@@ -184,21 +179,21 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * @return The display mode
 	 */
 	public DisplayMode getDisplayMode() {
-		return eDisplayMode;
+		return displayMode;
 	}
 
 	/**
 	 * Registers a handler for changes of the active format. The argument
 	 * function will receive the new active format as it's input.
 	 *
-	 * @param fListener The format change event handler
+	 * @param listener The format change event handler
 	 */
-	public void onFormatChanged(Consumer<F> fListener) {
-		if (aFormatChangeListeners == null) {
-			aFormatChangeListeners = new HashSet<>(1);
+	public void onFormatChanged(Consumer<F> listener) {
+		if (formatChangeListeners == null) {
+			formatChangeListeners = new HashSet<>(1);
 		}
 
-		aFormatChangeListeners.add(fListener);
+		formatChangeListeners.add(listener);
 	}
 
 	/**
@@ -206,43 +201,43 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * with
 	 * {@link #onFormatChanged(Consumer)}.
 	 *
-	 * @param fListener The listener to remove
+	 * @param listener The listener to remove
 	 */
-	public void removeFormatChangeListener(Consumer<F> fListener) {
-		if (aFormatChangeListeners != null) {
-			aFormatChangeListeners.remove(fListener);
+	public void removeFormatChangeListener(Consumer<F> listener) {
+		if (formatChangeListeners != null) {
+			formatChangeListeners.remove(listener);
 		}
 	}
 
 	/**
 	 * Sets the active format by it's index.
 	 *
-	 * @param nFormat The index of the new active format
+	 * @param format The index of the new active format
 	 */
-	public void setActive(int nFormat) {
-		aFormatButtons[nActiveFormat].removeStyleName(STYLE_NAME_ACTIVE);
-		aValueLabels[nActiveFormat].removeStyleName(STYLE_NAME_ACTIVE);
+	public void setActive(int format) {
+		formatButtons[activeFormat].removeStyleName(STYLE_NAME_ACTIVE);
+		valueLabels[activeFormat].removeStyleName(STYLE_NAME_ACTIVE);
 
-		nActiveFormat = nFormat;
+		activeFormat = format;
 
-		aFormatButtons[nActiveFormat].addStyleName(STYLE_NAME_ACTIVE);
-		aValueLabels[nActiveFormat].addStyleName(STYLE_NAME_ACTIVE);
+		formatButtons[activeFormat].addStyleName(STYLE_NAME_ACTIVE);
+		valueLabels[activeFormat].addStyleName(STYLE_NAME_ACTIVE);
 
-		if (aFormatChangeListeners != null) {
-			F rActiveMode = getActiveFormat();
+		if (formatChangeListeners != null) {
+			F activeMode = getActiveFormat();
 
-			aFormatChangeListeners.forEach(l -> l.accept(rActiveMode));
+			formatChangeListeners.forEach(l -> l.accept(activeMode));
 		}
 	}
 
 	/**
 	 * Sets the active format.
 	 *
-	 * @param rFormat The new active format
+	 * @param format The new active format
 	 */
-	public void setActiveFormat(F rFormat) {
-		for (int i = 0; i < aFormats.length; i++) {
-			if (aFormats[i] == rFormat) {
+	public void setActiveFormat(F format) {
+		for (int i = 0; i < formats.length; i++) {
+			if (formats[i] == format) {
 				setActive(i);
 
 				break;
@@ -254,23 +249,23 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * Sets the mode of this display. The default is
 	 * {@link DisplayMode#INTERACTIVE}.
 	 *
-	 * @param eMode The display mode
+	 * @param mode The display mode
 	 */
-	public void setDisplayMode(DisplayMode eMode) {
-		eDisplayMode = eMode;
+	public void setDisplayMode(DisplayMode mode) {
+		displayMode = mode;
 
-		for (int i = 0; i < aFormats.length; i++) {
-			boolean bVisible =
-				eMode == DisplayMode.INTERACTIVE || i == nActiveFormat;
+		for (int i = 0; i < formats.length; i++) {
+			boolean visible =
+				mode == DisplayMode.INTERACTIVE || i == activeFormat;
 
-			aFormatButtons[i].setVisible(
-				bVisible && eMode != DisplayMode.ACTIVE_VALUE_ONLY);
-			aValueLabels[i].setVisible(bVisible);
+			formatButtons[i].setVisible(
+				visible && mode != DisplayMode.ACTIVE_VALUE_ONLY);
+			valueLabels[i].setVisible(visible);
 
-			if (i == nActiveFormat && eMode == DisplayMode.ACTIVE_VALUE_ONLY) {
+			if (i == activeFormat && mode == DisplayMode.ACTIVE_VALUE_ONLY) {
 				// only set visibility to keep layout structure
-				aFormatButtons[i].setVisible(true);
-				aFormatButtons[i].setVisibility(false);
+				formatButtons[i].setVisible(true);
+				formatButtons[i].setVisibility(false);
 			}
 		}
 	}
@@ -278,16 +273,16 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	/**
 	 * Updates the display from a new value.
 	 *
-	 * @param rNewValue The new value
+	 * @param newValue The new value
 	 */
-	public void update(T rNewValue) {
-		for (int i = 0; i < aFormats.length; i++) {
-			String sFormatted = aFormats[i].apply(rNewValue);
-			boolean bVisible = sFormatted != null;
+	public void update(T newValue) {
+		for (int i = 0; i < formats.length; i++) {
+			String formatted = formats[i].apply(newValue);
+			boolean visible = formatted != null;
 
-			aFormatButtons[i].setVisible(bVisible);
-			aValueLabels[i].setVisible(bVisible);
-			aValueLabels[i].setText(sFormatted);
+			formatButtons[i].setVisible(visible);
+			valueLabels[i].setVisible(visible);
+			valueLabels[i].setText(formatted);
 		}
 	}
 
@@ -295,30 +290,30 @@ public class MultiFormatDisplay<T, F extends Function<T, String>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void build(ContainerBuilder<?> rBuilder) {
-		int nCount = aFormats.length;
+	protected void build(ContainerBuilder<?> builder) {
+		int count = formats.length;
 
-		aFormatButtons = new Button[nCount];
-		aValueLabels = new Label[nCount];
+		formatButtons = new Button[count];
+		valueLabels = new Label[count];
 
-		String sLabelPrefix = "$btn" + aFormats[0].getClass().getSimpleName();
+		String labelPrefix = "$btn" + formats[0].getClass().getSimpleName();
 
-		for (int i = 0; i < nCount; i++) {
-			Button aFormatButton = rBuilder.addButton(MODE_BUTTON_STYLE,
-				sLabelPrefix + capitalizedIdentifier(aFormats[i].toString()));
+		for (int i = 0; i < count; i++) {
+			Button formatButton = builder.addButton(MODE_BUTTON_STYLE,
+				labelPrefix + capitalizedIdentifier(formats[i].toString()));
 
-			Label aValueLabel = rBuilder.addLabel(VALUE_STYLE, "");
-			int nMode = i;
+			Label valueLabel = builder.addLabel(VALUE_STYLE, "");
+			int mode = i;
 
-			aFormatButtons[i] = aFormatButton;
-			aValueLabels[i] = aValueLabel;
+			formatButtons[i] = formatButton;
+			valueLabels[i] = valueLabel;
 
-			aValueLabel.addStyleName("value");
-			aFormatButton.addStyleName("mode");
-			aFormatButton.addEventListener(EventType.ACTION,
-				e -> setActive(nMode));
+			valueLabel.addStyleName("value");
+			formatButton.addStyleName("mode");
+			formatButton.addEventListener(EventType.ACTION,
+				e -> setActive(mode));
 		}
 
-		setActive(nActiveFormat);
+		setActive(activeFormat);
 	}
 }

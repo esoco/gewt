@@ -22,11 +22,11 @@ public interface JsSupplier<T> {
 	/**
 	 * Default JavaScript function method that ignores the input.
 	 *
-	 * @param rValue The value to consume
+	 * @param value The value to consume
 	 * @return Always NULL
 	 */
 	@JsOverlay
-	default T apply(Object rValue) {
+	default T apply(Object value) {
 		return get();
 	}
 

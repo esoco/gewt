@@ -52,50 +52,50 @@ public class GwtTimePicker extends Composite
 
 	private static final GewtCss CSS = RES.css();
 
-	Image aClockImage;
+	Image clockImage;
 
-	private GwtSpinner aHoursField;
+	private GwtSpinner hoursField;
 
-	private GwtSpinner aMinutesField;
+	private GwtSpinner minutesField;
 
 	/**
 	 * Creates a new instance.
 	 */
-	public GwtTimePicker(UserInterfaceContext rContext) {
-		HorizontalPanel aTimePanel = new HorizontalPanel();
-		Image aClockImage = new Image(RES.imClock());
-		Label aSeparator = new Label(":");
+	public GwtTimePicker(UserInterfaceContext context) {
+		HorizontalPanel timePanel = new HorizontalPanel();
+		Image clockImage = new Image(RES.imClock());
+		Label separator = new Label(":");
 
-		aHoursField = new GwtSpinner(0, 23, 1, new TimeValueBox());
-		aMinutesField = new GwtSpinner(0, 59, 5, new TimeValueBox());
+		hoursField = new GwtSpinner(0, 23, 1, new TimeValueBox());
+		minutesField = new GwtSpinner(0, 59, 5, new TimeValueBox());
 
-		aClockImage.setTitle(rContext.expandResource("$ttGewtDatePickerTime"));
-		aHoursField.setTitle(rContext.expandResource("$ttGewtDatePickerHour"));
-		aMinutesField.setTitle(
-			rContext.expandResource("$ttGewtDatePickerMinute"));
+		clockImage.setTitle(context.expandResource("$ttGewtDatePickerTime"));
+		hoursField.setTitle(context.expandResource("$ttGewtDatePickerHour"));
+		minutesField.setTitle(
+			context.expandResource("$ttGewtDatePickerMinute"));
 
-		aClockImage.addDoubleClickHandler(new DoubleClickHandler() {
+		clockImage.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
-			public void onDoubleClick(DoubleClickEvent rEvent) {
+			public void onDoubleClick(DoubleClickEvent event) {
 				setTime(new Date());
 			}
 		});
 
-		aHoursField.addValueChangeHandler(this);
-		aMinutesField.addValueChangeHandler(this);
+		hoursField.addValueChangeHandler(this);
+		minutesField.addValueChangeHandler(this);
 
-		aTimePanel.add(aClockImage);
-		aTimePanel.add(aHoursField);
-		aTimePanel.add(aSeparator);
-		aTimePanel.add(aMinutesField);
-		aTimePanel.setCellVerticalAlignment(aClockImage,
+		timePanel.add(clockImage);
+		timePanel.add(hoursField);
+		timePanel.add(separator);
+		timePanel.add(minutesField);
+		timePanel.setCellVerticalAlignment(clockImage,
 			HorizontalPanel.ALIGN_MIDDLE);
-		aTimePanel.setCellVerticalAlignment(aSeparator,
+		timePanel.setCellVerticalAlignment(separator,
 			HorizontalPanel.ALIGN_MIDDLE);
 
-		initWidget(aTimePanel);
+		initWidget(timePanel);
 
-		aClockImage.addStyleName(CSS.ewtIcon());
+		clockImage.addStyleName(CSS.ewtIcon());
 		setStylePrimaryName(CSS.ewtTimePicker());
 	}
 
@@ -104,56 +104,56 @@ public class GwtTimePicker extends Composite
 	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
-		ValueChangeHandler<Integer> rHandler) {
-		return addHandler(rHandler, ValueChangeEvent.getType());
+		ValueChangeHandler<Integer> handler) {
+		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
 	/**
 	 * Returns the currently displayed time with the calendar date of the date
 	 * parameter.
 	 *
-	 * @param rDate The calendar date to apply the time to
+	 * @param date The calendar date to apply the time to
 	 * @return A new date object with the combined date and time
 	 */
 	@SuppressWarnings("deprecation")
-	public Date applyTime(Date rDate) {
-		if (rDate != null) {
-			rDate = CalendarUtil.copyDate(rDate);
-			rDate.setHours(aHoursField.getValue());
-			rDate.setMinutes(aMinutesField.getValue());
+	public Date applyTime(Date date) {
+		if (date != null) {
+			date = CalendarUtil.copyDate(date);
+			date.setHours(hoursField.getValue());
+			date.setMinutes(minutesField.getValue());
 		}
 
-		return rDate;
+		return date;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onValueChange(ValueChangeEvent<Integer> rEvent) {
-		ValueChangeEvent.fire(this, rEvent.getValue());
+	public void onValueChange(ValueChangeEvent<Integer> event) {
+		ValueChangeEvent.fire(this, event.getValue());
 	}
 
 	/**
 	 * Sets the time of this widget to the time of the given date object.
 	 *
-	 * @param rDate The new time
+	 * @param date The new time
 	 * @return The modified date
 	 */
 	@SuppressWarnings("deprecation")
-	public Date setTime(Date rDate) {
-		int nHours = 0;
-		int nMinutes = 0;
+	public Date setTime(Date date) {
+		int hours = 0;
+		int minutes = 0;
 
-		if (rDate != null) {
-			nHours = rDate.getHours();
-			nMinutes = rDate.getMinutes();
+		if (date != null) {
+			hours = date.getHours();
+			minutes = date.getMinutes();
 		}
 
-		aHoursField.setValue(nHours);
-		aMinutesField.setValue(nMinutes);
+		hoursField.setValue(hours);
+		minutesField.setValue(minutes);
 
-		return rDate;
+		return date;
 	}
 
 	/**
@@ -169,8 +169,8 @@ public class GwtTimePicker extends Composite
 		private static final Renderer<Integer> RENDERER =
 			new AbstractRenderer<Integer>() {
 				@Override
-				public String render(Integer rValue) {
-					return rValue != null ? VALUE_FORMAT.format(rValue) : "";
+				public String render(Integer value) {
+					return value != null ? VALUE_FORMAT.format(value) : "";
 				}
 			};
 

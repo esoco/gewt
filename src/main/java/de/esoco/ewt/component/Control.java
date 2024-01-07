@@ -31,10 +31,10 @@ public abstract class Control extends Component {
 	 * Requests that the component gets the input focus.
 	 */
 	public void requestFocus() {
-		Widget rWidget = getWidget();
+		Widget widget = getWidget();
 
-		if (rWidget instanceof Focusable) {
-			((Focusable) rWidget).setFocus(true);
+		if (widget instanceof Focusable) {
+			((Focusable) widget).setFocus(true);
 		}
 	}
 }

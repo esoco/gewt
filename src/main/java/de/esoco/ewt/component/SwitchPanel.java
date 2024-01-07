@@ -36,14 +36,14 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rLayout The layout for this instance
+	 * @param layout The layout for this instance
 	 * @throws IllegalArgumentException If the layout isn't an instance of
 	 *                                  {@link SwitchPanelLayout}
 	 */
-	public SwitchPanel(GenericLayout rLayout) {
-		super(rLayout);
+	public SwitchPanel(GenericLayout layout) {
+		super(layout);
 
-		if (!(rLayout instanceof SwitchPanelLayout)) {
+		if (!(layout instanceof SwitchPanelLayout)) {
 			throw new IllegalArgumentException(
 				getClass().getSimpleName() + " Layout must be a subclass of " +
 					SwitchPanelLayout.class.getSimpleName());
@@ -53,13 +53,13 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	/**
 	 * Adds a new page to this panel.
 	 *
-	 * @param rComponent The component to be placed in a page
-	 * @param sPageTitle The title of the page
-	 * @param bCloseable TRUE if the page can be closed by the user
+	 * @param component The component to be placed in a page
+	 * @param pageTitle The title of the page
+	 * @param closeable TRUE if the page can be closed by the user
 	 */
-	public void addPage(Component rComponent, String sPageTitle,
-		boolean bCloseable) {
-		getLayout().addPage(rComponent, sPageTitle, bCloseable);
+	public void addPage(Component component, String pageTitle,
+		boolean closeable) {
+		getLayout().addPage(component, pageTitle, closeable);
 	}
 
 	/**
@@ -85,11 +85,11 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	/**
 	 * Returns the index of the page in which a certain component is displayed.
 	 *
-	 * @param rPageComponent The component to return the index of
+	 * @param pageComponent The component to return the index of
 	 * @return The page index or -1 if the given component is not a page
 	 */
-	public int getPageIndex(Component rPageComponent) {
-		return getLayout().getPageIndex(rPageComponent);
+	public int getPageIndex(Component pageComponent) {
+		return getLayout().getPageIndex(pageComponent);
 	}
 
 	/**
@@ -103,19 +103,19 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	/**
 	 * Sets the title of a particular page.
 	 *
-	 * @param nIndex The page index
-	 * @param sTitle The new title
+	 * @param index The page index
+	 * @param title The new title
 	 */
-	public void setPageTitle(int nIndex, String sTitle) {
-		getLayout().setPageTitle(nIndex, sTitle);
+	public void setPageTitle(int index, String title) {
+		getLayout().setPageTitle(index, title);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setSelection(int nIndex) {
-		getLayout().setSelection(nIndex);
+	public void setSelection(int index) {
+		getLayout().setSelection(index);
 	}
 
 	/**
@@ -125,8 +125,7 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 	 * @see Panel#addWidget(HasWidgets, Widget, StyleData)
 	 */
 	@Override
-	void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData) {
+	void addWidget(HasWidgets container, Widget widget, StyleData styleData) {
 	}
 
 	/**
@@ -140,12 +139,12 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 		/**
 		 * Adds a new page component to this panel.
 		 *
-		 * @param rPageComponent The component to be placed in a page
-		 * @param sPageTitle     The title of the page
-		 * @param bCloseable     TRUE if the page can be closed by the user
+		 * @param pageComponent The component to be placed in a page
+		 * @param pageTitle     The title of the page
+		 * @param closeable     TRUE if the page can be closed by the user
 		 */
-		public abstract void addPage(Component rPageComponent,
-			String sPageTitle, boolean bCloseable);
+		public abstract void addPage(Component pageComponent, String pageTitle,
+			boolean closeable);
 
 		/**
 		 * Returns the number of pages contained in this instance.
@@ -158,17 +157,17 @@ public abstract class SwitchPanel extends FixedLayoutPanel
 		 * Returns the index of the page in which a certain component is
 		 * displayed.
 		 *
-		 * @param rPageComponent The component
+		 * @param pageComponent The component
 		 * @return The page index or -1 if the given component is not in a page
 		 */
-		public abstract int getPageIndex(Component rPageComponent);
+		public abstract int getPageIndex(Component pageComponent);
 
 		/**
 		 * Sets the title of a particular page.
 		 *
-		 * @param nIndex The page index
-		 * @param sTitle The new title
+		 * @param index The page index
+		 * @param title The new title
 		 */
-		public abstract void setPageTitle(int nIndex, String sTitle);
+		public abstract void setPageTitle(int index, String title);
 	}
 }

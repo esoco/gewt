@@ -28,13 +28,13 @@ public class Margins {
 	 */
 	public static final Margins ZERO_MARGINS = new Margins();
 
-	private int nLeft;
+	private int left;
 
-	private int nRight;
+	private int right;
 
-	private int nTop;
+	private int top;
 
-	private int nBottom;
+	private int bottom;
 
 	/**
 	 * Default Constructor for zero margins.
@@ -45,88 +45,88 @@ public class Margins {
 	/**
 	 * Creates equal margins for all sides.
 	 *
-	 * @param nMargin The margin
+	 * @param margin The margin
 	 */
-	public Margins(int nMargin) {
-		this(nMargin, nMargin, nMargin, nMargin);
+	public Margins(int margin) {
+		this(margin, margin, margin, margin);
 	}
 
 	/**
 	 * Copy constructor.
 	 *
-	 * @param rMargins The margins object to copy the values from
+	 * @param margins The margins object to copy the values from
 	 */
-	public Margins(Margins rMargins) {
-		this.nLeft = rMargins.nLeft;
-		this.nRight = rMargins.nRight;
-		this.nTop = rMargins.nTop;
-		this.nBottom = rMargins.nBottom;
+	public Margins(Margins margins) {
+		this.left = margins.left;
+		this.right = margins.right;
+		this.top = margins.top;
+		this.bottom = margins.bottom;
 	}
 
 	/**
 	 * Creates equal horizontal and vertical margins.
 	 *
-	 * @param nHorizontalMargin The horizontal margins to the left and right
-	 * @param nVerticalMargin   The vertical margins at the top and bottom
+	 * @param horizontalMargin The horizontal margins to the left and right
+	 * @param verticalMargin   The vertical margins at the top and bottom
 	 */
-	public Margins(int nHorizontalMargin, int nVerticalMargin) {
-		this(nHorizontalMargin, nHorizontalMargin, nVerticalMargin,
-			nVerticalMargin);
+	public Margins(int horizontalMargin, int verticalMargin) {
+		this(horizontalMargin, horizontalMargin, verticalMargin,
+			verticalMargin);
 	}
 
 	/**
 	 * Creates different margins for each side.
 	 *
-	 * @param nLeft   The margin to the left
-	 * @param nRight  The margin to the right
-	 * @param nTop    The margin at the top
-	 * @param nBottom The margin at the bottom
+	 * @param left   The margin to the left
+	 * @param right  The margin to the right
+	 * @param top    The margin at the top
+	 * @param bottom The margin at the bottom
 	 */
-	public Margins(int nLeft, int nRight, int nTop, int nBottom) {
-		this.nLeft = nLeft;
-		this.nRight = nRight;
-		this.nTop = nTop;
-		this.nBottom = nBottom;
+	public Margins(int left, int right, int top, int bottom) {
+		this.left = left;
+		this.right = right;
+		this.top = top;
+		this.bottom = bottom;
 	}
 
 	/**
 	 * Returns a new instance that is the sum of this instance and the given
 	 * other margins object.
 	 *
-	 * @param rOther The other margins object
+	 * @param other The other margins object
 	 * @return The new margins instance
 	 */
-	public final Margins add(Margins rOther) {
-		Margins aMargins = new Margins(this);
+	public final Margins add(Margins other) {
+		Margins margins = new Margins(this);
 
-		aMargins.nLeft += rOther.nLeft;
-		aMargins.nRight += rOther.nRight;
-		aMargins.nTop += rOther.nTop;
-		aMargins.nBottom += rOther.nBottom;
+		margins.left += other.left;
+		margins.right += other.right;
+		margins.top += other.top;
+		margins.bottom += other.bottom;
 
-		return aMargins;
+		return margins;
 	}
 
 	/**
 	 * Checks if this margins object is equal to another.
 	 *
-	 * @param rOther The other object to compare with.
+	 * @param other The other object to compare with.
 	 * @return TRUE if the objects are equal
 	 */
 	@Override
-	public boolean equals(Object rOther) {
-		if (rOther == this) {
+	public boolean equals(Object other) {
+		if (other == this) {
 			return true;
 		}
 
-		if (!(rOther instanceof Margins)) {
+		if (!(other instanceof Margins)) {
 			return false;
 		}
 
-		Margins m = (Margins) rOther;
+		Margins m = (Margins) other;
 
-		return nLeft == m.nLeft && nRight == m.nRight && nTop == m.nTop &&
-			nBottom == m.nBottom;
+		return left == m.left && right == m.right && top == m.top &&
+			bottom == m.bottom;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class Margins {
 	 * @return The bottom value
 	 */
 	public final int getBottom() {
-		return nBottom;
+		return bottom;
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class Margins {
 	 * @return The left value
 	 */
 	public final int getLeft() {
-		return nLeft;
+		return left;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class Margins {
 	 * @return The right value
 	 */
 	public final int getRight() {
-		return nRight;
+		return right;
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class Margins {
 	 * @return The top value
 	 */
 	public final int getTop() {
-		return nTop;
+		return top;
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class Margins {
 	 */
 	@Override
 	public int hashCode() {
-		return (((17 + nLeft) * 37 + nRight) * 37 + nTop) * 37 + nBottom;
+		return (((17 + left) * 37 + right) * 37 + top) * 37 + bottom;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class Margins {
 	 * @return The margins total height
 	 */
 	public final int height() {
-		return nTop + nBottom;
+		return top + bottom;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class Margins {
 	 * @return The parameter string
 	 */
 	public String paramString() {
-		return nLeft + "," + nRight + "," + nTop + "," + nBottom;
+		return left + "," + right + "," + top + "," + bottom;
 	}
 
 	/**
@@ -212,6 +212,6 @@ public class Margins {
 	 * @return The margins total width
 	 */
 	public final int width() {
-		return nLeft + nRight;
+		return left + right;
 	}
 }

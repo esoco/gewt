@@ -55,20 +55,19 @@ public class List extends ListControl {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
 		getGwtListBox().setVisibleItemCount(10);
-		getGwtListBox().setMultipleSelect(
-			rStyle.hasFlag(StyleFlag.MULTISELECT));
+		getGwtListBox().setMultipleSelect(style.hasFlag(StyleFlag.MULTISELECT));
 	}
 
 	/**
 	 * Sets the number of visible items.
 	 *
-	 * @param nItems The number of visible items
+	 * @param items The number of visible items
 	 */
-	public void setVisibleItems(int nItems) {
-		getGwtListBox().setVisibleItemCount(nItems);
+	public void setVisibleItems(int items) {
+		getGwtListBox().setVisibleItemCount(items);
 	}
 }

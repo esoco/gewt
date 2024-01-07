@@ -51,34 +51,32 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 
 	private static final GewtCss CSS = RES.css();
 
-	private MonthAndTimeSelector aMonthAndTimeSelector;
+	private MonthAndTimeSelector monthAndTimeSelector;
 
-	private DateBox rDateBox;
+	private DateBox dateBox;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rContext  The user interface context
-	 * @param bDateTime TRUE to pick date and time, FALSE for date only
+	 * @param context  The user interface context
+	 * @param dateTime TRUE to pick date and time, FALSE for date only
 	 */
-	public GwtDatePicker(UserInterfaceContext rContext, boolean bDateTime) {
-		super(new MonthAndTimeSelector(rContext, bDateTime),
+	public GwtDatePicker(UserInterfaceContext context, boolean dateTime) {
+		super(new MonthAndTimeSelector(context, dateTime),
 			new DefaultCalendarView(), new CalendarModel());
 
-		aMonthAndTimeSelector = (MonthAndTimeSelector) getMonthSelector();
-		aMonthAndTimeSelector.setDatePicker(this);
+		monthAndTimeSelector = (MonthAndTimeSelector) getMonthSelector();
+		monthAndTimeSelector.setDatePicker(this);
 
-		GwtTimePicker rTimePicker = aMonthAndTimeSelector.getTimePicker();
+		GwtTimePicker timePicker = monthAndTimeSelector.getTimePicker();
 
-		if (rTimePicker != null) {
-			rTimePicker.addValueChangeHandler(
-				new ValueChangeHandler<Integer>() {
-					@Override
-					public void onValueChange(
-						ValueChangeEvent<Integer> rEvent) {
-						timePickerValueChanged(rEvent);
-					}
-				});
+		if (timePicker != null) {
+			timePicker.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					timePickerValueChanged(event);
+				}
+			});
 		}
 
 		setYearAndMonthDropdownVisible(true);
@@ -95,31 +93,31 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 	@Override
 	@SuppressWarnings("deprecation")
 	public Date getDate() {
-		Date rDate = getValue();
+		Date date = getValue();
 
-		if (rDate != null) {
+		if (date != null) {
 			// DatePicker returns 12:00:00 ?!
-			rDate.setHours(0);
-			rDate.setMinutes(0);
-			rDate.setSeconds(0);
+			date.setHours(0);
+			date.setMinutes(0);
+			date.setSeconds(0);
 		}
 
-		return aMonthAndTimeSelector.applyTime(rDate);
+		return monthAndTimeSelector.applyTime(date);
 	}
 
 	/**
 	 * Sets the date.
 	 *
-	 * @param rDate The new date
+	 * @param date The new date
 	 */
 	@Override
-	public void setDate(Date rDate) {
-		if (rDate != null) {
-			setCurrentMonth(rDate);
+	public void setDate(Date date) {
+		if (date != null) {
+			setCurrentMonth(date);
 		}
 
-		aMonthAndTimeSelector.setTime(rDate);
-		setValue(rDate);
+		monthAndTimeSelector.setTime(date);
+		setValue(date);
 	}
 
 	/**
@@ -127,22 +125,22 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 	 * box that needs to be updated if the time value has changed. If not set a
 	 * {@link ValueChangeEvent} will be fired instead.
 	 *
-	 * @param rDateBox The dateBox value
+	 * @param dateBox The dateBox value
 	 */
-	public final void setDateBox(DateBox rDateBox) {
-		this.rDateBox = rDateBox;
+	public final void setDateBox(DateBox dateBox) {
+		this.dateBox = dateBox;
 	}
 
 	/**
 	 * Handles a {@link ValueChangeEvent} from a {@link GwtTimePicker}.
 	 *
-	 * @param rEvent The event that occurred
+	 * @param event The event that occurred
 	 */
-	void timePickerValueChanged(ValueChangeEvent<Integer> rEvent) {
-		if (rDateBox == null) {
+	void timePickerValueChanged(ValueChangeEvent<Integer> event) {
+		if (dateBox == null) {
 			ValueChangeEvent.fire(GwtDatePicker.this, getDate());
 		} else {
-			rDateBox.setValue(getDate(), true);
+			dateBox.setValue(getDate(), true);
 		}
 	}
 
@@ -163,30 +161,30 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 
 		private static final int COL_NEXT_YEAR = 4;
 
-		private GwtDatePicker rDatePicker;
+		private GwtDatePicker datePicker;
 
-		private GwtTimePicker aTimePicker;
+		private GwtTimePicker timePicker;
 
-		private Label aMonthLabel = new Label();
+		private Label monthLabel = new Label();
 
-		private PushButton aPrevMonthButton = new PushButton();
+		private PushButton prevMonthButton = new PushButton();
 
-		private PushButton aNextMonthButton = new PushButton();
+		private PushButton nextMonthButton = new PushButton();
 
-		private PushButton aPrevYearButton = new PushButton();
+		private PushButton prevYearButton = new PushButton();
 
-		private PushButton aNextYearButton = new PushButton();
+		private PushButton nextYearButton = new PushButton();
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param rContext  The user interface context
-		 * @param bWithTime TRUE for month and time selection,
+		 * @param context  The user interface context
+		 * @param withTime TRUE for month and time selection,
 		 */
-		public MonthAndTimeSelector(UserInterfaceContext rContext,
-			boolean bWithTime) {
-			if (bWithTime) {
-				aTimePicker = new GwtTimePicker(rContext);
+		public MonthAndTimeSelector(UserInterfaceContext context,
+			boolean withTime) {
+			if (withTime) {
+				timePicker = new GwtTimePicker(context);
 			}
 		}
 
@@ -195,7 +193,7 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 */
 		@Override
 		public CalendarModel getModel() {
-			return rDatePicker != null ? rDatePicker.getModel() : null;
+			return datePicker != null ? datePicker.getModel() : null;
 		}
 
 		/**
@@ -204,8 +202,8 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 * @see MonthSelector#addMonths(int)
 		 */
 		@Override
-		protected void addMonths(int nMonthAdd) {
-			super.addMonths(nMonthAdd);
+		protected void addMonths(int monthAdd) {
+			super.addMonths(monthAdd);
 		}
 
 		/**
@@ -213,7 +211,7 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 */
 		@Override
 		protected DatePicker getDatePicker() {
-			return rDatePicker;
+			return datePicker;
 		}
 
 		/**
@@ -222,7 +220,7 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 * @return The time picker component
 		 */
 		protected GwtTimePicker getTimePicker() {
-			return aTimePicker;
+			return timePicker;
 		}
 
 		/**
@@ -230,8 +228,8 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 */
 		@Override
 		protected void refresh() {
-			if (rDatePicker != null) {
-				aMonthLabel.setText(getModel().formatCurrentMonthAndYear());
+			if (datePicker != null) {
+				monthLabel.setText(getModel().formatCurrentMonthAndYear());
 			}
 		}
 
@@ -240,100 +238,100 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 */
 		@Override
 		protected void setup() {
-			aPrevMonthButton.getUpFace().setHTML("&lsaquo;");
-			aPrevMonthButton.setStyleName("datePickerPreviousButton");
-			aPrevMonthButton.addClickHandler(new MonthChangeClickHandler(-1));
+			prevMonthButton.getUpFace().setHTML("&lsaquo;");
+			prevMonthButton.setStyleName("datePickerPreviousButton");
+			prevMonthButton.addClickHandler(new MonthChangeClickHandler(-1));
 
-			aNextMonthButton.getUpFace().setHTML("&rsaquo;");
-			aNextMonthButton.setStyleName("datePickerNextButton");
-			aNextMonthButton.addClickHandler(new MonthChangeClickHandler(1));
+			nextMonthButton.getUpFace().setHTML("&rsaquo;");
+			nextMonthButton.setStyleName("datePickerNextButton");
+			nextMonthButton.addClickHandler(new MonthChangeClickHandler(1));
 
-			aPrevYearButton.getUpFace().setHTML("&laquo;");
-			aPrevYearButton.setStyleName("datePickerPreviousButton");
-			aPrevYearButton.addClickHandler(new MonthChangeClickHandler(-12));
+			prevYearButton.getUpFace().setHTML("&laquo;");
+			prevYearButton.setStyleName("datePickerPreviousButton");
+			prevYearButton.addClickHandler(new MonthChangeClickHandler(-12));
 
-			aNextYearButton.getUpFace().setHTML("&raquo;");
-			aNextYearButton.setStyleName("datePickerNextButton");
-			aNextYearButton.addClickHandler(new MonthChangeClickHandler(12));
+			nextYearButton.getUpFace().setHTML("&raquo;");
+			nextYearButton.setStyleName("datePickerNextButton");
+			nextYearButton.addClickHandler(new MonthChangeClickHandler(12));
 
-			aMonthLabel.setStyleName("datePickerMonth");
-			aMonthLabel.addDoubleClickHandler(new DoubleClickHandler() {
+			monthLabel.setStyleName("datePickerMonth");
+			monthLabel.addDoubleClickHandler(new DoubleClickHandler() {
 				@Override
-				public void onDoubleClick(DoubleClickEvent rEvent) {
+				public void onDoubleClick(DoubleClickEvent event) {
 					resetDate();
 				}
 			});
 
-			Grid aGrid = new Grid(1, 5);
+			Grid grid = new Grid(1, 5);
 
-			aGrid.setStyleName(CSS.datePickerMonthSelector());
-			aGrid.setWidget(0, COL_PREV_YEAR, aPrevYearButton);
-			aGrid.setWidget(0, COL_PREV_MONTH, aPrevMonthButton);
-			aGrid.setWidget(0, COL_MONTH, aMonthLabel);
-			aGrid.setWidget(0, COL_NEXT_MONTH, aNextMonthButton);
-			aGrid.setWidget(0, COL_NEXT_YEAR, aNextYearButton);
+			grid.setStyleName(CSS.datePickerMonthSelector());
+			grid.setWidget(0, COL_PREV_YEAR, prevYearButton);
+			grid.setWidget(0, COL_PREV_MONTH, prevMonthButton);
+			grid.setWidget(0, COL_MONTH, monthLabel);
+			grid.setWidget(0, COL_NEXT_MONTH, nextMonthButton);
+			grid.setWidget(0, COL_NEXT_YEAR, nextYearButton);
 
-			CellFormatter rFormatter = aGrid.getCellFormatter();
+			CellFormatter formatter = grid.getCellFormatter();
 
-			rFormatter.setStyleName(0, COL_MONTH, CSS.datePickerMonth());
-			rFormatter.setWidth(0, COL_PREV_YEAR, "1");
-			rFormatter.setWidth(0, COL_PREV_MONTH, "1");
-			rFormatter.setWidth(0, COL_MONTH, "100%");
-			rFormatter.setWidth(0, COL_NEXT_MONTH, "1");
-			rFormatter.setWidth(0, COL_NEXT_YEAR, "1");
+			formatter.setStyleName(0, COL_MONTH, CSS.datePickerMonth());
+			formatter.setWidth(0, COL_PREV_YEAR, "1");
+			formatter.setWidth(0, COL_PREV_MONTH, "1");
+			formatter.setWidth(0, COL_MONTH, "100%");
+			formatter.setWidth(0, COL_NEXT_MONTH, "1");
+			formatter.setWidth(0, COL_NEXT_YEAR, "1");
 
-			if (aTimePicker != null) {
-				Grid aPanel = new Grid(2, 1);
+			if (timePicker != null) {
+				Grid panel = new Grid(2, 1);
 
-				aPanel.setWidth("100%");
-				aPanel.setWidget(0, 0, aTimePicker);
-				aPanel.setWidget(1, 0, aGrid);
-				aPanel
+				panel.setWidth("100%");
+				panel.setWidget(0, 0, timePicker);
+				panel.setWidget(1, 0, grid);
+				panel
 					.getCellFormatter()
 					.addStyleName(0, 0, CSS.ewtTimePicker());
-				aPanel
+				panel
 					.getCellFormatter()
 					.setHorizontalAlignment(0, 0,
 						HasHorizontalAlignment.ALIGN_CENTER);
 
-				aGrid = aPanel;
+				grid = panel;
 			}
 
-			initWidget(aGrid);
+			initWidget(grid);
 		}
 
 		/**
 		 * If this instance contains a time picker this method sets the input
 		 * time in a new instance of the given date object and returns it.
 		 *
-		 * @param rDate The date to apply the time to
+		 * @param date The date to apply the time to
 		 * @return The resulting date (a new instance if modified)
 		 */
-		Date applyTime(Date rDate) {
-			if (aTimePicker != null && rDate != null) {
-				rDate = aTimePicker.applyTime(rDate);
+		Date applyTime(Date date) {
+			if (timePicker != null && date != null) {
+				date = timePicker.applyTime(date);
 			}
 
-			return rDate;
+			return date;
 		}
 
 		/**
 		 * Sets the {@link GwtDatePicker} this instance is associated with.
 		 *
-		 * @param rDatePicker The new date picker
+		 * @param datePicker The new date picker
 		 */
-		void setDatePicker(GwtDatePicker rDatePicker) {
-			this.rDatePicker = rDatePicker;
+		void setDatePicker(GwtDatePicker datePicker) {
+			this.datePicker = datePicker;
 		}
 
 		/**
 		 * Sets the time values if this instance contains a time picker.
 		 *
-		 * @param rDate The date containing the new time
+		 * @param date The date containing the new time
 		 */
-		void setTime(Date rDate) {
-			if (aTimePicker != null) {
-				aTimePicker.setTime(rDate);
+		void setTime(Date date) {
+			if (timePicker != null) {
+				timePicker.setTime(date);
 			}
 		}
 
@@ -341,10 +339,10 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 * Resets the displayed date to today.
 		 */
 		private void resetDate() {
-			Date aToday = new Date();
+			Date today = new Date();
 
-			rDatePicker.setCurrentMonth(aToday);
-			rDatePicker.setValue(aToday, true);
+			datePicker.setCurrentMonth(today);
+			datePicker.setValue(today, true);
 		}
 
 		/**
@@ -354,23 +352,23 @@ public class GwtDatePicker extends DatePicker implements DateAttribute {
 		 */
 		public class MonthChangeClickHandler implements ClickHandler {
 
-			private int nMonthAdd;
+			private int monthAdd;
 
 			/**
 			 * Creates a new instance.
 			 *
-			 * @param nMonthAdd The number of month to add
+			 * @param monthAdd The number of month to add
 			 */
-			public MonthChangeClickHandler(int nMonthAdd) {
-				this.nMonthAdd = nMonthAdd;
+			public MonthChangeClickHandler(int monthAdd) {
+				this.monthAdd = monthAdd;
 			}
 
 			/**
 			 * @see ClickHandler#onClick(ClickEvent)
 			 */
 			@Override
-			public void onClick(ClickEvent rEvent) {
-				addMonths(nMonthAdd);
+			public void onClick(ClickEvent event) {
+				addMonths(monthAdd);
 			}
 		}
 	}

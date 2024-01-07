@@ -68,28 +68,28 @@ public class ProgressBar extends Component {
 	/**
 	 * Sets the maximum value.
 	 *
-	 * @param nValue The new maximum value
+	 * @param value The new maximum value
 	 */
-	public void setMaximum(int nValue) {
-		getBarWidget().setMaximum(nValue);
+	public void setMaximum(int value) {
+		getBarWidget().setMaximum(value);
 	}
 
 	/**
 	 * Sets the minimum value.
 	 *
-	 * @param nValue The new minimum value
+	 * @param value The new minimum value
 	 */
-	public void setMinimum(int nValue) {
-		getBarWidget().setMinimum(nValue);
+	public void setMinimum(int value) {
+		getBarWidget().setMinimum(value);
 	}
 
 	/**
 	 * Sets the integer value.
 	 *
-	 * @param nValue The new integer value
+	 * @param value The new integer value
 	 */
-	public void setValue(int nValue) {
-		getBarWidget().setProgress(nValue);
+	public void setValue(int value) {
+		getBarWidget().setProgress(value);
 	}
 
 	/**
@@ -132,23 +132,23 @@ public class ProgressBar extends Component {
 		/**
 		 * Sets the maximum.
 		 *
-		 * @param nMaximum The new maximum
+		 * @param maximum The new maximum
 		 */
-		public void setMaximum(int nMaximum);
+		public void setMaximum(int maximum);
 
 		/**
 		 * Sets the minimum.
 		 *
-		 * @param nMinimum The new minimum
+		 * @param minimum The new minimum
 		 */
-		public void setMinimum(int nMinimum);
+		public void setMinimum(int minimum);
 
 		/**
 		 * Sets the current progress value.
 		 *
-		 * @param nProgress The new progress value
+		 * @param progress The new progress value
 		 */
-		public void setProgress(int nProgress);
+		public void setProgress(int progress);
 	}
 
 	/**
@@ -163,8 +163,8 @@ public class ProgressBar extends Component {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public IsProgressBarWidget createWidget(Component rComponent,
-			StyleData rStyle) {
+		public IsProgressBarWidget createWidget(Component component,
+			StyleData style) {
 			return new GwtProgressBar();
 		}
 	}

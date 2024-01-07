@@ -30,44 +30,44 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class Composite extends Component {
 
-	private Panel aContentPanel = new Panel();
+	private Panel contentPanel = new Panel();
 
 	/**
 	 * Creates a new instance with a certain layout.
 	 *
-	 * @param rLayout The layout of the composite container
+	 * @param layout The layout of the composite container
 	 */
-	protected Composite(GenericLayout rLayout) {
-		aContentPanel.setLayout(rLayout);
+	protected Composite(GenericLayout layout) {
+		contentPanel.setLayout(layout);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		build(new ContainerBuilder<Panel>(aContentPanel));
+		build(new ContainerBuilder<Panel>(contentPanel));
 	}
 
 	/**
 	 * Must be implemented by subclasses to build their content with the given
 	 * builder.
 	 *
-	 * @param rBuilder The builder to add the content components with
+	 * @param builder The builder to add the content components with
 	 */
-	protected abstract void build(ContainerBuilder<?> rBuilder);
+	protected abstract void build(ContainerBuilder<?> builder);
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IsWidget createWidget(StyleData rStyle) {
-		aContentPanel.initWidget(getParent(), rStyle);
+	protected IsWidget createWidget(StyleData style) {
+		contentPanel.initWidget(getParent(), style);
 
-		aContentPanel.addStyleName("CompositeContent");
+		contentPanel.addStyleName("CompositeContent");
 
-		return aContentPanel.getWidget();
+		return contentPanel.getWidget();
 	}
 }

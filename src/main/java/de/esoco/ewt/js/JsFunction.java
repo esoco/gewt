@@ -16,8 +16,8 @@ public interface JsFunction<T> {
 	/**
 	 * The function application method.
 	 *
-	 * @param rValue The value to process
+	 * @param value The value to process
 	 * @return The result value
 	 */
-	T apply(Object rValue);
+	T apply(Object value);
 }

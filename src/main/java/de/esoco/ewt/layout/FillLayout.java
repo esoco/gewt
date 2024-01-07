@@ -34,9 +34,9 @@ import com.google.gwt.user.client.ui.Widget;
 @SuppressWarnings("unused")
 public class FillLayout extends GenericLayout {
 
-	private final boolean bHorizontal;
+	private final boolean horizontal;
 
-	private final int nGap;
+	private final int gap;
 
 	/**
 	 * Creates a new instance with horizontal orientation and no gap.
@@ -49,44 +49,44 @@ public class FillLayout extends GenericLayout {
 	 * Creates a new FillLayout with either horizontal or vertical layout of
 	 * components and no gaps or margins.
 	 *
-	 * @param bHorizontal TRUE for horizontal orientation, FALSE for vertical
+	 * @param horizontal TRUE for horizontal orientation, FALSE for vertical
 	 */
-	public FillLayout(boolean bHorizontal) {
-		this(bHorizontal, 0);
+	public FillLayout(boolean horizontal) {
+		this(horizontal, 0);
 	}
 
 	/**
 	 * Creates a new FillLayout with horizontal arrangement of components and
 	 * certain gaps between components.
 	 *
-	 * @param nGap The distance between components
+	 * @param gap The distance between components
 	 */
-	public FillLayout(int nGap) {
-		this(true, nGap);
+	public FillLayout(int gap) {
+		this(true, gap);
 	}
 
 	/**
 	 * Creates a new FillLayout with a certain orientation, margins around the
 	 * layout area and gaps between components.
 	 *
-	 * @param bHorizontal TRUE for horizontal orientation, FALSE for vertical
-	 * @param nGap        The distance between components
+	 * @param horizontal TRUE for horizontal orientation, FALSE for vertical
+	 * @param gap        The distance between components
 	 */
-	public FillLayout(boolean bHorizontal, int nGap) {
-		this.bHorizontal = bHorizontal;
-		this.nGap = nGap;
+	public FillLayout(boolean horizontal, int gap) {
+		this.horizontal = horizontal;
+		this.gap = gap;
 	}
 
 	/**
 	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData, int nIndex) {
-		super.addWidget(rContainer, rWidget, rStyleData, nIndex);
+	public void addWidget(HasWidgets container, Widget widget,
+		StyleData styleData, int index) {
+		super.addWidget(container, widget, styleData, index);
 
 		// set parent DIV of widget to automatic scrollbar display
-		rWidget
+		widget
 			.getElement()
 			.getParentElement()
 			.getStyle()
@@ -97,12 +97,12 @@ public class FillLayout extends GenericLayout {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Panel createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		LayoutPanel aPanel = new LayoutPanel();
+	public Panel createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		LayoutPanel panel = new LayoutPanel();
 
-		aPanel.addStyleName("ewt-FillLayout");
+		panel.addStyleName("ewt-FillLayout");
 
-		return aPanel;
+		return panel;
 	}
 }

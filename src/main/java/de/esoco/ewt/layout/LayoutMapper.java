@@ -32,13 +32,12 @@ public interface LayoutMapper {
 	 * Checks whether the given layout for a particular target container should
 	 * be mapped to a different layout instance and returns that if applicable.
 	 *
-	 * @param rContainer The target container for the layout
-	 * @param rLayout    The original layout for the container
+	 * @param container The target container for the layout
+	 * @param layout    The original layout for the container
 	 * @return Either a new (mapped) layout instance or the original layout if
 	 * no mapping is necessary
 	 */
-	public GenericLayout mapLayout(Container rContainer,
-		GenericLayout rLayout);
+	public GenericLayout mapLayout(Container container, GenericLayout layout);
 
 	/**
 	 * A default layout mapper implementation that always returns the original
@@ -52,9 +51,9 @@ public interface LayoutMapper {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public GenericLayout mapLayout(Container rContainer,
-			GenericLayout rLayout) {
-			return rLayout;
+		public GenericLayout mapLayout(Container container,
+			GenericLayout layout) {
+			return layout;
 		}
 	}
 }

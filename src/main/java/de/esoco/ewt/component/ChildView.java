@@ -40,24 +40,24 @@ public class ChildView extends View {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent The parent view
-	 * @param rStyle  The style of the child view
+	 * @param parent The parent view
+	 * @param style  The style of the child view
 	 */
-	public ChildView(View rParent, ViewStyle rStyle) {
-		this(rParent,
-			EWT.getChildViewFactory().createChildViewWidget(rParent, rStyle),
-			rStyle);
+	public ChildView(View parent, ViewStyle style) {
+		this(parent,
+			EWT.getChildViewFactory().createChildViewWidget(parent, style),
+			style);
 	}
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent     The parent view
-	 * @param rViewWidget The widget for this view
-	 * @param rStyle      The style of the child view
+	 * @param parent     The parent view
+	 * @param viewWidget The widget for this view
+	 * @param style      The style of the child view
 	 */
-	ChildView(View rParent, IsChildViewWidget rViewWidget, ViewStyle rStyle) {
-		super(rParent.getContext(), rViewWidget, rStyle);
+	ChildView(View parent, IsChildViewWidget viewWidget, ViewStyle style) {
+		super(parent.getContext(), viewWidget, style);
 
 		getWidget().addStyleName(EWT.CSS.ewtChildView());
 	}
@@ -74,13 +74,13 @@ public class ChildView extends View {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setVisible(boolean bVisible) {
-		IsChildViewWidget rPanel = getChildViewWidget();
+	public void setVisible(boolean visible) {
+		IsChildViewWidget panel = getChildViewWidget();
 
-		if (bVisible) {
-			rPanel.show();
+		if (visible) {
+			panel.show();
 		} else {
-			rPanel.hide();
+			panel.hide();
 		}
 	}
 
@@ -123,9 +123,9 @@ public class ChildView extends View {
 		/**
 		 * Sets the view title.
 		 *
-		 * @param sTitle The title text
+		 * @param title The title text
 		 */
-		public void setViewTitle(String sTitle);
+		public void setViewTitle(String title);
 
 		/**
 		 * Shows the child view.
@@ -146,16 +146,16 @@ public class ChildView extends View {
 		/**
 		 * Creates a GWT child view implementation.
 		 *
-		 * @param rParent The parent of the new child view
-		 * @param rStyle  The child view style
+		 * @param parent The parent of the new child view
+		 * @param style  The child view style
 		 * @return The child view widget
 		 */
-		public IsChildViewWidget createChildViewWidget(View rParent,
-			ViewStyle rStyle) {
-			boolean bAutoHide = rStyle.hasFlag(ViewStyle.Flag.AUTO_HIDE);
-			boolean bModal = rStyle.hasFlag(ViewStyle.Flag.MODAL);
+		public IsChildViewWidget createChildViewWidget(View parent,
+			ViewStyle style) {
+			boolean autoHide = style.hasFlag(ViewStyle.Flag.AUTO_HIDE);
+			boolean modal = style.hasFlag(ViewStyle.Flag.MODAL);
 
-			return new GwtChildView(bAutoHide, bModal);
+			return new GwtChildView(autoHide, modal);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class ChildView extends View {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClose(CloseEvent<Widget> rEvent) {
+		public void onClose(CloseEvent<Widget> event) {
 			notifyEventHandler(EventType.VIEW_CLOSING);
 		}
 
@@ -180,13 +180,13 @@ public class ChildView extends View {
 		 */
 		@Override
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			if (eEventType == EventType.VIEW_CLOSING &&
-				rWidget instanceof HasCloseHandlers) {
-				return ((HasCloseHandlers) rWidget).addCloseHandler(this);
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			if (eventType == EventType.VIEW_CLOSING &&
+				widget instanceof HasCloseHandlers) {
+				return ((HasCloseHandlers) widget).addCloseHandler(this);
 			} else {
-				return super.initEventDispatching(rWidget, eEventType);
+				return super.initEventDispatching(widget, eventType);
 			}
 		}
 	}

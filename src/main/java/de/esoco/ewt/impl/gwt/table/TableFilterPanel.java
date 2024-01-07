@@ -16,20 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
 
-import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
-
-import de.esoco.lib.model.ColumnDefinition;
-import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.FilterableDataModel;
-import de.esoco.lib.text.TextConvert;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,6 +51,18 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import de.esoco.ewt.impl.gwt.ValueBoxConstraint.RegExConstraint;
+import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.DataModel;
+import de.esoco.lib.model.FilterableDataModel;
+import de.esoco.lib.text.TextConvert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_AND_PREFIX;
 import static de.esoco.lib.model.FilterableDataModel.CONSTRAINT_COMPARISON_CHARS;
@@ -98,59 +96,59 @@ class TableFilterPanel extends Composite
 		DateTimeFormat.getFormat(
 			FilterableDataModel.CONSTRAINT_DATE_FORMAT_PATTERN);
 
-	private final GwtTable rTable;
+	private final GwtTable table;
 
-	private FlexTable aFilterPanel = new FlexTable();
+	private final FlexTable filterPanel = new FlexTable();
 
-	private TextBox aFilterInput = new TextBox();
+	private final TextBox filterInput = new TextBox();
 
-	private ToggleButton aFilterButton =
+	private final ToggleButton filterButton =
 		new ToggleButton(new Image(GwtTable.RES.imFilter()));
 
-	private PushButton aClearFilterButton =
+	private final PushButton clearFilterButton =
 		new PushButton(new Image(GwtTable.RES.imCancel()));
 
-	private List<ColumnDefinition> aFilterColumns =
+	private final List<ColumnDefinition> filterColumns =
 		new ArrayList<ColumnDefinition>();
 
-	private PopupPanel aFilterPopup;
+	private PopupPanel filterPopup;
 
-	private FlexTable aFilterCriteriaPanel;
+	private FlexTable filterCriteriaPanel;
 
-	private Timer aFilterInputTimer;
+	private Timer filterInputTimer;
 
-	private KeyDownHandler aComplexFilterKeyDownHandler = null;
+	private KeyDownHandler complexFilterKeyDownHandler = null;
 
-	private KeyUpHandler aComplexFilterKeyUpHandler = null;
+	private KeyUpHandler complexFilterKeyUpHandler = null;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rTable The {@link GwtTable} this instance belongs to
+	 * @param table The {@link GwtTable} this instance belongs to
 	 */
-	TableFilterPanel(GwtTable rTable) {
-		this.rTable = rTable;
+	TableFilterPanel(GwtTable table) {
+		this.table = table;
 
-		aClearFilterButton.setTitle(expand("$ttClearTableFilter"));
-		aFilterInput.setTitle(expand("$ttTableFilterValue"));
+		clearFilterButton.setTitle(expand("$ttClearTableFilter"));
+		filterInput.setTitle(expand("$ttTableFilterValue"));
 
-		aFilterPanel.setWidget(0, 0, aFilterButton);
-		aFilterPanel.setWidget(0, 1, aFilterInput);
-		aFilterPanel.setWidget(0, 2, aClearFilterButton);
+		filterPanel.setWidget(0, 0, filterButton);
+		filterPanel.setWidget(0, 1, filterInput);
+		filterPanel.setWidget(0, 2, clearFilterButton);
 
-		aFilterInput.setWidth("100%");
-		aFilterInput.setStylePrimaryName(GwtTable.CSS.ewtTableFilterValue());
-		aFilterInput.addKeyUpHandler(this);
+		filterInput.setWidth("100%");
+		filterInput.setStylePrimaryName(GwtTable.CSS.ewtTableFilterValue());
+		filterInput.addKeyUpHandler(this);
 
-		aFilterPanel.setWidth("100%");
-		aFilterPanel.getCellFormatter().setWidth(0, 1, "100%");
-		aFilterPanel.setStylePrimaryName(GwtTable.CSS.ewtFilter());
+		filterPanel.setWidth("100%");
+		filterPanel.getCellFormatter().setWidth(0, 1, "100%");
+		filterPanel.setStylePrimaryName(GwtTable.CSS.ewtFilter());
 
-		aFilterButton.setStylePrimaryName(GwtTable.CSS.ewtTableFilterButton());
-		aFilterButton.addClickHandler(this);
-		aClearFilterButton.addClickHandler(this);
+		filterButton.setStylePrimaryName(GwtTable.CSS.ewtTableFilterButton());
+		filterButton.addClickHandler(this);
+		clearFilterButton.addClickHandler(this);
 
-		initWidget(aFilterPanel);
+		initWidget(filterPanel);
 	}
 
 	/**
@@ -159,27 +157,27 @@ class TableFilterPanel extends Composite
 	 * @see ChangeHandler#onChange(ChangeEvent)
 	 */
 	@Override
-	public void onChange(ChangeEvent rEvent) {
-		int nRow = findFilterCriterionRow(COL_FILTER_COLUMN,
-			(Widget) rEvent.getSource());
+	public void onChange(ChangeEvent event) {
+		int row = findFilterCriterionRow(COL_FILTER_COLUMN,
+			(Widget) event.getSource());
 
-		ColumnDefinition rColumn = getSelectedFilterColumn(nRow);
+		ColumnDefinition column = getSelectedFilterColumn(row);
 
-		aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_VALUE,
-			createInputWidget(rColumn, null));
+		filterCriteriaPanel.setWidget(row, COL_FILTER_VALUE,
+			createInputWidget(column, null));
 	}
 
 	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		if (rTable.canHandleInput()) {
-			Object rSource = rEvent.getSource();
+	public void onClick(ClickEvent event) {
+		if (table.canHandleInput()) {
+			Object source = event.getSource();
 
-			if (rSource == aFilterButton) {
+			if (source == filterButton) {
 				handleComplexFilterButton();
-			} else if (rSource == aClearFilterButton) {
+			} else if (source == clearFilterButton) {
 				resetFilter();
 			}
 		}
@@ -191,28 +189,28 @@ class TableFilterPanel extends Composite
 	 * @see KeyUpHandler#onKeyUp(KeyUpEvent)
 	 */
 	@Override
-	public void onKeyUp(KeyUpEvent rEvent) {
-		if (rTable.isEnabled()) {
-			int nKeyCode = rEvent.getNativeKeyCode();
+	public void onKeyUp(KeyUpEvent event) {
+		if (table.isEnabled()) {
+			int keyCode = event.getNativeKeyCode();
 
-			switch (nKeyCode) {
+			switch (keyCode) {
 				case KeyCodes.KEY_ESCAPE:
-					resetInputValue(aFilterInput);
+					resetInputValue(filterInput);
 
 					break;
 
 				default:
 
-					if (aFilterInputTimer == null) {
-						aFilterInputTimer = new Timer() {
+					if (filterInputTimer == null) {
+						filterInputTimer = new Timer() {
 							@Override
 							public void run() {
-								applyGlobalFilter(aFilterInput.getText());
+								applyGlobalFilter(filterInput.getText());
 							}
 						};
 					}
 
-					aFilterInputTimer.schedule(500);
+					filterInputTimer.schedule(500);
 			}
 		}
 	}
@@ -220,101 +218,101 @@ class TableFilterPanel extends Composite
 	/**
 	 * Sets the enabled state of the widgets in this panel.
 	 *
-	 * @param bEnabled The new enabled state
+	 * @param enabled The new enabled state
 	 */
-	public void setEnabled(boolean bEnabled) {
-		aFilterInput.setEnabled(bEnabled);
-		aFilterButton.setEnabled(bEnabled);
-		aClearFilterButton.setEnabled(bEnabled);
+	public void setEnabled(boolean enabled) {
+		filterInput.setEnabled(enabled);
+		filterButton.setEnabled(enabled);
+		clearFilterButton.setEnabled(enabled);
 	}
 
 	/**
 	 * Sets the focus to the filter input field.
 	 *
-	 * @param bFocused The focused state to set
+	 * @param focused The focused state to set
 	 */
-	public void setFocus(boolean bFocused) {
-		aFilterInput.setFocus(bFocused);
+	public void setFocus(boolean focused) {
+		filterInput.setFocus(focused);
 	}
 
 	/**
 	 * Adds a filter column to this panel.
 	 *
-	 * @param rColumn The definition of the filter column
+	 * @param column The definition of the filter column
 	 */
-	void addFilterColumn(ColumnDefinition rColumn) {
-		aFilterColumns.add(rColumn);
+	void addFilterColumn(ColumnDefinition column) {
+		filterColumns.add(column);
 	}
 
 	/**
 	 * Sets the global filter constraint for all filterable columns of the data
 	 * model.
 	 *
-	 * @param sConstraint The constraint to set
+	 * @param constraint The constraint to set
 	 */
-	void applyGlobalFilter(String sConstraint) {
-		FilterableDataModel<?> rModel = getSearchableModel();
-		String sNumberConstraint = null;
+	void applyGlobalFilter(String constraint) {
+		FilterableDataModel<?> model = getSearchableModel();
+		String numberConstraint = null;
 
-		sConstraint = sConstraint.trim();
+		constraint = constraint.trim();
 
-		if (sConstraint.length() == 0) {
-			sConstraint = null;
+		if (constraint.length() == 0) {
+			constraint = null;
 		} else {
-			boolean bHasComparison =
-				CONSTRAINT_COMPARISON_CHARS.indexOf(sConstraint.charAt(0)) >= 0;
+			boolean hasComparison =
+				CONSTRAINT_COMPARISON_CHARS.indexOf(constraint.charAt(0)) >= 0;
 
-			if (!bHasComparison) {
-				if (sConstraint.indexOf('*') == -1) {
+			if (!hasComparison) {
+				if (constraint.indexOf('*') == -1) {
 					try {
-						Integer.parseInt(sConstraint);
-						sNumberConstraint =
-							CONSTRAINT_OR_PREFIX + "=" + sConstraint;
+						Integer.parseInt(constraint);
+						numberConstraint =
+							CONSTRAINT_OR_PREFIX + "=" + constraint;
 					} catch (Exception e) {
 						// leave number constraint as null
 					}
 
-					sConstraint = sConstraint + "*";
+					constraint = constraint + "*";
 				}
 
-				sConstraint = "=" + sConstraint;
+				constraint = "=" + constraint;
 			}
 
-			sConstraint = CONSTRAINT_OR_PREFIX + sConstraint;
+			constraint = CONSTRAINT_OR_PREFIX + constraint;
 		}
 
-		for (ColumnDefinition rColumn : aFilterColumns) {
-			String sColumnId = rColumn.getId();
-			String sDatatype = rColumn.getDatatype();
+		for (ColumnDefinition column : filterColumns) {
+			String columnId = column.getId();
+			String datatype = column.getDatatype();
 
-			if (String.class.getSimpleName().equals(sDatatype)) {
-				rModel.setFilter(sColumnId, sConstraint);
-			} else if (Integer.class.getSimpleName().equals(sDatatype)) {
-				rModel.setFilter(sColumnId, sNumberConstraint);
+			if (String.class.getSimpleName().equals(datatype)) {
+				model.setFilter(columnId, constraint);
+			} else if (Integer.class.getSimpleName().equals(datatype)) {
+				model.setFilter(columnId, numberConstraint);
 			}
 		}
 
 		updateTable();
-		rTable.setSelection(-1);
+		table.setSelection(-1);
 	}
 
 	/**
 	 * Handles keyboard input in the value field of a complex filter criterion.
 	 *
-	 * @param rEvent The event that occurred.
+	 * @param event The event that occurred.
 	 */
-	void handleComplexFilterKeyDown(KeyDownEvent rEvent) {
-		if (rTable.isEnabled() && !rTable.isBusy()) {
-			int nKeyCode = rEvent.getNativeKeyCode();
+	void handleComplexFilterKeyDown(KeyDownEvent event) {
+		if (table.isEnabled() && !table.isBusy()) {
+			int keyCode = event.getNativeKeyCode();
 
-			switch (nKeyCode) {
+			switch (keyCode) {
 				case KeyCodes.KEY_TAB:
 
-					if (!rEvent.isAnyModifierKeyDown()) {
-						int nRow = findFilterCriterionRow(COL_FILTER_VALUE,
-							(Widget) rEvent.getSource());
+					if (!event.isAnyModifierKeyDown()) {
+						int row = findFilterCriterionRow(COL_FILTER_VALUE,
+							(Widget) event.getSource());
 
-						if (nRow == aFilterCriteriaPanel.getRowCount() - 2) {
+						if (row == filterCriteriaPanel.getRowCount() - 2) {
 							addFilterRow(-1, ' ', null, false);
 						}
 					}
@@ -327,13 +325,13 @@ class TableFilterPanel extends Composite
 	/**
 	 * Handles keyboard input in the value field of a complex filter criterion.
 	 *
-	 * @param rEvent The event that occurred.
+	 * @param event The event that occurred.
 	 */
-	void handleComplexFilterKeyUp(KeyUpEvent rEvent) {
-		if (rTable.isEnabled() && !rTable.isBusy()) {
-			int nKeyCode = rEvent.getNativeKeyCode();
+	void handleComplexFilterKeyUp(KeyUpEvent event) {
+		if (table.isEnabled() && !table.isBusy()) {
+			int keyCode = event.getNativeKeyCode();
 
-			switch (nKeyCode) {
+			switch (keyCode) {
 				case KeyCodes.KEY_ENTER:
 					hideComplexFilterPopup(true);
 
@@ -352,7 +350,7 @@ class TableFilterPanel extends Composite
 	 */
 	void removeFilter() {
 		getSearchableModel().removeAllFilters();
-		resetInputValue(aFilterInput);
+		resetInputValue(filterInput);
 
 		updateTable();
 	}
@@ -361,58 +359,55 @@ class TableFilterPanel extends Composite
 	 * Removes all filter columns.
 	 */
 	void resetFilterColumns() {
-		aFilterColumns.clear();
+		filterColumns.clear();
 	}
 
 	/**
 	 * Updates this filter panel from a data model.
 	 *
-	 * @param rModel The model to read the filter constraints from
+	 * @param model The model to read the filter constraints from
 	 */
-	void update(FilterableDataModel<?> rModel) {
-		String sSimpleFilter = searchSimpleFilter(rModel);
-		boolean bHasConstraints = rModel.getFilters().size() != 0;
-		boolean bEnableSimpleFilter =
-			(sSimpleFilter != null || !bHasConstraints);
+	void update(FilterableDataModel<?> model) {
+		String simpleFilter = searchSimpleFilter(model);
+		boolean hasConstraints = model.getFilters().size() != 0;
+		boolean enableSimpleFilter = (simpleFilter != null || !hasConstraints);
 
-		aFilterInput.setEnabled(bEnableSimpleFilter);
-		aFilterInput.setText(sSimpleFilter);
+		filterInput.setEnabled(enableSimpleFilter);
+		filterInput.setText(simpleFilter);
 
-		if (bEnableSimpleFilter) {
-			aFilterInput.removeStyleDependentName("disabled");
+		if (enableSimpleFilter) {
+			filterInput.removeStyleDependentName("disabled");
 		} else {
-			aFilterInput.addStyleDependentName("disabled");
-			setFilterButtonActive(bHasConstraints);
+			filterInput.addStyleDependentName("disabled");
+			setFilterButtonActive(hasConstraints);
 		}
 	}
 
 	/**
 	 * Adds the rows of existing filter criteria to the complex filter panel.
 	 *
-	 * @param rConstraints The mapping from column IDs to raw filter criteria
+	 * @param constraints The mapping from column IDs to raw filter criteria
 	 */
-	private void addComplexFilterCriteriaRows(
-		Map<String, String> rConstraints) {
-		for (Entry<String, String> rColumnConstraint :
-			rConstraints.entrySet()) {
-			int nColumn = getColumnIndex(rColumnConstraint.getKey());
+	private void addComplexFilterCriteriaRows(Map<String, String> constraints) {
+		for (Entry<String, String> constraint : constraints.entrySet()) {
+			int column = getColumnIndex(constraint.getKey());
 
-			String sColumnConstraint = rColumnConstraint.getValue();
+			String columnConstraint = constraint.getValue();
 
-			String[] aValues = sColumnConstraint.split(CONSTRAINT_SEPARATOR);
+			String[] elements = columnConstraint.split(CONSTRAINT_SEPARATOR);
 
-			for (String sConstraint : aValues) {
-				if (sConstraint.length() > 2) {
-					boolean bOr =
-						sConstraint.charAt(0) == CONSTRAINT_OR_PREFIX;
+			for (String constraintElement : elements) {
+				if (constraintElement.length() > 2) {
+					boolean or =
+						constraintElement.charAt(0) == CONSTRAINT_OR_PREFIX;
 
-					char cComparison = sConstraint.charAt(1);
+					char comparison = constraintElement.charAt(1);
 
-					sConstraint = sConstraint
+					constraintElement = constraintElement
 						.substring(2)
 						.replaceAll(CONSTRAINT_SEPARATOR_ESCAPE,
 							CONSTRAINT_SEPARATOR);
-					addFilterRow(nColumn, cComparison, sConstraint, bOr);
+					addFilterRow(column, comparison, constraintElement, or);
 				}
 			}
 		}
@@ -422,70 +417,70 @@ class TableFilterPanel extends Composite
 	 * Adds the widgets for a certain filter criterion to the filter criteria
 	 * panel.
 	 *
-	 * @param nColumnIndex The index of the column to be filtered or -1 for the
-	 *                     default
-	 * @param cComparison  The comparison character for the new row or ' '
-	 *                     (space) for the default
-	 * @param sFilterValue The current filter value or NULL for the default
-	 * @param bOrTerm      TRUE for OR, FALSE for AND
+	 * @param columnIndex The index of the column to be filtered or -1 for the
+	 *                    default
+	 * @param comparison  The comparison character for the new row or ' '
+	 *                    (space) for the default
+	 * @param filterValue The current filter value or NULL for the default
+	 * @param orTerm      TRUE for OR, FALSE for AND
 	 */
-	private void addFilterRow(int nColumnIndex, char cComparison,
-		String sFilterValue, boolean bOrTerm) {
-		ListBox aJoinList = null;
-		int nRow = aFilterCriteriaPanel.getRowCount() - 1;
-		boolean bAdditionalRow = nRow != 0;
+	private void addFilterRow(int columnIndex, char comparison,
+		String filterValue, boolean orTerm) {
+		ListBox joinList = null;
+		int row = filterCriteriaPanel.getRowCount() - 1;
+		boolean additionalRow = row != 0;
 
-		aFilterCriteriaPanel.insertRow(nRow);
+		filterCriteriaPanel.insertRow(row);
 
-		if (nColumnIndex < 0) {
-			nColumnIndex = 0;
+		if (columnIndex < 0) {
+			columnIndex = 0;
 		}
 
-		if (bAdditionalRow) {
-			aJoinList = createFilterRowJoinList(bOrTerm);
-			aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_JOIN, aJoinList);
+		if (additionalRow) {
+			joinList = createFilterRowJoinList(orTerm);
+			filterCriteriaPanel.setWidget(row, COL_FILTER_JOIN, joinList);
 		}
 
-		ListBox aColumnList = createFilterRowColumnList(nColumnIndex);
-		ColumnDefinition rColumn = aFilterColumns.get(nColumnIndex);
+		ListBox columnList = createFilterRowColumnList(columnIndex);
+		ColumnDefinition column = filterColumns.get(columnIndex);
 
-		Widget rValueInput = createInputWidget(rColumn, sFilterValue);
-		ListBox rComparisons = createComparisonsWidget(cComparison);
+		Widget valueInput = createInputWidget(column, filterValue);
+		ListBox comparisons = createComparisonsWidget(comparison);
 
-		rValueInput.addStyleName(GwtTable.CSS.ewtTableFilterValue());
-		aColumnList.addKeyUpHandler(getComplexFilterKeyUpHandler());
+		valueInput.addStyleName(GwtTable.CSS.ewtTableFilterValue());
+		columnList.addKeyUpHandler(getComplexFilterKeyUpHandler());
 
-		aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_COLUMN, aColumnList);
-		aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_COMPARE, rComparisons);
-		aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_VALUE, rValueInput);
+		filterCriteriaPanel.setWidget(row, COL_FILTER_COLUMN, columnList);
+		filterCriteriaPanel.setWidget(row, COL_FILTER_COMPARE, comparisons);
+		filterCriteriaPanel.setWidget(row, COL_FILTER_VALUE, valueInput);
 
-		if (rValueInput instanceof ListBox) {
-			((ListBox) rValueInput).addKeyDownHandler(
+		if (valueInput instanceof ListBox) {
+			((ListBox) valueInput).addKeyDownHandler(
 				getComplexFilterKeyDownHandler());
-			((ListBox) rValueInput).addKeyUpHandler(
+			((ListBox) valueInput).addKeyUpHandler(
 				getComplexFilterKeyUpHandler());
 		}
 
-		if (bAdditionalRow) {
-			aFilterCriteriaPanel.setWidget(nRow, COL_FILTER_BUTTON,
+		if (additionalRow) {
+			filterCriteriaPanel.setWidget(row, COL_FILTER_BUTTON,
 				createEditFilterListButton(false));
 		}
 
-		if (aJoinList != null) {
-			aJoinList.setFocus(true);
+		if (joinList != null) {
+			joinList.setFocus(true);
 		} else {
-			aColumnList.setFocus(true);
+			columnList.setFocus(true);
 		}
 	}
 
 	/**
 	 * Adds the key event handlers to a widget.
 	 *
-	 * @param rWidget The widget to add the handlers to
+	 * @param widget The widget to add the handlers to
 	 */
-	private void addKeyHandlers(FocusWidget rWidget) {
-		rWidget.addKeyDownHandler(getComplexFilterKeyDownHandler());
-		rWidget.addKeyUpHandler(getComplexFilterKeyUpHandler());
+	private void addKeyHandlers(FocusWidget widget) {
+		widget.addKeyDownHandler(getComplexFilterKeyDownHandler());
+		widget.addKeyUpHandler(getComplexFilterKeyUpHandler());
 	}
 
 	/**
@@ -493,43 +488,43 @@ class TableFilterPanel extends Composite
 	 * filter popup.
 	 */
 	private void applyComplexFilter() {
-		FilterableDataModel<?> rModel = getSearchableModel();
+		FilterableDataModel<?> model = getSearchableModel();
 
-		int nFilterRows = aFilterCriteriaPanel.getRowCount() - 1;
-		boolean bHasCriteria = false;
+		int filterRows = filterCriteriaPanel.getRowCount() - 1;
+		boolean hasCriteria = false;
 
-		rModel.removeAllFilters();
+		model.removeAllFilters();
 
-		for (int nRow = 0; nRow < nFilterRows; nRow++) {
-			Widget rWidget =
-				aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_VALUE);
+		for (int row = 0; row < filterRows; row++) {
+			Widget widget =
+				filterCriteriaPanel.getWidget(row, COL_FILTER_VALUE);
 
-			ColumnDefinition rColumn = getSelectedFilterColumn(nRow);
-			String sColumnId = rColumn.getId();
-			boolean bOrTerm = isOrTerm(nRow);
+			ColumnDefinition column = getSelectedFilterColumn(row);
+			String columnId = column.getId();
+			boolean orTerm = isOrTerm(row);
 
-			String sFilter = getFilterConstraint(rColumn, rWidget);
+			String filter = getFilterConstraint(column, widget);
 
-			if (sFilter.length() > 0) {
-				String sCurrentFilter = rModel.getFilter(sColumnId);
+			if (filter.length() > 0) {
+				String currentFilter = model.getFilter(columnId);
 
-				char cPrefix =
-					bOrTerm ? CONSTRAINT_OR_PREFIX : CONSTRAINT_AND_PREFIX;
+				char prefix =
+					orTerm ? CONSTRAINT_OR_PREFIX : CONSTRAINT_AND_PREFIX;
 
-				sFilter = cPrefix + getSelectedFilterComparison(nRow) +
-					sFilter.replaceAll(CONSTRAINT_SEPARATOR,
+				filter = prefix + getSelectedFilterComparison(row) +
+					filter.replaceAll(CONSTRAINT_SEPARATOR,
 						CONSTRAINT_SEPARATOR_ESCAPE);
 
-				if (sCurrentFilter != null && sCurrentFilter.length() > 0) {
-					sFilter = sCurrentFilter + CONSTRAINT_SEPARATOR + sFilter;
+				if (currentFilter != null && currentFilter.length() > 0) {
+					filter = currentFilter + CONSTRAINT_SEPARATOR + filter;
 				}
 
-				rModel.setFilter(sColumnId, sFilter);
-				bHasCriteria = true;
+				model.setFilter(columnId, filter);
+				hasCriteria = true;
 			}
 		}
 
-		if (bHasCriteria) {
+		if (hasCriteria) {
 			updateTable();
 		} else {
 			resetFilter();
@@ -539,103 +534,103 @@ class TableFilterPanel extends Composite
 	/**
 	 * Returns a new {@link CheckBox} widget for a certain column.
 	 *
-	 * @param sInitialValue The initial value or NULL for none
+	 * @param initialValue The initial value or NULL for none
 	 * @return The new check box
 	 */
 	@SuppressWarnings("boxing")
-	private CheckBox createCheckBox(String sInitialValue) {
-		final CheckBox aCheckBox = new CheckBox();
+	private CheckBox createCheckBox(String initialValue) {
+		final CheckBox checkBox = new CheckBox();
 
-		if (sInitialValue != null && sInitialValue.length() > 0 &&
-			!NULL_CONSTRAINT_VALUE.equals(sInitialValue)) {
+		if (initialValue != null && initialValue.length() > 0 &&
+			!NULL_CONSTRAINT_VALUE.equals(initialValue)) {
 			try {
-				aCheckBox.setValue(Boolean.parseBoolean(sInitialValue));
+				checkBox.setValue(Boolean.parseBoolean(initialValue));
 			} catch (Exception e) {
 				// ignore and leave at default value
 			}
 		}
 
-		addKeyHandlers(aCheckBox);
+		addKeyHandlers(checkBox);
 
-		return aCheckBox;
+		return checkBox;
 	}
 
 	/**
 	 * Creates a widget that contains the comparisons for a table filter.
 	 *
-	 * @param cInitialValue The initial character to select or -1 for none
+	 * @param initialValue The initial character to select or -1 for none
 	 * @return The new widget
 	 */
-	private ListBox createComparisonsWidget(char cInitialValue) {
-		ListBox aComparisons = new ListBox();
-		int nChars = CONSTRAINT_COMPARISON_CHARS.length();
-		int nSelection = 0;
+	private ListBox createComparisonsWidget(char initialValue) {
+		ListBox comparisons = new ListBox();
+		int chars = CONSTRAINT_COMPARISON_CHARS.length();
+		int selection = 0;
 
-		if (cInitialValue != ' ') {
-			nSelection = CONSTRAINT_COMPARISON_CHARS.indexOf(cInitialValue);
+		if (initialValue != ' ') {
+			selection = CONSTRAINT_COMPARISON_CHARS.indexOf(initialValue);
 		}
 
-		aComparisons.setTitle(expand("$ttTableFilterComparison"));
-		aComparisons.setVisibleItemCount(1);
+		comparisons.setTitle(expand("$ttTableFilterComparison"));
+		comparisons.setVisibleItemCount(1);
 
-		for (int i = 0; i < nChars; i++) {
-			aComparisons.addItem("" + CONSTRAINT_COMPARISON_CHARS.charAt(i));
+		for (int i = 0; i < chars; i++) {
+			comparisons.addItem("" + CONSTRAINT_COMPARISON_CHARS.charAt(i));
 		}
 
-		aComparisons.setSelectedIndex(nSelection);
-		aComparisons.addKeyUpHandler(getComplexFilterKeyUpHandler());
+		comparisons.setSelectedIndex(selection);
+		comparisons.addKeyUpHandler(getComplexFilterKeyUpHandler());
 
-		return aComparisons;
+		return comparisons;
 	}
 
 	/**
 	 * Returns a new {@link DateBox} widget for a certain column.
 	 *
-	 * @param sInitialValue The initial value or NULL for none
+	 * @param initialValue The initial value or NULL for none
 	 * @return The new date box
 	 */
-	private DateBox createDateBox(String sInitialValue) {
-		DateTimeFormat rDisplayFormat =
+	private DateBox createDateBox(String initialValue) {
+		DateTimeFormat displayFormat =
 			DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
 
-		final DateBox aDateBox = new DateBox(new DatePicker(), null,
-			new DefaultFormat(rDisplayFormat));
+		final DateBox dateBox = new DateBox(new DatePicker(), null,
+			new DefaultFormat(displayFormat));
 
-		if (sInitialValue != null && sInitialValue.length() > 0 &&
-			!NULL_CONSTRAINT_VALUE.equals(sInitialValue)) {
+		if (initialValue != null && initialValue.length() > 0 &&
+			!NULL_CONSTRAINT_VALUE.equals(initialValue)) {
 			try {
-				aDateBox.setValue(FILTER_DATE_FORMAT.parse(sInitialValue));
+				dateBox.setValue(FILTER_DATE_FORMAT.parse(initialValue));
 			} catch (Exception e) {
-				aDateBox.getTextBox().setText("ERR: invalid date");
+				dateBox.getTextBox().setText("ERR: invalid date");
 			}
 		}
 
-		addKeyHandlers(aDateBox.getTextBox());
+		addKeyHandlers(dateBox.getTextBox());
 
-		return aDateBox;
+		return dateBox;
 	}
 
 	/**
 	 * Creates and initializes the button at the end of filter criteria rows.
 	 *
-	 * @param bAdd TRUE for an add button, FALSE for a remove button
+	 * @param add TRUE for an add button, FALSE for a remove button
 	 * @return The new button
 	 */
-	private PushButton createEditFilterListButton(final boolean bAdd) {
-		PushButton aButton = new PushButton(
-			new Image(bAdd ? GwtTable.RES.imAdd() : GwtTable.RES.imCancel()));
+	private PushButton createEditFilterListButton(final boolean add) {
+		PushButton button = new PushButton(
+			new Image(add ? GwtTable.RES.imAdd() : GwtTable.RES.imCancel()));
 
-		aButton.setTitle(
-			expand(bAdd ? "$ttTableFilterAdd" : "$ttTableFilterRemove"));
+		button.setTitle(
+			expand(add ? "$ttTableFilterAdd" : "$ttTableFilterRemove"));
 
-		aButton.addClickHandler(new ClickHandler() {
+		button.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent rEvent) {
-				handleFilterListChangeButton(rEvent, bAdd);
+			public void onClick(ClickEvent event) {
+				handleFilterListChangeButton(event, add);
 			}
 		});
 
-		return aButton;
+		return button;
 	}
 
 	/**
@@ -644,181 +639,181 @@ class TableFilterPanel extends Composite
 	 * @return The panel containing the buttons
 	 */
 	private Panel createFilterPopupButtonPanel() {
-		HorizontalPanel aButtonPanel = new HorizontalPanel();
-		PushButton aApplyButton =
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		PushButton applyButton =
 			new PushButton(new Image(GwtTable.RES.imOk()));
-		PushButton aCancelButton =
+		PushButton cancelButton =
 			new PushButton(new Image(GwtTable.RES.imCancel()));
 
-		aApplyButton.setTitle(expand("$ttTableFilterApply"));
-		aCancelButton.setTitle(expand("$ttTableFilterCancel"));
-		aButtonPanel.add(aApplyButton);
-		aButtonPanel.add(aCancelButton);
+		applyButton.setTitle(expand("$ttTableFilterApply"));
+		cancelButton.setTitle(expand("$ttTableFilterCancel"));
+		buttonPanel.add(applyButton);
+		buttonPanel.add(cancelButton);
 
-		aApplyButton.addClickHandler(new ClickHandler() {
+		applyButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent rEvent) {
+			public void onClick(ClickEvent event) {
 				hideComplexFilterPopup(true);
 			}
 		});
 
-		aCancelButton.addClickHandler(new ClickHandler() {
+		cancelButton.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent rEvent) {
+			public void onClick(ClickEvent event) {
 				hideComplexFilterPopup(false);
 			}
 		});
 
-		return aButtonPanel;
+		return buttonPanel;
 	}
 
 	/**
 	 * Creates a listbox to select a model column for filtering.
 	 *
-	 * @param nSelection The initially selected row in the listbox
+	 * @param selection The initially selected row in the listbox
 	 * @return The new listbox
 	 */
-	private ListBox createFilterRowColumnList(int nSelection) {
-		ListBox aColumnList = new ListBox();
+	private ListBox createFilterRowColumnList(int selection) {
+		ListBox columnList = new ListBox();
 
-		for (ColumnDefinition rColumn : aFilterColumns) {
-			String sTitle = rColumn.getTitle();
-			String sColumn = expand(sTitle);
+		for (ColumnDefinition column : filterColumns) {
+			String title = column.getTitle();
+			String col = expand(title);
 
-			aColumnList.addItem(sColumn);
+			columnList.addItem(col);
 		}
 
-		int nColumns = aColumnList.getItemCount();
+		int columns = columnList.getItemCount();
 
-		if (nColumns > 0) {
-			aColumnList.setSelectedIndex(nSelection % nColumns);
+		if (columns > 0) {
+			columnList.setSelectedIndex(selection % columns);
 		}
 
-		aColumnList.addChangeHandler(this);
+		columnList.addChangeHandler(this);
 
-		return aColumnList;
+		return columnList;
 	}
 
 	/**
 	 * Creates a list box containing the possible joins for filter criteria
 	 * rows.
 	 *
-	 * @param bOr TRUE to preselect the OR instead of AND
+	 * @param or TRUE to preselect the OR instead of AND
 	 * @return The new list box
 	 */
-	private ListBox createFilterRowJoinList(boolean bOr) {
-		ListBox aJoinList = new ListBox();
+	private ListBox createFilterRowJoinList(boolean or) {
+		ListBox joinList = new ListBox();
 
-		aJoinList.addItem(expand("$itmTableFilterJoinAnd"));
-		aJoinList.addItem(expand("$itmTableFilterJoinOr"));
+		joinList.addItem(expand("$itmTableFilterJoinAnd"));
+		joinList.addItem(expand("$itmTableFilterJoinOr"));
 
-		if (bOr) {
-			aJoinList.setSelectedIndex(1);
+		if (or) {
+			joinList.setSelectedIndex(1);
 		}
 
-		return aJoinList;
+		return joinList;
 	}
 
 	/**
 	 * Returns a new {@link ListBox} widget for a column with a set of allowed
 	 * values.
 	 *
-	 * @param rColumn       The column definition
-	 * @param rValues       The allowed values for the column
-	 * @param sInitialValue The initially selected value or NULL for none
+	 * @param column       The column definition
+	 * @param values       The allowed values for the column
+	 * @param initialValue The initially selected value or NULL for none
 	 * @return The new list box
 	 */
-	private ListBox createFilterValueListBox(ColumnDefinition rColumn,
-		String[] rValues, String sInitialValue) {
-		ListBox aListBox = new ListBox();
-		List<String> aConstraints = new ArrayList<String>();
+	private ListBox createFilterValueListBox(ColumnDefinition column,
+		String[] values, String initialValue) {
+		ListBox listBox = new ListBox();
+		List<String> constraints = new ArrayList<>();
 
-		String sPrefix = rColumn.getProperty(VALUE_RESOURCE_PREFIX, "");
+		String prefix = column.getProperty(VALUE_RESOURCE_PREFIX, "");
 
-		List<String> aValues = Arrays.asList(rValues);
+		List<String> valueList = Arrays.asList(values);
 
-		for (String sValue : aValues) {
-			aConstraints.add(sValue);
+		for (String value : valueList) {
+			constraints.add(value);
 
-			if (!sValue.startsWith("$")) {
-				sValue = sPrefix + TextConvert.capitalizedIdentifier(sValue);
+			if (!value.startsWith("$")) {
+				value = prefix + TextConvert.capitalizedIdentifier(value);
 			}
 
-			aListBox.addItem(expand(sValue));
+			listBox.addItem(expand(value));
 		}
 
-		if (sInitialValue != null) {
-			int nIndex = aValues.indexOf(sInitialValue);
+		if (initialValue != null) {
+			int index = valueList.indexOf(initialValue);
 
-			if (nIndex >= 0) {
-				aListBox.setSelectedIndex(nIndex);
+			if (index >= 0) {
+				listBox.setSelectedIndex(index);
 			}
 		}
 
-		addKeyHandlers(aListBox);
+		addKeyHandlers(listBox);
 
-		return aListBox;
+		return listBox;
 	}
 
 	/**
 	 * Returns a new input widget for a certain column.
 	 *
-	 * @param rColumn       The column definition
-	 * @param sInitialValue The initial value for the widget or NULL for none
+	 * @param column       The column definition
+	 * @param initialValue The initial value for the widget or NULL for none
 	 * @return The new input widget
 	 */
-	private Widget createInputWidget(ColumnDefinition rColumn,
-		String sInitialValue) {
-		String[] rAllowedValues = getAllowedValues(rColumn);
-		String sDatatype = rColumn.getDatatype();
-		Widget rWidget;
+	private Widget createInputWidget(ColumnDefinition column,
+		String initialValue) {
+		String[] allowedValues = getAllowedValues(column);
+		String datatype = column.getDatatype();
+		Widget widget;
 
-		if (rAllowedValues != null) {
-			rWidget = createFilterValueListBox(rColumn, rAllowedValues,
-				sInitialValue);
-		} else if (Date.class.getSimpleName().equals(sDatatype)) {
-			rWidget = createDateBox(sInitialValue);
-		} else if (Boolean.class.getSimpleName().equals(sDatatype)) {
-			rWidget = createCheckBox(sInitialValue);
+		if (allowedValues != null) {
+			widget =
+				createFilterValueListBox(column, allowedValues, initialValue);
+		} else if (Date.class.getSimpleName().equals(datatype)) {
+			widget = createDateBox(initialValue);
+		} else if (Boolean.class.getSimpleName().equals(datatype)) {
+			widget = createCheckBox(initialValue);
 		} else {
-			rWidget = createTextBox(rColumn, sInitialValue);
+			widget = createTextBox(column, initialValue);
 		}
 
-		return rWidget;
+		return widget;
 	}
 
 	/**
 	 * Returns a new {@link TextBox} widget for a certain column.
 	 *
-	 * @param rColumn       The column definition
-	 * @param sInitialValue The initial value or NULL for none
+	 * @param column       The column definition
+	 * @param initialValue The initial value or NULL for none
 	 * @return The new text box
 	 */
-	private TextBox createTextBox(ColumnDefinition rColumn,
-		String sInitialValue) {
-		TextBox aTextBox = new TextBox();
-		String sConstraint = rColumn.getProperty(INPUT_CONSTRAINT, null);
+	private TextBox createTextBox(ColumnDefinition column,
+		String initialValue) {
+		TextBox textBox = new TextBox();
+		String constraint = column.getProperty(INPUT_CONSTRAINT, null);
 
-		aTextBox.setValue(sInitialValue);
+		textBox.setValue(initialValue);
 
-		if (sConstraint != null) {
-			aTextBox.addKeyPressHandler(new RegExConstraint(sConstraint));
+		if (constraint != null) {
+			textBox.addKeyPressHandler(new RegExConstraint(constraint));
 		}
 
-		addKeyHandlers(aTextBox);
+		addKeyHandlers(textBox);
 
-		return aTextBox;
+		return textBox;
 	}
 
 	/**
 	 * Internal helper method to return the expanded string for a certain
 	 * resource key.
 	 *
-	 * @param sResource The resource to expand
+	 * @param resource The resource to expand
 	 * @return The string for the resource
 	 */
-	private String expand(String sResource) {
-		return rTable.getContext().expandResource(sResource);
+	private String expand(String resource) {
+		return table.getContext().expandResource(resource);
 	}
 
 	/**
@@ -826,68 +821,67 @@ class TableFilterPanel extends Composite
 	 * certain
 	 * widget in a particular column.
 	 *
-	 * @param nColumn The column
-	 * @param rWidget The widget
+	 * @param column The column
+	 * @param widget The widget
 	 * @return The row containing the widget or -1 if not found
 	 */
-	private int findFilterCriterionRow(int nColumn, Widget rWidget) {
-		int nRowCount = aFilterCriteriaPanel.getRowCount();
-		int nRow = 0;
-		boolean bFound = false;
+	private int findFilterCriterionRow(int column, Widget widget) {
+		int rowCount = filterCriteriaPanel.getRowCount();
+		int row = 0;
+		boolean found = false;
 
-		while (!bFound && nRow < nRowCount) {
-			if (nColumn < aFilterCriteriaPanel.getCellCount(nRow)) {
-				Widget rRowWidget =
-					aFilterCriteriaPanel.getWidget(nRow, nColumn);
+		while (!found && row < rowCount) {
+			if (column < filterCriteriaPanel.getCellCount(row)) {
+				Widget rowWidget = filterCriteriaPanel.getWidget(row, column);
 
-				if (rRowWidget instanceof DateBox) {
-					rRowWidget = ((DateBox) rRowWidget).getTextBox();
+				if (rowWidget instanceof DateBox) {
+					rowWidget = ((DateBox) rowWidget).getTextBox();
 				}
 
-				bFound = (rRowWidget == rWidget);
+				found = (rowWidget == widget);
 			}
 
-			if (!bFound) {
-				nRow++;
+			if (!found) {
+				row++;
 			}
 		}
 
-		return nRow < nRowCount ? nRow : -1;
+		return row < rowCount ? row : -1;
 	}
 
 	/**
 	 * Returns the allowed string values for a table column. The returned array
 	 * will be NULL if no value constraint is set on the column.
 	 *
-	 * @param rColumn The column definition
+	 * @param column The column definition
 	 * @return An array containing the allowed values or NULL for none
 	 */
-	private String[] getAllowedValues(ColumnDefinition rColumn) {
-		String[] aAllowedValues = null;
-		String sValues = rColumn.getProperty(ALLOWED_VALUES, null);
+	private String[] getAllowedValues(ColumnDefinition column) {
+		String[] allowedValues = null;
+		String values = column.getProperty(ALLOWED_VALUES, null);
 
-		if (sValues != null) {
-			aAllowedValues = sValues.split(",");
+		if (values != null) {
+			allowedValues = values.split(",");
 		}
 
-		return aAllowedValues;
+		return allowedValues;
 	}
 
 	/**
 	 * Returns the index of the column with a certain ID.
 	 *
-	 * @param sColumnId The column ID to search the index of
+	 * @param columnId The column ID to search the index of
 	 * @return The column index or -1 if not found
 	 */
-	private int getColumnIndex(String sColumnId) {
-		int nColumn = aFilterColumns.size() - 1;
+	private int getColumnIndex(String columnId) {
+		int column = filterColumns.size() - 1;
 
-		while (nColumn >= 0 &&
-			!aFilterColumns.get(nColumn).getId().equals(sColumnId)) {
-			nColumn--;
+		while (column >= 0 &&
+			!filterColumns.get(column).getId().equals(columnId)) {
+			column--;
 		}
 
-		return nColumn;
+		return column;
 	}
 
 	/**
@@ -897,16 +891,16 @@ class TableFilterPanel extends Composite
 	 * @return The key up handler
 	 */
 	private KeyDownHandler getComplexFilterKeyDownHandler() {
-		if (aComplexFilterKeyDownHandler == null) {
-			aComplexFilterKeyDownHandler = new KeyDownHandler() {
+		if (complexFilterKeyDownHandler == null) {
+			complexFilterKeyDownHandler = new KeyDownHandler() {
 				@Override
-				public void onKeyDown(KeyDownEvent rEvent) {
-					handleComplexFilterKeyDown(rEvent);
+				public void onKeyDown(KeyDownEvent event) {
+					handleComplexFilterKeyDown(event);
 				}
 			};
 		}
 
-		return aComplexFilterKeyDownHandler;
+		return complexFilterKeyDownHandler;
 	}
 
 	/**
@@ -916,51 +910,51 @@ class TableFilterPanel extends Composite
 	 * @return The key up handler
 	 */
 	private KeyUpHandler getComplexFilterKeyUpHandler() {
-		if (aComplexFilterKeyUpHandler == null) {
-			aComplexFilterKeyUpHandler = new KeyUpHandler() {
+		if (complexFilterKeyUpHandler == null) {
+			complexFilterKeyUpHandler = new KeyUpHandler() {
 				@Override
-				public void onKeyUp(KeyUpEvent rEvent) {
-					handleComplexFilterKeyUp(rEvent);
+				public void onKeyUp(KeyUpEvent event) {
+					handleComplexFilterKeyUp(event);
 				}
 			};
 		}
 
-		return aComplexFilterKeyUpHandler;
+		return complexFilterKeyUpHandler;
 	}
 
 	/**
 	 * Returns the constraint value for a certain filter value input.
 	 *
-	 * @param rColumn      The column to return the constraint for
-	 * @param rValueWidget The widget to read the value from
+	 * @param column      The column to return the constraint for
+	 * @param valueWidget The widget to read the value from
 	 * @return The constraint value string
 	 */
-	private String getFilterConstraint(ColumnDefinition rColumn,
-		Widget rValueWidget) {
-		String sValue = "";
+	private String getFilterConstraint(ColumnDefinition column,
+		Widget valueWidget) {
+		String value = "";
 
-		if (rValueWidget instanceof TextBox) {
-			sValue = ((TextBox) rValueWidget).getText();
-		} else if (rValueWidget instanceof CheckBox) {
-			sValue = ((CheckBox) rValueWidget).getValue().toString();
-		} else if (rValueWidget instanceof DateBox) {
-			Date rDate = ((DateBox) rValueWidget).getValue();
+		if (valueWidget instanceof TextBox) {
+			value = ((TextBox) valueWidget).getText();
+		} else if (valueWidget instanceof CheckBox) {
+			value = ((CheckBox) valueWidget).getValue().toString();
+		} else if (valueWidget instanceof DateBox) {
+			Date date = ((DateBox) valueWidget).getValue();
 
-			if (rDate != null) {
-				sValue = FILTER_DATE_FORMAT.format(rDate);
+			if (date != null) {
+				value = FILTER_DATE_FORMAT.format(date);
 			} else {
-				sValue = NULL_CONSTRAINT_VALUE;
+				value = NULL_CONSTRAINT_VALUE;
 			}
-		} else if (rValueWidget instanceof ListBox) {
-			ListBox rListBox = (ListBox) rValueWidget;
-			int nConstraint = rListBox.getSelectedIndex();
+		} else if (valueWidget instanceof ListBox) {
+			ListBox listBox = (ListBox) valueWidget;
+			int constraint = listBox.getSelectedIndex();
 
-			if (nConstraint >= 0) {
-				sValue = getAllowedValues(rColumn)[nConstraint];
+			if (constraint >= 0) {
+				value = getAllowedValues(column)[constraint];
 			}
 		}
 
-		return sValue;
+		return value;
 	}
 
 	/**
@@ -969,24 +963,24 @@ class TableFilterPanel extends Composite
 	 * @return The searchable model of the table
 	 */
 	private FilterableDataModel<?> getSearchableModel() {
-		return (FilterableDataModel<?>) rTable.getData();
+		return (FilterableDataModel<?>) table.getData();
 	}
 
 	/**
 	 * Returns the currently selected column in a certain row of the complex
 	 * filter popup.
 	 *
-	 * @param nRow The row to return the column for
+	 * @param row The row to return the column for
 	 * @return The column definition for the given row
 	 */
-	private ColumnDefinition getSelectedFilterColumn(int nRow) {
-		ListBox rColumnList =
-			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COLUMN);
+	private ColumnDefinition getSelectedFilterColumn(int row) {
+		ListBox columnList =
+			(ListBox) filterCriteriaPanel.getWidget(row, COL_FILTER_COLUMN);
 
-		ColumnDefinition rColumn =
-			aFilterColumns.get(rColumnList.getSelectedIndex());
+		ColumnDefinition column =
+			filterColumns.get(columnList.getSelectedIndex());
 
-		return rColumn;
+		return column;
 	}
 
 	/**
@@ -994,97 +988,96 @@ class TableFilterPanel extends Composite
 	 * complex
 	 * filter popup.
 	 *
-	 * @param nRow The row to return the comparison for
+	 * @param row The row to return the comparison for
 	 * @return The comparison for the given row
 	 */
-	private String getSelectedFilterComparison(int nRow) {
-		ListBox rComparisons =
-			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_COMPARE);
-		String sComparison =
-			rComparisons.getItemText(rComparisons.getSelectedIndex());
+	private String getSelectedFilterComparison(int row) {
+		ListBox comparisons =
+			(ListBox) filterCriteriaPanel.getWidget(row, COL_FILTER_COMPARE);
+		String comparison =
+			comparisons.getItemText(comparisons.getSelectedIndex());
 
-		return sComparison;
+		return comparison;
 	}
 
 	/**
 	 * Handles clicks on the complex filter button.
 	 */
 	private void handleComplexFilterButton() {
-		Map<String, String> rConstraints = getSearchableModel().getFilters();
+		Map<String, String> constraints = getSearchableModel().getFilters();
 
-		aFilterPopup = new DecoratedPopupPanel(true, true);
-		aFilterCriteriaPanel = new FlexTable();
+		filterPopup = new DecoratedPopupPanel(true, true);
+		filterCriteriaPanel = new FlexTable();
 
-		aFilterPopup.addStyleName(GwtTable.CSS.ewtTableFilterPopup());
+		filterPopup.addStyleName(GwtTable.CSS.ewtTableFilterPopup());
 
-		Panel aButtonPanel = createFilterPopupButtonPanel();
-		PushButton aAddFilterButton = createEditFilterListButton(true);
-		int nButtonRow = 0;
+		Panel buttonPanel = createFilterPopupButtonPanel();
+		PushButton addFilterButton = createEditFilterListButton(true);
+		int buttonRow = 0;
 
-		FlexCellFormatter rCellFormatter =
-			aFilterCriteriaPanel.getFlexCellFormatter();
+		FlexCellFormatter cellFormatter =
+			filterCriteriaPanel.getFlexCellFormatter();
 
-		aFilterCriteriaPanel.setWidget(nButtonRow, 0, aButtonPanel);
-		aFilterCriteriaPanel.setWidget(nButtonRow, 1, aAddFilterButton);
-		rCellFormatter.setColSpan(nButtonRow, 0, COL_FILTER_BUTTON);
+		filterCriteriaPanel.setWidget(buttonRow, 0, buttonPanel);
+		filterCriteriaPanel.setWidget(buttonRow, 1, addFilterButton);
+		cellFormatter.setColSpan(buttonRow, 0, COL_FILTER_BUTTON);
 
-		initComplexFilterInput(rConstraints);
+		initComplexFilterInput(constraints);
 
-		aFilterPopup.setAnimationEnabled(true);
-		aFilterPopup.setGlassEnabled(true);
-		aFilterPopup.setWidget(aFilterCriteriaPanel);
-		aFilterPopup.addCloseHandler(new CloseHandler<PopupPanel>() {
+		filterPopup.setAnimationEnabled(true);
+		filterPopup.setGlassEnabled(true);
+		filterPopup.setWidget(filterCriteriaPanel);
+		filterPopup.addCloseHandler(new CloseHandler<PopupPanel>() {
 			@Override
-			public void onClose(CloseEvent<PopupPanel> rEvent) {
-				if (rEvent.isAutoClosed()) {
+			public void onClose(CloseEvent<PopupPanel> event) {
+				if (event.isAutoClosed()) {
 					hideComplexFilterPopup(false);
 				}
 			}
 		});
 
-		aFilterPopup.setPopupPositionAndShow(new PositionCallback() {
+		filterPopup.setPopupPositionAndShow(new PositionCallback() {
 			@Override
-			public void setPosition(int nWidth, int nHeight) {
-				updateFilterPopupPosition(nHeight);
+			public void setPosition(int width, int height) {
+				updateFilterPopupPosition(height);
 			}
 		});
 
-		setFocus(aFilterCriteriaPanel.getWidget(0, COL_FILTER_COLUMN));
+		setFocus(filterCriteriaPanel.getWidget(0, COL_FILTER_COLUMN));
 		setFilterButtonActive(true);
 	}
 
 	/**
 	 * Handles clicks on a button that manipulates the filter criteria list.
 	 *
-	 * @param rEvent The click event that occurred
-	 * @param bAdd   TRUE to add a row, FALSE to remove the row of the button
+	 * @param event The click event that occurred
+	 * @param add   TRUE to add a row, FALSE to remove the row of the button
 	 */
-	private void handleFilterListChangeButton(ClickEvent rEvent,
-		boolean bAdd) {
-		if (bAdd) {
+	private void handleFilterListChangeButton(ClickEvent event, boolean add) {
+		if (add) {
 			addFilterRow(-1, ' ', null, false);
 		} else {
-			int nRow = findFilterCriterionRow(COL_FILTER_BUTTON,
-				(Widget) rEvent.getSource());
+			int row = findFilterCriterionRow(COL_FILTER_BUTTON,
+				(Widget) event.getSource());
 
-			aFilterCriteriaPanel.removeRow(nRow);
+			filterCriteriaPanel.removeRow(row);
 		}
 
-		updateFilterPopupPosition(aFilterPopup.getOffsetHeight());
+		updateFilterPopupPosition(filterPopup.getOffsetHeight());
 	}
 
 	/**
 	 * Hides the complex filter popup panel and optionally applies the filter
 	 * criteria.
 	 *
-	 * @param bApply TRUE to apply the filter criteria, FALSE to discard them
+	 * @param apply TRUE to apply the filter criteria, FALSE to discard them
 	 */
-	private void hideComplexFilterPopup(boolean bApply) {
-		if (aFilterPopup != null) {
-			aFilterPopup.hide();
+	private void hideComplexFilterPopup(boolean apply) {
+		if (filterPopup != null) {
+			filterPopup.hide();
 		}
 
-		if (bApply) {
+		if (apply) {
 			applyComplexFilter();
 		} else if (getSearchableModel().getFilters().isEmpty()) {
 			resetFilter();
@@ -1094,17 +1087,17 @@ class TableFilterPanel extends Composite
 	/**
 	 * Initializes the input components for complex filter rows.
 	 *
-	 * @param rConstraints The constraints to initialize the filter rows from
-	 *                     (empty for none)
+	 * @param constraints The constraints to initialize the filter rows from
+	 *                    (empty for none)
 	 */
-	private void initComplexFilterInput(Map<String, String> rConstraints) {
-		if (aFilterButton.isDown() || rConstraints.isEmpty()) {
-			aFilterInput.setText("");
-			aFilterInput.setEnabled(false);
-			aFilterInput.addStyleDependentName("disabled");
+	private void initComplexFilterInput(Map<String, String> constraints) {
+		if (filterButton.isDown() || constraints.isEmpty()) {
+			filterInput.setText("");
+			filterInput.setEnabled(false);
+			filterInput.addStyleDependentName("disabled");
 			addFilterRow(-1, ' ', null, false);
 		} else {
-			addComplexFilterCriteriaRows(rConstraints);
+			addComplexFilterCriteriaRows(constraints);
 		}
 	}
 
@@ -1112,19 +1105,19 @@ class TableFilterPanel extends Composite
 	 * Checks whether the selected join in a complex filter row is a logical OR
 	 * or AND term.
 	 *
-	 * @param nRow The complex filter row
+	 * @param row The complex filter row
 	 * @return TRUE for an OR term
 	 */
-	private boolean isOrTerm(int nRow) {
-		boolean bOrTerm = false;
-		ListBox rJoins =
-			(ListBox) aFilterCriteriaPanel.getWidget(nRow, COL_FILTER_JOIN);
+	private boolean isOrTerm(int row) {
+		boolean orTerm = false;
+		ListBox joins =
+			(ListBox) filterCriteriaPanel.getWidget(row, COL_FILTER_JOIN);
 
-		if (rJoins != null) {
-			bOrTerm = (rJoins.getSelectedIndex() == 1);
+		if (joins != null) {
+			orTerm = (joins.getSelectedIndex() == 1);
 		}
 
-		return bOrTerm;
+		return orTerm;
 	}
 
 	/**
@@ -1132,10 +1125,10 @@ class TableFilterPanel extends Composite
 	 * input field.
 	 */
 	private void resetFilter() {
-		rTable.setSelection(-1);
-		aFilterInput.setText(null);
-		aFilterInput.setEnabled(true);
-		aFilterInput.removeStyleDependentName("disabled");
+		table.setSelection(-1);
+		filterInput.setText(null);
+		filterInput.setEnabled(true);
+		filterInput.removeStyleDependentName("disabled");
 		setFilterButtonActive(false);
 		removeFilter();
 	}
@@ -1143,13 +1136,13 @@ class TableFilterPanel extends Composite
 	/**
 	 * Resets the input value of a certain widget.
 	 *
-	 * @param rWidget The widget to reset the value of
+	 * @param widget The widget to reset the value of
 	 */
-	private void resetInputValue(Widget rWidget) {
-		if (rWidget instanceof HasValue) {
-			((HasValue<?>) rWidget).setValue(null);
-		} else if (rWidget instanceof ListBox) {
-			((ListBox) rWidget).setSelectedIndex(0);
+	private void resetInputValue(Widget widget) {
+		if (widget instanceof HasValue) {
+			((HasValue<?>) widget).setValue(null);
+		} else if (widget instanceof ListBox) {
+			((ListBox) widget).setSelectedIndex(0);
 		}
 	}
 
@@ -1157,90 +1150,89 @@ class TableFilterPanel extends Composite
 	 * Analyzes the constraints of a {@link FilterableDataModel} to check
 	 * whether they represent a single search term for all searchable columns.
 	 *
-	 * @param rDataModel The data model to get the filter criteria from
+	 * @param dataModel The data model to get the filter criteria from
 	 * @return The single filter criterion or NULL for none
 	 */
-	private String searchSimpleFilter(DataModel<?> rDataModel) {
-		String sFilter = null;
+	private String searchSimpleFilter(DataModel<?> dataModel) {
+		String filter = null;
 
-		if (rDataModel instanceof FilterableDataModel) {
-			FilterableDataModel<?> rSearchableModel =
-				(FilterableDataModel<?>) rDataModel;
+		if (dataModel instanceof FilterableDataModel) {
+			FilterableDataModel<?> searchableModel =
+				(FilterableDataModel<?>) dataModel;
 
-			for (String sCriterion : rSearchableModel.getFilters().values()) {
-				if (sCriterion.endsWith("*")) {
-					sCriterion =
-						sCriterion.substring(0, sCriterion.length() - 1);
+			for (String criterion : searchableModel.getFilters().values()) {
+				if (criterion.endsWith("*")) {
+					criterion = criterion.substring(0, criterion.length() - 1);
 				}
 
-				if (sFilter == null) {
-					sFilter = sCriterion;
-				} else if (!sFilter.equals(sCriterion)) {
-					sFilter = null;
+				if (filter == null) {
+					filter = criterion;
+				} else if (!filter.equals(criterion)) {
+					filter = null;
 
 					break;
 				}
 			}
 
-			if (sFilter != null) {
+			if (filter != null) {
 				// a common filter criterion must always begin with the OR
 				// prefix and the comparison character
-				if (sFilter.length() >= 2 &&
-					sFilter.charAt(0) == CONSTRAINT_OR_PREFIX) {
-					sFilter = sFilter.substring(2);
+				if (filter.length() >= 2 &&
+					filter.charAt(0) == CONSTRAINT_OR_PREFIX) {
+					filter = filter.substring(2);
 				} else {
-					sFilter = null;
+					filter = null;
 				}
 			}
 		}
 
-		return sFilter;
+		return filter;
 	}
 
 	/**
 	 * Sets the filter button active to indicate that filtering is used.
 	 *
-	 * @param bActive TRUE to activate
+	 * @param active TRUE to activate
 	 */
-	private void setFilterButtonActive(boolean bActive) {
-		aFilterButton.setDown(bActive);
+	private void setFilterButtonActive(boolean active) {
+		filterButton.setDown(active);
 
-		if (bActive) {
-			aFilterButton.addStyleDependentName("active");
+		if (active) {
+			filterButton.addStyleDependentName("active");
 		} else {
-			aFilterButton.removeStyleDependentName("active");
+			filterButton.removeStyleDependentName("active");
 		}
 	}
 
 	/**
 	 * Sets the focus to a certain widget.
 	 *
-	 * @param rWidget The widget to set the focus on
+	 * @param widget The widget to set the focus on
 	 */
-	private void setFocus(Widget rWidget) {
-		if (rWidget instanceof Focusable) {
-			((Focusable) rWidget).setFocus(true);
-		} else if (rWidget instanceof DateBox) {
-			((DateBox) rWidget).setFocus(true);
+	private void setFocus(Widget widget) {
+		if (widget instanceof Focusable) {
+			((Focusable) widget).setFocus(true);
+		} else if (widget instanceof DateBox) {
+			((DateBox) widget).setFocus(true);
 		}
 	}
 
 	/**
 	 * Adjusts the position of the filter popup panel.
 	 *
-	 * @param nPopupHeight The current height of the popup panel
+	 * @param popupHeight The current height of the popup panel
 	 */
-	private void updateFilterPopupPosition(int nPopupHeight) {
-		aFilterPopup.setPopupPosition(getAbsoluteLeft(),
-			getAbsoluteTop() - nPopupHeight);
+	private void updateFilterPopupPosition(int popupHeight) {
+		filterPopup.setPopupPosition(getAbsoluteLeft(),
+			getAbsoluteTop() - popupHeight);
 	}
 
 	/**
 	 * Updates the table after a filter change.
 	 */
 	private void updateTable() {
-		rTable.collapseAllNodes();
-		rTable.setFirstRow(0);
-		rTable.update();
+		table.collapseAllNodes();
+		table.setFirstRow(0);
+		table.update();
 	}
 }

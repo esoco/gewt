@@ -30,8 +30,8 @@ public class GwtDialogBox extends DialogBox implements IsChildViewWidget {
 	/**
 	 * @see DialogBox#DialogBox(boolean, boolean)
 	 */
-	public GwtDialogBox(boolean bAutoHide, boolean bModal) {
-		super(bAutoHide, bModal);
+	public GwtDialogBox(boolean autoHide, boolean modal) {
+		super(autoHide, modal);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class GwtDialogBox extends DialogBox implements IsChildViewWidget {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setViewTitle(String sTitle) {
-		setText(sTitle);
+	public void setViewTitle(String title) {
+		setText(title);
 	}
 }

@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class TwoLayerLayout extends GenericLayout {
 
-	private Panel aContentPanel;
+	private Panel contentPanel;
 
 	/**
 	 * Creates a new instance.
@@ -52,33 +52,32 @@ public abstract class TwoLayerLayout extends GenericLayout {
 	 * @see GenericLayout#addWidget(HasWidgets, Widget, StyleData, int)
 	 */
 	@Override
-	public void addWidget(HasWidgets rContainer, Widget rWidget,
-		StyleData rStyleData, int nIndex) {
-		super.addWidget(aContentPanel, rWidget, rStyleData, nIndex);
+	public void addWidget(HasWidgets container, Widget widget,
+		StyleData styleData, int index) {
+		super.addWidget(contentPanel, widget, styleData, index);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void clear(HasWidgets rContainer) {
-		super.clear(aContentPanel);
+	public void clear(HasWidgets container) {
+		super.clear(contentPanel);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public HasWidgets createLayoutContainer(Container rContainer,
-		StyleData rContainerStyle) {
-		HasWidgets rLayoutPanel =
-			createLayoutWidget(rContainer, rContainerStyle);
+	public HasWidgets createLayoutContainer(Container container,
+		StyleData containerStyle) {
+		HasWidgets layoutPanel = createLayoutWidget(container, containerStyle);
 
-		aContentPanel = createContentPanel(rLayoutPanel);
-		aContentPanel.setStyleName(EWT.CSS.ewtContentPanel());
-		rLayoutPanel.add(aContentPanel);
+		contentPanel = createContentPanel(layoutPanel);
+		contentPanel.setStyleName(EWT.CSS.ewtContentPanel());
+		layoutPanel.add(contentPanel);
 
-		return rLayoutPanel;
+		return layoutPanel;
 	}
 
 	/**
@@ -88,8 +87,8 @@ public abstract class TwoLayerLayout extends GenericLayout {
 	 * @see GenericLayout#removeWidget(HasWidgets, Widget)
 	 */
 	@Override
-	public void removeWidget(HasWidgets rContainer, Widget rWidget) {
-		super.removeWidget(aContentPanel, rWidget);
+	public void removeWidget(HasWidgets container, Widget widget) {
+		super.removeWidget(contentPanel, widget);
 	}
 
 	/**
@@ -97,21 +96,22 @@ public abstract class TwoLayerLayout extends GenericLayout {
 	 * default implementation adds a {@link FlowPanel} but subclasses can
 	 * override this method to create a different panel if necessary.
 	 *
-	 * @param rLayoutPanel The outer panel that the content panel should be
-	 *                     added to
+	 * @param layoutPanel The outer panel that the content panel should be
+	 *                       added
+	 *                    to
 	 * @return The inner content panel
 	 */
-	protected Panel createContentPanel(HasWidgets rLayoutPanel) {
+	protected Panel createContentPanel(HasWidgets layoutPanel) {
 		return new FlowPanel();
 	}
 
 	/**
 	 * Must be implemented to create the outer panel of this instance.
 	 *
-	 * @param rContainer      The container to create the layout panel for
-	 * @param rContainerStyle The style data for the container
+	 * @param container      The container to create the layout panel for
+	 * @param containerStyle The style data for the container
 	 * @return The widget for the outer layout
 	 */
-	protected abstract HasWidgets createLayoutWidget(Container rContainer,
-		StyleData rContainerStyle);
+	protected abstract HasWidgets createLayoutWidget(Container container,
+		StyleData containerStyle);
 }

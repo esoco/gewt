@@ -113,15 +113,15 @@ public class GwtDateTimeFormat implements ValueFormat {
 	public static final ValueFormat FULL_TIME =
 		new GwtDateTimeFormat(DateTimeFormat.getFormat(TIME_FULL));
 
-	private DateTimeFormat rFormat;
+	private DateTimeFormat format;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rFormat The GWT date time format to use
+	 * @param format The GWT date time format to use
 	 */
-	public GwtDateTimeFormat(DateTimeFormat rFormat) {
-		this.rFormat = rFormat;
+	public GwtDateTimeFormat(DateTimeFormat format) {
+		this.format = format;
 	}
 
 	/**
@@ -129,21 +129,20 @@ public class GwtDateTimeFormat implements ValueFormat {
 	 * instance. . Unsupported input values (including NULL) will cause an
 	 * exception.
 	 *
-	 * @param rValue Either a date object or a string that must contain the
-	 *                  long
-	 *               value of the date to format
+	 * @param value Either a date object or a string that must contain the long
+	 *              value of the date to format
 	 * @return The string representation of the date value
 	 */
 	@Override
-	public String format(Object rValue) {
-		Date rDate;
+	public String format(Object value) {
+		Date date;
 
-		if (rValue instanceof String) {
-			rDate = new Date(Long.parseLong((String) rValue));
+		if (value instanceof String) {
+			date = new Date(Long.parseLong((String) value));
 		} else {
-			rDate = (Date) rValue;
+			date = (Date) value;
 		}
 
-		return rFormat.format(rDate);
+		return format.format(date);
 	}
 }

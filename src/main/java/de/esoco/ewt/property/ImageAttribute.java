@@ -35,7 +35,7 @@ public interface ImageAttribute {
 	/**
 	 * Sets the element's image.
 	 *
-	 * @param rImage The new image
+	 * @param image The new image
 	 */
-	public void setImage(Image rImage);
+	public void setImage(Image image);
 }

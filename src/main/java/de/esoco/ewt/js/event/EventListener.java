@@ -34,5 +34,5 @@ public interface EventListener<E extends Event> {
 	 * .org/en-US/docs/Web/API/EventListener/handleEvent">
 	 * EventListener.handleEvent()</a>
 	 */
-	void handleEvent(E rEvent);
+	void handleEvent(E event);
 }

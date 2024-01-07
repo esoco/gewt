@@ -79,56 +79,56 @@ public enum KeyCode {
 		EnumSet.of(F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14,
 			F15);
 
-	private static Map<Integer, KeyCode> KEYCODE_MAP =
+	private static final Map<Integer, KeyCode> KEYCODE_MAP =
 		new HashMap<Integer, KeyCode>();
 
-	private static Map<Character, KeyCode> KEYCHAR_MAP =
+	private static final Map<Character, KeyCode> KEYCHAR_MAP =
 		new HashMap<Character, KeyCode>();
 
 	static {
 		// Initialization of reverse lookup maps
 
-		for (KeyCode eKeyCode : KeyCode.values()) {
-			if (eKeyCode.cKeyChar != 0) {
-				Object o = KEYCHAR_MAP.put(eKeyCode.cKeyChar, eKeyCode);
+		for (KeyCode keyCode : KeyCode.values()) {
+			if (keyCode.keyChar != 0) {
+				Object o = KEYCHAR_MAP.put(keyCode.keyChar, keyCode);
 
 				assert o == null :
-					"Duplicate mapping of char " + eKeyCode.cKeyChar + " in " +
-						o + " & " + eKeyCode;
-			} else if (eKeyCode.nKeyCode != 0) {
-				Object o = KEYCODE_MAP.put(eKeyCode.nKeyCode, eKeyCode);
+					"Duplicate mapping of char " + keyCode.keyChar + " in " +
+						o + " & " + keyCode;
+			} else if (keyCode.keyCode != 0) {
+				Object o = KEYCODE_MAP.put(keyCode.keyCode, keyCode);
 
 				assert o == null :
-					"Duplicate mapping of code " + eKeyCode.nKeyCode + " in " +
-						o + " & " + eKeyCode;
+					"Duplicate mapping of code " + keyCode.keyCode + " in " +
+						o + " & " + keyCode;
 			}
 		}
 	}
 
-	private final int nKeyCode;
+	private final int keyCode;
 
-	private final char cKeyChar;
+	private final char keyChar;
 
 	/**
 	 * Creates a new instance that is not associated with a printable
 	 * character.
 	 *
-	 * @param nCode The integer key code or zero if unknown
+	 * @param code The integer key code or zero if unknown
 	 */
-	private KeyCode(int nCode) {
-		nKeyCode = nCode;
-		cKeyChar = 0;
+	KeyCode(int code) {
+		keyCode = code;
+		keyChar = 0;
 	}
 
 	/**
 	 * Creates a new instance that is associated with a certain (printable)
 	 * character.
 	 *
-	 * @param cKey The character to be associated with this instance
+	 * @param key The character to be associated with this instance
 	 */
-	private KeyCode(char cKey) {
-		cKeyChar = cKey;
-		nKeyCode = 0;
+	KeyCode(char key) {
+		keyChar = key;
+		keyCode = 0;
 	}
 
 	/**
@@ -138,11 +138,11 @@ public enum KeyCode {
 	 * return NULL. The argument character is always converted to upper case
 	 * prior to the lookup.
 	 *
-	 * @param cKey The character to lookup the key code for
+	 * @param key The character to lookup the key code for
 	 * @return The matching KeyCode instance or NULL if no association exists
 	 */
-	public static KeyCode forChar(char cKey) {
-		return KEYCHAR_MAP.get(Character.toUpperCase(cKey));
+	public static KeyCode forChar(char key) {
+		return KEYCHAR_MAP.get(Character.toUpperCase(key));
 	}
 
 	/**
@@ -151,11 +151,11 @@ public enum KeyCode {
 	 * integer key code. If no such association exist this method will return
 	 * NULL.
 	 *
-	 * @param nCode Key The integer code to lookup the key code for
+	 * @param code Key The integer code to lookup the key code for
 	 * @return The matching KeyCode instance or NULL if no association exists
 	 */
-	public static KeyCode forCode(int nCode) {
-		return KEYCODE_MAP.get(nCode);
+	public static KeyCode forCode(int code) {
+		return KEYCODE_MAP.get(code);
 	}
 
 	/**
@@ -163,12 +163,12 @@ public enum KeyCode {
 	 * mainly to provide a compatible way to convert key codes on different EWT
 	 * versions.
 	 *
-	 * @param rKeyCode The key to convert to a character
+	 * @param keyCode The key to convert to a character
 	 * @return The resulting character value
 	 * @see #getChar()
 	 */
-	public static char toChar(KeyCode rKeyCode) {
-		return rKeyCode.getChar();
+	public static char toChar(KeyCode keyCode) {
+		return keyCode.getChar();
 	}
 
 	/**
@@ -182,7 +182,7 @@ public enum KeyCode {
 	 * @return The character value associated with the key code
 	 */
 	public final char getChar() {
-		return cKeyChar;
+		return keyChar;
 	}
 
 	/**
@@ -191,9 +191,8 @@ public enum KeyCode {
 	 * @return The digit key
 	 */
 	public boolean isDigitKey() {
-		return
-			(nKeyCode >= NUMPAD_0.nKeyCode && nKeyCode <= NUMPAD_9.nKeyCode) ||
-				(cKeyChar >= '0' && cKeyChar <= '9');
+		return (keyCode >= NUMPAD_0.keyCode && keyCode <= NUMPAD_9.keyCode) ||
+			(keyChar >= '0' && keyChar <= '9');
 	}
 
 	/**
@@ -211,8 +210,8 @@ public enum KeyCode {
 	public String toResourceString() {
 		StringBuilder sb = new StringBuilder();
 
-		if (this != SPACE && cKeyChar != 0) {
-			sb.append(cKeyChar);
+		if (this != SPACE && keyChar != 0) {
+			sb.append(keyChar);
 		} else if (FUNCTION_KEYS.contains(this)) {
 			sb.append(this);
 		} else {

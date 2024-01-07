@@ -84,49 +84,49 @@ public final class AlignedPosition extends StyleData {
 	/**
 	 * Creates a new instance with particular alignment.
 	 *
-	 * @param rHorizontal The horizontal alignment
-	 * @param rVertical   The vertical alignment
+	 * @param horizontal The horizontal alignment
+	 * @param vertical   The vertical alignment
 	 */
-	private AlignedPosition(Alignment rHorizontal, Alignment rVertical) {
-		super(rHorizontal, rVertical);
+	private AlignedPosition(Alignment horizontal, Alignment vertical) {
+		super(horizontal, vertical);
 	}
 
 	/**
 	 * Returns the instance that corresponds to the given combination of
 	 * horizontal and vertical alignment
 	 *
-	 * @param rHorizontal The horizontal alignment
-	 * @param rVertical   The vertical alignment
+	 * @param horizontal The horizontal alignment
+	 * @param vertical   The vertical alignment
 	 * @return The corresponding aligned position
 	 */
-	public static AlignedPosition valueOf(Alignment rHorizontal,
-		Alignment rVertical) {
-		if (rHorizontal == Alignment.BEGIN) {
-			if (rVertical == Alignment.BEGIN) {
+	public static AlignedPosition valueOf(Alignment horizontal,
+		Alignment vertical) {
+		if (horizontal == Alignment.BEGIN) {
+			if (vertical == Alignment.BEGIN) {
 				return TOP_LEFT;
 			}
 
-			if (rVertical == Alignment.END) {
+			if (vertical == Alignment.END) {
 				return BOTTOM_LEFT;
 			} else {
 				return LEFT;
 			}
-		} else if (rHorizontal == Alignment.END) {
-			if (rVertical == Alignment.BEGIN) {
+		} else if (horizontal == Alignment.END) {
+			if (vertical == Alignment.BEGIN) {
 				return TOP_RIGHT;
 			}
 
-			if (rVertical == Alignment.END) {
+			if (vertical == Alignment.END) {
 				return BOTTOM_RIGHT;
 			} else {
 				return RIGHT;
 			}
 		} else {
-			if (rVertical == Alignment.BEGIN) {
+			if (vertical == Alignment.BEGIN) {
 				return TOP;
 			}
 
-			if (rVertical == Alignment.END) {
+			if (vertical == Alignment.END) {
 				return BOTTOM;
 			} else {
 				return CENTER;

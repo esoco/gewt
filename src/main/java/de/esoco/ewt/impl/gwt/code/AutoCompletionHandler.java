@@ -27,15 +27,16 @@ public interface AutoCompletionHandler {
 	/**
 	 * Called to get the completions for the specified editor text.
 	 *
-	 * @param sText          The text. Not {@code null}.
-	 * @param rCaretPosition The caret position, containing line and column
-	 *                       information. Not {@code null}.
-	 * @param nCaretIndex    The caret index with respect to the editor text.
-	 *                       Not {@code null}.
-	 * @param rCallback      A callback that should be used to signal that
-	 *                       auto-completion results are ready. Not
-	 *                       {@code null}.
+	 * @param text          The text. Not {@code null}.
+	 * @param caretPosition The caret position, containing line and column
+	 *                      information. Not {@code null}.
+	 * @param caretIndex    The caret index with respect to the editor text.
+	 *                        Not
+	 *                      {@code null}.
+	 * @param callback      A callback that should be used to signal that
+	 *                      auto-completion results are ready. Not
+	 *                      {@code null}.
 	 */
-	void getCompletions(String sText, EditorPosition rCaretPosition,
-		int nCaretIndex, AutoCompletionCallback rCallback);
+	void getCompletions(String text, EditorPosition caretPosition,
+		int caretIndex, AutoCompletionCallback callback);
 }

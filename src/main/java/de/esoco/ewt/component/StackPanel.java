@@ -49,8 +49,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandle
  * on such a title the corresponding component can be made visible.
  *
  * <p>Components that are added to a stack panel must have been created with
- * the
- * panel as their parent, else unpredictable results may occur. They must be
+ * the panel as their parent, else unpredictable results may occur. They must be
  * added to this panel through the {@link #addPage(Component, String, boolean)}
  * method afterwards, else they may not appear at all or the stack may be
  * displayed incorrectly.</p>
@@ -66,13 +65,13 @@ public class StackPanel extends SwitchPanel {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rParent The parent container
-	 * @param rStyle  The panel style
+	 * @param parent The parent container
+	 * @param style  The panel style
 	 */
-	public StackPanel(Container rParent, StyleData rStyle) {
+	public StackPanel(Container parent, StyleData style) {
 		super(EWT
 			.getLayoutFactory()
-			.createLayout(rParent, rStyle, LayoutType.STACK));
+			.createLayout(parent, style, LayoutType.STACK));
 	}
 
 	/**
@@ -90,23 +89,23 @@ public class StackPanel extends SwitchPanel {
 	 */
 	public static class StackPanelLayout extends SwitchPanelLayout {
 
-		private StackLayoutPanel aStackLayoutPanel;
+		private StackLayoutPanel stackLayoutPanel;
 
-		private UserInterfaceContext rContext;
+		private UserInterfaceContext context;
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void addPage(Component rGroupComponent, String sGroupTitle,
-			boolean bCloseable) {
-			Widget rWidget = rGroupComponent.getWidget();
-			String sHeader = createHeader(rContext, sGroupTitle);
+		public void addPage(Component groupComponent, String groupTitle,
+			boolean closeable) {
+			Widget widget = groupComponent.getWidget();
+			String header = createHeader(context, groupTitle);
 
-			aStackLayoutPanel.add(rWidget, sHeader, true, 2);
+			stackLayoutPanel.add(widget, header, true, 2);
 
-			if (aStackLayoutPanel.getWidgetCount() == 1) {
-				aStackLayoutPanel.showWidget(0);
+			if (stackLayoutPanel.getWidgetCount() == 1) {
+				stackLayoutPanel.showWidget(0);
 			}
 		}
 
@@ -114,12 +113,12 @@ public class StackPanel extends SwitchPanel {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public HasWidgets createLayoutContainer(Container rContainer,
-			StyleData rStyle) {
-			this.rContext = rContainer.getContext();
-			aStackLayoutPanel = new StackLayoutPanel(Unit.EM);
+		public HasWidgets createLayoutContainer(Container container,
+			StyleData style) {
+			this.context = container.getContext();
+			stackLayoutPanel = new StackLayoutPanel(Unit.EM);
 
-			return aStackLayoutPanel;
+			return stackLayoutPanel;
 		}
 
 		/**
@@ -127,16 +126,15 @@ public class StackPanel extends SwitchPanel {
 		 */
 		@Override
 		public int getPageCount() {
-			return aStackLayoutPanel.getWidgetCount();
+			return stackLayoutPanel.getWidgetCount();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public int getPageIndex(Component rGroupComponent) {
-			return aStackLayoutPanel.getWidgetIndex(
-				rGroupComponent.getWidget());
+		public int getPageIndex(Component groupComponent) {
+			return stackLayoutPanel.getWidgetIndex(groupComponent.getWidget());
 		}
 
 		/**
@@ -144,44 +142,44 @@ public class StackPanel extends SwitchPanel {
 		 */
 		@Override
 		public int getSelectionIndex() {
-			return aStackLayoutPanel.getVisibleIndex();
+			return stackLayoutPanel.getVisibleIndex();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setPageTitle(int nIndex, String sTitle) {
-			aStackLayoutPanel.setHeaderHTML(nIndex,
-				createHeader(rContext, sTitle));
+		public void setPageTitle(int index, String title) {
+			stackLayoutPanel.setHeaderHTML(index, createHeader(context,
+				title));
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void setSelection(int nIndex) {
-			aStackLayoutPanel.showWidget(nIndex);
+		public void setSelection(int index) {
+			stackLayoutPanel.showWidget(index);
 		}
 
 		/**
 		 * Creates the HTML string for the header of a switch panel element.
 		 *
-		 * @param rContext     The user interface context for resource lookups
-		 * @param sHeaderTitle The header title
+		 * @param context     The user interface context for resource lookups
+		 * @param headerTitle The header title
 		 * @return The HTML string for the header
 		 */
-		private String createHeader(UserInterfaceContext rContext,
-			String sHeaderTitle) {
-			String sTitle = rContext.expandResource(sHeaderTitle);
-			ImageRef rImage = (ImageRef) rContext.createImage(
+		private String createHeader(UserInterfaceContext context,
+			String headerTitle) {
+			String title = context.expandResource(headerTitle);
+			ImageRef image = (ImageRef) context.createImage(
 				GewtResources.INSTANCE.imRight());
 
-			String sTitleHtml =
-				createImageLabel(sTitle, rImage, AlignedPosition.RIGHT,
+			String titleHtml =
+				createImageLabel(title, image, AlignedPosition.RIGHT,
 					HasHorizontalAlignment.ALIGN_LEFT, null);
 
-			return sTitleHtml;
+			return titleHtml;
 		}
 	}
 
@@ -197,8 +195,8 @@ public class StackPanel extends SwitchPanel {
 		 * @see SelectionHandler#onSelection(SelectionEvent)
 		 */
 		@Override
-		public void onSelection(SelectionEvent<Integer> rEvent) {
-			Timer aAnimationWaitTimer = new Timer() {
+		public void onSelection(SelectionEvent<Integer> event) {
+			Timer animationWaitTimer = new Timer() {
 				@Override
 				public void run() {
 					handleSelection();
@@ -207,7 +205,7 @@ public class StackPanel extends SwitchPanel {
 
 			// event needs to be postponed until the stack open animation
 			// has finished to prevent update problems in child widgets
-			aAnimationWaitTimer.schedule(
+			animationWaitTimer.schedule(
 				((StackLayoutPanel) getWidget()).getAnimationDuration() + 250);
 		}
 
@@ -215,7 +213,7 @@ public class StackPanel extends SwitchPanel {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onSelectionChange(SelectionChangeEvent rEvent) {
+		public void onSelectionChange(SelectionChangeEvent event) {
 			handleSelection();
 		}
 
@@ -224,27 +222,27 @@ public class StackPanel extends SwitchPanel {
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			HandlerRegistration rHandler = null;
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			HandlerRegistration handler = null;
 
-			if (eEventType == EventType.SELECTION) {
-				if (rWidget instanceof HasSelectionHandlers) {
-					rHandler =
-						((HasSelectionHandlers<Integer>) rWidget).addSelectionHandler(
+			if (eventType == EventType.SELECTION) {
+				if (widget instanceof HasSelectionHandlers) {
+					handler =
+						((HasSelectionHandlers<Integer>) widget).addSelectionHandler(
 							this);
-				} else if (rWidget instanceof HasSelectionChangedHandlers) {
-					rHandler =
-						((HasSelectionChangedHandlers) rWidget).addSelectionChangeHandler(
+				} else if (widget instanceof HasSelectionChangedHandlers) {
+					handler =
+						((HasSelectionChangedHandlers) widget).addSelectionChangeHandler(
 							this);
 				}
 			}
 
-			if (rHandler == null) {
-				rHandler = super.initEventDispatching(rWidget, eEventType);
+			if (handler == null) {
+				handler = super.initEventDispatching(widget, eventType);
 			}
 
-			return rHandler;
+			return handler;
 		}
 
 		/**
@@ -252,18 +250,18 @@ public class StackPanel extends SwitchPanel {
 		 * {@link #onSelection(SelectionEvent)} method.
 		 */
 		void handleSelection() {
-			int nSelection = getSelectionIndex();
+			int selection = getSelectionIndex();
 
-			if (nSelection >= 0) {
-				Component rComponent = getComponents().get(nSelection);
+			if (selection >= 0) {
+				Component component = getComponents().get(selection);
 
-				final Widget rWidget = rComponent.getWidget();
+				final Widget widget = component.getWidget();
 
-				if (rWidget instanceof RequiresResize) {
+				if (widget instanceof RequiresResize) {
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
 						public void execute() {
-							((RequiresResize) rWidget).onResize();
+							((RequiresResize) widget).onResize();
 						}
 					});
 				}

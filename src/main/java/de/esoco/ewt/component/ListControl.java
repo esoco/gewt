@@ -16,13 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.component;
 
-import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.impl.gwt.WidgetFactory;
-import de.esoco.ewt.style.StyleData;
-
-import de.esoco.lib.property.MultiSelection;
-import de.esoco.lib.property.SingleSelection;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,6 +27,11 @@ import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.impl.gwt.WidgetFactory;
+import de.esoco.ewt.style.StyleData;
+import de.esoco.lib.property.MultiSelection;
+import de.esoco.lib.property.SingleSelection;
 
 /**
  * Base class for components that contain a list of strings. This control cannot
@@ -48,30 +46,30 @@ public abstract class ListControl extends Control
 	/**
 	 * Adds a new item to the end of the list.
 	 *
-	 * @param sItem The item text
+	 * @param item The item text
 	 */
-	public void add(String sItem) {
-		getGwtListBox().addItem(getContext().expandResource(sItem));
+	public void add(String item) {
+		getGwtListBox().addItem(getContext().expandResource(item));
 	}
 
 	/**
 	 * Adds a new item at a certain position in the list.
 	 *
-	 * @param sItem  sText The item text
-	 * @param nIndex The position to insert the item after
+	 * @param item  text The item text
+	 * @param index The position to insert the item after
 	 */
-	public void add(String sItem, int nIndex) {
-		getGwtListBox().insertItem(getContext().expandResource(sItem), nIndex);
+	public void add(String item, int index) {
+		getGwtListBox().insertItem(getContext().expandResource(item), index);
 	}
 
 	/**
 	 * Returns the text of a particular item.
 	 *
-	 * @param nIndex The position of the item
+	 * @param index The position of the item
 	 * @return The item text
 	 */
-	public String getItem(int nIndex) {
-		return getGwtListBox().getItemText(nIndex);
+	public String getItem(int index) {
+		return getGwtListBox().getItemText(index);
 	}
 
 	/**
@@ -89,9 +87,9 @@ public abstract class ListControl extends Control
 	 * @return The currently selected item or NULL for none
 	 */
 	public String getSelectedItem() {
-		int nIndex = getSelectionIndex();
+		int index = getSelectionIndex();
 
-		return nIndex >= 0 ? getItem(nIndex) : null;
+		return index >= 0 ? getItem(index) : null;
 	}
 
 	/**
@@ -111,34 +109,32 @@ public abstract class ListControl extends Control
 	 */
 	@Override
 	public int[] getSelectionIndices() {
-		IsListControlWidget rListBox = getGwtListBox();
+		IsListControlWidget listBox = getGwtListBox();
 
-		int nItemCount = rListBox.getItemCount();
-		int[] aIndices = new int[nItemCount];
-		int nIndex = 0;
+		int itemCount = listBox.getItemCount();
+		int[] indices = new int[itemCount];
+		int index = 0;
 
-		for (int i = 0; i < nItemCount; i++) {
-			if (rListBox.isItemSelected(i)) {
-				aIndices[nIndex++] = i;
+		for (int i = 0; i < itemCount; i++) {
+			if (listBox.isItemSelected(i)) {
+				indices[index++] = i;
 			}
 		}
 
-		int[] aResult = new int[nIndex];
+		int[] result = new int[index];
 
-		for (int i = 0; i < nIndex; i++) {
-			aResult[i] = aIndices[i];
-		}
+		System.arraycopy(indices, 0, result, 0, index);
 
-		return aResult;
+		return result;
 	}
 
 	/**
 	 * Removes a certain item from the list.
 	 *
-	 * @param nIndex The position of the item to be removed
+	 * @param index The position of the item to be removed
 	 */
-	public void remove(int nIndex) {
-		getGwtListBox().removeItem(nIndex);
+	public void remove(int index) {
+		getGwtListBox().removeItem(index);
 	}
 
 	/**
@@ -153,27 +149,27 @@ public abstract class ListControl extends Control
 	 * that allow complete deselection an index value of -1 will deselect all
 	 * elements.
 	 *
-	 * @param nIndex The index of the new selected element or -1 for none
+	 * @param index The index of the new selected element or -1 for none
 	 */
 	@Override
-	public void setSelection(int nIndex) {
-		getGwtListBox().setSelectedIndex(nIndex);
+	public void setSelection(int index) {
+		getGwtListBox().setSelectedIndex(index);
 	}
 
 	/**
 	 * Selects the elements with the indices contained in the argument array.
 	 *
-	 * @param rIndices An array with the indices of the elements to select
+	 * @param indices An array with the indices of the elements to select
 	 */
 	@Override
-	public void setSelection(int[] rIndices) {
-		IsListControlWidget rListBox = getGwtListBox();
+	public void setSelection(int[] indices) {
+		IsListControlWidget listBox = getGwtListBox();
 
 		setSelection(-1);
 
-		for (int nIndex : rIndices) {
-			if (nIndex < rListBox.getItemCount()) {
-				rListBox.setItemSelected(nIndex, true);
+		for (int index : indices) {
+			if (index < listBox.getItemCount()) {
+				listBox.setItemSelected(index, true);
 			}
 		}
 	}
@@ -181,17 +177,17 @@ public abstract class ListControl extends Control
 	/**
 	 * Selects all elements within the given range.
 	 *
-	 * @param nStart The start index (inclusive)
-	 * @param nEnd   The end index (inclusive)
+	 * @param start The start index (inclusive)
+	 * @param end   The end index (inclusive)
 	 */
 	@Override
-	public void setSelection(int nStart, int nEnd) {
-		IsListControlWidget rListBox = getGwtListBox();
+	public void setSelection(int start, int end) {
+		IsListControlWidget listBox = getGwtListBox();
 
 		setSelection(-1);
 
-		for (int i = nStart; i <= nEnd; i++) {
-			rListBox.setItemSelected(i, true);
+		for (int i = start; i <= end; i++) {
+			listBox.setItemSelected(i, true);
 		}
 	}
 
@@ -217,73 +213,73 @@ public abstract class ListControl extends Control
 	 *
 	 * @author eso
 	 */
-	public static interface IsListControlWidget extends IsWidget, Focusable {
+	public interface IsListControlWidget extends IsWidget, Focusable {
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#addItem(String)
 		 */
-		public void addItem(String sItem);
+		void addItem(String item);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#clear()
 		 */
-		public void clear();
+		void clear();
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getItemCount()
 		 */
-		public int getItemCount();
+		int getItemCount();
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getItemText(int)
 		 */
-		public String getItemText(int nIndex);
+		String getItemText(int index);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getSelectedIndex()
 		 */
-		public int getSelectedIndex();
+		int getSelectedIndex();
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#getVisibleItemCount()
 		 */
-		public int getVisibleItemCount();
+		int getVisibleItemCount();
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#insertItem(String, int)
 		 */
-		public void insertItem(String sItem, int nIndex);
+		void insertItem(String item, int index);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#isItemSelected(int)
 		 */
-		public boolean isItemSelected(int nIndex);
+		boolean isItemSelected(int index);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#removeItem(int)
 		 */
-		public void removeItem(int nIndex);
+		void removeItem(int index);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setItemSelected(int,
 		 * boolean)
 		 */
-		public void setItemSelected(int nIndex, boolean bSelected);
+		void setItemSelected(int index, boolean selected);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setMultipleSelect(boolean)
 		 */
-		public void setMultipleSelect(boolean bHasMultiSelect);
+		void setMultipleSelect(boolean hasMultiSelect);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setSelectedIndex(int)
 		 */
-		public void setSelectedIndex(int nIndex);
+		void setSelectedIndex(int index);
 
 		/**
 		 * @see com.google.gwt.user.client.ui.ListBox#setVisibleItemCount(int)
 		 */
-		public void setVisibleItemCount(int nCount);
+		void setVisibleItemCount(int count);
 	}
 
 	/**
@@ -308,8 +304,8 @@ public abstract class ListControl extends Control
 		 * {@inheritDoc}
 		 */
 		@Override
-		public IsListControlWidget createWidget(Component rComponent,
-			StyleData rStyle) {
+		public IsListControlWidget createWidget(Component component,
+			StyleData style) {
 			return new GwtListBox();
 		}
 	}
@@ -326,15 +322,15 @@ public abstract class ListControl extends Control
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onChange(ChangeEvent rEvent) {
-			notifyEventHandler(EventType.SELECTION, rEvent);
+		public void onChange(ChangeEvent event) {
+			notifyEventHandler(EventType.SELECTION, event);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onClick(ClickEvent rEvent) {
+		public void onClick(ClickEvent event) {
 			// remove default click handling to prevent action events
 			// on selection
 		}
@@ -343,11 +339,11 @@ public abstract class ListControl extends Control
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onValueChange(ValueChangeEvent<Object> rEvent) {
+		public void onValueChange(ValueChangeEvent<Object> event) {
 			if (hasHandlerFor(EventType.SELECTION)) {
-				notifyEventHandler(EventType.SELECTION, rEvent);
+				notifyEventHandler(EventType.SELECTION, event);
 			} else {
-				super.onValueChange(rEvent);
+				super.onValueChange(event);
 			}
 		}
 
@@ -356,26 +352,26 @@ public abstract class ListControl extends Control
 		 */
 		@Override
 		@SuppressWarnings("unchecked")
-		protected HandlerRegistration initEventDispatching(Widget rWidget,
-			EventType eEventType) {
-			HandlerRegistration rHandler = null;
+		protected HandlerRegistration initEventDispatching(Widget widget,
+			EventType eventType) {
+			HandlerRegistration handler = null;
 
-			if (eEventType == EventType.SELECTION) {
-				if (rWidget instanceof HasChangeHandlers) {
-					rHandler =
-						((HasChangeHandlers) rWidget).addChangeHandler(this);
-				} else if (rWidget instanceof HasValueChangeHandlers) {
-					rHandler =
-						((HasValueChangeHandlers<Object>) rWidget).addValueChangeHandler(
+			if (eventType == EventType.SELECTION) {
+				if (widget instanceof HasChangeHandlers) {
+					handler =
+						((HasChangeHandlers) widget).addChangeHandler(this);
+				} else if (widget instanceof HasValueChangeHandlers) {
+					handler =
+						((HasValueChangeHandlers<Object>) widget).addValueChangeHandler(
 							this);
 				}
 			}
 
-			if (rHandler == null) {
-				rHandler = super.initEventDispatching(rWidget, eEventType);
+			if (handler == null) {
+				handler = super.initEventDispatching(widget, eventType);
 			}
 
-			return rHandler;
+			return handler;
 		}
 	}
 }

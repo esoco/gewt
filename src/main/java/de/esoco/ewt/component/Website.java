@@ -46,11 +46,11 @@ public class Website extends Component implements TextAttribute {
 	/**
 	 * Sets the URL that is display by this component.
 	 *
-	 * @param sUrl The URL
+	 * @param url The URL
 	 */
 	@Override
-	public void setText(String sUrl) {
-		((Frame) getWidget()).setUrl(sUrl);
+	public void setText(String url) {
+		((Frame) getWidget()).setUrl(url);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class Website extends Component implements TextAttribute {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle) {
+		public Widget createWidget(Component component, StyleData style) {
 			return new Frame();
 		}
 	}

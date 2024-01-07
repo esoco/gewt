@@ -30,15 +30,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WidgetWrapper<W extends Widget> implements IsWidget {
 
-	private W rWidget;
+	private W widget;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rWidget The widget to be wrapped by this instance
+	 * @param widget The widget to be wrapped by this instance
 	 */
-	public WidgetWrapper(W rWidget) {
-		this.rWidget = rWidget;
+	public WidgetWrapper(W widget) {
+		this.widget = widget;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class WidgetWrapper<W extends Widget> implements IsWidget {
 	 */
 	@Override
 	public Widget asWidget() {
-		return rWidget;
+		return widget;
 	}
 
 	/**
@@ -55,6 +55,6 @@ public class WidgetWrapper<W extends Widget> implements IsWidget {
 	 * @return The wrapped widget
 	 */
 	protected final W getWidget() {
-		return rWidget;
+		return widget;
 	}
 }

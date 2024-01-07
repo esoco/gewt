@@ -16,14 +16,12 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.layout;
 
+import com.google.gwt.dom.client.Style;
 import de.esoco.ewt.style.StyleData;
-
 import de.esoco.lib.property.Alignment;
 import de.esoco.lib.property.ContentAlignment;
 import de.esoco.lib.property.Orientation;
 import de.esoco.lib.property.PropertyName;
-
-import com.google.gwt.dom.client.Style;
 
 import static de.esoco.lib.property.LayoutProperties.COLUMN;
 import static de.esoco.lib.property.LayoutProperties.COLUMN_SPAN;
@@ -42,33 +40,33 @@ import static de.esoco.lib.property.LayoutProperties.VERTICAL_ALIGN;
  */
 public class GridLayout extends FluentCssLayout<GridLayout> {
 
-	private boolean bInline = false;
+	private boolean inline = false;
 
-	private String sTemplateAreas = null;
+	private String templateAreas = null;
 
-	private String sRowGap = null;
+	private String rowGap = null;
 
-	private String sColGap = null;
+	private String colGap = null;
 
-	private String sRowTemplate = null;
+	private String rowTemplate = null;
 
-	private String sColTemplate = null;
+	private String colTemplate = null;
 
-	private String sAutoRows = null;
+	private String autoRows = null;
 
-	private String sAutoCols = null;
+	private String autoCols = null;
 
-	private Alignment eHorizontalItemAlignment = null;
+	private Alignment horizontalItemAlignment = null;
 
-	private Alignment eVerticalItemAlignment = null;
+	private Alignment verticalItemAlignment = null;
 
-	private ContentAlignment eHorizontalGridAlignment = null;
+	private ContentAlignment horizontalGridAlignment = null;
 
-	private ContentAlignment eVerticalGridAlignment = null;
+	private ContentAlignment verticalGridAlignment = null;
 
-	private Orientation eFlowDirection = null;
+	private Orientation flowDirection = null;
 
-	private boolean bDenseFlow = false;
+	private boolean denseFlow = false;
 
 	/**
 	 * Creates a new instance.
@@ -89,23 +87,23 @@ public class GridLayout extends FluentCssLayout<GridLayout> {
 	 * A factory method to create a new instance with certain column
 	 * definitions.
 	 *
-	 * @param sColumns The column definitions (@see {@link #columns(String)})
+	 * @param columns The column definitions (@see {@link #columns(String)})
 	 * @return The new grid layout
 	 */
-	public static GridLayout grid(String sColumns) {
-		return new GridLayout().columns(sColumns);
+	public static GridLayout grid(String columns) {
+		return new GridLayout().columns(columns);
 	}
 
 	/**
 	 * A factory method to create a new instance with certain row and column
 	 * definitions.
 	 *
-	 * @param sRows    The row definitions (@see {@link #rows(String)})
-	 * @param sColumns The column definitions (@see {@link #columns(String)})
+	 * @param rows    The row definitions (@see {@link #rows(String)})
+	 * @param columns The column definitions (@see {@link #columns(String)})
 	 * @return The new grid layout
 	 */
-	public static GridLayout grid(String sRows, String sColumns) {
-		return new GridLayout().rows(sRows).columns(sColumns);
+	public static GridLayout grid(String rows, String columns) {
+		return new GridLayout().rows(rows).columns(columns);
 	}
 
 	/**
@@ -113,44 +111,43 @@ public class GridLayout extends FluentCssLayout<GridLayout> {
 	 * ('grid-template-areas'). The argument strings each define a row of the
 	 * grid template.
 	 *
-	 * @param aAreas The template areas for the grid rows
+	 * @param areas The template areas for the grid rows
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout areas(String... aAreas) {
-		StringBuilder aAreasDefinition = new StringBuilder();
+	public final GridLayout areas(String... areas) {
+		StringBuilder areasDefinition = new StringBuilder();
 
-		for (String sArea : aAreas) {
-			aAreasDefinition.append('\'').append(sArea).append('\'');
+		for (String area : areas) {
+			areasDefinition.append('\'').append(area).append('\'');
 		}
 
-		return _with(() -> sTemplateAreas = aAreasDefinition.toString());
+		return _with(() -> templateAreas = areasDefinition.toString());
 	}
 
 	/**
 	 * Sets the size of automatically generated rows in implicit grids
 	 * ('grid-auto-columns').
 	 *
-	 * @param sSize The auto-row size
+	 * @param size The auto-row size
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout autoCols(String sSize) {
-		return _with(() -> sAutoCols = sSize);
+	public final GridLayout autoCols(String size) {
+		return _with(() -> autoCols = size);
 	}
 
 	/**
 	 * Sets the automatic flow of grid items ('grid-auto-flow').
 	 *
-	 * @param eDirection The flow direction
-	 * @param bDense     TRUE to fill in cells earlier in the grid if smaller
-	 *                   items come up later (caution, may change order of
-	 *                   items
-	 *                   and therefore affect accessibility)
+	 * @param direction The flow direction
+	 * @param dense     TRUE to fill in cells earlier in the grid if smaller
+	 *                  items come up later (caution, may change order of items
+	 *                  and therefore affect accessibility)
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout autoFlow(Orientation eDirection, boolean bDense) {
+	public final GridLayout autoFlow(Orientation direction, boolean dense) {
 		return _with(() -> {
-			eFlowDirection = eDirection;
-			bDenseFlow = bDense;
+			flowDirection = direction;
+			denseFlow = dense;
 		});
 	}
 
@@ -158,63 +155,63 @@ public class GridLayout extends FluentCssLayout<GridLayout> {
 	 * Sets the size of automatically generated rows in implicit grids
 	 * ('grid-auto-rows').
 	 *
-	 * @param sSize The auto-row size
+	 * @param size The auto-row size
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout autoRows(String sSize) {
-		return _with(() -> sAutoRows = sSize);
+	public final GridLayout autoRows(String size) {
+		return _with(() -> autoRows = size);
 	}
 
 	/**
 	 * Sets the gap between columns.
 	 *
-	 * @param sGap The gap as a valid HTML unit
+	 * @param gap The gap as a valid HTML unit
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout colGap(String sGap) {
-		return _with(() -> sColGap = sGap);
+	public final GridLayout colGap(String gap) {
+		return _with(() -> colGap = gap);
 	}
 
 	/**
 	 * Sets the template for column sizing ('grid-template-columns').
 	 *
-	 * @param sTemplate The column sizing template
+	 * @param template The column sizing template
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout columns(String sTemplate) {
-		return _with(() -> sColTemplate = sTemplate);
+	public final GridLayout columns(String template) {
+		return _with(() -> colTemplate = template);
 	}
 
 	/**
 	 * Sets the gap between rows and columns.
 	 *
-	 * @param sGap The gap as a valid HTML unit
+	 * @param gap The gap as a valid HTML unit
 	 * @return This instance for fluent invocation
 	 * @see #colGap(String)
 	 * @see #rowGap(String)
 	 */
-	public final GridLayout gaps(String sGap) {
-		return rowGap(sGap).colGap(sGap);
+	public final GridLayout gaps(String gap) {
+		return rowGap(gap).colGap(gap);
 	}
 
 	/**
-	 * Sets the horizontal alignment of the grid container in it's parent.
+	 * Sets the horizontal alignment of the grid container in its parent.
 	 *
-	 * @param eAlignment The horizontal grid alignment
+	 * @param alignment The horizontal grid alignment
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout hAlign(ContentAlignment eAlignment) {
-		return _with(() -> eHorizontalGridAlignment = eAlignment);
+	public final GridLayout hAlign(ContentAlignment alignment) {
+		return _with(() -> horizontalGridAlignment = alignment);
 	}
 
 	/**
 	 * Sets the horizontal alignment of the items in the grid cells.
 	 *
-	 * @param eAlignment The horizontal item alignment
+	 * @param alignment The horizontal item alignment
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout hAlignItems(Alignment eAlignment) {
-		return _with(() -> eHorizontalItemAlignment = eAlignment);
+	public final GridLayout horizontalAlignItems(Alignment alignment) {
+		return _with(() -> horizontalItemAlignment = alignment);
 	}
 
 	/**
@@ -223,80 +220,80 @@ public class GridLayout extends FluentCssLayout<GridLayout> {
 	 * @return This instance for fluent invocation
 	 */
 	public final GridLayout inline() {
-		return _with(() -> bInline = true);
+		return _with(() -> inline = true);
 	}
 
 	/**
 	 * Sets the gap between rows.
 	 *
-	 * @param sGap The gap as a valid HTML unit
+	 * @param gap The gap as a valid HTML unit
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout rowGap(String sGap) {
-		return _with(() -> sRowGap = sGap);
+	public final GridLayout rowGap(String gap) {
+		return _with(() -> rowGap = gap);
 	}
 
 	/**
 	 * Sets the template for row sizing ('grid-template-rows').
 	 *
-	 * @param sTemplate The row sizing template
+	 * @param template The row sizing template
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout rows(String sTemplate) {
-		return _with(() -> sRowTemplate = sTemplate);
+	public final GridLayout rows(String template) {
+		return _with(() -> rowTemplate = template);
 	}
 
 	/**
-	 * Sets the vertical alignment of the grid container in it's parent.
+	 * Sets the vertical alignment of the grid container in its parent.
 	 *
-	 * @param eAlignment The vertical grid alignment
+	 * @param alignment The vertical grid alignment
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout vAlign(ContentAlignment eAlignment) {
-		return _with(() -> eVerticalGridAlignment = eAlignment);
+	public final GridLayout vAlign(ContentAlignment alignment) {
+		return _with(() -> verticalGridAlignment = alignment);
 	}
 
 	/**
 	 * Sets the vertical alignment of the items in the grid cells.
 	 *
-	 * @param eAlignment The vertical item alignment
+	 * @param alignment The vertical item alignment
 	 * @return This instance for fluent invocation
 	 */
-	public final GridLayout vAlignItems(Alignment eAlignment) {
-		return _with(() -> eVerticalItemAlignment = eAlignment);
+	public final GridLayout verticalAlignItems(Alignment alignment) {
+		return _with(() -> verticalItemAlignment = alignment);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void applyLayoutStyle(StyleData rStyleData, Style rStyle) {
-		rStyle.setProperty("display", bInline ? "inline-grid" : "grid");
+	protected void applyLayoutStyle(StyleData styleData, Style style) {
+		style.setProperty("display", inline ? "inline-grid" : "grid");
 
-		setStyleProperty("gridRowGap", rStyle, sRowGap);
-		setStyleProperty("gridColumnGap", rStyle, sColGap);
+		setStyleProperty("gridRowGap", style, rowGap);
+		setStyleProperty("gridColumnGap", style, colGap);
 
-		setStyleProperty("gridTemplateAreas", rStyle, sTemplateAreas);
-		setStyleProperty("gridTemplateRows", rStyle, sRowTemplate);
-		setStyleProperty("gridTemplateColumns", rStyle, sColTemplate);
+		setStyleProperty("gridTemplateAreas", style, templateAreas);
+		setStyleProperty("gridTemplateRows", style, rowTemplate);
+		setStyleProperty("gridTemplateColumns", style, colTemplate);
 
-		setStyleProperty("gridAutoRows", rStyle, sAutoRows);
-		setStyleProperty("gridAutoColumns", rStyle, sAutoCols);
+		setStyleProperty("gridAutoRows", style, autoRows);
+		setStyleProperty("gridAutoColumns", style, autoCols);
 
-		setStyleProperty("justifyItems", rStyle, eHorizontalItemAlignment);
-		setStyleProperty("alignItems", rStyle, eVerticalItemAlignment);
-		setStyleProperty("justifyContent", rStyle, eHorizontalGridAlignment);
-		setStyleProperty("alignContent", rStyle, eVerticalGridAlignment);
+		setStyleProperty("justifyItems", style, horizontalItemAlignment);
+		setStyleProperty("alignItems", style, verticalItemAlignment);
+		setStyleProperty("justifyContent", style, horizontalGridAlignment);
+		setStyleProperty("alignContent", style, verticalGridAlignment);
 
-		if (eFlowDirection != null) {
-			String sAutoFlow =
-				eFlowDirection == Orientation.HORIZONTAL ? "row" : "column";
+		if (flowDirection != null) {
+			String autoFlow =
+				flowDirection == Orientation.HORIZONTAL ? "row" : "column";
 
-			if (bDenseFlow) {
-				sAutoFlow += " dense";
+			if (denseFlow) {
+				autoFlow += " dense";
 			}
 
-			setStyleProperty("gridAutoFlow", rStyle, sAutoFlow);
+			setStyleProperty("gridAutoFlow", style, autoFlow);
 		}
 	}
 
@@ -304,46 +301,45 @@ public class GridLayout extends FluentCssLayout<GridLayout> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void applyWidgetStyle(StyleData rStyleData, Style rStyle) {
-		String sGridArea = rStyleData.getProperty(LAYOUT_AREA, null);
+	protected void applyWidgetStyle(StyleData styleData, Style style) {
+		String gridArea = styleData.getProperty(LAYOUT_AREA, null);
 
-		if (sGridArea != null) {
-			setStyleProperty("gridArea", rStyle, sGridArea);
+		if (gridArea != null) {
+			setStyleProperty("gridArea", style, gridArea);
 		} else {
-			applyGridSize(rStyle, "gridRow", rStyleData, ROW, ROW_SPAN);
-			applyGridSize(rStyle, "gridColumn", rStyleData, COLUMN,
-				COLUMN_SPAN);
+			applyGridSize(style, "gridRow", styleData, ROW, ROW_SPAN);
+			applyGridSize(style, "gridColumn", styleData, COLUMN, COLUMN_SPAN);
 		}
 
-		setStyleProperty(HORIZONTAL_ALIGN, rStyleData, "justifySelf", rStyle);
-		setStyleProperty(VERTICAL_ALIGN, rStyleData, "alignSelf", rStyle);
+		setStyleProperty(HORIZONTAL_ALIGN, styleData, "justifySelf", style);
+		setStyleProperty(VERTICAL_ALIGN, styleData, "alignSelf", style);
 	}
 
 	/**
 	 * Applies the grid properties of a component style data to a widget's CSS
 	 * style.
 	 *
-	 * @param rStyle            The widget style
-	 * @param sCssProperty      The CSS property to set
-	 * @param rStyleData        The component style
-	 * @param rPositionProperty The property to read the grid position from
-	 * @param rSpanProperty     The property to read the grid span from
+	 * @param style            The widget style
+	 * @param cssProperty      The CSS property to set
+	 * @param styleData        The component style
+	 * @param positionProperty The property to read the grid position from
+	 * @param spanProperty     The property to read the grid span from
 	 */
-	private void applyGridSize(Style rStyle, String sCssProperty,
-		StyleData rStyleData, PropertyName<Integer> rPositionProperty,
-		PropertyName<Integer> rSpanProperty) {
-		int nPosition = rStyleData.getProperty(rPositionProperty, -1);
-		int nSpan = rStyleData.getProperty(rSpanProperty, 1);
+	private void applyGridSize(Style style, String cssProperty,
+		StyleData styleData, PropertyName<Integer> positionProperty,
+		PropertyName<Integer> spanProperty) {
+		int position = styleData.getProperty(positionProperty, -1);
+		int span = styleData.getProperty(spanProperty, 1);
 
-		if (nSpan > 1 && nPosition <= 0) {
+		if (span > 1 && position <= 0) {
 			throw new IllegalArgumentException(
 				"Grid posistion needed if grid span is set");
-		} else if (nSpan <= 0) {
-			throw new IllegalArgumentException("Invalid grid span: " + nSpan);
+		} else if (span <= 0) {
+			throw new IllegalArgumentException("Invalid grid span: " + span);
 		}
 
-		if (nPosition > 0) {
-			rStyle.setProperty(sCssProperty, nPosition + " / span " + nSpan);
+		if (position > 0) {
+			style.setProperty(cssProperty, position + " / span " + span);
 		}
 	}
 }

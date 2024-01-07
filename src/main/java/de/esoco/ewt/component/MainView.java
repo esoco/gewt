@@ -38,11 +38,11 @@ public class MainView extends View {
 	/**
 	 * Creates a new instance that wraps a certain root panel.
 	 *
-	 * @param rContext The user interface context this view belongs to
-	 * @param rStyle   The view style
+	 * @param context The user interface context this view belongs to
+	 * @param style   The view style
 	 */
-	public MainView(UserInterfaceContext rContext, ViewStyle rStyle) {
-		super(rContext, rStyle);
+	public MainView(UserInterfaceContext context, ViewStyle style) {
+		super(context, style);
 
 		setLayout(new MainViewLayout());
 	}
@@ -59,22 +59,22 @@ public class MainView extends View {
 	 * @see Container#setLayout(GenericLayout)
 	 */
 	@Override
-	public void setLayout(GenericLayout rLayout) {
-		boolean bFullSize = getViewStyle().hasFlag(ViewStyle.Flag.FULL_SIZE);
-		Widget rWidget = getWidget();
+	public void setLayout(GenericLayout layout) {
+		boolean fullSize = getViewStyle().hasFlag(ViewStyle.Flag.FULL_SIZE);
+		Widget widget = getWidget();
 
-		Panel rRootPanel = bFullSize ? RootLayoutPanel.get() : RootPanel.get();
+		Panel rootPanel = fullSize ? RootLayoutPanel.get() : RootPanel.get();
 
-		if (rWidget != null) {
-			rRootPanel.remove(rWidget);
+		if (widget != null) {
+			rootPanel.remove(widget);
 		}
 
-		super.setLayout(rLayout);
+		super.setLayout(layout);
 		setWidget(createWidget(StyleData.DEFAULT));
 
-		rWidget = getWidget();
+		widget = getWidget();
 		setDefaultStyleName(GewtResources.INSTANCE.css().ewtMainView());
-		rRootPanel.add(rWidget);
+		rootPanel.add(widget);
 	}
 
 	/**

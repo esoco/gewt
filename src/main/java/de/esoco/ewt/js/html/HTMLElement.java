@@ -36,5 +36,5 @@ public class HTMLElement extends Node {
 	 * @see <a href="https://developer.mozilla
 	 * .org/en-US/docs/Web/API/HTMLElement/hidden"> HTMLElement.hidden</a>
 	 */
-	public native void setHidden(boolean bHidden);
+	public native void setHidden(boolean hidden);
 }

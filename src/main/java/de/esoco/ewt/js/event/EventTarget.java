@@ -37,19 +37,19 @@ public class EventTarget extends JsObject {
 	 * .org/en-US/docs/Web/API/EventTarget/addEventListener">
 	 * EventTarget.addEventListener()</a>
 	 */
-	public native void addEventListener(String sType,
-		EventListener<Event> fListener);
+	public native void addEventListener(String type,
+		EventListener<Event> listener);
 
 	/**
 	 * Adds an event listener for an enumerated event type.
 	 *
-	 * @param eType     The event type
-	 * @param fListener The listener to add
+	 * @param type     The event type
+	 * @param listener The listener to add
 	 */
 	@JsOverlay
-	public final void addEventListener(Event.Type eType,
-		EventListener<Event> fListener) {
-		addEventListener(eType.toTypeString(), fListener);
+	public final void addEventListener(Event.Type type,
+		EventListener<Event> listener) {
+		addEventListener(type.toTypeString(), listener);
 	}
 
 	/**
@@ -57,18 +57,18 @@ public class EventTarget extends JsObject {
 	 * .org/en-US/docs/Web/API/EventTarget/dispatchEvent">
 	 * EventTarget.dispatchEvent()</a>
 	 */
-	public native void dispatchEvent(Event rEvent);
+	public native void dispatchEvent(Event event);
 
 	/**
 	 * Removes an event listener for an enumerated event type.
 	 *
-	 * @param eType     The event type
-	 * @param fListener The listener to remove
+	 * @param type     The event type
+	 * @param listener The listener to remove
 	 */
 	@JsOverlay
-	public final void removeEventListener(Event.Type eType,
-		EventListener<Event> fListener) {
-		removeEventListener(eType.toTypeString(), fListener);
+	public final void removeEventListener(Event.Type type,
+		EventListener<Event> listener) {
+		removeEventListener(type.toTypeString(), listener);
 	}
 
 	/**
@@ -76,6 +76,6 @@ public class EventTarget extends JsObject {
 	 * .org/en-US/docs/Web/API/EventTarget/removeEventListener">
 	 * EventTarget.removeEventListener()</a>
 	 */
-	public native void removeEventListener(String sType,
-		EventListener<Event> fListener);
+	public native void removeEventListener(String type,
+		EventListener<Event> listener);
 }

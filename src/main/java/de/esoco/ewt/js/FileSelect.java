@@ -49,28 +49,28 @@ public class FileSelect extends HTMLElement {
 	/**
 	 * Sets the button text.
 	 *
-	 * @param sText The new button text
+	 * @param text The new button text
 	 */
-	public native void setButtonText(String sText);
+	public native void setButtonText(String text);
 
 	/**
 	 * Sets the drop area text.
 	 *
-	 * @param sText The new drop area text
+	 * @param text The new drop area text
 	 */
-	public native void setDropAreaText(String sText);
+	public native void setDropAreaText(String text);
 
 	/**
 	 * Enables or disables the selection of multiple files.
 	 *
-	 * @param bMultiple TRUE to enable multiple selections
+	 * @param multiple TRUE to enable multiple selections
 	 */
-	public native void setMultiple(boolean bMultiple);
+	public native void setMultiple(boolean multiple);
 
 	/**
 	 * Switches between horizontal and vertical layout of this component.
 	 *
-	 * @param bVertical TRUE for a vertical layout
+	 * @param vertical TRUE for a vertical layout
 	 */
-	public native void setVertical(boolean bVertical);
+	public native void setVertical(boolean vertical);
 }

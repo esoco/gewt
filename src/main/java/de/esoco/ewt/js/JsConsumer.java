@@ -22,19 +22,19 @@ public interface JsConsumer<T> {
 	/**
 	 * The consuming method to implement.
 	 *
-	 * @param rValue The value to consume
+	 * @param value The value to consume
 	 */
-	void accept(T rValue);
+	void accept(T value);
 
 	/**
 	 * Default JavaScript function method that always returns NULL.
 	 *
-	 * @param rValue The value to consume
+	 * @param value The value to consume
 	 * @return Always NULL
 	 */
 	@JsOverlay
-	default Object apply(T rValue) {
-		accept(rValue);
+	default Object apply(T value) {
+		accept(value);
 
 		return null;
 	}

@@ -29,11 +29,11 @@ public class Point {
 	/**
 	 * Copy constructor.
 	 *
-	 * @param rOther The point to copy
+	 * @param other The point to copy
 	 */
-	public Point(Point rOther) {
-		this.x = rOther.x;
-		this.y = rOther.y;
+	public Point(Point other) {
+		this.x = other.x;
+		this.y = other.y;
 	}
 
 	/**
@@ -59,9 +59,9 @@ public class Point {
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object rOther) {
-		if (rOther instanceof Point) {
-			Point o = (Point) rOther;
+	public boolean equals(Object other) {
+		if (other instanceof Point) {
+			Point o = (Point) other;
 
 			return x == o.x && y == o.y;
 		} else {

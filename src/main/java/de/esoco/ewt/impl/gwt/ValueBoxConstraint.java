@@ -32,19 +32,19 @@ public abstract class ValueBoxConstraint implements KeyPressHandler {
 	 * @see KeyPressHandler#onKeyPress(KeyPressEvent)
 	 */
 	@Override
-	public void onKeyPress(KeyPressEvent rEvent) {
-		ValueBoxBase<?> rValueBox = (ValueBoxBase<?>) rEvent.getSource();
-		String sText = rValueBox.getText();
-		char cInput = rEvent.getCharCode();
-		int nCursor = rValueBox.getCursorPos();
-		int nSelection = rValueBox.getSelectionLength();
+	public void onKeyPress(KeyPressEvent event) {
+		ValueBoxBase<?> valueBox = (ValueBoxBase<?>) event.getSource();
+		String text = valueBox.getText();
+		char input = event.getCharCode();
+		int cursor = valueBox.getCursorPos();
+		int selection = valueBox.getSelectionLength();
 
-		if (cInput != 0) {
-			String sNewText = sText.substring(0, nCursor) + cInput +
-				sText.substring(nCursor + nSelection);
+		if (input != 0) {
+			String newText = text.substring(0, cursor) + input +
+				text.substring(cursor + selection);
 
-			if (!isValid(sNewText)) {
-				rValueBox.cancelKey();
+			if (!isValid(newText)) {
+				valueBox.cancelKey();
 			}
 		}
 	}
@@ -52,10 +52,10 @@ public abstract class ValueBoxConstraint implements KeyPressHandler {
 	/**
 	 * Checks whether a new text string is valid according to this constraint.
 	 *
-	 * @param sNewText The new text to validate
+	 * @param newText The new text to validate
 	 * @return TRUE if the given text is valid, FALSE if not
 	 */
-	protected abstract boolean isValid(String sNewText);
+	protected abstract boolean isValid(String newText);
 
 	/**
 	 * A constraint implementation that validates values by checking them
@@ -64,38 +64,37 @@ public abstract class ValueBoxConstraint implements KeyPressHandler {
 	 * @author eso
 	 */
 	public static class IntRangeConstraint extends ValueBoxConstraint {
-		private final int nMinimumValue;
+		private final int minimumValue;
 
-		private final int nMaximumValue;
+		private final int maximumValue;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param nMin The minimum value
-		 * @param nMax The maximum value
+		 * @param min The minimum value
+		 * @param max The maximum value
 		 */
-		public IntRangeConstraint(int nMin, int nMax) {
-			nMinimumValue = nMin;
-			nMaximumValue = nMax;
+		public IntRangeConstraint(int min, int max) {
+			minimumValue = min;
+			maximumValue = max;
 		}
 
 		/**
 		 * @see ValueBoxConstraint#isValid(String)
 		 */
 		@Override
-		protected boolean isValid(String sNewText) {
-			boolean bValid = false;
+		protected boolean isValid(String newText) {
+			boolean valid = false;
 
 			try {
-				int nNewValue = Integer.parseInt(sNewText);
+				int newValue = Integer.parseInt(newText);
 
-				bValid =
-					nNewValue >= nMinimumValue && nNewValue <= nMaximumValue;
+				valid = newValue >= minimumValue && newValue <= maximumValue;
 			} catch (Exception e) {
 				// continue and return FALSE
 			}
 
-			return bValid;
+			return valid;
 		}
 	}
 
@@ -106,26 +105,26 @@ public abstract class ValueBoxConstraint implements KeyPressHandler {
 	 * @author eso
 	 */
 	public static class RegExConstraint extends ValueBoxConstraint {
-		private final String sConstraintRegEx;
+		private final String constraintRegEx;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sRegEx The regular expression of the constraint
+		 * @param regEx The regular expression of the constraint
 		 */
-		public RegExConstraint(String sRegEx) {
-			sConstraintRegEx = sRegEx;
+		public RegExConstraint(String regEx) {
+			constraintRegEx = regEx;
 		}
 
 		/**
 		 * Returns the valid.
 		 *
-		 * @param sNewText The valid
+		 * @param newText The valid
 		 * @return The valid
 		 */
 		@Override
-		protected boolean isValid(String sNewText) {
-			return sNewText.matches(sConstraintRegEx);
+		protected boolean isValid(String newText) {
+			return newText.matches(constraintRegEx);
 		}
 	}
 }

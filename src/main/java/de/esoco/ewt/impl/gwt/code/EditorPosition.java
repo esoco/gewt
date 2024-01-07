@@ -31,19 +31,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class EditorPosition implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 
-	private int nLine;
+	private int line;
 
 	private int Column;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param nLine   TODO: DOCUMENT ME!
-	 * @param nColumn TODO: DOCUMENT ME!
+	 * @param line   TODO: DOCUMENT ME!
+	 * @param column TODO: DOCUMENT ME!
 	 */
-	public EditorPosition(int nLine, int nColumn) {
-		this.nLine = nLine;
-		this.Column = nColumn;
+	public EditorPosition(int line, int column) {
+		this.line = line;
+		this.Column = column;
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class EditorPosition implements Serializable, IsSerializable {
 
 		EditorPosition other = (EditorPosition) o;
 
-		return this.nLine == other.nLine && this.Column == other.Column;
+		return this.line == other.line && this.Column == other.Column;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class EditorPosition implements Serializable, IsSerializable {
 	 * @return The line number
 	 */
 	public int getLineNumber() {
-		return nLine;
+		return line;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class EditorPosition implements Serializable, IsSerializable {
 	 */
 	@Override
 	public int hashCode() {
-		return "EditorPosition".hashCode() + nLine + Column * 13;
+		return "EditorPosition".hashCode() + line + Column * 13;
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class EditorPosition implements Serializable, IsSerializable {
 	 * {@code EditorPosition}.
 	 */
 	public JavaScriptObject toJavaScriptObject() {
-		return toJavaScriptObject(nLine, Column);
+		return toJavaScriptObject(line, Column);
 	}
 
 	/**

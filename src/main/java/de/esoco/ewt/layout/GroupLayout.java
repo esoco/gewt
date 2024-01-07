@@ -37,18 +37,18 @@ public class GroupLayout extends TwoLayerLayout {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected HasWidgets createLayoutWidget(Container rContainer,
-		StyleData rContainerStyle) {
-		CaptionPanel aCaptionPanel = new CaptionPanel();
+	protected HasWidgets createLayoutWidget(Container container,
+		StyleData containerStyle) {
+		CaptionPanel captionPanel = new CaptionPanel();
 
-		String sTitle =
-			rContainerStyle.getProperty(StandardProperties.TITLE, "");
+		String title = containerStyle.getProperty(StandardProperties.TITLE,
+			"");
 
-		if (sTitle.length() > 0) {
-			aCaptionPanel.setCaptionText(
-				rContainer.getContext().expandResource(sTitle));
+		if (title.length() > 0) {
+			captionPanel.setCaptionText(
+				container.getContext().expandResource(title));
 		}
 
-		return aCaptionPanel;
+		return captionPanel;
 	}
 }

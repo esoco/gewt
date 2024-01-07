@@ -16,30 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
 
-import de.esoco.ewt.EWT;
-import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.component.Table;
-import de.esoco.ewt.component.TableControl;
-import de.esoco.ewt.component.TableControl.IsTableControlWidget;
-import de.esoco.ewt.event.EventType;
-import de.esoco.ewt.graphics.ImageRef;
-import de.esoco.ewt.impl.gwt.GewtCss;
-import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
-import de.esoco.ewt.impl.gwt.GewtResources;
-import de.esoco.ewt.impl.gwt.ValueFormat;
-
-import de.esoco.lib.model.Callback;
-import de.esoco.lib.model.ColumnDefinition;
-import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.Downloadable;
-import de.esoco.lib.model.HierarchicalDataModel;
-import de.esoco.lib.model.RemoteDataModel;
-import de.esoco.lib.model.FilterableDataModel;
-import de.esoco.lib.property.Flags;
-import de.esoco.lib.property.SingleSelection;
-
-import java.util.Collection;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -79,6 +55,28 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.EWT;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.component.Table;
+import de.esoco.ewt.component.TableControl;
+import de.esoco.ewt.component.TableControl.IsTableControlWidget;
+import de.esoco.ewt.event.EventType;
+import de.esoco.ewt.graphics.ImageRef;
+import de.esoco.ewt.impl.gwt.GewtCss;
+import de.esoco.ewt.impl.gwt.GewtEventDispatcher;
+import de.esoco.ewt.impl.gwt.GewtResources;
+import de.esoco.ewt.impl.gwt.ValueFormat;
+import de.esoco.lib.model.Callback;
+import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.DataModel;
+import de.esoco.lib.model.Downloadable;
+import de.esoco.lib.model.FilterableDataModel;
+import de.esoco.lib.model.HierarchicalDataModel;
+import de.esoco.lib.model.RemoteDataModel;
+import de.esoco.lib.property.Flags;
+import de.esoco.lib.property.SingleSelection;
+
+import java.util.Collection;
 
 import static de.esoco.lib.property.StyleProperties.HAS_IMAGES;
 
@@ -103,94 +101,94 @@ public class GwtTable extends Composite
 
 	private static final int INFO_TIMER_MILLISECONDS = 500;
 
-	private boolean bEnabled;
+	private final boolean hierarchical;
 
-	private boolean bHierarchical;
+	private final UserInterfaceContext context;
 
-	private UserInterfaceContext rContext;
+	private final Grid mainPanel = new Grid(3, 1);
 
-	private GewtEventDispatcher rEventDispatcher;
+	private final ScrollPanel scrollPanel = new CustomScrollPanel();
 
-	private Grid aMainPanel = new Grid(3, 1);
+	private final FocusPanel focusPanel = new FocusPanel();
 
-	private ScrollPanel aScrollPanel = new CustomScrollPanel();
+	private final TableHeader header = new TableHeader(this);
 
-	private FocusPanel aFocusPanel = new FocusPanel();
+	private final FlexTable dataTable = new FlexTable();
 
-	private TableHeader aHeader = new TableHeader(this);
+	private boolean enabled;
 
-	private FlexTable aDataTable = new FlexTable();
+	private GewtEventDispatcher eventDispatcher;
 
-	private TableToolBar aToolBar = null;
+	private TableToolBar toolBar = null;
 
-	private DataModel<? extends DataModel<?>> rData;
+	private DataModel<? extends DataModel<?>> data;
 
-	private DecoratedPopupPanel aInfoPopupPanel = null;
+	private DecoratedPopupPanel infoPopupPanel = null;
 
-	private Timer aInfoTimer;
+	private Timer infoTimer;
 
-	private Timer aDoubleClickTimer;
+	private Timer doubleClickTimer;
 
-	private int nBusyIndicatorCount = 0;
+	private int busyIndicatorCount = 0;
 
-	private int nFirstRow = 0;
+	private int firstRow = 0;
 
-	private int nVisibleDataRows = 0;
+	private int visibleDataRows = 0;
 
-	private int nTableRows = -1;
+	private int tableRows = -1;
 
-	private boolean bUpdateInProgress = false;
+	private boolean updateInProgress = false;
 
-	private boolean bColumnsChanged = false;
+	private boolean columnsChanged = false;
 
-	private int nDataWidth = 0;
+	private int dataWidth = 0;
 
-	private int nDataHeight = 0;
+	private int dataHeight = 0;
 
-	private DataModel<?> rCurrentSelection;
+	private DataModel<?> currentSelection;
 
-	private int nSelectedRow = -1;
+	private int selectedRow = -1;
 
-	private int nNewSelection = -1;
+	private int newSelection = -1;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rContext      The user interface context
-	 * @param bHierarchical If TRUE the table will display instances of
-	 *                      {@link HierarchicalDataModel} as a tree
+	 * @param context      The user interface context
+	 * @param hierarchical If TRUE the table will display instances of
+	 *                     {@link HierarchicalDataModel} as a tree
 	 */
-	public GwtTable(UserInterfaceContext rContext, boolean bHierarchical) {
-		this.rContext = rContext;
-		this.bHierarchical = bHierarchical;
+	public GwtTable(UserInterfaceContext context, boolean hierarchical) {
+		this.context = context;
+		this.hierarchical = hierarchical;
 
-		aDataTable.addClickHandler(this);
-		aDataTable.addStyleName(CSS.ewtDataTable());
+		dataTable.addClickHandler(this);
+		dataTable.addStyleName(CSS.ewtDataTable());
 
-		aScrollPanel.setWidget(aDataTable);
-		aScrollPanel.setAlwaysShowScrollBars(false);
+		scrollPanel.setWidget(dataTable);
+		scrollPanel.setAlwaysShowScrollBars(false);
 
-		aMainPanel.setWidget(HEADER_ROW, 0, aHeader);
-		aMainPanel.setWidget(DATA_ROW, 0, aScrollPanel);
-		aMainPanel.getCellFormatter().setWidth(DATA_ROW, 0, "100%");
-		aMainPanel.getCellFormatter().setHeight(DATA_ROW, 0, "100%");
-		aMainPanel.setCellSpacing(0);
-		aMainPanel.setCellPadding(0);
+		mainPanel.setWidget(HEADER_ROW, 0, header);
+		mainPanel.setWidget(DATA_ROW, 0, scrollPanel);
+		mainPanel.getCellFormatter().setWidth(DATA_ROW, 0, "100%");
+		mainPanel.getCellFormatter().setHeight(DATA_ROW, 0, "100%");
+		mainPanel.setCellSpacing(0);
+		mainPanel.setCellPadding(0);
 
-		aFocusPanel.setWidget(aMainPanel);
-		aFocusPanel.addKeyDownHandler(this);
+		focusPanel.setWidget(mainPanel);
+		focusPanel.addKeyDownHandler(this);
 
-		setToMaximumSize(aDataTable, aScrollPanel, aMainPanel, aFocusPanel);
+		setToMaximumSize(dataTable, scrollPanel, mainPanel, focusPanel);
 
 		// place the focus panel in a table-based panel to force 100% height
 		// because FocusPanel is based on div
-		DockPanel aTablePanel = new DockPanel();
+		DockPanel tablePanel = new DockPanel();
 
-		aTablePanel.add(aFocusPanel, DockPanel.CENTER);
-		aTablePanel.setCellWidth(aFocusPanel, "100%");
-		aTablePanel.setCellHeight(aFocusPanel, "100%");
+		tablePanel.add(focusPanel, DockPanel.CENTER);
+		tablePanel.setCellWidth(focusPanel, "100%");
+		tablePanel.setCellHeight(focusPanel, "100%");
 
-		initWidget(aTablePanel);
+		initWidget(tablePanel);
 		setStylePrimaryName(CSS.ewtTable());
 	}
 
@@ -198,16 +196,16 @@ public class GwtTable extends Composite
 	 * @see HasAllFocusHandlers#addBlurHandler(BlurHandler)
 	 */
 	@Override
-	public HandlerRegistration addBlurHandler(BlurHandler rHandler) {
-		return aFocusPanel.addBlurHandler(rHandler);
+	public HandlerRegistration addBlurHandler(BlurHandler handler) {
+		return focusPanel.addBlurHandler(handler);
 	}
 
 	/**
 	 * @see HasClickHandlers#addClickHandler(ClickHandler)
 	 */
 	@Override
-	public HandlerRegistration addClickHandler(ClickHandler rHandler) {
-		return aFocusPanel.addClickHandler(rHandler);
+	public HandlerRegistration addClickHandler(ClickHandler handler) {
+		return focusPanel.addClickHandler(handler);
 	}
 
 	/**
@@ -215,40 +213,40 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public HandlerRegistration addDoubleClickHandler(
-		DoubleClickHandler rHandler) {
-		return aDataTable.addDoubleClickHandler(rHandler);
+		DoubleClickHandler handler) {
+		return dataTable.addDoubleClickHandler(handler);
 	}
 
 	/**
 	 * @see HasAllFocusHandlers#addFocusHandler(FocusHandler)
 	 */
 	@Override
-	public HandlerRegistration addFocusHandler(FocusHandler rHandler) {
-		return aFocusPanel.addFocusHandler(rHandler);
+	public HandlerRegistration addFocusHandler(FocusHandler handler) {
+		return focusPanel.addFocusHandler(handler);
 	}
 
 	/**
 	 * @see HasAllKeyHandlers#addKeyDownHandler(KeyDownHandler)
 	 */
 	@Override
-	public HandlerRegistration addKeyDownHandler(KeyDownHandler rHandler) {
-		return aFocusPanel.addKeyDownHandler(rHandler);
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
+		return focusPanel.addKeyDownHandler(handler);
 	}
 
 	/**
 	 * @see HasAllKeyHandlers#addKeyPressHandler(KeyPressHandler)
 	 */
 	@Override
-	public HandlerRegistration addKeyPressHandler(KeyPressHandler rHandler) {
-		return aFocusPanel.addKeyPressHandler(rHandler);
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
+		return focusPanel.addKeyPressHandler(handler);
 	}
 
 	/**
 	 * @see HasAllKeyHandlers#addKeyUpHandler(KeyUpHandler)
 	 */
 	@Override
-	public HandlerRegistration addKeyUpHandler(KeyUpHandler rHandler) {
-		return aFocusPanel.addKeyUpHandler(rHandler);
+	public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {
+		return focusPanel.addKeyUpHandler(handler);
 	}
 
 	/**
@@ -256,7 +254,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public final DataModel<ColumnDefinition> getColumns() {
-		return aHeader.rColumns;
+		return header.columns;
 	}
 
 	/**
@@ -265,7 +263,7 @@ public class GwtTable extends Composite
 	 * @return The user interface context
 	 */
 	public final UserInterfaceContext getContext() {
-		return rContext;
+		return context;
 	}
 
 	/**
@@ -273,7 +271,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public final DataModel<? extends DataModel<?>> getData() {
-		return rData;
+		return data;
 	}
 
 	/**
@@ -281,22 +279,22 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public DataModel<?> getSelection() {
-		DataModel<?> rSelection = null;
+		DataModel<?> selection = null;
 
-		if (nSelectedRow >= 0 && rData != null) {
-			if (bHierarchical) {
-				int nRow = nSelectedRow;
-				TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, 0);
+		if (selectedRow >= 0 && data != null) {
+			if (hierarchical) {
+				int row = selectedRow;
+				TreeNode node = (TreeNode) dataTable.getWidget(row, 0);
 
-				rSelection = rNode.getRowModel();
-			} else if (rData.getElementCount() > 0) {
-				int nSelection = getSelectionIndex();
+				selection = node.getRowModel();
+			} else if (data.getElementCount() > 0) {
+				int sel = getSelectionIndex();
 
-				rSelection = rData.getElement(nSelection);
+				selection = data.getElement(sel);
 			}
 		}
 
-		return rSelection;
+		return selection;
 	}
 
 	/**
@@ -304,7 +302,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public final int getSelectionIndex() {
-		return nSelectedRow >= 0 ? nSelectedRow + nFirstRow : -1;
+		return selectedRow >= 0 ? selectedRow + firstRow : -1;
 	}
 
 	/**
@@ -312,7 +310,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public final int getTabIndex() {
-		return aFocusPanel.getTabIndex();
+		return focusPanel.getTabIndex();
 	}
 
 	/**
@@ -330,7 +328,7 @@ public class GwtTable extends Composite
 	 * @return The visible row count
 	 */
 	public final int getVisibleRowCount() {
-		return nTableRows;
+		return tableRows;
 	}
 
 	/**
@@ -340,7 +338,7 @@ public class GwtTable extends Composite
 	 * @return TRUE if the table is currently busy
 	 */
 	public final boolean isBusy() {
-		return nBusyIndicatorCount != 0;
+		return busyIndicatorCount != 0;
 	}
 
 	/**
@@ -350,7 +348,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public final boolean isEnabled() {
-		return bEnabled;
+		return enabled;
 	}
 
 	/**
@@ -359,32 +357,32 @@ public class GwtTable extends Composite
 	 * @return TRUE for a hierarchical table
 	 */
 	public final boolean isHierarchical() {
-		return bHierarchical;
+		return hierarchical;
 	}
 
 	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(final ClickEvent rEvent) {
+	public void onClick(final ClickEvent event) {
 		if (canHandleInput()) {
-			final Cell rCell = aDataTable.getCellForEvent(rEvent);
+			final Cell cell = dataTable.getCellForEvent(event);
 
-			if (aDoubleClickTimer != null) {
-				aDoubleClickTimer.cancel();
-				aDoubleClickTimer = null;
-				setSelection(rCell, false);
-				rEventDispatcher.dispatchEvent(EventType.ACTION,
-					rEvent.getNativeEvent());
+			if (doubleClickTimer != null) {
+				doubleClickTimer.cancel();
+				doubleClickTimer = null;
+				setSelection(cell, false);
+				eventDispatcher.dispatchEvent(EventType.ACTION,
+					event.getNativeEvent());
 			} else {
-				aDoubleClickTimer = new Timer() {
+				doubleClickTimer = new Timer() {
 					@Override
 					public void run() {
-						aDoubleClickTimer = null;
-						setSelection(rCell, true);
+						doubleClickTimer = null;
+						setSelection(cell, true);
 					}
 				};
-				aDoubleClickTimer.schedule(EWT.getDoubleClickInterval());
+				doubleClickTimer.schedule(EWT.getDoubleClickInterval());
 			}
 		}
 	}
@@ -398,12 +396,11 @@ public class GwtTable extends Composite
 	public void onError(Throwable e) {
 		hideBusyIndicator();
 
-		String sMessage =
-			rContext.expandResource("$msgTableModelError") + ": " +
-				rContext.expandResource(e.getMessage());
+		String message = context.expandResource("$msgTableModelError") + ": " +
+			context.expandResource(e.getMessage());
 
-		showInfo(new Label(sMessage), true);
-		bUpdateInProgress = false;
+		showInfo(new Label(message), true);
+		updateInProgress = false;
 	}
 
 	/**
@@ -412,9 +409,9 @@ public class GwtTable extends Composite
 	 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent rEvent) {
+	public void onKeyDown(KeyDownEvent event) {
 		if (canHandleInput()) {
-			handleNavigationKey(rEvent);
+			handleNavigationKey(event);
 		}
 	}
 
@@ -423,13 +420,13 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public void onResize() {
-		if (aMainPanel.getOffsetHeight() > 0) {
+		if (mainPanel.getOffsetHeight() > 0) {
 			setHeightLocked(false);
 
-			setRowUnselected(nSelectedRow);
+			setRowUnselected(selectedRow);
 
-			if (nNewSelection == -1 && nSelectedRow >= 0) {
-				nNewSelection = nFirstRow + nSelectedRow;
+			if (newSelection == -1 && selectedRow >= 0) {
+				newSelection = firstRow + selectedRow;
 			}
 
 			collapseAllNodes();
@@ -443,14 +440,14 @@ public class GwtTable extends Composite
 	 * @see Callback#onSuccess(Object)
 	 */
 	@Override
-	public void onSuccess(RemoteDataModel<DataModel<?>> rRemoteModel) {
+	public void onSuccess(RemoteDataModel<DataModel<?>> remoteModel) {
 		hideBusyIndicator();
 
-		boolean bSuccessfulUpdate = updateDisplay();
+		boolean successfulUpdate = updateDisplay();
 
-		bUpdateInProgress = false;
+		updateInProgress = false;
 
-		if (!bSuccessfulUpdate) {
+		if (!successfulUpdate) {
 			update();
 		}
 	}
@@ -462,7 +459,7 @@ public class GwtTable extends Composite
 	 */
 	@Override
 	public void repaint() {
-		if (nTableRows == -1) {
+		if (tableRows == -1) {
 			update();
 		}
 	}
@@ -471,42 +468,42 @@ public class GwtTable extends Composite
 	 * @see Focusable#setAccessKey(char)
 	 */
 	@Override
-	public void setAccessKey(char cKey) {
-		aFocusPanel.setAccessKey(cKey);
+	public void setAccessKey(char key) {
+		focusPanel.setAccessKey(key);
 	}
 
 	/**
 	 * Sets the data model that contains information about the table columns.
 	 *
-	 * @param rNewColumns The table columns data model
+	 * @param newColumns The table columns data model
 	 */
 	@Override
-	public void setColumns(DataModel<ColumnDefinition> rNewColumns) {
+	public void setColumns(DataModel<ColumnDefinition> newColumns) {
 		// always keep TRUE column change state in case of multiple invocations
-		bColumnsChanged = aHeader.setColumns(rNewColumns) || bColumnsChanged;
+		columnsChanged = header.setColumns(newColumns) || columnsChanged;
 	}
 
 	/**
 	 * @see Table#setData(DataModel)
 	 */
 	@Override
-	public void setData(DataModel<? extends DataModel<?>> rNewData) {
-		if (rNewData != rData) {
-			rData = rNewData;
+	public void setData(DataModel<? extends DataModel<?>> newData) {
+		if (newData != data) {
+			data = newData;
 
-			if (rData instanceof RemoteDataModel) {
-				nFirstRow = ((RemoteDataModel<?>) rData).getWindowStart();
+			if (data instanceof RemoteDataModel) {
+				firstRow = ((RemoteDataModel<?>) data).getWindowStart();
 			} else {
-				nFirstRow = 0;
+				firstRow = 0;
 			}
 
-			if (aToolBar == null) {
+			if (toolBar == null) {
 				// the toolbar depends on model features, so it can only be
 				// created
 				// after the model is available
-				aToolBar = new TableToolBar(this);
-				aMainPanel.setWidget(TOOLBAR_ROW, 0, aToolBar);
-				aMainPanel
+				toolBar = new TableToolBar(this);
+				mainPanel.setWidget(TOOLBAR_ROW, 0, toolBar);
+				mainPanel
 					.getCellFormatter()
 					.setVerticalAlignment(TOOLBAR_ROW, 0,
 						HasVerticalAlignment.ALIGN_BOTTOM);
@@ -520,42 +517,42 @@ public class GwtTable extends Composite
 	/**
 	 * Sets the enabled state.
 	 *
-	 * @param bEnabled The new enabled state
+	 * @param enabled The new enabled state
 	 */
 	@Override
-	public final void setEnabled(boolean bEnabled) {
-		this.bEnabled = bEnabled;
+	public final void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 
-		if (bEnabled) {
+		if (enabled) {
 			removeStyleDependentName("disabled");
 		} else {
 			addStyleDependentName("disabled");
 		}
 
-		if (aToolBar != null) {
-			aToolBar.setEnabled(bEnabled);
+		if (toolBar != null) {
+			toolBar.setEnabled(enabled);
 		}
 	}
 
 	/**
 	 * Sets the event dispatcher to be used to notify event listeners.
 	 *
-	 * @param rEventDispatcher The event dispatcher
+	 * @param eventDispatcher The event dispatcher
 	 */
 	@Override
-	public void setEventDispatcher(GewtEventDispatcher rEventDispatcher) {
-		this.rEventDispatcher = rEventDispatcher;
+	public void setEventDispatcher(GewtEventDispatcher eventDispatcher) {
+		this.eventDispatcher = eventDispatcher;
 	}
 
 	/**
 	 * @see Focusable#setFocus(boolean)
 	 */
 	@Override
-	public void setFocus(boolean bFocused) {
-		if (aToolBar != null && aToolBar.getFilterPanel() != null) {
-			aToolBar.getFilterPanel().setFocus(true);
+	public void setFocus(boolean focused) {
+		if (toolBar != null && toolBar.getFilterPanel() != null) {
+			toolBar.getFilterPanel().setFocus(true);
 		} else {
-			aFocusPanel.setFocus(bFocused);
+			focusPanel.setFocus(focused);
 		}
 	}
 
@@ -563,46 +560,45 @@ public class GwtTable extends Composite
 	 * @see SingleSelection#setSelection(int)
 	 */
 	@Override
-	public void setSelection(int nRow) {
-		setSelection(nRow, true);
+	public void setSelection(int row) {
+		setSelection(row, true);
 	}
 
 	/**
 	 * Sets the selection of this table
 	 *
-	 * @param nRow        The selected row or -1 for no selection
-	 * @param bFireEvents TRUE to fire a selection event
+	 * @param row        The selected row or -1 for no selection
+	 * @param fireEvents TRUE to fire a selection event
 	 */
 	@Override
-	public void setSelection(int nRow, boolean bFireEvents) {
-		if (nRow == -1 && nSelectedRow != -1 ||
-			nRow != -1 && nSelectedRow == -1 ||
-			nRow != nFirstRow + nSelectedRow) {
-			setRowUnselected(nSelectedRow);
-			rCurrentSelection = null;
+	public void setSelection(int row, boolean fireEvents) {
+		if (row == -1 && selectedRow != -1 || row != -1 && selectedRow == -1 ||
+			row != firstRow + selectedRow) {
+			setRowUnselected(selectedRow);
+			currentSelection = null;
 
-			if (nRow >= 0) {
+			if (row >= 0) {
 				if (!isBusy()) {
-					int nNewSelectedRow = nRow - nFirstRow;
+					int newSelectedRow = row - firstRow;
 
-					if (nNewSelectedRow >= 0 &&
-						nNewSelectedRow < nVisibleDataRows) {
-						setRowSelected(nNewSelectedRow, bFireEvents);
-						rCurrentSelection = getSelection();
+					if (newSelectedRow >= 0 &&
+						newSelectedRow < visibleDataRows) {
+						setRowSelected(newSelectedRow, fireEvents);
+						currentSelection = getSelection();
 					} else {
-						nFirstRow = nRow;
-						nSelectedRow = nRow - nFirstRow;
+						firstRow = row;
+						selectedRow = row - firstRow;
 
 						update();
 					}
 				} else {
-					nNewSelection = nRow;
+					newSelection = row;
 				}
 			} else {
-				setRowSelected(-1, bFireEvents);
+				setRowSelected(-1, fireEvents);
 			}
 
-			aToolBar.setClearSelectionButtonEnabled(nSelectedRow != -1);
+			toolBar.setClearSelectionButtonEnabled(selectedRow != -1);
 		}
 	}
 
@@ -610,15 +606,15 @@ public class GwtTable extends Composite
 	 * @see Focusable#setTabIndex(int)
 	 */
 	@Override
-	public void setTabIndex(int nIndex) {
-		aFocusPanel.setTabIndex(nIndex);
+	public void setTabIndex(int index) {
+		focusPanel.setTabIndex(index);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setTableTitle(String sTableTitle) {
+	public void setTableTitle(String tableTitle) {
 		// not supported
 	}
 
@@ -627,22 +623,22 @@ public class GwtTable extends Composite
 	 * fit
 	 * into the table height.
 	 *
-	 * @param nCount The new visible row count
+	 * @param count The new visible row count
 	 */
 	@Override
-	public final void setVisibleRowCount(int nCount) {
-		if (nCount != nTableRows) {
+	public final void setVisibleRowCount(int count) {
+		if (count != tableRows) {
 			collapseAllNodes();
 
-			int nRows = aDataTable.getRowCount();
-			int nLastRow = Math.min(nTableRows, nRows) - 1;
-			int nNewLastRow = nCount - 1;
+			int rows = dataTable.getRowCount();
+			int lastRow = Math.min(tableRows, rows) - 1;
+			int newLastRow = count - 1;
 
-			for (int nRow = nLastRow; nRow > nNewLastRow; nRow--) {
-				aDataTable.removeRow(nRow);
+			for (int row = lastRow; row > newLastRow; row--) {
+				dataTable.removeRow(row);
 			}
 
-			nTableRows = nVisibleDataRows = nCount;
+			tableRows = visibleDataRows = count;
 
 			update();
 		}
@@ -662,8 +658,8 @@ public class GwtTable extends Composite
 	 * asynchronously.
 	 */
 	public void update() {
-		if (rData != null && !bUpdateInProgress) {
-			setRowUnselected(nSelectedRow);
+		if (data != null && !updateInProgress) {
+			setRowUnselected(selectedRow);
 			collapseAllNodes();
 
 			// invoke update later to wait for the table to resize
@@ -680,43 +676,42 @@ public class GwtTable extends Composite
 	 * Updates the filter panel from the data model.
 	 */
 	protected void updateFilterPanel() {
-		TableFilterPanel rFilterPanel = aToolBar.getFilterPanel();
+		TableFilterPanel filterPanel = toolBar.getFilterPanel();
 
-		if (rFilterPanel != null) {
-			rFilterPanel.update((FilterableDataModel<?>) rData);
+		if (filterPanel != null) {
+			filterPanel.update((FilterableDataModel<?>) data);
 		}
 	}
 
 	/**
 	 * Adds the rows for children of an expanded node.
 	 *
-	 * @param rParentNode  The parent node to add the child nodes to
-	 * @param rChildModels The data model containing the child data models
+	 * @param parentNode  The parent node to add the child nodes to
+	 * @param childModels The data model containing the child data models
 	 */
-	void addChildRows(TreeNode rParentNode,
-		DataModel<? extends DataModel<?>> rChildModels) {
-		TreeNode rPrevNode = null;
-		int nNodeIndex = rParentNode.getAbsoluteIndex();
-		int nRow = nNodeIndex + 1;
-		int nLastRow = nTableRows - 1;
+	void addChildRows(TreeNode parentNode,
+		DataModel<? extends DataModel<?>> childModels) {
+		TreeNode prevNode = null;
+		int nodeIndex = parentNode.getAbsoluteIndex();
+		int row = nodeIndex + 1;
+		int lastRow = tableRows - 1;
 
-		for (DataModel<?> rChild : rChildModels) {
-			if (nVisibleDataRows++ < nTableRows) {
+		for (DataModel<?> child : childModels) {
+			if (visibleDataRows++ < tableRows) {
 				// remove empty rows at the end until minimum row count
-				aDataTable.removeRow(nLastRow);
+				dataTable.removeRow(lastRow);
 			}
 
-			aDataTable.insertRow(nRow);
-			rPrevNode = initDataRow(rParentNode, rPrevNode, nRow);
-			fillRow(rChild, nRow++);
+			dataTable.insertRow(row);
+			prevNode = initDataRow(parentNode, prevNode, row);
+			fillRow(child, row++);
 		}
 
-		rParentNode.setExpanded(true);
-		updateRowStyles(nRow);
+		parentNode.setExpanded(true);
+		updateRowStyles(row);
 
-		if (nSelectedRow > nNodeIndex) {
-			setRowSelected(nSelectedRow + rParentNode.getDirectChildren(),
-				true);
+		if (selectedRow > nodeIndex) {
+			setRowSelected(selectedRow + parentNode.getDirectChildren(), true);
 		}
 	}
 
@@ -727,19 +722,19 @@ public class GwtTable extends Composite
 	 * @return TRUE if the table currently can handle input
 	 */
 	boolean canHandleInput() {
-		return bEnabled && !isBusy();
+		return enabled && !isBusy();
 	}
 
 	/**
 	 * Collapses all nodes in a hierarchical table.
 	 */
 	void collapseAllNodes() {
-		if (bHierarchical) {
-			for (int nRow = aDataTable.getRowCount() - 1; nRow >= 0; nRow--) {
-				TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, 0);
+		if (hierarchical) {
+			for (int row = dataTable.getRowCount() - 1; row >= 0; row--) {
+				TreeNode node = (TreeNode) dataTable.getWidget(row, 0);
 
-				if (rNode != null) {
-					collapseNode(rNode);
+				if (node != null) {
+					collapseNode(node);
 				}
 			}
 		}
@@ -748,29 +743,29 @@ public class GwtTable extends Composite
 	/**
 	 * Collapses a certain node in a hierarchical table.
 	 *
-	 * @param rNode The tree cell to collapse
+	 * @param node The tree cell to collapse
 	 */
-	void collapseNode(TreeNode rNode) {
-		if (rNode.isExpanded()) {
-			int nNodeIndex = rNode.getAbsoluteIndex();
-			int nRow = nNodeIndex + 1;
-			int nLastRow = nTableRows - 1;
-			int nChildren = rNode.getVisibleChildren();
+	void collapseNode(TreeNode node) {
+		if (node.isExpanded()) {
+			int nodeIndex = node.getAbsoluteIndex();
+			int row = nodeIndex + 1;
+			int lastRow = tableRows - 1;
+			int children = node.getVisibleChildren();
 
-			if (nSelectedRow > nNodeIndex) {
-				setRowUnselected(nSelectedRow);
+			if (selectedRow > nodeIndex) {
+				setRowUnselected(selectedRow);
 			}
 
-			for (int i = 0; i < nChildren; i++) {
-				aDataTable.removeRow(nRow);
+			for (int i = 0; i < children; i++) {
+				dataTable.removeRow(row);
 
-				if (--nVisibleDataRows < nTableRows) {
-					clearRow(nLastRow);
+				if (--visibleDataRows < tableRows) {
+					clearRow(lastRow);
 				}
 			}
 
-			rNode.setExpanded(false);
-			updateRowStyles(nRow);
+			node.setExpanded(false);
+			updateRowStyles(row);
 		}
 	}
 
@@ -778,42 +773,40 @@ public class GwtTable extends Composite
 	 * Executes a display update when invoked from a scheduled command. Invoked
 	 * indirectly by {@link #update()}.
 	 *
-	 * @param bNewData TRUE to indicate that new data needs to be retrieved
-	 *                    from
-	 *                 the data model
+	 * @param newData TRUE to indicate that new data needs to be retrieved from
+	 *                the data model
 	 */
-	void deferredUpdate(boolean bNewData) {
-		if (!bUpdateInProgress && !isBusy()) {
-			boolean bWaitForRemoteData = false;
+	void deferredUpdate(boolean newData) {
+		if (!updateInProgress && !isBusy()) {
+			boolean waitForRemoteData = false;
 
-			bUpdateInProgress = true;
+			updateInProgress = true;
 
 			try {
-				if (bColumnsChanged) {
+				if (columnsChanged) {
 					resetColumns();
 				}
 
 				calcTableSize();
 
-				if (nTableRows > 0) {
+				if (tableRows > 0) {
 					checkBounds();
 					initDataRows();
 
-					if (rData instanceof RemoteDataModel) {
+					if (data instanceof RemoteDataModel) {
 						@SuppressWarnings("unchecked")
-						RemoteDataModel<DataModel<?>> rRemoteModel =
-							(RemoteDataModel<DataModel<?>>) rData;
+						RemoteDataModel<DataModel<?>> remoteModel =
+							(RemoteDataModel<DataModel<?>>) data;
 
-						getRemoteData(rRemoteModel, nFirstRow, nTableRows,
-							this);
-						bWaitForRemoteData = true;
+						getRemoteData(remoteModel, firstRow, tableRows, this);
+						waitForRemoteData = true;
 					} else {
 						updateDisplay();
 					}
 				}
 			} finally {
-				if (!bWaitForRemoteData) {
-					bUpdateInProgress = false;
+				if (!waitForRemoteData) {
+					updateInProgress = false;
 				}
 			}
 		}
@@ -823,9 +816,9 @@ public class GwtTable extends Composite
 	 * Expands all nodes in a hierarchical table.
 	 */
 	void expandAllNodes() {
-		if (bHierarchical) {
-			for (int nRow = nVisibleDataRows - 1; nRow >= 0; nRow--) {
-				expandNode((TreeNode) aDataTable.getWidget(nRow, 0));
+		if (hierarchical) {
+			for (int row = visibleDataRows - 1; row >= 0; row--) {
+				expandNode((TreeNode) dataTable.getWidget(row, 0));
 			}
 		}
 	}
@@ -833,28 +826,28 @@ public class GwtTable extends Composite
 	/**
 	 * Expands a certain node in a hierarchical table.
 	 *
-	 * @param rNode The tree cell to expand
+	 * @param node The tree cell to expand
 	 */
-	void expandNode(final TreeNode rNode) {
-		if (!rNode.isExpanded() && rNode.getDirectChildren() > 0) {
-			if (nSelectedRow > rNode.getAbsoluteIndex()) {
-				setRowUnselected(nSelectedRow);
+	void expandNode(final TreeNode node) {
+		if (!node.isExpanded() && node.getDirectChildren() > 0) {
+			if (selectedRow > node.getAbsoluteIndex()) {
+				setRowUnselected(selectedRow);
 			}
 
-			final DataModel<? extends DataModel<?>> rChildModels =
-				((HierarchicalDataModel<?>) rNode.getRowModel()).getChildModels();
+			final DataModel<? extends DataModel<?>> childModels =
+				((HierarchicalDataModel<?>) node.getRowModel()).getChildModels();
 
-			if (rChildModels != null) {
-				if (rChildModels instanceof RemoteDataModel) {
+			if (childModels != null) {
+				if (childModels instanceof RemoteDataModel) {
 					@SuppressWarnings("unchecked")
-					RemoteDataModel<DataModel<?>> rRemoteChildModel =
-						(RemoteDataModel<DataModel<?>>) rChildModels;
+					RemoteDataModel<DataModel<?>> remoteChildModel =
+						(RemoteDataModel<DataModel<?>>) childModels;
 
-					int nChildren = rRemoteChildModel.getElementCount();
+					int children = remoteChildModel.getElementCount();
 
-					getRemoteData(rRemoteChildModel, 0, nChildren, rNode);
+					getRemoteData(remoteChildModel, 0, children, node);
 				} else {
-					addChildRows(rNode, rChildModels);
+					addChildRows(node, childModels);
 				}
 			}
 		}
@@ -866,7 +859,7 @@ public class GwtTable extends Composite
 	 * @return The data table
 	 */
 	final FlexTable getDataTable() {
-		return aDataTable;
+		return dataTable;
 	}
 
 	/**
@@ -875,7 +868,7 @@ public class GwtTable extends Composite
 	 * @return The data width
 	 */
 	final int getDataWidth() {
-		return nDataWidth;
+		return dataWidth;
 	}
 
 	/**
@@ -885,7 +878,7 @@ public class GwtTable extends Composite
 	 * @return The first row value
 	 */
 	final int getFirstRow() {
-		return nFirstRow;
+		return firstRow;
 	}
 
 	/**
@@ -894,7 +887,7 @@ public class GwtTable extends Composite
 	 * @return The focus panel
 	 */
 	final FocusPanel getFocusPanel() {
-		return aFocusPanel;
+		return focusPanel;
 	}
 
 	/**
@@ -903,7 +896,7 @@ public class GwtTable extends Composite
 	 * @return The scroll panel
 	 */
 	final ScrollPanel getScrollPanel() {
-		return aScrollPanel;
+		return scrollPanel;
 	}
 
 	/**
@@ -913,7 +906,7 @@ public class GwtTable extends Composite
 	 * @return The selected row or -1 for no selection
 	 */
 	int getSelectedRow() {
-		return nSelectedRow;
+		return selectedRow;
 	}
 
 	/**
@@ -923,19 +916,19 @@ public class GwtTable extends Composite
 	 * @return TRUE if filters are available
 	 */
 	final boolean hasFilters() {
-		return aToolBar != null && aToolBar.getFilterPanel() != null;
+		return toolBar != null && toolBar.getFilterPanel() != null;
 	}
 
 	/**
 	 * Hides the indicator for long-time operations.
 	 */
 	void hideBusyIndicator() {
-		nBusyIndicatorCount--;
+		busyIndicatorCount--;
 
-		if (nBusyIndicatorCount == 0) {
-			if (aInfoTimer != null) {
-				aInfoTimer.cancel();
-				aInfoTimer = null;
+		if (busyIndicatorCount == 0) {
+			if (infoTimer != null) {
+				infoTimer.cancel();
+				infoTimer = null;
 			}
 
 			hideInfo();
@@ -947,24 +940,24 @@ public class GwtTable extends Composite
 	 * criteria.
 	 */
 	void initiateDownload() {
-		if (rData instanceof Downloadable) {
-			final Downloadable rRemoteModel = (Downloadable) rData;
+		if (data instanceof Downloadable) {
+			final Downloadable remoteModel = (Downloadable) data;
 
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
 					showBusyIndicator();
-					rRemoteModel.prepareDownload("tabledata.xls",
-						rData.getElementCount(), new Callback<String>() {
+					remoteModel.prepareDownload("tabledata.xls",
+						data.getElementCount(), new Callback<String>() {
 							@Override
-							public void onError(Throwable eError) {
-								GwtTable.this.onError(eError);
+							public void onError(Throwable error) {
+								GwtTable.this.onError(error);
 							}
 
 							@Override
-							public void onSuccess(String sDownloadUrl) {
+							public void onSuccess(String downloadUrl) {
 								hideBusyIndicator();
-								EWT.openHiddenUrl(sDownloadUrl);
+								EWT.openHiddenUrl(downloadUrl);
 							}
 						});
 				}
@@ -975,10 +968,10 @@ public class GwtTable extends Composite
 	/**
 	 * Sets the index of the first row of the data model to be displayed.
 	 *
-	 * @param nNewFirst The new first row
+	 * @param newFirst The new first row
 	 */
-	final void setFirstRow(int nNewFirst) {
-		nFirstRow = nNewFirst;
+	final void setFirstRow(int newFirst) {
+		firstRow = newFirst;
 	}
 
 	/**
@@ -986,31 +979,31 @@ public class GwtTable extends Composite
 	 * not change it's height if nodes are expanded but will display scrollbars
 	 * instead.
 	 *
-	 * @param bLocked TRUE to lock the table size, FALSE to unlock
+	 * @param locked TRUE to lock the table size, FALSE to unlock
 	 */
-	void setHeightLocked(boolean bLocked) {
-		aScrollPanel.setHeight(bLocked ? getDataTableHeight() + "px" : "100%");
+	void setHeightLocked(boolean locked) {
+		scrollPanel.setHeight(locked ? getDataTableHeight() + "px" : "100%");
 	}
 
 	/**
 	 * Sets the style of a row to be selected.
 	 *
-	 * @param nRow       The row to set to be selected
-	 * @param bFireEvent TRUE to dispatch a selection event
+	 * @param row       The row to set to be selected
+	 * @param fireEvent TRUE to dispatch a selection event
 	 */
-	void setRowSelected(int nRow, boolean bFireEvent) {
-		if (nRow >= -1 && nRow < nVisibleDataRows) {
-			if (nRow != -1) {
-				RowFormatter rRowFormatter = aDataTable.getRowFormatter();
+	void setRowSelected(int row, boolean fireEvent) {
+		if (row >= -1 && row < visibleDataRows) {
+			if (row != -1) {
+				RowFormatter rowFormatter = dataTable.getRowFormatter();
 
-				rRowFormatter.addStyleName(nRow, CSS.ewtSelected());
+				rowFormatter.addStyleName(row, CSS.ewtSelected());
 			}
 
-			if (nSelectedRow != nRow) {
-				nSelectedRow = nRow;
+			if (selectedRow != row) {
+				selectedRow = row;
 
-				if (bFireEvent) {
-					rEventDispatcher.dispatchEvent(EventType.SELECTION, null);
+				if (fireEvent) {
+					eventDispatcher.dispatchEvent(EventType.SELECTION, null);
 				}
 			}
 		}
@@ -1019,13 +1012,13 @@ public class GwtTable extends Composite
 	/**
 	 * Sets the style of a row to be unselected.
 	 *
-	 * @param nRow The row to set to be unselected
+	 * @param row The row to set to be unselected
 	 */
-	void setRowUnselected(int nRow) {
-		if (nRow >= 0 && nRow < nVisibleDataRows) {
-			RowFormatter rRowFormatter = aDataTable.getRowFormatter();
+	void setRowUnselected(int row) {
+		if (row >= 0 && row < visibleDataRows) {
+			RowFormatter rowFormatter = dataTable.getRowFormatter();
 
-			rRowFormatter.removeStyleName(nRow, CSS.ewtSelected());
+			rowFormatter.removeStyleName(row, CSS.ewtSelected());
 		}
 	}
 
@@ -1034,28 +1027,28 @@ public class GwtTable extends Composite
 	 * the
 	 * visible table (not to the data model).
 	 *
-	 * @param nRow The selected row or -1 for no selection
+	 * @param row The selected row or -1 for no selection
 	 */
-	void setSelectedRow(int nRow) {
-		nSelectedRow = nRow;
+	void setSelectedRow(int row) {
+		selectedRow = row;
 	}
 
 	/**
 	 * Shows a busy indicator for ongoing operations if necessary.
 	 */
 	void showBusyIndicator() {
-		nBusyIndicatorCount++;
+		busyIndicatorCount++;
 
-		if (aInfoTimer == null && getOffsetWidth() > 0) {
-			aInfoTimer = new Timer() {
+		if (infoTimer == null && getOffsetWidth() > 0) {
+			infoTimer = new Timer() {
 				@Override
 				public void run() {
-					if (nBusyIndicatorCount > 0) {
+					if (busyIndicatorCount > 0) {
 						showInfo(new Image(RES.imBusy()), false);
 					}
 				}
 			};
-			aInfoTimer.schedule(INFO_TIMER_MILLISECONDS);
+			infoTimer.schedule(INFO_TIMER_MILLISECONDS);
 		}
 	}
 
@@ -1064,41 +1057,40 @@ public class GwtTable extends Composite
 	 */
 	private void calcTableSize() {
 		if (Window.Navigator.getUserAgent().toLowerCase().contains("msie")) {
-			int nHeight = aMainPanel.getOffsetHeight();
+			int height = mainPanel.getOffsetHeight();
 
-			if (nHeight == 0) {
-				nHeight = getParent().getAbsoluteTop() +
-					getParent().getOffsetHeight() -
-					aMainPanel.getAbsoluteTop() - aHeader.getOffsetHeight() -
-					aToolBar.getOffsetHeight() * 2;
+			if (height == 0) {
+				height = getParent().getAbsoluteTop() +
+					getParent().getOffsetHeight() - mainPanel.getAbsoluteTop() -
+					header.getOffsetHeight() - toolBar.getOffsetHeight() * 2;
 			}
 
-			if (nHeight > 0) {
-				aMainPanel.setHeight(nHeight + "px");
+			if (height > 0) {
+				mainPanel.setHeight(height + "px");
 			}
 		}
 
-		int nWidth = aScrollPanel.getElement().getClientWidth();
-		int nHeight = getDataTableHeight();
+		int width = scrollPanel.getElement().getClientWidth();
+		int height = getDataTableHeight();
 
-		if (nWidth > 0 && nHeight > 0 &&
-			(nDataWidth != nWidth || nDataHeight != nHeight)) {
-			nDataHeight = nHeight;
-			nDataWidth = nWidth;
+		if (width > 0 && height > 0 &&
+			(dataWidth != width || dataHeight != height)) {
+			dataHeight = height;
+			dataWidth = width;
 
-			aHeader.calcColumnWidths();
-			setHeightLocked(aToolBar.isHeightLocked());
+			header.calcColumnWidths();
+			setHeightLocked(toolBar.isHeightLocked());
 
 			initDataRow(null, null, 0);
 
-			int nRowHeight =
-				aDataTable.getRowFormatter().getElement(0).getOffsetHeight();
+			int rowHeight =
+				dataTable.getRowFormatter().getElement(0).getOffsetHeight();
 
-			aDataTable.removeRow(0);
+			dataTable.removeRow(0);
 
-			if (nRowHeight > 0) {
-				nTableRows = nDataHeight / nRowHeight;
-				nVisibleDataRows = nTableRows;
+			if (rowHeight > 0) {
+				tableRows = dataHeight / rowHeight;
+				visibleDataRows = tableRows;
 			}
 		}
 	}
@@ -1106,21 +1098,21 @@ public class GwtTable extends Composite
 	/**
 	 * Changes the state of a tree node.
 	 *
-	 * @param bCollapse TRUE to collapse the node, FALSE to expand
+	 * @param collapse TRUE to collapse the node, FALSE to expand
 	 */
-	private void changeNodeState(boolean bCollapse) {
-		if (bHierarchical && nSelectedRow >= 0) {
-			int nRow = nSelectedRow;
-			TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, 0);
+	private void changeNodeState(boolean collapse) {
+		if (hierarchical && selectedRow >= 0) {
+			int row = selectedRow;
+			TreeNode node = (TreeNode) dataTable.getWidget(row, 0);
 
-			if (bCollapse) {
-				if (!rNode.isExpanded() && rNode.getParent() != null) {
-					rNode = rNode.getParentNode();
+			if (collapse) {
+				if (!node.isExpanded() && node.getParent() != null) {
+					node = node.getParentNode();
 				}
 
-				collapseNode(rNode);
+				collapseNode(node);
 			} else {
-				expandNode(rNode);
+				expandNode(node);
 			}
 		}
 	}
@@ -1130,33 +1122,33 @@ public class GwtTable extends Composite
 	 * necessary.
 	 */
 	private void checkBounds() {
-		if (nTableRows > 0) {
-			int nRows = rData.getElementCount();
-			int nPrevFirst = nFirstRow;
+		if (tableRows > 0) {
+			int rows = data.getElementCount();
+			int prevFirst = firstRow;
 
-			if (nRows > 0) {
-				if (nFirstRow >= nRows) {
-					nFirstRow = nRows - 1;
+			if (rows > 0) {
+				if (firstRow >= rows) {
+					firstRow = rows - 1;
 				}
 
-				if (nFirstRow < 0) {
-					nFirstRow = 0;
+				if (firstRow < 0) {
+					firstRow = 0;
 				}
 			}
 
-			if (nSelectedRow >= 0) {
+			if (selectedRow >= 0) {
 				// set to selection to prevent page change on boundary rounding
 				// that makes the selection invisible
-				nFirstRow = nFirstRow + nSelectedRow;
+				firstRow = firstRow + selectedRow;
 			}
 
-			nFirstRow = nFirstRow / nTableRows * nTableRows;
+			firstRow = firstRow / tableRows * tableRows;
 
-			if (nSelectedRow >= 0) {
-				nSelectedRow += nPrevFirst - nFirstRow;
+			if (selectedRow >= 0) {
+				selectedRow += prevFirst - firstRow;
 
-				if (nSelectedRow < 0 || nSelectedRow >= nVisibleDataRows) {
-					nSelectedRow = -1;
+				if (selectedRow < 0 || selectedRow >= visibleDataRows) {
+					selectedRow = -1;
 				}
 			}
 		}
@@ -1166,19 +1158,19 @@ public class GwtTable extends Composite
 	 * Clears a certain row. If the row doesn't exist it will be added to the
 	 * table.
 	 *
-	 * @param nRow The table row to clear
+	 * @param row The table row to clear
 	 */
-	private void clearRow(int nRow) {
-		CellFormatter rCellFormatter = aDataTable.getCellFormatter();
-		int nColumns = aHeader.getColumnCount();
+	private void clearRow(int row) {
+		CellFormatter cellFormatter = dataTable.getCellFormatter();
+		int columns = header.getColumnCount();
 
-		for (int nColumn = 0; nColumn < nColumns; nColumn++) {
-			aDataTable.setHTML(nRow, nColumn, "&nbsp;");
-			rCellFormatter.removeStyleName(nRow, nColumn,
-				aHeader.getColumnStyle(nColumn));
+		for (int column = 0; column < columns; column++) {
+			dataTable.setHTML(row, column, "&nbsp;");
+			cellFormatter.removeStyleName(row, column,
+				header.getColumnStyle(column));
 		}
 
-		setEmptyRowStyle(nRow);
+		setEmptyRowStyle(row);
 	}
 
 	/**
@@ -1187,66 +1179,66 @@ public class GwtTable extends Composite
 	 */
 	@SuppressWarnings("unused")
 	private void copyRowText() {
-		StringBuilder aRowText = new StringBuilder();
-		int nLastCol = aHeader.getColumnCount() - 1;
+		StringBuilder rowText = new StringBuilder();
+		int lastCol = header.getColumnCount() - 1;
 
-		for (int nCol = 0; nCol <= nLastCol; nCol++) {
-			aRowText.append(aDataTable.getText(nSelectedRow, nCol));
+		for (int col = 0; col <= lastCol; col++) {
+			rowText.append(dataTable.getText(selectedRow, col));
 
-			if (nCol < nLastCol) {
-				aRowText.append(',');
+			if (col < lastCol) {
+				rowText.append(',');
 			}
 		}
 
-		Window.prompt("Kopieren", aRowText.toString());
+		Window.prompt("Kopieren", rowText.toString());
 	}
 
 	/**
 	 * Fills a certain table row with the values from a row data model.
 	 *
-	 * @param rRow The row data model
-	 * @param nRow The row index
+	 * @param row The row data model
+	 * @param row The row index
 	 */
-	private void fillRow(DataModel<?> rRow, int nRow) {
-		RowFormatter rRowFormatter = aDataTable.getRowFormatter();
-		CellFormatter rCellFormatter = aDataTable.getCellFormatter();
-		int nColumns = aHeader.getColumnCount();
+	private void fillRow(DataModel<?> rowModel, int row) {
+		RowFormatter rowFormatter = dataTable.getRowFormatter();
+		CellFormatter cellFormatter = dataTable.getCellFormatter();
+		int columns = header.getColumnCount();
 
-		for (int nCol = 0; nCol < nColumns; nCol++) {
-			if (bHierarchical && nCol == 0) {
-				TreeNode rNode = (TreeNode) aDataTable.getWidget(nRow, nCol);
+		for (int col = 0; col < columns; col++) {
+			if (hierarchical && col == 0) {
+				TreeNode node = (TreeNode) dataTable.getWidget(row, col);
 
-				if (rNode != null) {
-					rNode.update(rRow, getCellValue(rRow, nCol));
+				if (node != null) {
+					node.update(rowModel, getCellValue(rowModel, col));
 				}
 			} else {
-				ColumnDefinition rColumn = aHeader.getColumnDefinition(nCol);
-				String sCellStyle = aHeader.getColumnStyle(nCol);
+				ColumnDefinition column = header.getColumnDefinition(col);
+				String cellStyle = header.getColumnStyle(col);
 
-				if (rColumn.hasFlag(HAS_IMAGES)) {
-					setCellImage(nRow, nCol, rRow.getElement(nCol));
-					rCellFormatter.setHorizontalAlignment(nRow, nCol,
+				if (column.hasFlag(HAS_IMAGES)) {
+					setCellImage(row, col, rowModel.getElement(col));
+					cellFormatter.setHorizontalAlignment(row, col,
 						HasHorizontalAlignment.ALIGN_CENTER);
 				} else {
-					aDataTable.setText(nRow, nCol, getCellValue(rRow, nCol));
+					dataTable.setText(row, col, getCellValue(rowModel, col));
 				}
 
-				rCellFormatter.setStyleName(nRow, nCol, sCellStyle);
+				cellFormatter.setStyleName(row, col, cellStyle);
 			}
 		}
 
-		rRowFormatter.setStyleName(nRow, CSS.ewtTableRow());
+		rowFormatter.setStyleName(row, CSS.ewtTableRow());
 
-		if ((nRow & 0x1) != 0) {
-			rRowFormatter.addStyleName(nRow, CSS.ewtOdd());
+		if ((row & 0x1) != 0) {
+			rowFormatter.addStyleName(row, CSS.ewtOdd());
 		}
 
-		if (rRow instanceof Flags<?>) {
-			Collection<?> rFlags = ((Flags<?>) rRow).getFlags();
+		if (rowModel instanceof Flags<?>) {
+			Collection<?> flags = ((Flags<?>) rowModel).getFlags();
 
-			if (rFlags.size() > 0) {
-				for (Object rFlag : rFlags) {
-					rRowFormatter.addStyleName(nRow, rFlag.toString());
+			if (!flags.isEmpty()) {
+				for (Object flag : flags) {
+					rowFormatter.addStyleName(row, flag.toString());
 				}
 			}
 		}
@@ -1258,80 +1250,79 @@ public class GwtTable extends Composite
 	 * @return The index of the row after the last filled row
 	 */
 	private int fillRows() {
-		int nRow = 0;
+		int row = 0;
 
-		while (nRow < nVisibleDataRows) {
-			DataModel<?> rRow = rData.getElement(nFirstRow + nRow);
+		while (row < visibleDataRows) {
+			DataModel<?> rowModel = data.getElement(firstRow + row);
 
-			if (rRow.equals(rCurrentSelection)) {
-				nSelectedRow = nRow;
+			if (rowModel.equals(currentSelection)) {
+				selectedRow = row;
 			}
 
-			fillRow(rRow, nRow++);
+			fillRow(rowModel, row++);
 		}
 
-		return nRow;
+		return row;
 	}
 
 	/**
 	 * Returns the cell value for a certain column in a row data model.
 	 *
-	 * @param rRow    The row data model to read the value from
-	 * @param nColumn The column to return the value for
+	 * @param row    The row data model to read the value from
+	 * @param column The column to return the value for
 	 * @return The cell value string
 	 */
-	private String getCellValue(DataModel<?> rRow, int nColumn) {
-		Object rCellValue = rRow.getElement(nColumn);
-		String sResult = null;
+	private String getCellValue(DataModel<?> row, int column) {
+		Object cellValue = row.getElement(column);
+		String result = null;
 
-		if (rCellValue != null) {
-			ValueFormat rFormat = aHeader.getColumnFormat(nColumn);
-			String sValue = rFormat.format(rCellValue).trim();
-			int nLineEnd = sValue.indexOf('\n');
+		if (cellValue != null) {
+			ValueFormat format = header.getColumnFormat(column);
+			String value = format.format(cellValue).trim();
+			int lineEnd = value.indexOf('\n');
 
-			if (nLineEnd >= 0) {
-				sValue = sValue.substring(0, nLineEnd);
+			if (lineEnd >= 0) {
+				value = value.substring(0, lineEnd);
 			}
 
-			sResult = rContext.expandResource(sValue);
+			result = context.expandResource(value);
 		}
 
-		return sResult;
+		return result;
 	}
 
 	/**
 	 * This is a workaround for a bug in (at least) IE8. IE8 is unable to
 	 * calculate the correct offsetHeight of some DOM elements under some
 	 * circumstances (usually DIV elements). To calculate the table height
-	 * aScrollbar.getOffsetHeight was used. That did not return the proper
-	 * value
+	 * scrollbar.getOffsetHeight was used. That did not return the proper value
 	 * in IE8 browsers. This workaround should work as long as the overall
 	 * layout of the table doesn't change.
 	 *
 	 * @return the height of the table.
 	 */
 	private int getDataTableHeight() {
-		return aMainPanel.getOffsetHeight() - aHeader.getOffsetHeight() -
-			aToolBar.getOffsetHeight();
+		return mainPanel.getOffsetHeight() - header.getOffsetHeight() -
+			toolBar.getOffsetHeight();
 	}
 
 	/**
 	 * Sends a data request to a remote data model.
 	 *
-	 * @param rRemoteModel The remote data model
-	 * @param nStartRow    The first row to request
-	 * @param nRows        nStartRow The number of rows to request
-	 * @param rCallback    The callback to invoke after completion
+	 * @param remoteModel The remote data model
+	 * @param startRow    The first row to request
+	 * @param rows        startRow The number of rows to request
+	 * @param callback    The callback to invoke after completion
 	 */
-	private void getRemoteData(final RemoteDataModel<DataModel<?>> rRemoteModel,
-		final int nStartRow, final int nRows,
-		final Callback<RemoteDataModel<DataModel<?>>> rCallback) {
+	private void getRemoteData(final RemoteDataModel<DataModel<?>> remoteModel,
+		final int startRow, final int rows,
+		final Callback<RemoteDataModel<DataModel<?>>> callback) {
 		showBusyIndicator();
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				rRemoteModel.setWindow(nStartRow, nRows, rCallback);
+				remoteModel.setWindow(startRow, rows, callback);
 			}
 		});
 	}
@@ -1342,18 +1333,18 @@ public class GwtTable extends Composite
 	 * @return The selected row after the paging
 	 */
 	private int goPageDown() {
-		int nNewSelection = nFirstRow + nSelectedRow;
+		int newSelection = firstRow + selectedRow;
 
-		if (nSelectedRow == -1) {
-			nFirstRow += nTableRows;
+		if (selectedRow == -1) {
+			firstRow += tableRows;
 			update();
-		} else if (nSelectedRow < nVisibleDataRows - 1) {
-			nNewSelection = nFirstRow + nVisibleDataRows - 1;
-		} else if (nFirstRow + nTableRows < rData.getElementCount()) {
-			nNewSelection = nFirstRow + nVisibleDataRows - 1 + nTableRows;
+		} else if (selectedRow < visibleDataRows - 1) {
+			newSelection = firstRow + visibleDataRows - 1;
+		} else if (firstRow + tableRows < data.getElementCount()) {
+			newSelection = firstRow + visibleDataRows - 1 + tableRows;
 		}
 
-		return nNewSelection;
+		return newSelection;
 	}
 
 	/**
@@ -1362,18 +1353,18 @@ public class GwtTable extends Composite
 	 * @return The selected row after the paging
 	 */
 	private int goPageUp() {
-		int nNewSelection = nFirstRow + nSelectedRow;
+		int newSelection = firstRow + selectedRow;
 
-		if (nSelectedRow == -1) {
-			nFirstRow -= nTableRows;
+		if (selectedRow == -1) {
+			firstRow -= tableRows;
 			update();
-		} else if (nSelectedRow > 0) {
-			nNewSelection = nFirstRow;
-		} else if (nFirstRow > 0) {
-			nNewSelection = Math.max(nFirstRow - nTableRows, 0);
+		} else if (selectedRow > 0) {
+			newSelection = firstRow;
+		} else if (firstRow > 0) {
+			newSelection = Math.max(firstRow - tableRows, 0);
 		}
 
-		return nNewSelection;
+		return newSelection;
 	}
 
 	/**
@@ -1382,16 +1373,16 @@ public class GwtTable extends Composite
 	 * @return The new selected row
 	 */
 	private int goRowDown() {
-		int nNewSelection = nSelectedRow;
+		int newSelection = selectedRow;
 
-		if (nSelectedRow == -1) {
-			nNewSelection = nFirstRow;
-		} else if (nSelectedRow < nVisibleDataRows - 1 ||
-			nFirstRow + nTableRows < rData.getElementCount()) {
-			nNewSelection = nFirstRow + nSelectedRow + 1;
+		if (selectedRow == -1) {
+			newSelection = firstRow;
+		} else if (selectedRow < visibleDataRows - 1 ||
+			firstRow + tableRows < data.getElementCount()) {
+			newSelection = firstRow + selectedRow + 1;
 		}
 
-		return nNewSelection;
+		return newSelection;
 	}
 
 	/**
@@ -1400,17 +1391,17 @@ public class GwtTable extends Composite
 	 * @return The new selected row
 	 */
 	private int goRowUp() {
-		int nNewSelection = nFirstRow + nSelectedRow;
+		int newSelection = firstRow + selectedRow;
 
-		if (nSelectedRow == -1) {
-			nNewSelection = nFirstRow + nVisibleDataRows - 1;
-		} else if (nSelectedRow > 0) {
-			nNewSelection--;
-		} else if (nFirstRow > 0) {
-			nNewSelection = nFirstRow - 1;
+		if (selectedRow == -1) {
+			newSelection = firstRow + visibleDataRows - 1;
+		} else if (selectedRow > 0) {
+			newSelection--;
+		} else if (firstRow > 0) {
+			newSelection = firstRow - 1;
 		}
 
-		return nNewSelection;
+		return newSelection;
 	}
 
 	/**
@@ -1419,8 +1410,8 @@ public class GwtTable extends Composite
 	 * @return The new selected row
 	 */
 	private int goToFirst() {
-		if (nSelectedRow == -1 || nSelectedRow > 0) {
-			return nFirstRow;
+		if (selectedRow == -1 || selectedRow > 0) {
+			return firstRow;
 		} else {
 			return 0;
 		}
@@ -1432,58 +1423,58 @@ public class GwtTable extends Composite
 	 * @return The new selected row
 	 */
 	private int goToLast() {
-		int nRows = rData.getElementCount();
+		int rows = data.getElementCount();
 
-		if (nSelectedRow < nVisibleDataRows - 1) {
-			return nFirstRow + nVisibleDataRows - 1;
+		if (selectedRow < visibleDataRows - 1) {
+			return firstRow + visibleDataRows - 1;
 		} else {
-			return nRows - 1;
+			return rows - 1;
 		}
 	}
 
 	/**
 	 * Handles a navigation key in a key event.
 	 *
-	 * @param rEvent The event that occurred
+	 * @param event The event that occurred
 	 * @return TRUE if the event was caused by a navigation key and has
 	 * therefore been handled
 	 */
-	private boolean handleNavigationKey(KeyDownEvent rEvent) {
-		int nNewSelection = nFirstRow + nSelectedRow;
-		int nKeyCode = rEvent.getNativeKeyCode();
-		boolean bCollapse = rEvent.isLeftArrow();
-		boolean bExpand = rEvent.isRightArrow();
-		boolean bNavigationKey = true;
+	private boolean handleNavigationKey(KeyDownEvent event) {
+		int newSelection = firstRow + selectedRow;
+		int keyCode = event.getNativeKeyCode();
+		boolean collapse = event.isLeftArrow();
+		boolean expand = event.isRightArrow();
+		boolean navigationKey = true;
 
-		if (bCollapse || bExpand) {
-			if (rEvent.isControlKeyDown()) {
-				if (bExpand) {
+		if (collapse || expand) {
+			if (event.isControlKeyDown()) {
+				if (expand) {
 					expandAllNodes();
 				} else {
 					collapseAllNodes();
 				}
 			} else {
-				changeNodeState(bCollapse);
+				changeNodeState(collapse);
 			}
-		} else if (rEvent.isUpArrow()) {
-			nNewSelection = goRowUp();
-		} else if (rEvent.isDownArrow()) {
-			nNewSelection = goRowDown();
-		} else if (nKeyCode == KeyCodes.KEY_PAGEUP) {
-			nNewSelection = goPageUp();
-		} else if (nKeyCode == KeyCodes.KEY_PAGEDOWN) {
-			nNewSelection = goPageDown();
-		} else if (nKeyCode == KeyCodes.KEY_HOME) {
-			nNewSelection = goToFirst();
-		} else if (nKeyCode == KeyCodes.KEY_END) {
-			nNewSelection = goToLast();
+		} else if (event.isUpArrow()) {
+			newSelection = goRowUp();
+		} else if (event.isDownArrow()) {
+			newSelection = goRowDown();
+		} else if (keyCode == KeyCodes.KEY_PAGEUP) {
+			newSelection = goPageUp();
+		} else if (keyCode == KeyCodes.KEY_PAGEDOWN) {
+			newSelection = goPageDown();
+		} else if (keyCode == KeyCodes.KEY_HOME) {
+			newSelection = goToFirst();
+		} else if (keyCode == KeyCodes.KEY_END) {
+			newSelection = goToLast();
 		} else {
-			bNavigationKey = false;
+			navigationKey = false;
 		}
 
-		setSelection(nNewSelection);
+		setSelection(newSelection);
 
-		return bNavigationKey;
+		return navigationKey;
 	}
 
 	/**
@@ -1491,70 +1482,68 @@ public class GwtTable extends Composite
 	 * method {@link #showInfo(Widget, boolean)}.
 	 */
 	private void hideInfo() {
-		if (aInfoPopupPanel != null) {
-			aInfoPopupPanel.hide();
-			aInfoPopupPanel = null;
+		if (infoPopupPanel != null) {
+			infoPopupPanel.hide();
+			infoPopupPanel = null;
 		}
 	}
 
 	/**
 	 * Initializes a certain table row.
 	 *
-	 * @param rParent   The parent tree cell for hierarchical tables or NULL
-	 *                    for
-	 *                  none
-	 * @param rPrevious The previous tree cell for hierarchical tables or NULL
-	 *                  for none
-	 * @param nRow      The row to initialize
+	 * @param parent   The parent tree cell for hierarchical tables or NULL for
+	 *                 none
+	 * @param previous The previous tree cell for hierarchical tables or NULL
+	 *                 for none
+	 * @param row      The row to initialize
 	 * @return The created tree cell for hierarchical tables or NULL for none
 	 */
-	private TreeNode initDataRow(TreeNode rParent, TreeNode rPrevious,
-		int nRow) {
-		int nColumns = aHeader.getColumnCount();
-		TreeNode aTreeCell = null;
+	private TreeNode initDataRow(TreeNode parent, TreeNode previous, int row) {
+		int columns = header.getColumnCount();
+		TreeNode treeCell = null;
 
-		for (int nCol = 0; nCol < nColumns; nCol++) {
-			if (bHierarchical && nCol == 0) {
-				aTreeCell = new TreeNode(this, rParent, rPrevious);
-				aDataTable.setWidget(nRow, nCol, aTreeCell);
+		for (int col = 0; col < columns; col++) {
+			if (hierarchical && col == 0) {
+				treeCell = new TreeNode(this, parent, previous);
+				dataTable.setWidget(row, col, treeCell);
 			} else {
-				aDataTable.setHTML(nRow, nCol, "&nbsp;");
+				dataTable.setHTML(row, col, "&nbsp;");
 			}
 		}
 
-		setEmptyRowStyle(nRow);
+		setEmptyRowStyle(row);
 
-		return aTreeCell;
+		return treeCell;
 	}
 
 	/**
 	 * Initializes the data rows of the table.
 	 */
 	private void initDataRows() {
-		TreeNode rPrevNode = null;
-		int nMax = nTableRows - 1;
+		TreeNode prevNode = null;
+		int max = tableRows - 1;
 
-		for (int nRow = 0; nRow <= nMax; nRow++) {
-			rPrevNode = initDataRow(null, rPrevNode, nRow);
+		for (int row = 0; row <= max; row++) {
+			prevNode = initDataRow(null, prevNode, row);
 		}
 	}
 
 	/**
 	 * Initializes new visible rows.
 	 *
-	 * @param nPrevVisibleRows The previous visible row count
+	 * @param prevVisibleRows The previous visible row count
 	 */
-	private void initNewVisibleRows(int nPrevVisibleRows) {
-		while (nPrevVisibleRows < nVisibleDataRows) {
-			int nInitRow = nPrevVisibleRows;
-			TreeNode rNode = null;
+	private void initNewVisibleRows(int prevVisibleRows) {
+		while (prevVisibleRows < visibleDataRows) {
+			int initRow = prevVisibleRows;
+			TreeNode node = null;
 
-			if (nPrevVisibleRows > 0) {
-				rNode = (TreeNode) aDataTable.getWidget(nInitRow - 1, 0);
+			if (prevVisibleRows > 0) {
+				node = (TreeNode) dataTable.getWidget(initRow - 1, 0);
 			}
 
-			initDataRow(null, rNode, nInitRow);
-			nPrevVisibleRows++;
+			initDataRow(null, node, initRow);
+			prevVisibleRows++;
 		}
 	}
 
@@ -1562,40 +1551,38 @@ public class GwtTable extends Composite
 	 * Re-initializes the columns of this table.
 	 */
 	private void resetColumns() {
-		nDataWidth = nDataHeight = 0;
+		dataWidth = dataHeight = 0;
 
-		aDataTable.removeAllRows();
-		aHeader.initColumns(aToolBar.getFilterPanel());
+		dataTable.removeAllRows();
+		header.initColumns(toolBar.getFilterPanel());
 
-		bColumnsChanged = false;
+		columnsChanged = false;
 	}
 
 	/**
 	 * Sets a cell image from the raw cell value.
 	 *
-	 * @param nRow       The row of the cell
-	 * @param nCol       The column of the cell
-	 * @param rCellValue The raw cell value to create the image from
+	 * @param row       The row of the cell
+	 * @param col       The column of the cell
+	 * @param cellValue The raw cell value to create the image from
 	 */
-	private void setCellImage(int nRow, int nCol, Object rCellValue) {
-		if (rCellValue != null) {
-			String sCellValue = rCellValue.toString();
-			StringBuilder aImageName = new StringBuilder(sCellValue);
+	private void setCellImage(int row, int col, Object cellValue) {
+		if (cellValue != null) {
+			String value = cellValue.toString();
 
-			aImageName.insert(1, "im");
+			String imageName =
+				new StringBuilder(value).insert(1, "im").toString();
 
-			String sImage = aImageName.toString();
+			de.esoco.ewt.graphics.Image cellImage =
+				context.createImage(imageName);
 
-			de.esoco.ewt.graphics.Image aCellImage =
-				rContext.createImage(sImage);
+			if (cellImage instanceof ImageRef) {
+				Image image = ((ImageRef) cellImage).getGwtImage();
 
-			if (aCellImage instanceof ImageRef) {
-				Image rImage = ((ImageRef) aCellImage).getGwtImage();
-
-				rImage.setTitle(rContext.expandResource(sCellValue));
-				aDataTable.setWidget(nRow, nCol, rImage);
-			} else if (!sImage.endsWith("Null")) {
-				GWT.log("No image for " + sImage);
+				image.setTitle(context.expandResource(value));
+				dataTable.setWidget(row, col, image);
+			} else if (!imageName.endsWith("Null")) {
+				GWT.log("No image for " + imageName);
 			}
 		}
 	}
@@ -1603,27 +1590,27 @@ public class GwtTable extends Composite
 	/**
 	 * Sets the table styles of an empty row.
 	 *
-	 * @param nRow The index of the row to set the style of
+	 * @param row The index of the row to set the style of
 	 */
-	private void setEmptyRowStyle(int nRow) {
-		RowFormatter rRowFormatter = aDataTable.getRowFormatter();
+	private void setEmptyRowStyle(int row) {
+		RowFormatter rowFormatter = dataTable.getRowFormatter();
 
-		rRowFormatter.setStyleName(nRow, CSS.ewtTableRow());
-		rRowFormatter.addStyleName(nRow, CSS.ewtEmpty());
+		rowFormatter.setStyleName(row, CSS.ewtTableRow());
+		rowFormatter.addStyleName(row, CSS.ewtEmpty());
 	}
 
 	/**
 	 * Sets the selection to the row of a certain cell.
 	 *
-	 * @param rCell      The cell to select (NULL values will be ignored)
-	 * @param bFireEvent TRUE to fire a selection event
+	 * @param cell      The cell to select (NULL values will be ignored)
+	 * @param fireEvent TRUE to fire a selection event
 	 */
-	private void setSelection(Cell rCell, boolean bFireEvent) {
-		if (rCell != null) {
-			int nRow = rCell.getRowIndex();
+	private void setSelection(Cell cell, boolean fireEvent) {
+		if (cell != null) {
+			int row = cell.getRowIndex();
 
-			if (nRow >= 0 && nRow < nVisibleDataRows) {
-				setSelection(nFirstRow + nRow, bFireEvent);
+			if (row >= 0 && row < visibleDataRows) {
+				setSelection(firstRow + row, fireEvent);
 			}
 		}
 	}
@@ -1631,36 +1618,35 @@ public class GwtTable extends Composite
 	/**
 	 * Sets the argument widgets to an HTML size of 100%.
 	 *
-	 * @param rWidgets The widgets to set the size of
+	 * @param widgets The widgets to set the size of
 	 */
-	private void setToMaximumSize(Widget... rWidgets) {
-		for (Widget rWidget : rWidgets) {
-			rWidget.setSize("100%", "100%");
+	private void setToMaximumSize(Widget... widgets) {
+		for (Widget widget : widgets) {
+			widget.setSize("100%", "100%");
 		}
 	}
 
 	/**
 	 * Displays an information widget above the table.
 	 *
-	 * @param rInfoWidget The widget to display
-	 * @param bGlassPanel TRUE to show the info on top of a glass panel
+	 * @param infoWidget The widget to display
+	 * @param glassPanel TRUE to show the info on top of a glass panel
 	 */
-	private void showInfo(Widget rInfoWidget, boolean bGlassPanel) {
+	private void showInfo(Widget infoWidget, boolean glassPanel) {
 		if (getOffsetWidth() > 0) {
-			aInfoPopupPanel = new DecoratedPopupPanel(true);
-			aInfoPopupPanel.setWidget(rInfoWidget);
-			aInfoPopupPanel.setGlassEnabled(bGlassPanel);
-			aInfoPopupPanel.setPopupPositionAndShow(
+			infoPopupPanel = new DecoratedPopupPanel(true);
+			infoPopupPanel.setWidget(infoWidget);
+			infoPopupPanel.setGlassEnabled(glassPanel);
+			infoPopupPanel.setPopupPositionAndShow(
 				new PopupPanel.PositionCallback() {
 					@Override
-					public void setPosition(int nPopupWidth,
-						int nPopupHeight) {
+					public void setPosition(int popupWidth, int popupHeight) {
 						int x = getAbsoluteLeft() +
-							(getOffsetWidth() - nPopupWidth) / 2;
+							(getOffsetWidth() - popupWidth) / 2;
 						int y = getAbsoluteTop() +
-							(getOffsetHeight() - nPopupHeight) / 2;
+							(getOffsetHeight() - popupHeight) / 2;
 
-						aInfoPopupPanel.setPopupPosition(x, y);
+						infoPopupPanel.setPopupPosition(x, y);
 					}
 				});
 		}
@@ -1674,62 +1660,60 @@ public class GwtTable extends Composite
 	 * re-executed with updated parameters (only for remote data models)
 	 */
 	private boolean updateDisplay() {
-		if (nDataHeight > 0) {
+		if (dataHeight > 0) {
 			checkBounds();
 
-			int nPrevRows = nVisibleDataRows;
-			int nCount = rData.getElementCount();
-			int nRows = Math.min(nCount - nFirstRow, nTableRows);
-			int nDataTableRows = aDataTable.getRowCount();
-			int nNewSelectedRow = nSelectedRow;
+			int prevRows = visibleDataRows;
+			int count = data.getElementCount();
+			int rows = Math.min(count - firstRow, tableRows);
+			int dataTableRows = dataTable.getRowCount();
+			int newSelectedRow = selectedRow;
 
-			nVisibleDataRows = Math.min(nTableRows, nCount - nFirstRow);
+			visibleDataRows = Math.min(tableRows, count - firstRow);
 
-			if (rData instanceof RemoteDataModel) {
-				RemoteDataModel<?> rRemoteModel = (RemoteDataModel<?>) rData;
-				int nAvailableElements =
-					rRemoteModel.getAvailableElementCount();
+			if (data instanceof RemoteDataModel) {
+				RemoteDataModel<?> remoteModel = (RemoteDataModel<?>) data;
+				int availableElements = remoteModel.getAvailableElementCount();
 
-				nVisibleDataRows =
-					Math.min(nVisibleDataRows, nAvailableElements);
+				visibleDataRows = Math.min(visibleDataRows, availableElements);
 
-				if (nAvailableElements == 0 &&
-					rRemoteModel.getWindowStart() > 0) {
+				if (availableElements == 0 &&
+					remoteModel.getWindowStart() > 0) {
 					return false;
 				}
 			}
 
-			aToolBar.updatePosition(nCount, nRows, nFirstRow + 1);
-			initNewVisibleRows(nPrevRows);
-			aHeader.setAllColumnWidths();
+			toolBar.updatePosition(count, rows, firstRow + 1);
+			initNewVisibleRows(prevRows);
+			header.setAllColumnWidths();
 
-			int nEmptyRow = fillRows();
+			int emptyRow = fillRows();
 
-			while (nEmptyRow < nTableRows) {
-				clearRow(nEmptyRow++);
+			while (emptyRow < tableRows) {
+				clearRow(emptyRow++);
 			}
 
-			while (nDataTableRows > nTableRows) {
-				aDataTable.removeRow(--nDataTableRows);
+			while (dataTableRows > tableRows) {
+				dataTable.removeRow(--dataTableRows);
 			}
 
-			if (nNewSelectedRow >= nVisibleDataRows) {
-				nNewSelectedRow = nVisibleDataRows - 1;
+			if (newSelectedRow >= visibleDataRows) {
+				newSelectedRow = visibleDataRows - 1;
 			}
 
-			setRowSelected(nNewSelectedRow, false);
-			aToolBar.updateNavigationButtons();
+			setRowSelected(newSelectedRow, false);
+			toolBar.updateNavigationButtons();
 
-			if (nSelectedRow >= 0) {
-				rCurrentSelection = getSelection();
+			if (selectedRow >= 0) {
+				currentSelection = getSelection();
 			}
 
-			if (nNewSelection >= 0) {
+			if (newSelection >= 0) {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
-						setSelection(nNewSelection);
-						nNewSelection = -1;
+						setSelection(newSelection);
+						newSelection = -1;
 					}
 				});
 			}
@@ -1742,22 +1726,22 @@ public class GwtTable extends Composite
 	 * Updates the odd/even row styles for all visible rows beginning with a
 	 * certain starting row.
 	 *
-	 * @param nRow The starting row
+	 * @param row The starting row
 	 */
-	private void updateRowStyles(int nRow) {
-		RowFormatter rRowFormatter = aDataTable.getRowFormatter();
-		int nMax = nVisibleDataRows;
-		boolean bOdd = (nRow % 2) == 1;
+	private void updateRowStyles(int row) {
+		RowFormatter rowFormatter = dataTable.getRowFormatter();
+		int max = visibleDataRows;
+		boolean odd = (row % 2) == 1;
 
-		while (nRow < nMax) {
-			if (bOdd) {
-				rRowFormatter.addStyleName(nRow, CSS.ewtOdd());
+		while (row < max) {
+			if (odd) {
+				rowFormatter.addStyleName(row, CSS.ewtOdd());
 			} else {
-				rRowFormatter.removeStyleName(nRow, CSS.ewtOdd());
+				rowFormatter.removeStyleName(row, CSS.ewtOdd());
 			}
 
-			bOdd = !bOdd;
-			nRow++;
+			odd = !odd;
+			row++;
 		}
 	}
 }

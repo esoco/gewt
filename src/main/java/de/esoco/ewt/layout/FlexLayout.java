@@ -43,15 +43,15 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 		START("flex-start"), END("flex-end"), CENTER("center"),
 		BASELINE("baseline"), STRETCH("stretch");
 
-		private final String sCssName;
+		private final String cssName;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sCssName The CSS name
+		 * @param cssName The CSS name
 		 */
-		private ItemAlignment(String sCssName) {
-			this.sCssName = sCssName;
+		private ItemAlignment(String cssName) {
+			this.cssName = cssName;
 		}
 
 		/**
@@ -59,7 +59,7 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 		 */
 		@Override
 		public String getCssName() {
-			return sCssName;
+			return cssName;
 		}
 	}
 
@@ -69,15 +69,15 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	public enum Wrapping implements HasCssName {
 		NONE("nowrap"), NORMAL("wrap"), REVERSE("wrap-reverse");
 
-		private final String sCssName;
+		private final String cssName;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sCssName The CSS name
+		 * @param cssName The CSS name
 		 */
-		private Wrapping(String sCssName) {
-			this.sCssName = sCssName;
+		private Wrapping(String cssName) {
+			this.cssName = cssName;
 		}
 
 		/**
@@ -85,7 +85,7 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 		 */
 		@Override
 		public String getCssName() {
-			return sCssName;
+			return cssName;
 		}
 	}
 
@@ -113,19 +113,19 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	public static final PropertyName<ItemAlignment> FLEX_ALIGN =
 		PropertyName.newEnumName("FLEX_ALIGN", ItemAlignment.class);
 
-	private boolean bInline;
+	private boolean inline;
 
-	private Orientation eDirection = null;
+	private Orientation direction = null;
 
-	private boolean bReverse = false;
+	private boolean reverse = false;
 
-	private Wrapping eWrapping = null;
+	private Wrapping wrapping = null;
 
-	private ItemAlignment eItemAlignment = null;
+	private ItemAlignment itemAlignment = null;
 
-	private ContentAlignment eJustifyContent = null;
+	private ContentAlignment justifyContent = null;
 
-	private ContentAlignment eAlignContent = null;
+	private ContentAlignment alignContent = null;
 
 	/**
 	 * Creates a new instance.
@@ -160,28 +160,28 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 * wrapping occurs. Almost all content alignment values with the exception
 	 * of {@link ContentAlignment#SPACE_EVENLY SPACE_EVENLY} are supported.
 	 *
-	 * @param eAlignment The horizontal content alignment
+	 * @param alignment The horizontal content alignment
 	 * @return This instance for fluent invocation
 	 * @throws IllegalArgumentException If an unsupported aligment is provided
 	 */
-	public FlexLayout align(ContentAlignment eAlignment) {
-		if (eAlignment == ContentAlignment.SPACE_EVENLY) {
+	public FlexLayout align(ContentAlignment alignment) {
+		if (alignment == ContentAlignment.SPACE_EVENLY) {
 			throw new IllegalArgumentException(
 				"SPACE_EVENLY alignment is not supported for the secondary " +
 					"layout axis");
 		}
 
-		return _with(() -> eAlignContent = eAlignment);
+		return _with(() -> alignContent = alignment);
 	}
 
 	/**
 	 * Sets the alignment of layout items along the secondary layout axis.
 	 *
-	 * @param eAlignment The item alignment
+	 * @param alignment The item alignment
 	 * @return This instance for fluent invocation
 	 */
-	public FlexLayout alignItems(ItemAlignment eAlignment) {
-		return _with(() -> eItemAlignment = eAlignment);
+	public FlexLayout alignItems(ItemAlignment alignment) {
+		return _with(() -> itemAlignment = alignment);
 	}
 
 	/**
@@ -191,8 +191,8 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 *
 	 * @see #direction(Orientation, boolean)
 	 */
-	public FlexLayout direction(Orientation eDirection) {
-		return direction(eDirection, false);
+	public FlexLayout direction(Orientation direction) {
+		return direction(direction, false);
 	}
 
 	/**
@@ -200,14 +200,14 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 * flex layout flow. The secondary axis runs in the other direction,
 	 * perpendicular to the main axis.
 	 *
-	 * @param eDirection The flow direction
-	 * @param bReverse   TRUE to reverse the flow direction
+	 * @param direction The flow direction
+	 * @param reverse   TRUE to reverse the flow direction
 	 * @return This instance for fluent invocation
 	 */
-	public FlexLayout direction(Orientation eDirection, boolean bReverse) {
+	public FlexLayout direction(Orientation direction, boolean reverse) {
 		return _with(() -> {
-			this.eDirection = eDirection;
-			this.bReverse = bReverse;
+			this.direction = direction;
+			this.reverse = reverse;
 		});
 	}
 
@@ -217,7 +217,7 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 * @return This instance for fluent invocation
 	 */
 	public FlexLayout inline() {
-		return _with(() -> bInline = true);
+		return _with(() -> inline = true);
 	}
 
 	/**
@@ -228,40 +228,40 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 * are
 	 * supported.
 	 *
-	 * @param eAlignment The horizontal content alignment
+	 * @param alignment The horizontal content alignment
 	 * @return This instance for fluent invocation
 	 * @throws IllegalArgumentException If an unsupported alignment is provided
 	 */
-	public FlexLayout justify(ContentAlignment eAlignment) {
-		if (eAlignment == ContentAlignment.STRETCH) {
+	public FlexLayout justify(ContentAlignment alignment) {
+		if (alignment == ContentAlignment.STRETCH) {
 			throw new IllegalArgumentException(
 				"STRETCH alignment is not supported for the main layout axis");
 		}
 
-		return _with(() -> eJustifyContent = eAlignment);
+		return _with(() -> justifyContent = alignment);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void applyLayoutStyle(StyleData rStyleData, Style rStyle) {
-		rStyle.setProperty("display", bInline ? "inline-flex" : "flex");
+	protected void applyLayoutStyle(StyleData styleData, Style style) {
+		style.setProperty("display", inline ? "inline-flex" : "flex");
 
-		setStyleProperty("flexWrap", rStyle, eWrapping);
-		setStyleProperty("justifyContent", rStyle, eJustifyContent);
-		setStyleProperty("alignContent", rStyle, eAlignContent);
-		setStyleProperty("alignItems", rStyle, eItemAlignment);
+		setStyleProperty("flexWrap", style, wrapping);
+		setStyleProperty("justifyContent", style, justifyContent);
+		setStyleProperty("alignContent", style, alignContent);
+		setStyleProperty("alignItems", style, itemAlignment);
 
-		if (eDirection != null) {
-			String sFlexDirection =
-				eDirection == Orientation.HORIZONTAL ? "row" : "column";
+		if (direction != null) {
+			String flexDirection =
+				direction == Orientation.HORIZONTAL ? "row" : "column";
 
-			if (bReverse) {
-				sFlexDirection += "-reverse";
+			if (reverse) {
+				flexDirection += "-reverse";
 			}
 
-			setStyleProperty("flexDirection", rStyle, sFlexDirection);
+			setStyleProperty("flexDirection", style, flexDirection);
 		}
 	}
 
@@ -269,11 +269,11 @@ public class FlexLayout extends FluentCssLayout<FlexLayout> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void applyWidgetStyle(StyleData rStyleData, Style rStyle) {
-		setStyleProperty(ORDER, rStyleData, "order", rStyle);
-		setStyleProperty(FLEX_GROW, rStyleData, "flexGrow", rStyle);
-		setStyleProperty(FLEX_SHRINK, rStyleData, "flexShrink", rStyle);
-		setStyleProperty(FLEX_BASIS, rStyleData, "flexBasis", rStyle);
-		setStyleProperty(FLEX_ALIGN, rStyleData, "alignSelf", rStyle);
+	protected void applyWidgetStyle(StyleData styleData, Style style) {
+		setStyleProperty(ORDER, styleData, "order", style);
+		setStyleProperty(FLEX_GROW, styleData, "flexGrow", style);
+		setStyleProperty(FLEX_SHRINK, styleData, "flexShrink", style);
+		setStyleProperty(FLEX_BASIS, styleData, "flexBasis", style);
+		setStyleProperty(FLEX_ALIGN, styleData, "alignSelf", style);
 	}
 }

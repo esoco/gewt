@@ -16,24 +16,6 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 package de.esoco.ewt.impl.gwt.table;
 
-import de.esoco.ewt.UserInterfaceContext;
-import de.esoco.ewt.impl.gwt.GwtDateTimeFormat;
-import de.esoco.ewt.impl.gwt.ValueFormat;
-
-import de.esoco.lib.model.ColumnDefinition;
-import de.esoco.lib.model.DataModel;
-import de.esoco.lib.model.SortableDataModel;
-import de.esoco.lib.property.ContentType;
-import de.esoco.lib.property.SortDirection;
-import de.esoco.lib.text.TextConvert;
-
-import java.sql.Time;
-import java.sql.Timestamp;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -59,6 +41,21 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import de.esoco.ewt.UserInterfaceContext;
+import de.esoco.ewt.impl.gwt.GwtDateTimeFormat;
+import de.esoco.ewt.impl.gwt.ValueFormat;
+import de.esoco.lib.model.ColumnDefinition;
+import de.esoco.lib.model.DataModel;
+import de.esoco.lib.model.SortableDataModel;
+import de.esoco.lib.property.ContentType;
+import de.esoco.lib.property.SortDirection;
+import de.esoco.lib.text.TextConvert;
+
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static de.esoco.lib.property.ContentProperties.CONTENT_TYPE;
 import static de.esoco.lib.property.StyleProperties.HAS_IMAGES;
@@ -78,43 +75,43 @@ class TableHeader extends Composite
 
 	private static final int MIN_COLUMN_WIDTH = 5;
 
-	DataModel<ColumnDefinition> rColumns;
+	private final GwtTable gwtTable;
 
-	private GwtTable rTable;
+	private final Grid headerTable = new Grid(1, 1);
 
-	private Grid aHeaderTable = new Grid(1, 1);
+	private final List<ColumnHeader> columnHeaders = new ArrayList<>();
 
-	private List<ColumnHeader> aColumnHeaders = new ArrayList<ColumnHeader>();
+	private final List<ValueFormat> columnFormats = new ArrayList<>();
 
-	private List<ValueFormat> aColumnFormats = new ArrayList<ValueFormat>();
+	private final List<String> columnStyles = new ArrayList<>();
 
-	private List<String> aColumnStyles = new ArrayList<String>();
+	DataModel<ColumnDefinition> columns;
 
-	private int nResizeColumn = -1;
+	private int resizeColumn = -1;
 
-	private int nResizePosition = 0;
+	private int resizePosition = 0;
 
-	private boolean bWasResizeClick = false;
+	private boolean wasResizeClick = false;
 
-	private HandlerRegistration rMouseMoveHandler;
+	private HandlerRegistration mouseMoveHandler;
 
-	private HandlerRegistration rMouseUpHandler;
+	private HandlerRegistration mouseUpHandler;
 
-	private HandlerRegistration rMouseOutHandler;
+	private HandlerRegistration mouseOutHandler;
 
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param rTable The table this instance belongs to
+	 * @param gwtTable The table this instance belongs to
 	 */
-	public TableHeader(GwtTable rTable) {
-		this.rTable = rTable;
+	public TableHeader(GwtTable gwtTable) {
+		this.gwtTable = gwtTable;
 
-		initWidget(aHeaderTable);
+		initWidget(headerTable);
 
-		aHeaderTable.setWidth("100%");
-		aHeaderTable.addClickHandler(this);
-		aHeaderTable.setStylePrimaryName(GwtTable.CSS.ewtHeader());
+		headerTable.setWidth("100%");
+		headerTable.addClickHandler(this);
+		headerTable.setStylePrimaryName(GwtTable.CSS.ewtHeader());
 	}
 
 	/**
@@ -123,42 +120,42 @@ class TableHeader extends Composite
 	 * @return The column count
 	 */
 	public final int getColumnCount() {
-		return rColumns.getElementCount();
+		return columns.getElementCount();
 	}
 
 	/**
 	 * Returns the column definition for a certain column index.
 	 *
-	 * @param nColumn The column index
+	 * @param column The column index
 	 * @return The column definition
 	 */
-	public final ColumnDefinition getColumnDefinition(int nColumn) {
-		return rColumns.getElement(nColumn);
+	public final ColumnDefinition getColumnDefinition(int column) {
+		return columns.getElement(column);
 	}
 
 	/**
 	 * Returns the value format for a certain column.
 	 *
-	 * @param nColumn The column index
+	 * @param column The column index
 	 * @return The column format
 	 */
-	public final ValueFormat getColumnFormat(int nColumn) {
-		return aColumnFormats.get(nColumn);
+	public final ValueFormat getColumnFormat(int column) {
+		return columnFormats.get(column);
 	}
 
 	/**
 	 * @see ClickHandler#onClick(ClickEvent)
 	 */
 	@Override
-	public void onClick(ClickEvent rEvent) {
-		if (bWasResizeClick) {
+	public void onClick(ClickEvent event) {
+		if (wasResizeClick) {
 			// button release at the end of a column resize causes click event
-			bWasResizeClick = false;
-		} else if (rTable.canHandleInput()) {
-			Cell rCell = aHeaderTable.getCellForEvent(rEvent);
+			wasResizeClick = false;
+		} else if (gwtTable.canHandleInput()) {
+			Cell cell = headerTable.getCellForEvent(event);
 
-			if (rCell != null) {
-				changeSorting(rCell.getCellIndex());
+			if (cell != null) {
+				changeSorting(cell.getCellIndex());
 			}
 		}
 	}
@@ -167,12 +164,12 @@ class TableHeader extends Composite
 	 * @see MouseMoveHandler#onMouseMove(MouseMoveEvent)
 	 */
 	@Override
-	public void onMouseMove(MouseMoveEvent rEvent) {
-		if (nResizeColumn >= 0) {
-			int nMouseX = rEvent.getClientX();
+	public void onMouseMove(MouseMoveEvent event) {
+		if (resizeColumn >= 0) {
+			int mouseX = event.getClientX();
 
-			changeColumnWidth(nResizeColumn, nMouseX - nResizePosition);
-			nResizePosition = nMouseX;
+			changeColumnWidth(resizeColumn, mouseX - resizePosition);
+			resizePosition = mouseX;
 		}
 	}
 
@@ -180,7 +177,7 @@ class TableHeader extends Composite
 	 * @see MouseOutHandler#onMouseOut(MouseOutEvent)
 	 */
 	@Override
-	public void onMouseOut(MouseOutEvent rEvent) {
+	public void onMouseOut(MouseOutEvent event) {
 		setResizeColumn(-1, -1);
 	}
 
@@ -188,7 +185,7 @@ class TableHeader extends Composite
 	 * @see MouseUpHandler#onMouseUp(MouseUpEvent)
 	 */
 	@Override
-	public void onMouseUp(MouseUpEvent rEvent) {
+	public void onMouseUp(MouseUpEvent event) {
 		setResizeColumn(-1, -1);
 	}
 
@@ -198,144 +195,144 @@ class TableHeader extends Composite
 	 * @return The character width
 	 */
 	int calcCharWidth() {
-		FlexTable rDataTable = rTable.getDataTable();
-		int nCharWidth;
+		FlexTable dataTable = gwtTable.getDataTable();
+		int charWidth;
 
-		boolean bHasRows = rDataTable.getRowCount() > 0;
-		Widget rWidget = null;
+		boolean hasRows = dataTable.getRowCount() > 0;
+		Widget widget = null;
 
-		if (bHasRows) {
+		if (hasRows) {
 			// save existing widget if already initialized
-			rWidget = rDataTable.getWidget(0, 0);
+			widget = dataTable.getWidget(0, 0);
 		}
 
-		HorizontalPanel aPanel = new HorizontalPanel();
-		Label aLabel = new Label("N");
+		HorizontalPanel panel = new HorizontalPanel();
+		Label label = new Label("N");
 
-		aPanel.add(aLabel);
-		rDataTable.setWidget(0, 0, aPanel);
-		nCharWidth = aLabel.getOffsetWidth();
+		panel.add(label);
+		dataTable.setWidget(0, 0, panel);
+		charWidth = label.getOffsetWidth();
 
-		if (bHasRows) {
-			rDataTable.setWidget(0, 0, rWidget);
+		if (hasRows) {
+			dataTable.setWidget(0, 0, widget);
 		} else {
-			rDataTable.removeRow(0);
+			dataTable.removeRow(0);
 		}
 
-		return nCharWidth;
+		return charWidth;
 	}
 
 	/**
 	 * Calculates the column width based on the available table width.
 	 */
 	void calcColumnWidths() {
-		int nCharWidth = calcCharWidth();
-		int nColumnCount = rColumns.getElementCount();
-		int nRemainingWidth = rTable.getDataWidth();
-		int nVariableColumns = 0;
+		int charWidth = calcCharWidth();
+		int columnCount = columns.getElementCount();
+		int remainingWidth = gwtTable.getDataWidth();
+		int variableColumns = 0;
 
-		for (int nCol = 0; nCol < nColumnCount; nCol++) {
-			ColumnDefinition rColumn = rColumns.getElement(nCol);
-			ColumnHeader rHeader = aColumnHeaders.get(nCol);
+		for (int col = 0; col < columnCount; col++) {
+			ColumnDefinition column = columns.getElement(col);
+			ColumnHeader header = columnHeaders.get(col);
 
-			String sDatatype = rColumn.getDatatype();
-			int nMinWidth = rColumn.getIntProperty(MIN_CHARS, 0);
-			int nMaxWidth = rColumn.getIntProperty(MAX_CHARS, 0);
-			int nColumnWidth = 0;
+			String datatype = column.getDatatype();
+			int minWidth = column.getIntProperty(MIN_CHARS, 0);
+			int maxWidth = column.getIntProperty(MAX_CHARS, 0);
+			int columnWidth = 0;
 
-			if (rColumn.getProperty(CONTENT_TYPE, null) ==
+			if (column.getProperty(CONTENT_TYPE, null) ==
 				ContentType.DATE_TIME ||
-				Timestamp.class.getName().endsWith(sDatatype)) {
-				nColumnWidth = 12;
-			} else if (Date.class.getName().endsWith(sDatatype) ||
-				Time.class.getName().endsWith(sDatatype)) {
-				nColumnWidth = 8;
-			} else if (Integer.class.getName().endsWith(sDatatype)) {
-				nColumnWidth = 10;
-			} else if (Enum.class.getName().endsWith(sDatatype)) {
-				nColumnWidth = rColumn.hasFlag(HAS_IMAGES) ? 3 : 10;
-			} else if (nMaxWidth > 0) {
-				nColumnWidth = nMaxWidth;
+				Timestamp.class.getName().endsWith(datatype)) {
+				columnWidth = 12;
+			} else if (Date.class.getName().endsWith(datatype) ||
+				Time.class.getName().endsWith(datatype)) {
+				columnWidth = 8;
+			} else if (Integer.class.getName().endsWith(datatype)) {
+				columnWidth = 10;
+			} else if (Enum.class.getName().endsWith(datatype)) {
+				columnWidth = column.hasFlag(HAS_IMAGES) ? 3 : 10;
+			} else if (maxWidth > 0) {
+				columnWidth = maxWidth;
 			}
 
-			if (nColumnWidth != 0) {
-				nColumnWidth =
-					checkColumnWidth(nColumnWidth, nMinWidth, nMaxWidth);
+			if (columnWidth != 0) {
+				columnWidth = checkColumnWidth(columnWidth, minWidth,
+					maxWidth);
 
-				if (nCol == 0 && rTable.isHierarchical()) {
-					nColumnWidth += 3;
+				if (col == 0 && gwtTable.isHierarchical()) {
+					columnWidth += 3;
 				}
 
-				nColumnWidth *= nCharWidth;
+				columnWidth *= charWidth;
 
-				rHeader.setColumnWidth(nColumnWidth);
-				nRemainingWidth -= nColumnWidth;
+				header.setColumnWidth(columnWidth);
+				remainingWidth -= columnWidth;
 			} else {
-				rHeader.setColumnWidth(-1);
-				nVariableColumns++;
+				header.setColumnWidth(-1);
+				variableColumns++;
 			}
 		}
 
-		if (nVariableColumns > 0) {
-			distributeRemainingWidth(nVariableColumns, nRemainingWidth,
-				nCharWidth);
+		if (variableColumns > 0) {
+			distributeRemainingWidth(variableColumns, remainingWidth,
+				charWidth);
 		}
 
 		// let the last column fill the remaining space
-		aColumnHeaders.get(nColumnCount - 1).sWidth = null;
+		columnHeaders.get(columnCount - 1).htmlColumnWidth = null;
 	}
 
 	/**
 	 * Returns the style of a certain column.
 	 *
-	 * @param nColumn The column index
+	 * @param column The column index
 	 * @return The column style
 	 */
-	final String getColumnStyle(int nColumn) {
-		return aColumnStyles.get(nColumn);
+	final String getColumnStyle(int column) {
+		return columnStyles.get(column);
 	}
 
 	/**
 	 * Initializes the table columns from the column data model. This will also
 	 * set the filterable columns in the filter panel if it is available.
 	 *
-	 * @param rFilterPanel The table's filter panel or NULL for none
+	 * @param filterPanel The table's filter panel or NULL for none
 	 */
-	void initColumns(TableFilterPanel rFilterPanel) {
-		UserInterfaceContext rContext = rTable.getContext();
+	void initColumns(TableFilterPanel filterPanel) {
+		UserInterfaceContext context = gwtTable.getContext();
 
-		int nColumn = 0;
+		int columnIndex = 0;
 
-		aColumnHeaders.clear();
-		aColumnFormats.clear();
-		aHeaderTable.removeRow(0);
-		aHeaderTable.resize(1, rColumns.getElementCount());
-		aHeaderTable
+		columnHeaders.clear();
+		columnFormats.clear();
+		headerTable.removeRow(0);
+		headerTable.resize(1, columns.getElementCount());
+		headerTable
 			.getRowFormatter()
 			.setStylePrimaryName(0, GwtTable.CSS.ewtHeader());
 
-		rFilterPanel.resetFilterColumns();
+		filterPanel.resetFilterColumns();
 
-		for (ColumnDefinition rColumn : rColumns) {
-			String sTitle = rContext.expandResource(rColumn.getTitle());
+		for (ColumnDefinition column : columns) {
+			String title = context.expandResource(column.getTitle());
 
-			if (sTitle.startsWith("col")) {
-				sTitle = sTitle.substring(3);
+			if (title.startsWith("col")) {
+				title = title.substring(3);
 			}
 
-			ValueFormat rColumnFormat = getColumnFormat(rColumn);
-			ColumnHeader aHeader = new ColumnHeader(sTitle, nColumn);
+			ValueFormat columnFormat = getColumnFormat(column);
+			ColumnHeader header = new ColumnHeader(title, columnIndex);
 
-			setColumnStyle(nColumn, rColumn);
-			aHeaderTable.setWidget(0, nColumn++, aHeader);
+			setColumnStyle(columnIndex, column);
+			headerTable.setWidget(0, columnIndex++, header);
 
-			aColumnHeaders.add(aHeader);
-			aColumnFormats.add(rColumnFormat);
+			columnHeaders.add(header);
+			columnFormats.add(columnFormat);
 
-			if (rFilterPanel != null && rColumn.hasFlag(SEARCHABLE)) {
-				rFilterPanel.addFilterColumn(rColumn);
+			if (column.hasFlag(SEARCHABLE)) {
+				filterPanel.addFilterColumn(column);
 			} else {
-				aHeader.addStyleName(GwtTable.CSS.ewtLimited());
+				header.addStyleName(GwtTable.CSS.ewtLimited());
 			}
 		}
 	}
@@ -344,20 +341,20 @@ class TableHeader extends Composite
 	 * Sets the widths of the table columns.
 	 */
 	void setAllColumnWidths() {
-		ColumnFormatter rHeaderColumnFormatter =
-			aHeaderTable.getColumnFormatter();
+		ColumnFormatter headerColumnFormatter =
+			headerTable.getColumnFormatter();
 
-		ColumnFormatter rDataColumnFormatter =
-			rTable.getDataTable().getColumnFormatter();
+		ColumnFormatter dataColumnFormatter =
+			gwtTable.getDataTable().getColumnFormatter();
 
-		int nColumns = rColumns.getElementCount();
+		int columnCount = columns.getElementCount();
 
-		for (int nCol = 0; nCol < nColumns; nCol++) {
-			String sColumnWidth = aColumnHeaders.get(nCol).getColumnWidth();
+		for (int col = 0; col < columnCount; col++) {
+			String columnWidth = columnHeaders.get(col).getColumnWidth();
 
-			if (sColumnWidth != null) {
-				rHeaderColumnFormatter.setWidth(nCol, sColumnWidth);
-				rDataColumnFormatter.setWidth(nCol, sColumnWidth);
+			if (columnWidth != null) {
+				headerColumnFormatter.setWidth(col, columnWidth);
+				dataColumnFormatter.setWidth(col, columnWidth);
 			}
 		}
 	}
@@ -365,70 +362,70 @@ class TableHeader extends Composite
 	/**
 	 * Sets the data model that contains information about the table columns.
 	 *
-	 * @param rNewColumns The table columns data model
+	 * @param newColumns The table columns data model
 	 * @return TRUE if the columns have changed
 	 */
-	boolean setColumns(DataModel<ColumnDefinition> rNewColumns) {
-		boolean bChanged = rColumns == null || !rColumns.equals(rNewColumns);
+	boolean setColumns(DataModel<ColumnDefinition> newColumns) {
+		boolean changed = columns == null || !columns.equals(newColumns);
 
-		if (bChanged) {
-			aColumnStyles.clear();
-			rColumns = rNewColumns;
+		if (changed) {
+			columnStyles.clear();
+			columns = newColumns;
 
-			for (ColumnDefinition rColumn : rColumns) {
-				String sStyle = rColumn.getId();
-				String sDatatype = rColumn.getDatatype();
+			for (ColumnDefinition column : columns) {
+				String style = column.getId();
+				String datatype = column.getDatatype();
 
-				sStyle = TextConvert.lastElementOf(sStyle).toLowerCase();
+				style = TextConvert.lastElementOf(style).toLowerCase();
 
-				if (!sDatatype.equals("String")) {
-					sStyle = sStyle + " " + sDatatype;
+				if (!datatype.equals("String")) {
+					style = style + " " + datatype;
 				}
 
-				aColumnStyles.add(sDatatype);
+				columnStyles.add(style);
 			}
 		}
 
-		return bChanged;
+		return changed;
 	}
 
 	/**
 	 * Package-internal method to set or clear the current resize column. Will
 	 * be invoked from the {@link ColumnHeader} class.
 	 *
-	 * @param nColumn The header of the currently resized table column
-	 * @param nMouseX The starting X position of the resize
+	 * @param column The header of the currently resized table column
+	 * @param mouseX The starting X position of the resize
 	 */
-	final void setResizeColumn(int nColumn, int nMouseX) {
-		String sNoSelectStyle = GwtTable.CSS.ewtNoSelect();
-		boolean bColumnResize = nColumn >= 0;
+	final void setResizeColumn(int column, int mouseX) {
+		String noSelectStyle = GwtTable.CSS.ewtNoSelect();
+		boolean columnResize = column >= 0;
 
-		nResizeColumn = nColumn;
-		nResizePosition = nMouseX;
+		resizeColumn = column;
+		resizePosition = mouseX;
 
 		// only start if table not busy but always end to prevent resizing from
 		// remaining active due to external table update events
-		if (bColumnResize) {
-			if (rTable.canHandleInput()) {
-				FocusPanel rFocusPanel = rTable.getFocusPanel();
+		if (columnResize) {
+			if (gwtTable.canHandleInput()) {
+				FocusPanel focusPanel = gwtTable.getFocusPanel();
 
-				rTable.getDataTable().addStyleName(sNoSelectStyle);
+				gwtTable.getDataTable().addStyleName(noSelectStyle);
 
-				rMouseMoveHandler = rFocusPanel.addMouseMoveHandler(this);
-				rMouseUpHandler = rFocusPanel.addMouseUpHandler(this);
-				rMouseOutHandler = rFocusPanel.addMouseOutHandler(this);
-				bWasResizeClick = true;
+				mouseMoveHandler = focusPanel.addMouseMoveHandler(this);
+				mouseUpHandler = focusPanel.addMouseUpHandler(this);
+				mouseOutHandler = focusPanel.addMouseOutHandler(this);
+				wasResizeClick = true;
 			}
-		} else if (rMouseMoveHandler != null) {
-			rMouseMoveHandler.removeHandler();
-			rMouseUpHandler.removeHandler();
-			rMouseOutHandler.removeHandler();
+		} else if (mouseMoveHandler != null) {
+			mouseMoveHandler.removeHandler();
+			mouseUpHandler.removeHandler();
+			mouseOutHandler.removeHandler();
 
-			rMouseMoveHandler = null;
-			rMouseUpHandler = null;
-			rMouseOutHandler = null;
+			mouseMoveHandler = null;
+			mouseUpHandler = null;
+			mouseOutHandler = null;
 
-			rTable.getDataTable().removeStyleName(sNoSelectStyle);
+			gwtTable.getDataTable().removeStyleName(noSelectStyle);
 		}
 	}
 
@@ -436,49 +433,46 @@ class TableHeader extends Composite
 	 * Changes the width of a certain table column and of the preceding column
 	 * if necessary.
 	 *
-	 * @param nColumn The column index
-	 * @param nChange The new column width in pixels
+	 * @param column The column index
+	 * @param change The new column width in pixels
 	 */
-	private void changeColumnWidth(int nColumn, int nChange) {
-		int nCurrentWidth = getColumnWidth(nColumn);
+	private void changeColumnWidth(int column, int change) {
+		int currentWidth = getColumnWidth(column);
 
-		if (nChange > 0 || nCurrentWidth > MIN_COLUMN_WIDTH) {
-			int nNewWidth = Math.max(nCurrentWidth + nChange,
-				MIN_COLUMN_WIDTH);
+		if (change > 0 || currentWidth > MIN_COLUMN_WIDTH) {
+			int newWidth = Math.max(currentWidth + change, MIN_COLUMN_WIDTH);
 
-			setColumnWidth(nColumn, nNewWidth + "px");
+			setColumnWidth(column, newWidth + "px");
 		}
 	}
 
 	/**
 	 * Changes the sorting for a certain column.
 	 *
-	 * @param nCol The column to change the sorting for
+	 * @param col The column to change the sorting for
 	 */
-	private void changeSorting(int nCol) {
-		ColumnDefinition rColumn = rColumns.getElement(nCol);
-		DataModel<? extends DataModel<?>> rData = rTable.getData();
+	private void changeSorting(int col) {
+		ColumnDefinition column = columns.getElement(col);
+		DataModel<? extends DataModel<?>> data = gwtTable.getData();
 
-		if (rColumn.hasFlag(SORTABLE) &&
-			rData instanceof SortableDataModel<?>) {
-			SortableDataModel<?> rModel = (SortableDataModel<?>) rData;
-			String sColumnId = rColumn.getId();
-			SortDirection rSortDirection = rModel.getSortDirection(sColumnId);
+		if (column.hasFlag(SORTABLE) && data instanceof SortableDataModel<?>) {
+			SortableDataModel<?> model = (SortableDataModel<?>) data;
+			String columnId = column.getId();
+			SortDirection sortDirection = model.getSortDirection(columnId);
 
-			ColumnHeader rHeader =
-				(ColumnHeader) aHeaderTable.getWidget(0, nCol);
+			ColumnHeader header = (ColumnHeader) headerTable.getWidget(0, col);
 
-			if (rSortDirection == SortDirection.ASCENDING) {
-				rSortDirection = SortDirection.DESCENDING;
-			} else if (rSortDirection == SortDirection.DESCENDING) {
-				rSortDirection = null;
+			if (sortDirection == SortDirection.ASCENDING) {
+				sortDirection = SortDirection.DESCENDING;
+			} else if (sortDirection == SortDirection.DESCENDING) {
+				sortDirection = null;
 			} else {
-				rSortDirection = SortDirection.ASCENDING;
+				sortDirection = SortDirection.ASCENDING;
 			}
 
-			rHeader.setSortIndicator(rSortDirection);
-			rModel.setSortDirection(sColumnId, rSortDirection);
-			rTable.update();
+			header.setSortIndicator(sortDirection);
+			model.setSortDirection(columnId, sortDirection);
+			gwtTable.update();
 		}
 	}
 
@@ -486,53 +480,51 @@ class TableHeader extends Composite
 	 * Checks a column width against the minimum and maximum width of the
 	 * column.
 	 *
-	 * @param nColumnWidth The current column width
-	 * @param nMinWidth    The minimum width
-	 * @param nMaxWidth    The maximum width
+	 * @param columnWidth The current column width
+	 * @param minWidth    The minimum width
+	 * @param maxWidth    The maximum width
 	 * @return The adjusted column width
 	 */
-	private int checkColumnWidth(int nColumnWidth, int nMinWidth,
-		int nMaxWidth) {
-		if (nColumnWidth < nMinWidth) {
-			nColumnWidth = nMinWidth;
+	private int checkColumnWidth(int columnWidth, int minWidth, int maxWidth) {
+		if (columnWidth < minWidth) {
+			columnWidth = minWidth;
 		}
 
-		if (nMaxWidth > 0 && nColumnWidth > nMaxWidth) {
-			nColumnWidth = nMaxWidth;
+		if (maxWidth > 0 && columnWidth > maxWidth) {
+			columnWidth = maxWidth;
 		}
 
-		return nColumnWidth;
+		return columnWidth;
 	}
 
 	/**
 	 * Distributes the remaining table width over all variable columns.
 	 *
-	 * @param nVariableColumns The number of variable-width columns
-	 * @param nRemainingWidth  The remaining width in pixels to distribute
-	 * @param nCharWidth       The average character width
+	 * @param variableColumns The number of variable-width columns
+	 * @param remainingWidth  The remaining width in pixels to distribute
+	 * @param charWidth       The average character width
 	 */
-	private void distributeRemainingWidth(int nVariableColumns,
-		int nRemainingWidth, int nCharWidth) {
-		int nColumnWidth = nRemainingWidth / nVariableColumns;
-		int nRemainder = nRemainingWidth % nVariableColumns;
-		int nLastColumn = getColumnCount() - 1;
+	private void distributeRemainingWidth(int variableColumns,
+		int remainingWidth, int charWidth) {
+		int columnWidth = remainingWidth / variableColumns;
+		int remainder = remainingWidth % variableColumns;
+		int lastColumn = getColumnCount() - 1;
 
-		for (int nCol = 0; nCol <= nLastColumn && nRemainingWidth > 0; nCol++) {
-			ColumnHeader rHeader = aColumnHeaders.get(nCol);
+		for (int col = 0; col <= lastColumn && remainingWidth > 0; col++) {
+			ColumnHeader header = columnHeaders.get(col);
 
-			if (rHeader.getColumnWidth() == null) {
-				ColumnDefinition rColumn = rColumns.getElement(nCol);
+			if (header.getColumnWidth() == null) {
+				ColumnDefinition column = columns.getElement(col);
 
-				int nMinWidth =
-					rColumn.getIntProperty(MIN_CHARS, 0) * nCharWidth;
+				int minWidth = column.getIntProperty(MIN_CHARS, 0) * charWidth;
 
-				nColumnWidth =
-					checkColumnWidth(nColumnWidth, nMinWidth, nColumnWidth);
+				columnWidth =
+					checkColumnWidth(columnWidth, minWidth, columnWidth);
 
 				// add the remainder to the first column
-				nRemainingWidth -= nColumnWidth + nRemainder;
-				rHeader.setColumnWidth(nColumnWidth + nRemainder);
-				nRemainder = 0;
+				remainingWidth -= columnWidth + remainder;
+				header.setColumnWidth(columnWidth + remainder);
+				remainder = 0;
 			}
 		}
 	}
@@ -540,51 +532,51 @@ class TableHeader extends Composite
 	/**
 	 * Returns the appropriate formatting object for a certain column.
 	 *
-	 * @param rColumn The column to return the format for
+	 * @param column The column to return the format for
 	 * @return The format object
 	 */
-	private ValueFormat getColumnFormat(ColumnDefinition rColumn) {
-		String sDatatype = rColumn.getDatatype();
-		ValueFormat rFormat = ValueFormat.TO_STRING;
+	private ValueFormat getColumnFormat(ColumnDefinition column) {
+		String datatype = column.getDatatype();
+		ValueFormat format = ValueFormat.TO_STRING;
 
 		// TODO: allow to define column-specific formats
 
-		if (sDatatype != null) {
-			if (rColumn.getProperty(CONTENT_TYPE, null) ==
+		if (datatype != null) {
+			if (column.getProperty(CONTENT_TYPE, null) ==
 				ContentType.DATE_TIME ||
-				Timestamp.class.getName().endsWith(sDatatype)) {
-				rFormat = GwtDateTimeFormat.SHORT_DATE_TIME;
-			} else if (Date.class.getName().endsWith(sDatatype)) {
-				rFormat = GwtDateTimeFormat.SHORT_DATE;
-			} else if (Time.class.getName().endsWith(sDatatype)) {
-				rFormat = GwtDateTimeFormat.SHORT_TIME;
+				Timestamp.class.getName().endsWith(datatype)) {
+				format = GwtDateTimeFormat.SHORT_DATE_TIME;
+			} else if (Date.class.getName().endsWith(datatype)) {
+				format = GwtDateTimeFormat.SHORT_DATE;
+			} else if (Time.class.getName().endsWith(datatype)) {
+				format = GwtDateTimeFormat.SHORT_TIME;
 			}
 		}
 
-		return rFormat;
+		return format;
 	}
 
 	/**
 	 * Returns the width of a certain table column.
 	 *
-	 * @param nColumn The column index
+	 * @param column The column index
 	 * @return The column width in pixels
 	 */
-	private int getColumnWidth(int nColumn) {
-		String sHtmlWidth = aColumnHeaders.get(nColumn).getColumnWidth();
-		int nWidth;
+	private int getColumnWidth(int column) {
+		String htmlWidth = columnHeaders.get(column).getColumnWidth();
+		int width;
 
-		if (sHtmlWidth != null) {
-			nWidth = Integer.parseInt(
-				sHtmlWidth.substring(0, sHtmlWidth.length() - 2));
+		if (htmlWidth != null) {
+			width = Integer.parseInt(
+				htmlWidth.substring(0, htmlWidth.length() - 2));
 		} else {
-			nWidth = aHeaderTable
+			width = headerTable
 				.getColumnFormatter()
-				.getElement(nColumn)
+				.getElement(column)
 				.getOffsetWidth();
 		}
 
-		return nWidth;
+		return width;
 	}
 
 	/**
@@ -592,32 +584,32 @@ class TableHeader extends Composite
 	 * properties
 	 * of the column definition.
 	 *
-	 * @param nColumn The column index
-	 * @param rColumn The column definition
+	 * @param columnIndex The column index
+	 * @param column      The column definition
 	 */
-	private void setColumnStyle(int nColumn, ColumnDefinition rColumn) {
-		ColumnFormatter rHeaderColumnFormatter =
-			aHeaderTable.getColumnFormatter();
-		ColumnFormatter rDataColumnFormatter =
-			rTable.getDataTable().getColumnFormatter();
+	private void setColumnStyle(int columnIndex, ColumnDefinition column) {
+		ColumnFormatter headerColumnFormatter =
+			headerTable.getColumnFormatter();
+		ColumnFormatter dataColumnFormatter =
+			gwtTable.getDataTable().getColumnFormatter();
 
-		String sStyle = TextConvert.capitalizedLastElementOf(rColumn.getId());
+		String style = TextConvert.capitalizedLastElementOf(column.getId());
 
-		rHeaderColumnFormatter.setStyleName(nColumn, sStyle);
-		rDataColumnFormatter.setStyleName(nColumn, sStyle);
+		headerColumnFormatter.setStyleName(columnIndex, style);
+		dataColumnFormatter.setStyleName(columnIndex, style);
 	}
 
 	/**
 	 * Sets the width of a certain column.
 	 *
-	 * @param nColumn The column index
-	 * @param sWidth  The new column width
+	 * @param column The column index
+	 * @param width  The new column width
 	 */
-	private void setColumnWidth(int nColumn, String sWidth) {
-		aColumnHeaders.get(nColumn).sWidth = sWidth;
+	private void setColumnWidth(int column, String width) {
+		columnHeaders.get(column).htmlColumnWidth = width;
 
-		aHeaderTable.getColumnFormatter().setWidth(nColumn, sWidth);
-		rTable.getDataTable().getColumnFormatter().setWidth(nColumn, sWidth);
+		headerTable.getColumnFormatter().setWidth(column, width);
+		gwtTable.getDataTable().getColumnFormatter().setWidth(column, width);
 	}
 
 	/**
@@ -628,48 +620,46 @@ class TableHeader extends Composite
 	class ColumnHeader extends Composite
 		implements MouseDownHandler, DoubleClickHandler {
 
-		private int nColumnIndex;
+		private final int columnIndex;
 
-		private String sDefaultWidth;
+		private final Image sortIndicator;
 
-		private String sWidth;
+		private final Label titleLabel;
 
-		private Image aSortIndicator;
+		private String defaultHtmlColumnWidth;
 
-		private Label aTitleLabel;
-
-		private HTML aResizer;
+		private String htmlColumnWidth;
 
 		/**
 		 * Creates a new instance.
 		 *
-		 * @param sTitle The column title
-		 * @param nIndex The index of this instance in the table
+		 * @param title The column title
+		 * @param index The index of this instance in the table
 		 */
-		ColumnHeader(String sTitle, int nIndex) {
-			this.nColumnIndex = nIndex;
+		ColumnHeader(String title, int index) {
+			this.columnIndex = index;
 
-			FlowPanel aTitlePanel = new FlowPanel();
+			FlowPanel titlePanel = new FlowPanel();
+			HTML resizer = new HTML();
 
-			aTitleLabel = new Label(sTitle);
-			aResizer = new HTML();
-			aSortIndicator = new Image();
+			titleLabel = new Label(title);
+			sortIndicator = new Image();
 
-			aSortIndicator.addStyleName(GwtTable.CSS.ewtSortIndicator());
+			sortIndicator.addStyleName(GwtTable.CSS.ewtSortIndicator());
 
-			aResizer.setHTML("&nbsp;");
-			aResizer.addStyleName(GwtTable.CSS.ewtResizer());
-			aResizer.addDoubleClickHandler(this);
-			aResizer.addMouseDownHandler(this);
+			resizer.setHTML("&nbsp;");
+			resizer.addStyleName(GwtTable.CSS.ewtResizer());
+			resizer.addDoubleClickHandler(this);
+			resizer.addMouseDownHandler(this);
 
-			if (nIndex > 0) {
-				aTitlePanel.add(aResizer);
+			if (index > 0) {
+				titlePanel.add(resizer);
 			}
 
-			aTitlePanel.add(aSortIndicator);
-			aTitlePanel.add(aTitleLabel);
+			titlePanel.add(sortIndicator);
+			titlePanel.add(titleLabel);
 
-			initWidget(aTitlePanel);
+			initWidget(titlePanel);
 			setSortIndicator(null);
 		}
 
@@ -679,26 +669,27 @@ class TableHeader extends Composite
 		 * @return The title label
 		 */
 		public final Label getTitleLabel() {
-			return aTitleLabel;
+			return titleLabel;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onDoubleClick(DoubleClickEvent rEvent) {
-			int nColumn = nColumnIndex - 1;
-			String sDefaultWidth = aColumnHeaders.get(nColumn).sDefaultWidth;
+		public void onDoubleClick(DoubleClickEvent event) {
+			int column = columnIndex - 1;
+			String defaultWidth =
+				columnHeaders.get(column).defaultHtmlColumnWidth;
 
-			TableHeader.this.setColumnWidth(nColumn, sDefaultWidth);
+			TableHeader.this.setColumnWidth(column, defaultWidth);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void onMouseDown(MouseDownEvent rEvent) {
-			setResizeColumn(nColumnIndex - 1, rEvent.getClientX());
+		public void onMouseDown(MouseDownEvent event) {
+			setResizeColumn(columnIndex - 1, event.getClientX());
 		}
 
 		/**
@@ -706,7 +697,8 @@ class TableHeader extends Composite
 		 */
 		@Override
 		public String toString() {
-			return "Column[" + aTitleLabel.getText() + ", " + sWidth + "]";
+			return "Column[" + titleLabel.getText() + ", " + htmlColumnWidth +
+				"]";
 		}
 
 		/**
@@ -715,7 +707,7 @@ class TableHeader extends Composite
 		 * @return The column index
 		 */
 		final int getColumnIndex() {
-			return nColumnIndex;
+			return columnIndex;
 		}
 
 		/**
@@ -724,36 +716,35 @@ class TableHeader extends Composite
 		 * @return The column width
 		 */
 		final String getColumnWidth() {
-			return sWidth;
+			return htmlColumnWidth;
 		}
 
 		/**
 		 * Sets the column width in pixels.
 		 *
-		 * @param nWidth The column width in pixels or -1 if to be calculated
+		 * @param width The column width in pixels or -1 if to be calculated
 		 */
-		final void setColumnWidth(int nWidth) {
-			sWidth = nWidth >= 0 ? nWidth + "px" : null;
-			sDefaultWidth = sWidth;
+		final void setColumnWidth(int width) {
+			htmlColumnWidth = width >= 0 ? htmlColumnWidth + "px" : null;
+			defaultHtmlColumnWidth = htmlColumnWidth;
 		}
 
 		/**
 		 * Sets the sort indicator.
 		 *
-		 * @param eDirection The new sort indicator
+		 * @param direction The new sort indicator
 		 */
-		void setSortIndicator(SortDirection eDirection) {
-			if (eDirection != null) {
-				aSortIndicator.setResource(
-					eDirection == SortDirection.ASCENDING ?
-					GwtTable.RES.imSortAscending() :
-					GwtTable.RES.imSortDescending());
-				aSortIndicator.setVisible(true);
+		void setSortIndicator(SortDirection direction) {
+			if (direction != null) {
+				sortIndicator.setResource(direction == SortDirection.ASCENDING ?
+				                          GwtTable.RES.imSortAscending() :
+				                          GwtTable.RES.imSortDescending());
+				sortIndicator.setVisible(true);
 			} else {
-				aSortIndicator.setVisible(false);
+				sortIndicator.setVisible(false);
 			}
 
-			aSortIndicator.addStyleName(GwtTable.CSS.ewtSortIndicator());
+			sortIndicator.addStyleName(GwtTable.CSS.ewtSortIndicator());
 		}
 	}
 }

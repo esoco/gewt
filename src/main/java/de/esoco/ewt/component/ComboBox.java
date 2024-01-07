@@ -50,47 +50,47 @@ import com.google.gwt.user.client.ui.Widget;
 public class ComboBox extends TextControl
 	implements KeyDownHandler, DoubleClickHandler {
 
-	private Set<String> aDefaultSuggestions = new LinkedHashSet<String>();
+	private Set<String> defaultSuggestions = new LinkedHashSet<String>();
 
-	private boolean bMultiselect;
+	private boolean multiselect;
 
 	/**
 	 * Adds a choice to the drop-down list.
 	 *
-	 * @param sValue The choice value to add
+	 * @param value The choice value to add
 	 */
-	public void addChoice(String sValue) {
-		MultiWordSuggestOracle rOracle = getSuggestOracle();
+	public void addChoice(String value) {
+		MultiWordSuggestOracle oracle = getSuggestOracle();
 
-		aDefaultSuggestions.add(sValue);
-		rOracle.add(sValue);
-		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
+		defaultSuggestions.add(value);
+		oracle.add(value);
+		oracle.setDefaultSuggestionsFromText(defaultSuggestions);
 	}
 
 	/**
 	 * Adds multiple choices to the drop-down list.
 	 *
-	 * @param rValues The choice values to add
+	 * @param values The choice values to add
 	 */
-	public void addChoices(Collection<String> rValues) {
-		MultiWordSuggestOracle rOracle = getSuggestOracle();
+	public void addChoices(Collection<String> values) {
+		MultiWordSuggestOracle oracle = getSuggestOracle();
 
-		aDefaultSuggestions.addAll(rValues);
-		rOracle.addAll(rValues);
-		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
+		defaultSuggestions.addAll(values);
+		oracle.addAll(values);
+		oracle.setDefaultSuggestionsFromText(defaultSuggestions);
 	}
 
 	/**
 	 * Adds a value string to a multiselection instance or sets the text in
 	 * single selection.
 	 *
-	 * @param sValue The value to add
+	 * @param value The value to add
 	 */
-	public void addValue(String sValue) {
-		if (bMultiselect) {
-			((GwtTagField) getWidget()).addTag(sValue);
+	public void addValue(String value) {
+		if (multiselect) {
+			((GwtTagField) getWidget()).addTag(value);
 		} else {
-			setText(sValue);
+			setText(value);
 		}
 	}
 
@@ -98,13 +98,13 @@ public class ComboBox extends TextControl
 	 * Adds multiple values to a multiselection instance or sets the text in
 	 * single selection.
 	 *
-	 * @param rValues The values to add
+	 * @param values The values to add
 	 */
-	public void addValues(Collection<String> rValues) {
-		if (bMultiselect) {
-			((GwtTagField) getWidget()).addTags(rValues);
+	public void addValues(Collection<String> values) {
+		if (multiselect) {
+			((GwtTagField) getWidget()).addTags(values);
 		} else {
-			setText(rValues.toString());
+			setText(values.toString());
 		}
 	}
 
@@ -112,11 +112,11 @@ public class ComboBox extends TextControl
 	 * Removes all choices from the drop-down list.
 	 */
 	public void clearChoices() {
-		MultiWordSuggestOracle rOracle = getSuggestOracle();
+		MultiWordSuggestOracle oracle = getSuggestOracle();
 
-		aDefaultSuggestions.clear();
-		rOracle.clear();
-		rOracle.setDefaultSuggestionsFromText(aDefaultSuggestions);
+		defaultSuggestions.clear();
+		oracle.clear();
+		oracle.setDefaultSuggestionsFromText(defaultSuggestions);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class ComboBox extends TextControl
 	 * selection.
 	 */
 	public void clearValues() {
-		if (bMultiselect) {
+		if (multiselect) {
 			((GwtTagField) getWidget()).clearTags();
 		} else {
 			setText("");
@@ -138,38 +138,38 @@ public class ComboBox extends TextControl
 	 * @return The values
 	 */
 	public Set<String> getValues() {
-		Set<String> rValues;
+		Set<String> values;
 
-		if (bMultiselect) {
-			rValues = ((GwtTagField) getWidget()).getTags();
+		if (multiselect) {
+			values = ((GwtTagField) getWidget()).getTags();
 		} else {
-			rValues = new LinkedHashSet<>();
-			rValues.add(getText());
+			values = new LinkedHashSet<>();
+			values.add(getText());
 		}
 
-		return rValues;
+		return values;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initWidget(Container rParent, StyleData rStyle) {
-		super.initWidget(rParent, rStyle);
+	public void initWidget(Container parent, StyleData style) {
+		super.initWidget(parent, style);
 
-		bMultiselect = rStyle.hasFlag(StyleFlag.MULTISELECT);
+		multiselect = style.hasFlag(StyleFlag.MULTISELECT);
 
-		IsTextControlWidget rTextBox = getTextBox();
+		IsTextControlWidget textBox = getTextBox();
 
-		rTextBox.addKeyDownHandler(this);
-		rTextBox.addDoubleClickHandler(this);
+		textBox.addKeyDownHandler(this);
+		textBox.addDoubleClickHandler(this);
 	}
 
 	/**
 	 * @see DoubleClickHandler#onDoubleClick(DoubleClickEvent)
 	 */
 	@Override
-	public void onDoubleClick(DoubleClickEvent rEvent) {
+	public void onDoubleClick(DoubleClickEvent event) {
 		getSuggestBox().showSuggestionList();
 	}
 
@@ -177,19 +177,19 @@ public class ComboBox extends TextControl
 	 * @see KeyDownHandler#onKeyDown(KeyDownEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent rEvent) {
-		SuggestionDisplay rDisplay = getSuggestBox().getSuggestionDisplay();
+	public void onKeyDown(KeyDownEvent event) {
+		SuggestionDisplay display = getSuggestBox().getSuggestionDisplay();
 
-		if (rDisplay instanceof DefaultSuggestionDisplay) {
-			DefaultSuggestionDisplay rDefaultDisplay =
-				(DefaultSuggestionDisplay) rDisplay;
+		if (display instanceof DefaultSuggestionDisplay) {
+			DefaultSuggestionDisplay defaultDisplay =
+				(DefaultSuggestionDisplay) display;
 
-			if (rEvent.isDownArrow() || rEvent.isUpArrow()) {
-				if (!rDefaultDisplay.isSuggestionListShowing()) {
+			if (event.isDownArrow() || event.isUpArrow()) {
+				if (!defaultDisplay.isSuggestionListShowing()) {
 					getSuggestBox().showSuggestionList();
 				}
-			} else if (rEvent.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
-				rDefaultDisplay.hideSuggestions();
+			} else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+				defaultDisplay.hideSuggestions();
 			}
 		}
 	}
@@ -199,11 +199,11 @@ public class ComboBox extends TextControl
 	 * instances this call will be ignored, use the {@link #setText(String)}
 	 * method instead.
 	 *
-	 * @param sValue The value to remove
+	 * @param value The value to remove
 	 */
-	public void removeValue(String sValue) {
-		if (bMultiselect) {
-			((GwtTagField) getWidget()).removeTag(sValue);
+	public void removeValue(String value) {
+		if (multiselect) {
+			((GwtTagField) getWidget()).removeTag(value);
 		}
 	}
 
@@ -211,8 +211,8 @@ public class ComboBox extends TextControl
 	 * @see TextControl#setColumns(int)
 	 */
 	@Override
-	public void setColumns(int nColumns) {
-		getTextBox().setVisibleLength(nColumns);
+	public void setColumns(int columns) {
+		getTextBox().setVisibleLength(columns);
 	}
 
 	/**
@@ -230,11 +230,11 @@ public class ComboBox extends TextControl
 	 * @return The suggest box
 	 */
 	private SuggestBox getSuggestBox() {
-		Widget rWidget = getWidget();
+		Widget widget = getWidget();
 
-		return bMultiselect ?
-		       ((GwtTagField) rWidget).getSuggestBox() :
-		       (SuggestBox) rWidget;
+		return multiselect ?
+		       ((GwtTagField) widget).getSuggestBox() :
+		       (SuggestBox) widget;
 	}
 
 	/**
@@ -257,16 +257,16 @@ public class ComboBox extends TextControl
 		 * {@inheritDoc}
 		 */
 		@Override
-		public Widget createWidget(Component rComponent, StyleData rStyle) {
-			Widget rWidget;
+		public Widget createWidget(Component component, StyleData style) {
+			Widget widget;
 
-			if (rStyle.hasFlag(StyleFlag.MULTISELECT)) {
-				rWidget = new GwtTagField();
+			if (style.hasFlag(StyleFlag.MULTISELECT)) {
+				widget = new GwtTagField();
 			} else {
-				rWidget = new SuggestBox(new MultiWordSuggestOracle());
+				widget = new SuggestBox(new MultiWordSuggestOracle());
 			}
 
-			return rWidget;
+			return widget;
 		}
 	}
 }

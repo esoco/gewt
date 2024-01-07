@@ -20,14 +20,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
-dependencies
-        {
-            api 'de.esoco:esoco-common:1.5.1'
+dependencies {
+    api 'de.esoco:esoco-common:1.5.1'
 
-            testImplementation platform("org.junit:junit-bom:$junitVersion")
-            testImplementation 'org.junit.jupiter:junit-jupiter'
-        }
-
+    testImplementation platform("org.junit:junit-bom:$junitVersion")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
 
 test {
     useJUnitPlatform()
@@ -37,7 +35,7 @@ gwt {
     gwtVersion = "$gwtVersion"
 }
 
-// sources are need for the GWT compiler
+// sources are needed for the GWT compiler
 jar { from sourceSets.main.allSource }
 
 tasks.register('sourcesJar', Jar) {

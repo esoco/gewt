@@ -1,6 +1,6 @@
 plugins {
     id "java-library"
-	id "de.esoco.gwt-lib" version "$gwtLibVersion"
+    id "de.esoco.gwt-lib" version "$gwtLibPluginVersion"
     id "pl.allegro.tech.build.axion-release" version "$axionReleaseVersion"
     id "com.vanniktech.maven.publish" version "$mavenPublishVersion"
 }
@@ -21,12 +21,12 @@ java {
 }
 
 dependencies
-{
-	api 'de.esoco:esoco-common:1.5.1'
+        {
+            api 'de.esoco:esoco-common:1.5.1'
 
-    testImplementation platform("org.junit:junit-bom:$junitVersion")
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-	}
+            testImplementation platform("org.junit:junit-bom:$junitVersion")
+            testImplementation 'org.junit.jupiter:junit-jupiter'
+        }
 
 
 test {
@@ -34,7 +34,7 @@ test {
 }
 
 gwt {
-    gwtVersion = '2.10.0'
+    gwtVersion = "$gwtVersion"
 }
 
 // sources are need for the GWT compiler

@@ -32,6 +32,7 @@ test {
 }
 
 gwt {
+    module 'de.esoco.GEWT'
     gwtVersion = "$gwtVersion"
 }
 

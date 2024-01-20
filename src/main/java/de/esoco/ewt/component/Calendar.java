@@ -66,7 +66,7 @@ public class Calendar extends Component implements DateAttribute {
 	 * Clears the highlighting of a date.
 	 *
 	 * @param date  The date to clear the highlight of
-	 * @param style nType The highlight type
+	 * @param style type The highlight type
 	 */
 	public void removeDateStyle(Date date, String style) {
 		getDatePicker().removeStyleFromDates(style, date);

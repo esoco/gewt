@@ -110,7 +110,7 @@ public class Label extends Component implements TextAttribute, ImageAttribute {
 	 * {@link LabelStyle#FORM}
 	 * style.
 	 *
-	 * @param component rWidget The target widget for this label
+	 * @param component widget The target widget for this label
 	 */
 	public void setAsLabelFor(Component component) {
 		Widget labelWidget = getWidget();

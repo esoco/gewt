@@ -29,7 +29,7 @@ public class Icon implements Image {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param iconName rName
+	 * @param iconName name
 	 */
 	public Icon(String iconName) {
 		name = iconName;

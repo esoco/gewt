@@ -144,7 +144,7 @@ public abstract class Component implements HasId<String> {
 	 * certain
 	 * widget.
 	 *
-	 * @param component rWidget The widget to change the error state of
+	 * @param component widget The widget to change the error state of
 	 * @param message   The error message to display or NULL to remove the
 	 *                     error
 	 *                  state
@@ -326,8 +326,7 @@ public abstract class Component implements HasId<String> {
 	 * .</p>
 	 *
 	 * @param iD             The identifier for the new image
-	 * @param imageReference sImage imageData The input stream that will
-	 *                          provide
+	 * @param imageReference image imageData The input stream that will provide
 	 *                       the image data
 	 * @return A new Image instance that is associated with this component
 	 */
@@ -753,7 +752,7 @@ public abstract class Component implements HasId<String> {
 	 * container. To only affect the rendering of the component itself the
 	 * method {@link #setVisibility(boolean)} can be used instead.
 	 *
-	 * @param visible bRender TRUE to display the component, FALSE to hide it
+	 * @param visible render TRUE to display the component, FALSE to hide it
 	 */
 	public void setVisible(boolean visible) {
 		Widget widget = getWidget();
@@ -930,7 +929,7 @@ public abstract class Component implements HasId<String> {
 	 *
 	 * @param eventType   The event type
 	 * @param element     The element that is affected by the event
-	 * @param nativeEvent nPointerX The horizontal pointer coordinate
+	 * @param nativeEvent pointerX The horizontal pointer coordinate
 	 */
 	void notifyEventHandler(EventType eventType, Object element,
 		NativeEvent nativeEvent) {

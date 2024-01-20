@@ -95,7 +95,7 @@ public class GwtTagField extends Composite
 	/**
 	 * Adds multiple tag strings.
 	 *
-	 * @param tags rValues The tags to add
+	 * @param tags values The tags to add
 	 */
 	public void addTags(Collection<String> tags) {
 		for (String tag : tags) {

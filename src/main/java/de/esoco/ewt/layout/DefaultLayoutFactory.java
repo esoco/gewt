@@ -71,10 +71,10 @@ public class DefaultLayoutFactory implements LayoutFactory {
 
 			case DECK:
 
-				Alignment vAlign =
+				Alignment align =
 					containerStyle.getProperty(VERTICAL_ALIGN, Alignment.FILL);
 
-				if (vAlign == Alignment.FILL) {
+				if (align == Alignment.FILL) {
 					layout = new DeckLayoutPanelLayout();
 				} else {
 					layout = new DeckPanelLayout();

@@ -30,7 +30,7 @@ public interface WidgetStyleHandler {
 	/**
 	 * Will be invoked to apply a new style to a component widget.
 	 *
-	 * @param component rWidget The component
+	 * @param component widget The component
 	 * @param style     The new style
 	 */
 	public void applyWidgetStyle(Component component, StyleData style);

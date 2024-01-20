@@ -69,6 +69,8 @@ public class GwtCodeMirror extends Composite
 
 	private static int instanceCounter = 0;
 
+	private final CodeMirrorOptions options = new CodeMirrorOptions();
+
 	private boolean loaded = false;
 
 	private boolean isSettingValue = false;
@@ -76,8 +78,6 @@ public class GwtCodeMirror extends Composite
 	private JavaScriptObject codeMirror;
 
 	private TextMarker errorMarker = null;
-
-	private final CodeMirrorOptions options = new CodeMirrorOptions();
 
 	private AutoCompletionHandler autoCompletionHandler =
 		NO_AUTO_COMPLETION_HANDLER;
@@ -899,7 +899,7 @@ public class GwtCodeMirror extends Composite
 		/**
 		 * Implementation of {@link #clear()}.
 		 *
-		 * @param object rJavaScriptObject The wrapped JavaScript object
+		 * @param object javaScriptObject The wrapped JavaScript object
 		 */
 		private native void clear(JavaScriptObject object) /*-{
 			object.clear();

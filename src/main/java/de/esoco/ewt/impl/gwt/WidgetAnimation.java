@@ -91,7 +91,7 @@ public class WidgetAnimation extends Animation {
 	/**
 	 * Creates a new instance for a certain element.
 	 *
-	 * @param widget rElement The element
+	 * @param widget element The element
 	 */
 	public WidgetAnimation(Widget widget) {
 		this.widget = widget;

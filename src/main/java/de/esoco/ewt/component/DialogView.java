@@ -31,7 +31,7 @@ public class DialogView extends ChildView {
 	/**
 	 * Creates a new instance.
 	 *
-	 * @param parent rContext The parent view
+	 * @param parent context The parent view
 	 * @param style  The style of the dialog
 	 */
 	public DialogView(View parent, ViewStyle style) {
